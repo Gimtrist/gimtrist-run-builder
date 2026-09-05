@@ -1,0 +1,68 @@
+lets hoop!
+Copyright 2026 nettops
+
+This product includes software developed by nettops.
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License. You may obtain a copy of
+the License in the LICENSE file distributed with this work, or at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+License for the specific language governing permissions and limitations under
+the License.
+
+
+--------------------------------------------------------------------------
+THIRD-PARTY COMPONENTS
+--------------------------------------------------------------------------
+
+This project contains no third-party source code or assets.
+
+That is a deliberate state rather than a lucky one, and it is worth recording
+what was removed to reach it:
+
+facesjs — https://github.com/zengm-games/facesjs
+    REMOVED. faceSvgs.js bundled a curated subset of the facesjs SVG feature
+    artwork (161 path elements, ~136KB) together with a renderer ported from
+    their approach. None of it was reachable: player likenesses are drawn by
+    ui/pixelSprites.js, and the only values any caller ever read off a face
+    descriptor were a skin colour and a hair colour. The artwork, the
+    renderer, the generator script (scripts/build-face-svgs.js) and the
+    retained licence file have all been deleted. faces.js now does nothing but
+    pick those two colours.
+
+ZenGM (basketball-gm) — https://github.com/zengm-games/zengm
+    Never included. No ZenGM source code has been copied into this repository.
+    It is cited in comments in compositeRatings.js and draftLotteryFormats.js
+    as the source of an APPROACH, and in calibration comments as the source of
+    the real-NBA statistics some constants were fitted against. Attribution of
+    an idea and of public data, not of code.
+
+
+--------------------------------------------------------------------------
+A NOTE ON TEAMS, LOGOS AND ROSTER DATA
+--------------------------------------------------------------------------
+
+TEAMS ARE FICTIONAL. The thirty clubs in teams.js are invented. Each keeps a
+real city, because market size and prestige are modelled against real market
+realities and would be arbitrary numbers attached to invented places — but no
+club name, nickname or mark belongs to any real team.
+
+NO LOGOS ARE DISTRIBUTED. assets/logos/ ships empty by design. The UI renders
+a colored badge built from each team's own palette, and will use a logo file
+only if someone adds one themselves. See assets/logos/README.md.
+
+ROSTER DATA IS REAL. players-2026.js contains real player names together with
+attribute ratings. Those names belong to the players themselves; the ratings
+are this project's own assessments, not any league's or publisher's. They are
+used descriptively, no ownership of any person's name or likeness is claimed,
+and no endorsement or affiliation with any player, club or league is implied
+or should be inferred.
+
+Anyone redistributing this, or building anything commercial on it, should
+satisfy themselves about that last paragraph independently. A licence covers
+copyright in the code; it does not grant rights in anybody's name.

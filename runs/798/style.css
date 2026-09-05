@@ -1,0 +1,1623 @@
+:root {
+  --bg: #0B0E14;
+  --surface-1: #131822;
+  --surface-2: #1A2029;
+  --surface-3: #232B37;
+  --line: #2A3340;
+  --line-strong: #3A4553;
+  --text: #E6EAF0;
+  --text-dim: #93A1B5;
+  --text-mute: #64748B;
+  --win: #3FB950;
+  --loss: #F85149;
+  --warn: #D29922;
+  --info: #58A6FF;
+  --gold: #D4A94E;
+  --accent: #58A6FF;
+  --accent-soft: rgba(88, 166, 255, .14);
+  /* The RAW team hexes, set by applyTeamAccent (ui/topbar.js). Distinct from
+     --accent, which is luminance-guarded so interactive elements never go
+     invisible on a black-primary team (BKN): the ribbon may use the raw
+     primary because its text sits on a dark scrim, not on the color. */
+  --team-primary: #007A33;
+  --team-secondary: #BA9653;
+  --r-sm: 4px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --shadow: 0 2px 8px rgba(0, 0, 0, .4);
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-cond: "Arial Narrow", "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  /* 13px, ZenGM's base (0.8125rem): the broadcast re-skin adopts its
+     information density — the whole app tightens around this one number. */
+  font-size: 13px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Condensed display type — headings and the ribbon name, never body text. */
+.cond {
+  font-family: var(--font-cond);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  font-weight: 800;
+}
+
+h1, h2, h3, h4 { margin: 0 0 12px; font-weight: 650; letter-spacing: -.01em; }
+h1 { font-size: 1.5rem; }
+h2 { font-size: 1.25rem; }
+h3 { font-size: 1rem; }
+h4 { font-size: .875rem; color: var(--text-dim); }
+p { margin: 0 0 10px; }
+a { color: var(--accent); }
+
+/* Numeric alignment — the single highest-leverage rule for a stats game. */
+.num, td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+button {
+  font: inherit;
+  padding: 7px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-sm);
+  background: var(--surface-3);
+  color: var(--text);
+  cursor: pointer;
+  transition: background .12s ease, border-color .12s ease;
+}
+button:hover:not(:disabled) { background: var(--line-strong); border-color: var(--text-mute); }
+button:disabled { opacity: .4; cursor: not-allowed; }
+button.btn-primary { background: var(--accent); border-color: var(--accent); color: #06101D; font-weight: 650; }
+button.btn-primary:hover:not(:disabled) { filter: brightness(1.12); background: var(--accent); }
+button.btn-ghost { background: transparent; border-color: var(--line); color: var(--text-dim); }
+button.btn-ghost:hover:not(:disabled) { background: var(--surface-3); color: var(--text); }
+button.btn-danger { background: transparent; border-color: rgba(248, 81, 73, .4); color: var(--loss); }
+button.btn-danger:hover:not(:disabled) { background: rgba(248, 81, 73, .12); border-color: var(--loss); }
+
+input, select, textarea {
+  font: inherit;
+  padding: 6px 9px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-sm);
+  background: var(--surface-1);
+  color: var(--text);
+}
+input[type="number"] { font-variant-numeric: tabular-nums; }
+input[type="checkbox"], input[type="radio"] { accent-color: var(--accent); width: 15px; height: 15px; cursor: pointer; }
+input[type="color"] { padding: 2px; height: 32px; width: 52px; cursor: pointer; }
+select { cursor: pointer; }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* Carried over from the previous stylesheet — consumed by ui/teamLogo.js. */
+.team-logo {
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 2px solid; border-radius: 50%; overflow: hidden;
+  vertical-align: middle; flex-shrink: 0;
+}
+.team-logo img { width: 100%; height: 100%; object-fit: contain; }
+
+.player-face {
+  background: var(--surface-1);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+.player-face svg { width: 100%; height: 100%; display: block; }
+
+/* The sprite is a real canvas, painted directly — no image file in between.
+   Its width/height attributes already carry the pixel size, so the box needs
+   no inline style; `pixelated` is what stops the browser smoothing a 10px-wide
+   figure into mush on a high-DPI screen. */
+.player-sprite {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+  image-rendering: pixelated;
+}
+
+.placeholder-view { padding: 64px 24px; text-align: center; color: var(--text-mute); font-style: italic; }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-mute); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+
+/* ---------- App shell ---------- */
+/* 56px: the icon rail. The old 232px text sidebar's width goes to tables. */
+.app-shell { display: grid; grid-template-columns: 56px 1fr; height: 100vh; }
+.app-sidebar {
+  background: var(--surface-2);
+  border-right: 1px solid var(--line);
+  display: flex; flex-direction: column;
+  /* visible, not auto: the rail never scrolls (8 icons fit any viewport this
+     game supports) and the hover flyout labels must escape the 56px column —
+     overflow-y:auto forces overflow-x to auto too and would clip them. */
+  overflow: visible;
+}
+.app-main {
+  /* Four children: topbar, view tabs, content, sim dock. The tab row is auto
+     and collapses to nothing when #view-tabs is empty. */
+  display: grid; grid-template-rows: auto auto 1fr auto;
+  min-width: 0; min-height: 0;
+}
+#view-content { overflow-y: auto; padding: 14px 18px; min-height: 0; }
+
+/* Broadcast headings: every view title reads like a telecast graphic. The
+   selector restyles all views at once so no ui/*.js file changes for it. */
+#view-content h2 {
+  font-family: var(--font-cond);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  font-weight: 800;
+}
+
+/* The active hub's sub-views. :empty collapses the row entirely, so a
+   single-view hub like Dashboard shows no vestigial one-tab bar and loses no
+   vertical space to it. */
+#view-tabs {
+  display: flex; gap: 2px;
+  padding: 0 26px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--line);
+  overflow-x: auto;
+}
+#view-tabs:empty { display: none; }
+.view-tab {
+  padding: 10px 14px;
+  background: none; border: none; border-radius: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--text-dim); font-size: .85rem; white-space: nowrap;
+}
+.view-tab:hover:not(:disabled) {
+  color: var(--text); background: var(--surface-3);
+  border-color: transparent; border-bottom-color: var(--line-strong);
+}
+.view-tab.active {
+  color: var(--text); border-bottom-color: var(--accent); font-weight: 650;
+}
+
+.sidebar-brand {
+  padding: 12px 0 10px;
+  font-size: .68rem; font-weight: 800; letter-spacing: .06em;
+  text-align: center;
+  color: var(--text);
+  border-bottom: 1px solid var(--line);
+}
+.sidebar-brand span { color: var(--accent); }
+/* The mark is pixel art, so it must never be smoothed — image-rendering keeps
+   the blocks square at whatever size the rail is. The word-mark underneath is
+   the fallback the img's onerror reveals, so a checkout with no brand file
+   still reads "lets hoop!" rather than showing a broken image. */
+.brand-mark {
+  display: block; width: 100%; max-width: 92px; height: auto; margin: 0 auto;
+  image-rendering: pixelated;
+}
+
+/* Eight rail icons, vertical stack. */
+/* flex:1 so the column fills the sidebar's full height — without it the rail is
+   only as tall as its icons and .rail-spacer has nothing to expand into, which
+   left the Main menu button floating directly under the last hub instead of
+   pinned to the bottom. */
+#nav-bar { padding: 8px 0 16px; display: flex; flex-direction: column; gap: 2px; flex: 1; min-height: 0; }
+
+/* ---------- Topbar ---------- */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 20px; padding: 12px 26px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--line);
+  /* Let .topbar-status fall to its own row instead of competing with the
+     identity for one. Without this the identity got crushed to 46px and
+     .identity-meta broke at every space: "Eastern · Atlantic" rendered as
+     three lines with the separator stranded alone on the middle one. The
+     status chips already wrapped to three rows at that width, so squeezing
+     the identity was buying nothing. Measured: this one declaration holds
+     the meta on a single line from 380px to 1200px. */
+  flex-wrap: wrap;
+}
+.identity-text { min-width: 0; }
+.identity-name { font-size: 1.05rem; font-weight: 700; white-space: nowrap; }
+/* Defensive, matching .identity-name above: a conference/division label should
+   never break mid-phrase. Not load-bearing today — flex-wrap on .topbar keeps
+   this box at its natural width, and removing this changes nothing at any
+   width from 380px up. It guards the phrase if that layout changes again. */
+.identity-meta { font-size: .72rem; text-transform: uppercase; letter-spacing: .07em; color: var(--text-mute); white-space: nowrap; }
+
+.topbar-status { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+.status-chip { display: flex; flex-direction: column; gap: 1px; min-width: 54px; }
+.chip-label { font-size: .62rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-mute); }
+.chip-value { font-size: .9rem; font-weight: 650; font-variant-numeric: tabular-nums; }
+.chip-value em { font-style: normal; font-weight: 400; color: var(--text-mute); }
+.chip-value.is-over { color: var(--warn); }
+.chip-cap { min-width: 148px; }
+
+.meter { height: 4px; border-radius: 2px; background: var(--surface-3); overflow: hidden; margin-top: 3px; }
+.meter-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width .2s ease; }
+.meter-fill.is-over { background: var(--warn); }
+
+.mode-pill {
+  padding: 3px 10px; border-radius: 999px;
+  font-size: .68rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  border: 1px solid var(--line-strong); color: var(--text-dim);
+}
+.mode-pill.mode-commissioner { color: var(--gold); border-color: rgba(212, 169, 78, .45); }
+.mode-pill.mode-spectator { color: var(--info); border-color: rgba(88, 166, 255, .45); }
+
+/* ---------- Sim dock ---------- */
+#sim-controls {
+  display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+  padding: 9px 18px;
+  background: linear-gradient(0deg, var(--bg), var(--surface-2));
+  border-top: 1px solid var(--line);
+}
+.dock-group { display: flex; align-items: center; gap: 7px; }
+.dock-group.dock-end { margin-left: auto; }
+.dock-label {
+  font-size: .62rem; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--text-mute);
+  margin-right: 2px;
+}
+#sim-controls input[type="number"] { width: 58px; padding: 6px 7px; }
+#sim-controls .dock-primary button { padding: 8px 16px; }
+
+/* Continue is the dock's one primary action; everything else is secondary.
+   The min-width holds the button steady as the label changes between
+   "Continue", "Continue → Playoffs" and "Stop", so the controls beside it do
+   not shuffle sideways every time the league moves on. */
+#sim-continue {
+  padding: 8px 20px; min-width: 190px;
+  font-weight: 800; text-transform: uppercase; letter-spacing: .06em;
+  font-size: .8rem;
+}
+#sim-skip-qty[hidden] { display: none; }
+
+/* The offseason advance button — appended by renderView as the only
+   direct-child button of #sim-controls (all dock controls are nested). */
+#sim-controls > button {
+  margin-left: auto;
+  background: var(--win); border-color: var(--win); color: #06140A;
+  font-weight: 700;
+}
+#sim-controls > button:hover:not(:disabled) { filter: brightness(1.12); background: var(--win); }
+
+#sim-status { font-size: .8rem; color: var(--accent); font-weight: 600; min-width: 0; }
+#sim-status:not(:empty)::before {
+  content: ''; display: inline-block;
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent); margin-right: 6px;
+  animation: pulse 1s ease-in-out infinite;
+}
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
+
+/* ---------- Panels ---------- */
+.view-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 18px; }
+.view-header h2 { margin: 0; }
+.view-header .view-sub { font-size: .8rem; color: var(--text-mute); }
+
+.panel {
+  background: var(--surface-1);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  margin-bottom: 18px;
+  overflow: hidden;
+}
+.panel-header {
+  padding: 10px 14px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--line);
+  font-size: .7rem; font-weight: 700;
+  letter-spacing: .09em; text-transform: uppercase;
+  color: var(--text-dim);
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+}
+.panel-body { padding: 10px 12px; }
+.panel-body > :last-child { margin-bottom: 0; }
+
+/* ---------- Data tables ---------- */
+table { border-collapse: collapse; width: 100%; }
+.data-table { background: var(--surface-1); font-size: .84rem; }
+.data-table th {
+  position: sticky; top: 0; z-index: 1;
+  background: var(--surface-2);
+  padding: 6px 8px; text-align: left;
+  font-size: .69rem; font-weight: 700;
+  letter-spacing: .09em; text-transform: uppercase;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--accent);
+  white-space: nowrap;
+}
+.data-table th[data-key] { cursor: pointer; user-select: none; }
+.data-table th[data-key]:hover { color: var(--text); background: var(--surface-3); }
+/* Numeric headers must right-align over their right-aligned values. The
+   th.num rule near the top of this file already says so, but `.data-table th`
+   above sets text-align: left at IDENTICAL (0,1,1) specificity and comes
+   later, so it won — every numeric column in the app had its label at the far
+   left and its digits at the far right. In the Roster's Career Totals table,
+   where columns are 150-250px wide, that put "Seasons" ~230px from its own
+   numbers. This selector is (0,2,1) and settles it. */
+.data-table th.num { text-align: right; }
+.data-table td {
+  /* ZenGM row height: ~24px per row against the old ~34px. */
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--line);
+  font-variant-numeric: tabular-nums;
+}
+.data-table tbody tr:last-child td { border-bottom: none; }
+.data-table tbody tr:hover td { background: var(--surface-2); }
+.data-table .col-name { font-weight: 600; font-variant-numeric: normal; }
+.data-table td.actions { white-space: nowrap; text-align: right; }
+.data-table td.actions button { padding: 4px 10px; font-size: .78rem; }
+.data-table tr.is-clickable { cursor: pointer; }
+
+/* ---------- Rating chips ---------- */
+/* The 2K-card look: heavier weight, and the superstar tier is a FILLED
+   accent chip — the one place the accent gets to be a surface. Tier classes
+   come from ratingTier (ui/roster.js), which reads RATING_BANDS. */
+.rating-chip {
+  display: inline-block; min-width: 28px; padding: 1px 5px;
+  border-radius: 4px;
+  font-weight: 900; font-size: .8rem; text-align: center;
+  font-variant-numeric: tabular-nums;
+  background: var(--surface-3); color: var(--text-dim);
+}
+.rating-chip.tier-superstar { background: var(--accent); color: #06101D; }
+.rating-chip.tier-elite { background: var(--accent-soft); color: var(--accent); }
+.rating-chip.tier-high { background: rgba(88, 166, 255, .14); color: var(--info); }
+.rating-chip.tier-mid { background: var(--surface-3); color: var(--text); }
+.rating-chip.tier-low { background: var(--surface-3); color: var(--text-mute); }
+/* A scout's estimate rather than a known rating. Wider (it holds a range),
+   dashed so the uncertainty is visible at a glance in a column of solid
+   chips, and never coloured by tier — a confident colour on a guess would
+   undo the point of showing a range at all. */
+.rating-chip.is-estimate {
+  min-width: 52px;
+  background: transparent;
+  border: 1px dashed var(--line);
+  color: var(--text-dim);
+  font-weight: 700;
+}
+
+/* ---------- Pills ---------- */
+.pill {
+  display: inline-block; padding: 2px 8px;
+  border-radius: 999px;
+  font-size: .68rem; font-weight: 700;
+  letter-spacing: .05em; text-transform: uppercase;
+  background: var(--surface-3); color: var(--text-dim);
+}
+.pill-pos { background: var(--surface-3); color: var(--text); min-width: 32px; text-align: center; }
+.pill-win { background: rgba(63, 185, 80, .16); color: var(--win); }
+.pill-loss { background: rgba(248, 81, 73, .16); color: var(--loss); }
+.pill-gold { background: rgba(212, 169, 78, .16); color: var(--gold); }
+.pill-mute { background: transparent; color: var(--text-mute); border: 1px solid var(--line); }
+/* Marks a playoff row in the schedule, which otherwise looks like any other
+   game against the same opponent. Warm rather than the mute grey so the
+   postseason reads as a different stretch of the list at a glance. */
+.pill-playoff { background: rgba(232, 130, 60, 0.14); color: #e8823c; border: 1px solid rgba(232, 130, 60, 0.4); }
+
+/* Impact-moment skill check under a commentary line. Dimmer and smaller than
+   the caption it hangs off — it is supporting evidence, not the headline. */
+.pixel-commentary-check {
+  font-size: 10px; color: var(--text-mute); opacity: 0.9;
+  margin-top: 2px; font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Play-by-play skill-check breakdown ---------- */
+.pbp-line-expandable > summary { cursor: pointer; list-style: none; }
+.pbp-line-expandable > summary::-webkit-details-marker { display: none; }
+.pbp-line-expandable > summary:hover { color: var(--text); }
+.pbp-check {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin: 4px 0 8px 12px; padding: 6px 8px;
+  border-left: 2px solid var(--line); font-size: 11px; color: var(--text-mute);
+}
+/* REQUIRED, not belt-and-braces. A closed <details> hides its non-summary
+   children through a UA rule on `display`, so any author rule setting display
+   on a child — `display: flex` directly above — overrides it and the breakdown
+   stays on screen while collapsed. Caught only because the smoke check measured
+   the node inside the viewport; parked below the fold it "passed" as hidden for
+   the wrong reason entirely. */
+.pbp-line-expandable:not([open]) > .pbp-check { display: none; }
+.pbp-check-side { font-weight: 600; }
+.pbp-check-mod { opacity: 0.85; }
+.pbp-check-roll { margin-left: auto; font-variant-numeric: tabular-nums; }
+
+/* ---------- Trait badges ---------- */
+.trait-badge-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.trait-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 11px; border-radius: 999px;
+  font-size: .78rem; font-weight: 650;
+  border: 1px solid transparent;
+}
+.trait-badge .trait-badge-tier {
+  font-size: .62rem; font-weight: 800; text-transform: uppercase; letter-spacing: .04em;
+  opacity: .85;
+}
+.trait-badge.tier-bronze { background: rgba(184, 115, 51, .16); color: #CD8A5C; border-color: rgba(184, 115, 51, .35); }
+.trait-badge.tier-silver { background: rgba(192, 197, 206, .14); color: #C7CDD6; border-color: rgba(192, 197, 206, .32); }
+.trait-badge.tier-gold { background: rgba(212, 169, 78, .16); color: var(--gold); border-color: rgba(212, 169, 78, .4); }
+.trait-badge.tier-hof { background: rgba(160, 108, 213, .16); color: #B98AE0; border-color: rgba(160, 108, 213, .4); }
+.trait-badge.tier-legendary {
+  background: linear-gradient(135deg, rgba(255, 94, 168, .18), rgba(88, 166, 255, .18));
+  color: #FF8FC7; border-color: rgba(255, 94, 168, .45);
+}
+.trait-badge.tier-negative { background: rgba(248, 81, 73, .12); color: var(--loss); border-color: rgba(248, 81, 73, .3); }
+.trait-badge.tier-fuzzy { background: var(--surface-3); color: var(--text-dim); border-color: var(--line); border-style: dashed; }
+.trait-badge-category-label {
+  font-size: .7rem; text-transform: uppercase; letter-spacing: .06em; color: var(--text-mute);
+  margin: 14px 0 8px; font-weight: 700;
+}
+.trait-badge-category-label:first-child { margin-top: 0; }
+.trait-lock-note { color: var(--text-mute); font-style: italic; font-size: .85rem; }
+
+/* ---------- KPI tiles ---------- */
+.kpi-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(158px, 1fr));
+  gap: 12px; margin-bottom: 18px;
+}
+.kpi-tile {
+  background: var(--surface-1);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--r-md);
+  padding: 12px 14px;
+}
+.kpi-label {
+  font-size: .64rem; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--text-mute); margin-bottom: 4px;
+}
+.kpi-value { font-size: 1.5rem; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.15; }
+.kpi-sub { font-size: .74rem; color: var(--text-dim); margin-top: 2px; }
+.kpi-value.is-good { color: var(--win); }
+.kpi-value.is-bad { color: var(--loss); }
+.kpi-value.is-warn { color: var(--warn); }
+/* An award nobody won. Smaller and dimmer than a name, so the tile reads as
+   answered rather than empty. */
+.kpi-muted { font-size: 1rem; font-weight: 600; color: var(--text-mute); }
+
+/* ---------- Shot chart ---------- */
+/* Chart and table side by side on a wide panel, stacked when there is no room
+   for both. The table is the one that must stay readable, so it keeps the
+   flexible width and the court holds its aspect. */
+.shot-chart-body { display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start; }
+.shot-chart-svg { width: 240px; max-width: 100%; height: auto; flex: 0 0 auto; }
+.shot-chart-table { flex: 1 1 220px; min-width: 200px; }
+.shot-chart-pct {
+  fill: var(--text); font-size: 19px; font-weight: 700;
+  font-family: var(--font); font-variant-numeric: tabular-nums;
+}
+.shot-chart-sub { fill: var(--text-dim); font-size: 10px; font-family: var(--font); }
+/* Offer-sheet inputs. Sized so a nine-figure salary and a one-digit term sit
+   on one line inside a table cell rather than wrapping the row. */
+.sheet-salary { width: 116px; }
+/* Buyout forgiveness, entered as a whole percentage next to its own % sign. */
+.buyout-pct { width: 64px; }
+.sheet-years { width: 52px; }
+
+.stat-up { color: var(--win); }
+.stat-down { color: var(--loss); }
+.text-dim { color: var(--text-dim); }
+
+/* ---------- Empty state ---------- */
+.empty-state {
+  padding: 40px 24px; text-align: center;
+  color: var(--text-mute); font-size: .875rem;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--r-md);
+  background: var(--surface-1);
+}
+
+/* ---------- Misc lists ---------- */
+.stack-list { list-style: none; margin: 0; padding: 0; }
+.stack-list li {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line);
+  font-size: .85rem;
+}
+.stack-list li:last-child { border-bottom: none; }
+
+/* ---------- Standings ---------- */
+.conf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+.conf-col h3 { font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px; }
+.row-user td { background: var(--accent-soft) !important; font-weight: 650; }
+
+/* ---------- Feed & save slots ---------- */
+.feed-item { display: flex; gap: 12px; padding: 9px 14px; border-bottom: 1px solid var(--line); font-size: .85rem; }
+.feed-item:last-child { border-bottom: none; }
+.feed-day {
+  flex-shrink: 0; min-width: 92px;
+  font-size: .66rem; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--text-mute);
+  font-variant-numeric: tabular-nums; padding-top: 2px;
+}
+.save-slot {
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 14px; border-bottom: 1px solid var(--line);
+}
+.save-slot:last-child { border-bottom: none; }
+.save-slot-info { flex: 1; min-width: 0; }
+.save-slot-name { font-weight: 650; font-size: .88rem; }
+.save-slot-meta { font-size: .74rem; color: var(--text-mute); }
+.save-slot.is-empty .save-slot-name { color: var(--text-mute); font-weight: 400; font-style: italic; }
+
+/* ---------- Toolbar & bidding ---------- */
+.toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+
+/* ---------- Tabs ---------- */
+.tab-bar { display: flex; gap: 4px; margin-bottom: 14px; flex-wrap: wrap; }
+.tab-btn { background: transparent; border: 1px solid var(--line); color: var(--text-dim); padding: 6px 14px; border-radius: var(--r-md); cursor: pointer; font-size: .82rem; }
+.tab-btn:hover { background: var(--surface-3); color: var(--text); }
+.tab-btn.active { background: var(--accent-soft); border-color: var(--accent); color: var(--text); font-weight: 650; }
+.player-link { color: var(--text); font-weight: 600; cursor: pointer; background: none; border: none; padding: 0; font: inherit; text-align: left; }
+.player-link:hover { color: var(--accent); text-decoration: underline; }
+.timeline-list { list-style: none; padding: 0; margin: 0; }
+.timeline-list li { padding: 8px 14px; border-bottom: 1px solid var(--line); font-size: .84rem; }
+.timeline-list li:last-child { border-bottom: none; }
+.compare-picker { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
+.data-table tr.row-highlight td { background: var(--accent-soft); }
+.bid-panel {
+  background: var(--surface-2);
+  border: 1px solid var(--accent);
+  border-radius: var(--r-md);
+  padding: 16px; margin: 14px 0;
+  box-shadow: var(--shadow);
+  max-width: 420px;
+}
+.bid-panel label { display: block; margin-bottom: 9px; font-size: .82rem; color: var(--text-dim); }
+.bid-panel label input { margin-left: 6px; }
+.field-row { display: flex; align-items: center; gap: 8px; margin-bottom: 9px; font-size: .82rem; }
+
+/* ---------- Settings, trade, forms ---------- */
+.toggle-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 9px 14px; border-bottom: 1px solid var(--line);
+  font-size: .85rem; cursor: pointer;
+}
+.toggle-row:last-child { border-bottom: none; }
+.toggle-row:hover { background: var(--surface-2); }
+.toggle-row input { margin-top: 2px; flex-shrink: 0; }
+.toggle-row.is-disabled { opacity: .45; cursor: not-allowed; }
+
+.trade-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px; align-items: start; }
+.balance { display: flex; gap: 18px; padding: 10px 14px; background: var(--surface-2); border-bottom: 1px solid var(--line); }
+.balance-item { flex: 1; }
+.balance-label { font-size: .62rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-mute); }
+.balance-value { font-size: .95rem; font-weight: 650; font-variant-numeric: tabular-nums; }
+.form-grid { display: grid; grid-template-columns: 128px 1fr; gap: 9px 12px; align-items: center; max-width: 440px; }
+.form-grid label { font-size: .82rem; color: var(--text-dim); }
+
+/* ---------- Franchise select screen ---------- */
+/* Replaces the old .select-screen / .team-card grid. Colour discipline is the
+   whole point of the redesign: exactly one team colour is live at a time (the
+   --tc set on the panel by ui/teamSelect.js), instead of thirty gradients
+   competing across a grid. */
+/* height, NOT min-height. With min-height the grid row is free to grow to fit
+   all thirty rows, so .fs-scroll never has a bounded height to scroll inside:
+   the rail ran to ~1400px and the panel, being centred in that same row, sat
+   half a screen below the fold. A fixed viewport height is what makes the list
+   scroll and the panel centre against the window. */
+.fs-wrap { display: grid; grid-template-columns: 344px 1fr; height: 100vh; overflow: hidden; }
+
+/* min-height: 0 is load-bearing on both grid children. Grid and flex items
+   default to min-height: auto, which means "never shrink below your content".
+   The rail's thirty rows are ~1528px tall, so without this it ignored the
+   910px row entirely, grew to 1828px, and took the panel with it -- the list
+   never scrolled and the centred panel started below the fold. */
+.fs-rail { display: flex; flex-direction: column; min-width: 0; min-height: 0;
+  background: var(--surface-1); border-right: 1px solid var(--line); }
+.fs-railhead { padding: 19px 18px 15px; border-bottom: 1px solid var(--line); }
+.fs-kicker { font-family: var(--font-cond); text-transform: uppercase;
+  letter-spacing: .22em; font-size: 10px; color: var(--gold); margin-bottom: 6px; }
+.fs-title { font-family: var(--font-cond); font-size: 23px; font-weight: 800;
+  text-transform: uppercase; line-height: 1; margin-bottom: 15px; }
+.fs-field { display: flex; align-items: center; gap: 9px; margin-bottom: 10px; }
+.fs-field span { font-family: var(--font-cond); text-transform: uppercase;
+  letter-spacing: .14em; font-size: 10px; color: var(--text-mute); width: 26px; }
+.fs-field input { flex: 1; min-width: 0; background: var(--surface-3);
+  border: 1px solid var(--line-strong); border-radius: var(--r-sm);
+  padding: 6px 9px; font-size: .82rem; color: var(--text); font-family: var(--font); }
+.fs-field input:focus { outline: none; border-color: var(--accent); }
+
+.fs-seg { display: flex; border: 1px solid var(--line-strong);
+  border-radius: var(--r-sm); overflow: hidden; }
+.fs-seg button { flex: 1; padding: 6px 8px; font-size: .74rem; cursor: pointer;
+  background: var(--surface-2); color: var(--text-dim); border: none; }
+.fs-seg button.is-on { background: var(--text); color: var(--bg); font-weight: 650; }
+
+.fs-sortbar { display: flex; align-items: center; gap: 6px; padding: 10px 18px;
+  border-bottom: 1px solid var(--line); }
+.fs-sortbar span { font-family: var(--font-cond); text-transform: uppercase;
+  letter-spacing: .15em; font-size: 9.5px; color: var(--text-mute); margin-right: 2px; }
+.fs-sortbar button { padding: 4px 10px; font-size: .72rem; cursor: pointer;
+  background: none; color: var(--text-mute); border: 1px solid transparent;
+  border-radius: 999px; }
+.fs-sortbar button:hover { color: var(--text-dim); }
+.fs-sortbar button.is-on { color: var(--text); border-color: var(--line-strong);
+  background: var(--surface-3); }
+
+.fs-scroll { flex: 1; min-height: 0; overflow-y: auto; padding: 5px 0; }
+.fs-scroll::-webkit-scrollbar { width: 8px; }
+.fs-scroll::-webkit-scrollbar-track { background: transparent; }
+.fs-scroll::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 4px; }
+.fs-confhead { display: flex; align-items: center; gap: 10px; padding: 13px 18px 7px; }
+.fs-confhead span { font-family: var(--font-cond); text-transform: uppercase;
+  letter-spacing: .19em; font-size: 10px; color: var(--text-mute); }
+.fs-confhead i { flex: 1; height: 1px; background: var(--line); }
+
+.fs-row { position: relative; display: grid; width: 100%; text-align: left;
+  grid-template-columns: 27px 1fr auto; grid-template-rows: auto auto;
+  gap: 1px 11px; align-items: center; padding: 8px 18px; cursor: pointer;
+  background: none; border: none; color: var(--text); transition: background .12s ease; }
+.fs-tick { position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+  background: var(--tc); opacity: 0; transition: opacity .12s ease; }
+.fs-row .team-logo { grid-row: 1 / 3; }
+.fs-rowname { font-size: .8rem; font-weight: 650; line-height: 1.25; }
+.fs-rowdiv { grid-column: 2; font-size: .66rem; color: var(--text-mute); }
+.fs-rowrank { grid-column: 3; grid-row: 1 / 3; font-family: var(--font-cond);
+  font-size: .82rem; font-weight: 700; color: var(--text-mute);
+  min-width: 20px; text-align: right; }
+.fs-row:hover { background: var(--surface-2); }
+.fs-row.is-on { background: var(--surface-3); }
+.fs-row.is-on .fs-tick { opacity: 1; }
+.fs-row.is-on .fs-rowrank { color: var(--text-dim); }
+
+.fs-railfoot { display: flex; gap: 8px; flex-wrap: wrap;
+  padding: 12px 18px; border-top: 1px solid var(--line); }
+.fs-ghost { flex: 1; min-width: 90px; padding: 9px; cursor: pointer;
+  border: 1px solid var(--line-strong); border-radius: var(--r-sm);
+  background: none; color: var(--text-dim); font-size: .74rem; text-align: center; }
+.fs-ghost:hover { color: var(--text); border-color: var(--text-mute); background: var(--surface-2); }
+
+.fs-panel { position: relative; overflow: hidden; min-height: 0; display: flex;
+  flex-direction: column; justify-content: center; padding: 48px 54px; }
+.fs-wash { position: absolute; inset: 0; pointer-events: none; opacity: .16;
+  background: radial-gradient(115% 85% at 90% 15%, var(--tc) 0%, transparent 60%); }
+/* Bleeds off the right edge on purpose; .fs-panel clips it. */
+.fs-ghostlogo { position: absolute; right: -104px; top: 50%; transform: translateY(-50%);
+  opacity: .055; pointer-events: none; filter: grayscale(1) brightness(2.4); }
+.fs-ghostlogo .team-logo { border: none; background: none !important; }
+
+/* container-type lets .fs-team size itself against this box - see below. */
+.fs-inner { position: relative; max-width: 600px; container-type: inline-size; }
+.fs-inner.is-wide { max-width: 780px; }
+.fs-eyebrow { display: flex; align-items: center; gap: 11px; margin-bottom: 13px; }
+.fs-eyebrow i { width: 26px; height: 2px; background: var(--tc); }
+.fs-eyebrow span { font-family: var(--font-cond); text-transform: uppercase;
+  letter-spacing: .2em; font-size: 10.5px; color: var(--text-mute); }
+.fs-city { font-family: var(--font-cond); font-size: 19px; text-transform: uppercase;
+  letter-spacing: .12em; color: var(--text-dim); margin-bottom: -3px; }
+/* 64px is a ceiling, not a size: "Sidewinders" needs 569px at 64px and only
+   had 492px, so it was the one nickname in the league that got clipped. A fixed
+   size would break again on a narrower panel, or on whatever an expansion team
+   ends up being called. */
+.fs-team { font-family: var(--font-cond); font-size: min(64px, 10.5cqw);
+  font-weight: 800; text-transform: uppercase; line-height: .97;
+  letter-spacing: -.008em; margin: 0 0 24px; white-space: nowrap; }
+
+/* The star gets a full-width row of his own. As one of four equal columns his
+   name was clipped on almost every team in the league - "Shai Gilgeous-
+   Alexander" never had a chance in a 130px box, and he is the single thing you
+   most want to read. */
+.fs-star { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
+  padding: 14px 16px; margin-bottom: 1px; background: var(--surface-1);
+  border: 1px solid var(--line); border-bottom: none;
+  border-radius: var(--r-md) var(--r-md) 0 0; }
+.fs-star u { flex: none; font-family: var(--font-cond); text-transform: uppercase;
+  letter-spacing: .15em; font-size: 9px; color: var(--text-mute); text-decoration: none; }
+.fs-star b { font-family: var(--font-cond); font-size: 29px; font-weight: 800;
+  line-height: 1; letter-spacing: -.005em; }
+.fs-star em { margin-left: auto; font-style: normal; font-size: .72rem;
+  color: var(--text-mute); white-space: nowrap; }
+.fs-star em i { font-style: normal; font-weight: 700; color: var(--text-dim); }
+
+.fs-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px; background: var(--line); border: 1px solid var(--line);
+  border-radius: 0 0 var(--r-md) var(--r-md); overflow: hidden; margin-bottom: 22px; }
+.fs-stat { background: var(--surface-1); padding: 13px 15px; min-width: 0; }
+.fs-stat u { display: block; font-family: var(--font-cond); text-transform: uppercase;
+  letter-spacing: .15em; font-size: 9px; color: var(--text-mute);
+  text-decoration: none; margin-bottom: 6px; white-space: nowrap; }
+.fs-stat b { display: block; font-family: var(--font-cond); font-size: 23px;
+  font-weight: 800; line-height: 1.02; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; }
+.fs-stat b small { font-size: 12px; color: var(--text-mute); font-weight: 600; }
+.fs-stat b.is-ok { color: var(--win); }
+.fs-stat b.is-warn { color: var(--warn); }
+.fs-stat b.is-bad { color: var(--loss); }
+.fs-stat em { display: block; font-style: normal; font-size: .66rem;
+  color: var(--text-mute); margin-top: 3px; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; }
+
+.fs-verdict { color: var(--text-dim); font-size: .84rem; line-height: 1.68;
+  margin: 0 0 26px; max-width: 490px; }
+
+.fs-cta { display: inline-flex; align-items: baseline; gap: 11px; align-self: flex-start;
+  padding: 15px 30px; cursor: pointer; border: none; border-radius: var(--r-md);
+  background: var(--tc); color: var(--tc-ink, #fff); font-family: var(--font-cond);
+  font-size: 17px; font-weight: 800; text-transform: uppercase; letter-spacing: .09em;
+  transition: filter .15s ease; }
+.fs-cta:hover { filter: brightness(1.15); }
+.fs-cta em { font-style: normal; opacity: .72; font-size: 14px; letter-spacing: .05em; }
+
+.fs-loadhead { margin-bottom: 18px; }
+.fs-loadhead h2 { margin: 0 0 5px; font-family: var(--font-cond); font-size: 40px;
+  font-weight: 800; text-transform: uppercase; line-height: 1; }
+.fs-loadhead p { margin: 0; color: var(--text-mute); font-size: .82rem; }
+.fs-back { margin-top: 18px; padding: 11px 22px; cursor: pointer;
+  border: 1px solid var(--line-strong); border-radius: var(--r-md);
+  background: none; color: var(--text-dim); font-size: .78rem; }
+.fs-back:hover { color: var(--text); border-color: var(--text-mute); }
+
+@media (max-width: 900px) {
+  /* Stacked: the page itself scrolls, so the wrap must NOT be pinned to the
+     viewport height or the panel would be trapped in a clipped box. */
+  .fs-wrap { grid-template-columns: 1fr; height: auto; overflow: visible; }
+  .fs-rail { border-right: none; border-bottom: 1px solid var(--line); }
+  .fs-scroll { max-height: 340px; }
+  .fs-panel { padding: 32px 24px; }
+  .fs-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fs-ghostlogo { right: -160px; }
+}
+
+.playoff-bracket-grid { display: grid; grid-template-columns: 1fr 1.1fr 1fr; gap: 20px; align-items: start; }
+.playoff-conf-column { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.playoff-finals-column { justify-content: center; }
+.playoff-conf-label { font-size: .78rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--text-mute); text-align: center; }
+.playoff-round-title { font-size: .68rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--text-mute); margin-bottom: 6px; }
+.playoff-round { margin-bottom: 14px; display: flex; flex-direction: column; gap: 8px; }
+.playoff-series {
+  background: var(--surface-1); border: 1px solid var(--line); border-radius: var(--r-sm);
+  overflow: hidden; font-size: .82rem;
+}
+.playoff-series.is-complete { border-color: var(--line-strong); }
+.playoff-series-tbd { padding: 10px; text-align: center; color: var(--text-mute); font-style: italic; }
+.playoff-side {
+  display: flex; align-items: center; gap: 6px; padding: 6px 8px;
+  border-bottom: 1px solid var(--line);
+}
+.playoff-side:last-child { border-bottom: none; }
+.playoff-side.is-user-team { background: var(--accent-soft); }
+.playoff-side.is-winner { font-weight: 700; color: var(--win); }
+.playoff-wins { margin-left: auto; font-weight: 700; }
+
+.morale-chip { font-size: .82rem; white-space: nowrap; }
+.morale-chip.morale-happy { color: var(--win); }
+.morale-chip.morale-neutral { color: var(--text-mute); }
+.morale-chip.morale-unhappy { color: var(--loss); }
+
+.headline-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.headline-list li { font-size: .85rem; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+.headline-list li:last-child { border-bottom: none; padding-bottom: 0; }
+.headline-list .pill { margin-right: 6px; }
+
+.schedule-chevron { color: var(--text-mute); font-size: .8rem; width: 20px; }
+.schedule-row.is-playable:hover .schedule-chevron { color: var(--accent); }
+.schedule-row.is-playable:hover td { background: var(--surface-2); }
+.schedule-row.is-expanded td { background: var(--accent-soft); border-bottom-color: var(--accent); }
+.schedule-row.is-expanded .schedule-chevron { color: var(--accent); font-weight: 700; }
+
+/* Box score expands inline, directly under the game that was clicked. It used
+   to render in a lone div after the entire table, which on a full 82-game
+   schedule put it thousands of pixels below the click — the row highlighted
+   and the chevron flipped while the content itself was off-screen. */
+.schedule-detail-row > td { padding: 0 !important; background: var(--surface-2); border-bottom: 2px solid var(--accent); }
+.box-score-detail { padding: 14px 16px 18px; }
+.box-score-line { font-size: 1rem; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+/* 400px, raised from 320px when DFG% became an eighth column. At 320 the grid
+   still fitted two tables side by side in a ~560px panel and simply clipped the
+   last column — .box-score-team's overflow-x meant it was technically reachable,
+   but only by horizontally scrolling a cramped pane to find a stat you did not
+   know was there. Above this width they sit side by side; below it they stack
+   full-width, which is the honest behaviour for a table that no longer fits. */
+.box-score-teams { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 18px; }
+.box-score-team { min-width: 0; overflow-x: auto; }
+.box-score-team-name { font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; color: var(--text-mute);
+  margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+.box-score-team .data-table { font-size: .82rem; }
+.box-score-team .data-table th, .box-score-team .data-table td { padding: 4px 8px; }
+.box-score-pbp { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 12px; }
+.box-score-pbp summary { cursor: pointer; font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; color: var(--text-mute); }
+.pbp-log { max-height: 360px; overflow-y: auto; margin-top: 10px; font-size: .82rem; }
+.pbp-quarter { font-weight: 700; color: var(--accent); margin: 10px 0 4px; text-transform: uppercase; letter-spacing: .06em; font-size: .72rem; }
+.pbp-line { padding: 3px 0; color: var(--text-dim); border-bottom: 1px solid var(--line); }
+
+/* ---- Pixel game view (Watch Game) ---- */
+.pixel-game { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.pixel-scoreboard {
+  display: flex; gap: 16px; align-items: center; font-family: monospace;
+  font-size: 1.1rem; font-weight: bold; letter-spacing: 1px;
+  background: #14171c; padding: 6px 14px; border-radius: 4px;
+}
+.pixel-score-team { border-bottom: 3px solid; padding: 2px 6px; }
+.pixel-clock { opacity: 0.85; }
+.pixel-canvas-wrap { width: 100%; display: flex; justify-content: center; }
+#pixel-canvas {
+  image-rendering: pixelated;
+  width: min(100%, 960px);
+  border: 2px solid #14171c; border-radius: 2px;
+}
+.pixel-ticker { font-family: monospace; min-height: 1.2em; opacity: 0.9; }
+.pixel-controls { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+.pixel-controls .pixel-speed.active { outline: 2px solid #4a90d9; }
+
+/* Broadcast commentary feed under the pixel game canvas */
+.pixel-commentary {
+  width: min(100%, 960px); min-height: 90px; font-family: monospace;
+  font-size: .82rem; line-height: 1.35; padding: 6px 10px;
+  background: #14171c; border-radius: 4px;
+}
+.pixel-commentary-line { color: var(--text-mute); }
+.pixel-commentary-line:first-child { color: var(--text, #e8e8e8); }
+
+/* Scoreboard number pop when the score changes */
+.pixel-score-team span { display: inline-block; }
+@keyframes pixel-score-pop {
+  0% { transform: scale(1.65); color: #ffe45c; }
+  100% { transform: scale(1); }
+}
+.pixel-scoreboard .pop { animation: pixel-score-pop .35s ease-out; }
+
+/* Scoreboard now lives inside the canvas; the DOM copy stays for a11y */
+.pixel-sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* Broadcast info strip: live leaders, foul trouble, and the post-game card */
+.pixel-infostrip {
+  width: min(100%, 960px); display: flex; flex-wrap: wrap; gap: 10px;
+  align-items: center; font-size: .8rem; min-height: 1.6em;
+}
+.pixel-strip-label {
+  font-size: .68rem; text-transform: uppercase; letter-spacing: .07em;
+  color: var(--text-mute);
+}
+.pixel-leader { display: inline-flex; align-items: center; gap: 5px; }
+.pixel-leader i { width: 7px; height: 7px; border-radius: 2px; display: inline-block; }
+.pixel-leader b { font-variant-numeric: tabular-nums; }
+.pixel-foul { color: #d8a13c; }
+.pixel-foul.is-out { color: #ff6b5c; font-weight: 700; }
+.pixel-final { width: 100%; }
+.pixel-final-head { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+.pixel-linescore { max-width: 420px; margin-bottom: 8px; }
+.pixel-final-top { display: flex; flex-wrap: wrap; gap: 14px; }
+
+/* Live coaching controls (ui/pixelHud.js).
+   The sub panel and nudge card are absolutely positioned OVER the court.
+   Appended below it they rendered past #view-content's scroll fold — present
+   in the DOM, correct, and invisible to the user. */
+.pixel-stage-wrap { position: relative; width: 100%; display: flex; justify-content: center; }
+
+.pixel-subpanel {
+  position: absolute; z-index: 6;
+  left: 50%; transform: translateX(-50%);
+  top: 8px; width: min(94%, 620px);
+  max-height: calc(100% - 16px); overflow-y: auto;
+  display: flex; gap: 12px;
+  padding: 10px; border-radius: 5px;
+  background: rgba(10, 12, 16, 0.95); border: 1px solid #4a5262;
+}
+.pixel-subpanel[hidden] { display: none; }
+.pixel-sub-x {
+  position: absolute; top: 4px; right: 6px; z-index: 1;
+  padding: 0 6px; line-height: 1.3; font-size: 1rem;
+  background: rgba(10,12,16,0.9); border-color: #4a5262; color: var(--text-mute);
+}
+.pixel-sub-x:hover:not(:disabled) { color: var(--text, #e8e8e8); }
+.pixel-sub-col { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.pixel-sub-head { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-mute); margin-bottom: 2px; }
+.pixel-sub-out, .pixel-sub-in {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 8px;
+  width: 100%; text-align: left; padding: 4px 7px; font-size: 0.82rem;
+}
+.pixel-sub-out.is-selected { outline: 2px solid #4a90d9; }
+.pixel-sub-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pixel-sub-stat { color: var(--text-mute); font-variant-numeric: tabular-nums; font-size: 0.74rem; white-space: nowrap; }
+.pixel-controls #pixel-subs.active { outline: 2px solid #4a90d9; }
+
+/* Nudges sit low over the court so they never cover the scoreboard, and take
+   no layout space at all when absent — a nudge appearing must not shift
+   anything under the user's cursor. */
+.pixel-nudge-slot {
+  position: absolute; z-index: 5;
+  left: 50%; transform: translateX(-50%);
+  bottom: 10px;
+  display: flex; justify-content: center;
+  pointer-events: none;
+}
+.pixel-nudge {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 5px 10px; border-radius: 4px;
+  background: rgba(10, 12, 16, 0.92); border: 1px solid #4a5262;
+  font-size: 0.85rem;
+  pointer-events: auto;
+}
+.pixel-nudge-x {
+  padding: 1px 6px; line-height: 1.1; font-size: 0.95rem;
+  background: transparent; border-color: transparent; color: var(--text-mute);
+}
+.pixel-nudge-x:hover:not(:disabled) { color: var(--text, #e8e8e8); border-color: #4a5262; }
+.pixel-nudge-text { color: var(--text, #e8e8e8); }
+
+/* Leave-a-live-game confirmation (ui/pixelHud.js). Overlays the court like
+   the sub panel, so it is visible wherever the page is scrolled. */
+.pixel-confirm {
+  position: absolute; inset: 0; z-index: 8;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(6, 8, 12, 0.72);
+}
+.pixel-confirm[hidden] { display: none; }
+.pixel-confirm-box {
+  width: min(90%, 380px);
+  padding: 14px 16px; border-radius: 5px;
+  background: var(--surface-2, #14181f); border: 1px solid #4a5262;
+  text-align: center;
+}
+.pixel-confirm-title { font-weight: 700; margin-bottom: 6px; }
+.pixel-confirm-text { font-size: 0.85rem; color: var(--text-mute); margin-bottom: 12px; }
+.pixel-confirm-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+#pixel-leave-go { background: var(--loss, #c0392b); border-color: var(--loss, #c0392b); color: #fff; font-weight: 600; }
+
+/* Trade-offer deadline (ui/tradeCenter.js). Offers lapse on their own, so the
+   countdown has to be visible while the player can still act on it. */
+.offer-expiry { font-size: 0.78rem; color: var(--text-mute); }
+.offer-expiry.is-urgent { color: #d8a13c; font-weight: 600; }
+
+/* ---------- Badge reference (ui/badges.js) ---------- */
+.badge-ref-cat-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap;
+}
+.badge-ref-cat-title { margin: 0; font-size: 1rem; }
+.badge-ref-cat-count {
+  font-size: .72rem; color: var(--text-mute);
+  text-transform: uppercase; letter-spacing: .05em; font-weight: 700;
+}
+.badge-ref-cat-blurb { color: var(--text-dim); font-size: .84rem; margin: 6px 0 14px; }
+
+.badge-ref-grid {
+  display: grid; gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+.badge-ref-card {
+  background: var(--surface-2); border: 1px solid var(--line);
+  border-left: 3px solid var(--line-strong);
+  border-radius: 8px; padding: 12px 14px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.badge-ref-superstar { border-left-color: #FF8FC7; }
+.badge-ref-offensive { border-left-color: var(--gold); }
+.badge-ref-defensive { border-left-color: var(--info); }
+.badge-ref-athletic  { border-left-color: var(--win); }
+.badge-ref-mental    { border-left-color: #B98AE0; }
+.badge-ref-negative  { border-left-color: var(--loss); }
+
+.badge-ref-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.badge-ref-name { font-weight: 700; font-size: .92rem; color: var(--text); }
+.badge-ref-effect { font-size: .72rem; color: var(--text-mute); white-space: nowrap; }
+.badge-ref-effect strong { color: var(--text-dim); }
+.badge-ref-desc { margin: 0; font-size: .82rem; color: var(--text-dim); line-height: 1.45; }
+
+/* The five tiers share the row equally and never wrap. Sizing them by content
+   meant chasing pixels — at a 332px card the chips needed 304px against 300px
+   available, and LEGENDARY alone dropped to a second row. Five tiers only read
+   as one ladder if they sit on one line, at every width, so they flex instead
+   of being measured. */
+.badge-ref-ladder { display: flex; flex-wrap: nowrap; gap: 4px; }
+.badge-ref-tier {
+  display: flex; flex-direction: column; align-items: center; gap: 1px;
+  flex: 1 1 0; min-width: 0; overflow: hidden;
+  padding: 3px 4px; border-radius: 6px;
+  border: 1px solid transparent;
+}
+.badge-ref-tier-name {
+  font-size: .55rem; text-transform: uppercase; letter-spacing: .05em;
+  font-weight: 800; opacity: .8;
+}
+.badge-ref-tier-value { font-size: .8rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.badge-ref-tier.tier-bronze { background: rgba(184, 115, 51, .16); color: #CD8A5C; border-color: rgba(184, 115, 51, .35); }
+.badge-ref-tier.tier-silver { background: rgba(192, 197, 206, .14); color: #C7CDD6; border-color: rgba(192, 197, 206, .32); }
+.badge-ref-tier.tier-gold { background: rgba(212, 169, 78, .16); color: var(--gold); border-color: rgba(212, 169, 78, .4); }
+.badge-ref-tier.tier-hof { background: rgba(160, 108, 213, .16); color: #B98AE0; border-color: rgba(160, 108, 213, .4); }
+.badge-ref-tier.tier-legendary {
+  background: linear-gradient(135deg, rgba(255, 94, 168, .18), rgba(88, 166, 255, .18));
+  color: #FF8FC7; border-color: rgba(255, 94, 168, .45);
+}
+
+.badge-ref-foot {
+  margin-top: auto; padding-top: 6px; border-top: 1px solid var(--line);
+  display: flex; flex-direction: column; gap: 2px;
+}
+.badge-ref-rarity { font-size: .72rem; color: var(--text-mute); }
+.badge-ref-rarity strong { color: var(--text-dim); }
+.badge-ref-rarity-none { color: var(--loss); font-weight: 600; }
+.badge-ref-examples { font-size: .68rem; color: var(--text-mute); opacity: .8; }
+
+/* ---------- Ultimate reference (ui/ultimates.js) ---------- */
+/* This page shipped with NO rules at all. It was written as a copy of the badge
+   reference above — same structure, same class-name scheme (badge-ref-foot ->
+   ult-ref-foot) — and the markup half was carried across while this half was
+   not. Every class below resolved to nothing, so the twelve ultimates rendered
+   as one unbroken column of default-styled text and the two spans in the footer
+   sat flush against each other: "1 holderStephen Curry (88)".
+   Nothing caught it because every check asked whether the content was correct,
+   and it always was. See ui-smoke.js's opening note — the same lesson the box
+   score taught, which is that markup existing is not the feature working. */
+.ult-ref-row {
+  background: var(--surface-2); border: 1px solid var(--line);
+  border-left: 3px solid var(--line-strong);
+  border-radius: 8px; padding: 12px 14px; margin-bottom: 10px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+/* Offence and defence read apart at a glance, the same way the badge cards
+   colour their left edge by category. */
+.ult-ref-row.ult-ref-offense { border-left-color: var(--gold); }
+.ult-ref-row.ult-ref-defense { border-left-color: var(--info); }
+
+.ult-ref-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.ult-ref-head strong { font-weight: 700; font-size: .92rem; color: var(--text); }
+.ult-ref-desc { font-size: .82rem; color: var(--text-dim); line-height: 1.45; }
+
+.ult-ref-effects { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 2px; }
+.ult-ref-effects li { font-size: .78rem; color: var(--text-mute); }
+
+/* Column, not row: the holder count and the names are two facts about the same
+   thing and were running together on one line with no separator. */
+.ult-ref-foot {
+  margin-top: auto; padding-top: 6px; border-top: 1px solid var(--line);
+  display: flex; flex-direction: column; gap: 2px;
+}
+.ult-ref-rarity { font-size: .72rem; color: var(--text-dim); font-weight: 600; }
+.ult-ref-rarity-none { color: var(--loss); }
+.ult-ref-examples { font-size: .68rem; color: var(--text-mute); opacity: .8; }
+.ult-ref-fired {
+  font-size: .68rem; color: var(--text-mute);
+  text-transform: uppercase; letter-spacing: .04em;
+}
+
+/* The other two places the feature reaches the screen, and they were unstyled
+   for the same reason and in the same commit — the profile panel
+   (ui/playerProfile.js) and the box-score summary (ui/schedule.js). */
+.ult-profile-name { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.ult-profile-name strong { font-size: .95rem; color: var(--text); }
+.ult-profile-stats {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  padding-top: 8px; margin-top: 8px; border-top: 1px solid var(--line);
+  font-size: .78rem; color: var(--text-mute);
+}
+.ult-profile-stats strong { color: var(--text-dim); font-variant-numeric: tabular-nums; }
+
+.takeover-summary {
+  margin-top: 12px; padding: 10px 12px;
+  background: var(--surface-2); border: 1px solid var(--line);
+  border-left: 3px solid var(--gold); border-radius: 8px;
+}
+.takeover-summary h4 {
+  margin: 0 0 6px; font-size: .72rem; color: var(--text-mute);
+  text-transform: uppercase; letter-spacing: .05em;
+}
+.takeover-summary ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 3px; }
+.takeover-summary li { font-size: .8rem; color: var(--text-dim); }
+.takeover-summary li strong { color: var(--text); }
+
+/* ---------- Player creation form (ui/playerCreation.js) ---------- */
+/* Career mode is parked (see the note in script.js), so this form is not
+   reachable today — but it had no rules at all, which meant its labels and
+   inputs ran together with no spacing whenever it is un-parked. Styled now
+   rather than left as a trap for whoever turns career mode back on. */
+.form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+.form-group label { font-size: .78rem; color: var(--text-mute); }
+.form-group input[type="text"], .form-group select { width: 100%; }
+
+/* ---------- Secret badges ---------- */
+/* Deliberately louder than every other tier. These are meant to be roughly one
+   per seven teams league-wide, and the first time one appears on a roster the
+   player should not have to read the tier label to notice it. */
+.trait-badge.tier-secret,
+.badge-ref-tier.tier-secret {
+  background: linear-gradient(120deg, rgba(212, 169, 78, .30), rgba(255, 94, 168, .26), rgba(88, 166, 255, .28));
+  color: #FFE9A8;
+  border-color: rgba(255, 214, 120, .75);
+  box-shadow: 0 0 0 1px rgba(255, 214, 120, .22), 0 0 14px rgba(255, 190, 90, .30);
+  font-weight: 800;
+}
+.badge-ref-card.badge-ref-has-secret { border-left-color: #FFD36E; }
+.badge-ref-secret {
+  margin-top: 2px; padding-top: 6px; border-top: 1px dashed var(--line-strong);
+  display: flex; flex-direction: column; gap: 3px;
+}
+.badge-ref-secret-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.badge-ref-secret-label {
+  font-size: .58rem; text-transform: uppercase; letter-spacing: .09em;
+  font-weight: 800; color: #FFD36E;
+}
+.badge-ref-secret-name { font-weight: 800; font-size: .84rem; color: #FFE9A8; }
+.badge-ref-secret-value {
+  margin-left: auto; font-size: .72rem; font-weight: 700; color: #FFD36E;
+  font-variant-numeric: tabular-nums;
+}
+.badge-ref-secret-desc { font-size: .76rem; color: var(--text-dim); line-height: 1.4; margin: 0; }
+
+/* Trophy room, banner raising and the GM name field. Deliberately built from
+   the existing panel palette rather than a new visual system. */
+.trophy-room { display: flex; flex-wrap: wrap; gap: 10px; }
+.banner {
+  width: 84px; padding: 10px 6px 14px; text-align: center;
+  background: linear-gradient(180deg, #b8860b 0%, rgba(0,0,0,0.35) 100%);
+  clip-path: polygon(0 0, 100% 0, 100% 86%, 50% 100%, 0 86%);
+}
+.banner-large { width: 150px; margin: 0 auto; }
+.banner-year { font-weight: 700; font-size: 1.1rem; }
+.banner-label { font-size: 0.62rem; letter-spacing: 0.14em; opacity: 0.85; }
+.banner-large .banner-year { font-size: 1.8rem; }
+.champ-scene { max-width: 520px; margin: 24px auto; }
+
+/* ---------- Broadcast chrome (2026-08-14 re-skin) ---------- */
+
+/* Team ribbon: replaces the flat topbar. The gradient runs the RAW team
+   primary into the app surface; text on the colored zone sits on a dark
+   scrim so a black or white team hex can never make it unreadable. */
+.ribbon {
+  display: flex; align-items: stretch; flex-wrap: wrap;
+  background: linear-gradient(90deg, var(--team-primary) 0, rgba(11, 14, 20, .55) 340px, var(--surface-1) 560px, var(--surface-1) 100%);
+  border-bottom: 2px solid var(--accent);
+}
+.ribbon-scrim {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 18px 8px 14px;
+  background: linear-gradient(90deg, rgba(0, 0, 0, .38), rgba(0, 0, 0, 0));
+  min-width: 0;
+}
+.ribbon-name { font-size: 17px; line-height: 1.15; white-space: nowrap; }
+.ribbon-sub {
+  font-size: 11.5px; color: rgba(255, 255, 255, .78);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.ribbon-ticker {
+  display: flex; align-items: center; gap: 20px;
+  margin-left: auto; padding: 6px 18px;
+  flex-wrap: wrap;
+}
+.tick { text-align: right; }
+.tick-k {
+  display: block; font-size: 9px; font-weight: 700;
+  letter-spacing: .15em; text-transform: uppercase;
+  color: var(--text-mute);
+}
+.tick-v { font-size: 15px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.tick-v em { font-style: normal; font-weight: 400; font-size: 11px; color: var(--text-mute); }
+.tick-v.is-over { color: var(--warn); }
+
+/* Icon rail: 8 hub icons; the label slides out on hover/focus. */
+.rail-item {
+  position: relative;
+  width: 40px; height: 40px; margin: 2px auto;
+  display: flex; align-items: center; justify-content: center;
+  background: none; border: none; border-radius: 8px;
+  color: var(--text-dim); cursor: pointer; padding: 0;
+}
+.rail-item svg { width: 20px; height: 20px; display: block; }
+.rail-item:hover:not(:disabled) { background: var(--surface-3); color: var(--text); border-color: transparent; }
+.rail-item.active {
+  background: var(--accent-soft); color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+.rail-label {
+  position: absolute; left: 48px; top: 50%; transform: translateY(-50%);
+  background: var(--surface-3); border: 1px solid var(--line-strong);
+  border-radius: 6px; padding: 4px 10px;
+  font-size: 12px; font-weight: 600; color: var(--text); white-space: nowrap;
+  opacity: 0; pointer-events: none; transition: opacity .1s ease;
+  z-index: 40;
+}
+.rail-item:hover .rail-label,
+.rail-item:focus-visible .rail-label { opacity: 1; }
+
+/* (Rating chips: the existing .rating-chip system near the data-table rules
+   was restyled to the broadcast look instead of adding a second chip class —
+   one system, tier classes from ratingTier reading RATING_BANDS.) */
+
+/* Stat chip rows opening the big views. */
+.stat-chips { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+.stat-chip {
+  background: var(--surface-1); border: 1px solid var(--line);
+  border-left: 3px solid var(--accent); border-radius: 6px;
+  padding: 5px 12px;
+}
+
+/* ---- Command Center dashboard ---- */
+/* The hero runs the RAW team primary (same contract as .ribbon): text sits on
+   the ::before scrim, never on the color itself, which is what makes a pure
+   black primary (BKN) legible. Buttons stay off the team color entirely. */
+.dash-hero { position: relative; overflow: hidden; display: flex; align-items: center; gap: 26px;
+  padding: 14px 20px; margin-bottom: 10px; border: 1px solid var(--line-strong); border-radius: var(--r-md);
+  background: linear-gradient(90deg, var(--team-primary) 0, rgba(11, 14, 20, .6) 55%, var(--surface-1) 100%); }
+.dash-hero::before { content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, .25), rgba(0, 0, 0, .45)); }
+.dash-hero > * { position: relative; }
+.dash-hero-rec { font: 900 44px/1 var(--font-cond); letter-spacing: 1px; }
+.dash-hero-rec small { display: block; font: 700 11px var(--font); letter-spacing: 1.5px;
+  text-transform: uppercase; color: rgba(230, 234, 240, .75); margin-top: 2px; }
+.dash-hero-stat { border-left: 1px solid rgba(230, 234, 240, .25); padding-left: 22px; }
+.dash-hero-stat .v { font: 800 22px/1.1 var(--font-cond); }
+.dash-hero-stat .k { font-size: 10px; text-transform: uppercase; letter-spacing: 1px;
+  color: rgba(230, 234, 240, .7); }
+.dash-next { margin-left: auto; display: flex; align-items: center; gap: 14px;
+  background: rgba(5, 7, 11, .55); border: 1px solid rgba(230, 234, 240, .2);
+  border-radius: var(--r-md); padding: 10px 16px; }
+.dash-next .vs { font: 900 18px var(--font-cond); }
+.dash-next .sub { font-size: 10px; text-transform: uppercase; letter-spacing: 1px;
+  color: rgba(230, 234, 240, .65); }
+#dash-play { background: var(--gold); border: none; color: #131313; cursor: pointer;
+  font: 800 11px var(--font); letter-spacing: 1px; text-transform: uppercase;
+  border-radius: var(--r-sm); padding: 8px 14px; }
+#dash-play:hover { filter: brightness(1.1); }
+#dash-play:disabled { background: var(--surface-3); color: var(--text-mute); cursor: default; filter: none; }
+.dash-grid { display: grid; grid-template-columns: 1fr 340px; gap: 10px; align-items: start; }
+.dash-col { display: flex; flex-direction: column; gap: 10px; }
+.form-strip { display: flex; gap: 6px; }
+.form-bug { flex: 1; min-width: 0; background: var(--surface-2); border: 1px solid var(--line);
+  border-top: 3px solid var(--line-strong); border-radius: var(--r-sm); padding: 6px 8px; text-align: center; }
+.form-bug.win { border-top-color: var(--win); }
+.form-bug.loss { border-top-color: var(--loss); }
+.form-bug .opp { font-size: 10px; text-transform: uppercase; letter-spacing: .5px;
+  color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.form-bug .score { font: 800 14px var(--font-cond); font-variant-numeric: tabular-nums; }
+.form-bug .res { font-size: 10px; font-weight: 800; }
+.form-bug .res.w { color: var(--win); }
+.form-bug .res.l { color: var(--loss); }
+.fo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; }
+.fo-cell .k { font-size: 10px; text-transform: uppercase; letter-spacing: .8px; color: var(--text-mute); }
+.fo-cell .v { font-weight: 800; font-size: 15px; font-variant-numeric: tabular-nums; }
+.fo-cell .v .cap-of { color: var(--text-mute); font-weight: 400; }
+.lead-cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.lead-cols .k { font-size: 10px; text-transform: uppercase; letter-spacing: .8px;
+  color: var(--text-mute); margin-bottom: 3px; }
+.lead-row { display: flex; justify-content: space-between; gap: 8px; padding: 1px 0; }
+.lead-row.dim2 { color: var(--text-dim); }
+.lead-league { color: var(--text-mute); margin-top: 5px; }
+@media (max-width: 1100px) { .dash-grid { grid-template-columns: 1fr; } }
+
+/* ---- Starting five picker (Roster page) ---- */
+.lineup-strip { display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  background: var(--surface-1); border: 1px solid var(--line);
+  border-radius: var(--r-md); padding: 8px 10px; margin-bottom: 10px; }
+.lineup-slot { flex: 1; min-width: 120px; background: var(--surface-2);
+  border: 1px solid var(--line); border-left: 3px solid var(--accent);
+  border-radius: var(--r-sm); padding: 5px 8px; }
+.lineup-slot.is-empty { border-left-color: var(--line-strong); color: var(--text-mute); }
+.lineup-slot .nm { font-weight: 700; white-space: nowrap; overflow: hidden;
+  text-overflow: ellipsis; }
+.lineup-slot .mt { font-size: 10px; text-transform: uppercase; letter-spacing: .6px;
+  color: var(--text-mute); }
+.lineup-note { color: var(--text-dim); font-size: 11px; }
+.lineup-toggle.is-on { background: var(--accent); color: #06101D; font-weight: 700; }
+
+/* ---- Main menu exit + quit confirm ---- */
+/* Pushes .rail-exit to the bottom of the icon rail. The sidebar is already a
+   flex column, so one auto-margin element takes up all the slack. */
+.rail-spacer { flex: 1 1 auto; min-height: 12px; }
+.rail-exit { color: var(--text-mute); }
+.rail-exit:hover:not(:disabled) { background: rgba(248, 81, 73, .12); color: var(--loss); }
+
+/* Modelled on .pixel-confirm (the live-game leave prompt) rather than reusing
+   it: that one is wired to the watch view's own state and renaming it would
+   touch a flow with its own validator. Same visual language, separate owner. */
+.quit-confirm {
+  position: fixed; inset: 0; z-index: 9500;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0, 0, 0, .62);
+}
+.quit-confirm-box {
+  background: var(--surface-2); border: 1px solid var(--line-strong);
+  border-radius: var(--r-lg); padding: 20px 22px; max-width: 430px;
+  box-shadow: 0 18px 48px -12px rgba(0, 0, 0, .8); text-align: center;
+}
+.quit-confirm-title { font-weight: 700; font-size: 1.05rem; margin-bottom: 8px; }
+.quit-confirm-text { font-size: .85rem; color: var(--text); margin-bottom: 10px; }
+.quit-confirm-note { font-size: .76rem; color: var(--text-mute); line-height: 1.55; margin-bottom: 16px; }
+.quit-confirm-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.quit-confirm-error { margin-top: 12px; font-size: .78rem; color: var(--loss); }
+.quit-confirm-error[hidden] { display: none; }
+
+/* ---- Inline bidding row ---- */
+/* The bidding panel is spliced into the pool table as its own row, directly
+   beneath the player being bid on, rather than sitting below the whole list
+   where clicking Make Offer on someone near the top scrolled the panel out of
+   sight. The cell carries no padding of its own — .bid-panel brings its own
+   box — and drops the row border so the panel reads as attached to the player
+   above it rather than as a separate table row. */
+.data-table tr.bid-row > td { padding: 0 8px; border-bottom: none; background: var(--surface-2); }
+.bid-row .bid-panel { margin: 8px 0 12px; }
+
+/* ---- Dialogue box (arcade terminal) ----
+   Chosen from rendered mockups of three directions. Deliberately outside the
+   app's surface ramp and type stack: this box belongs to the pixel game, not
+   to the menus around it, and a rounded corner or the sans stack is exactly
+   what would make it read as app chrome instead.
+
+   z-index sits ABOVE .quit-confirm (9500): a dialogue can open over the live
+   game view, and the layer beneath must not be clickable through it.
+
+   The doubled border is two box-shadow rings rather than nested elements — it
+   gives the CRT-bezel edge without a wrapper div per ring. */
+.dlg-overlay {
+  position: fixed; inset: 0; z-index: 9600;
+  display: flex; align-items: flex-end; justify-content: center;
+  padding: 0 14px 14px;
+  background: rgba(0, 0, 0, .45);
+  /* default, not pointer: only the box advances the scene, and a pointer over
+     the whole screen promises a click target that is not there. */
+  cursor: default;
+}
+.dlg-box { width: 100%; max-width: 660px; cursor: pointer; }
+.dlg-frame {
+  display: flex;
+  background: #0d1017;
+  border: 3px solid #55627a;
+  box-shadow: 0 0 0 3px #0d1017, 0 0 0 5px var(--line), 0 14px 36px -8px rgba(0, 0, 0, .9);
+}
+.dlg-bust {
+  flex: 0 0 auto; padding: 10px; align-self: stretch;
+  display: flex; align-items: flex-end;
+  background: #11151d;
+  border-right: 3px solid #55627a;
+}
+.dlg-bust canvas {
+  image-rendering: pixelated; display: block;
+  animation: dlg-bust-in 180ms steps(3, end);
+}
+/* Stepped, not eased: a smooth slide under a pixel bust reads as a different
+   art style arriving with it. */
+@keyframes dlg-bust-in {
+  from { transform: translateX(-9px); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+.dlg-body { position: relative; flex: 1 1 auto; padding: 9px 12px 11px; min-width: 0; }
+.dlg-plate {
+  font-family: ui-monospace, "Consolas", "Courier New", monospace;
+  font-size: .7rem; letter-spacing: .1em; text-transform: uppercase;
+  color: #7dd3a0; margin-bottom: 6px;
+}
+.dlg-text {
+  font-family: ui-monospace, "Consolas", "Courier New", monospace;
+  font-size: .84rem; line-height: 1.55; color: #dbe4f0;
+  min-height: 3.1em; white-space: pre-wrap;
+}
+.dlg-blinker {
+  position: absolute; right: 10px; bottom: 6px;
+  font-size: .62rem; color: #7dd3a0;
+  animation: dlg-blink 1s steps(2, start) infinite;
+}
+@keyframes dlg-blink { to { visibility: hidden; } }
+/* The choices continue the frame downward — same rings, no top border — so
+   the stack reads as one console rather than as buttons under a box. */
+.dlg-choices { display: flex; flex-direction: column; }
+.dlg-choice {
+  position: relative; text-align: left; cursor: pointer;
+  font-family: ui-monospace, "Consolas", "Courier New", monospace;
+  font-size: .8rem; color: #dbe4f0;
+  background: #0d1017;
+  border: 3px solid #55627a; border-top: none;
+  padding: 8px 12px 8px 26px;
+  box-shadow: 0 0 0 3px #0d1017, 0 0 0 5px var(--line);
+}
+.dlg-choice::before {
+  content: '\25B6'; position: absolute; left: 10px; top: 50%;
+  transform: translateY(-50%); font-size: .62rem; color: #7dd3a0;
+  opacity: 0;
+}
+.dlg-choice:hover, .dlg-choice:focus-visible { background: #161c26; outline: none; }
+.dlg-choice:hover::before, .dlg-choice:focus-visible::before { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dlg-bust canvas { animation: none; }
+  .dlg-blinker { animation: none; }
+}
+
+
+/* ---- The halftime studio show ----
+   Fullscreen: the set takes the whole screen, four busts drawn at 4x behind a
+   desk that runs edge to edge, and a broadcast band across the bottom. It is
+   the single biggest interruption in the game and is meant to feel like one.
+
+   It does NOT reuse .dlg-overlay. That class is a bottom-anchored scrim built
+   to hold a box; this fills the viewport and is a column. */
+.studio-fs {
+  position: fixed; inset: 0; z-index: 9600;
+  display: flex; flex-direction: column;
+  background: #0d1017;
+  cursor: pointer;
+}
+.studio-set {
+  position: relative; flex: 1 1 auto; overflow: hidden;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  background: radial-gradient(ellipse at 50% 120%, #1d2636 0%, #10151f 55%, #0a0d13 100%);
+}
+/* An arena window behind the desk, and the scanline bed over everything, so
+   the set has depth without needing any art. */
+.studio-set::before {
+  content: ''; position: absolute; left: 0; right: 0; top: 0; height: 62%;
+  background: repeating-linear-gradient(90deg, rgba(125, 211, 160, .055) 0 3px, transparent 3px 14px);
+  pointer-events: none;
+}
+.studio-set::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, .16) 0 2px, transparent 2px 4px);
+}
+.studio-crew {
+  position: relative; display: flex; justify-content: center; align-items: flex-end;
+  gap: 18px; padding-bottom: 4px;
+}
+.studio-seat {
+  display: flex; flex-direction: column; align-items: center; opacity: .34;
+  transition: opacity 130ms steps(2, end), transform 130ms steps(2, end);
+}
+/* Stepped, not eased — a smooth fade under pixel art reads as a different
+   medium arriving with it. */
+.studio-seat.live { opacity: 1; transform: translateY(-6px); }
+.studio-seat canvas { image-rendering: pixelated; display: block; }
+.studio-seat-name {
+  font-family: ui-monospace, "Consolas", "Courier New", monospace;
+  font-size: .62rem; letter-spacing: .12em; text-transform: uppercase;
+  color: #55627a; margin-top: 5px; white-space: nowrap;
+}
+.studio-seat.live .studio-seat-name { color: #7dd3a0; }
+.studio-desk {
+  position: relative; flex: 0 0 auto; height: 46px;
+  background: linear-gradient(180deg, #2a3446 0%, #1b2231 40%, #0f141d 100%);
+  border-top: 3px solid #55627a;
+}
+.studio-desk::after {
+  content: 'INSIDE THE STUDIO';
+  position: absolute; left: 50%; top: 13px; transform: translateX(-50%);
+  font-family: ui-monospace, "Consolas", "Courier New", monospace;
+  font-size: .72rem; letter-spacing: .34em; color: #7dd3a0; opacity: .55;
+}
+.studio-body {
+  position: relative; flex: 0 0 auto; min-height: 150px;
+  padding: 18px 40px 22px;
+  background: #0a0d13; border-top: 3px solid #55627a;
+}
+/* Fullscreen takes the whole screen away, so the way out has to be visible. */
+.studio-esc {
+  position: absolute; right: 22px; top: 18px;
+  font-family: ui-monospace, "Consolas", "Courier New", monospace;
+  font-size: .68rem; letter-spacing: .12em; color: #55627a;
+}
+.studio-plate {
+  font-family: ui-monospace, "Consolas", "Courier New", monospace;
+  font-size: .82rem; letter-spacing: .16em; text-transform: uppercase;
+  color: #7dd3a0; margin-bottom: 10px; min-height: 1em;
+}
+.studio-text {
+  font-family: ui-monospace, "Consolas", "Courier New", monospace;
+  font-size: 1.05rem; line-height: 1.6; color: #dbe4f0;
+  max-width: 900px; white-space: pre-wrap;
+}
+.studio-blinker {
+  position: absolute; right: 26px; bottom: 16px;
+  color: #7dd3a0; font-size: .8rem;
+  animation: dlg-blink 1s steps(2, start) infinite;
+}
+
+/* ---- The handoff: studio out, coach in ----
+   The set pulls back and dims while the coach box rises over it, so halftime
+   is one continuous movement rather than two popups. The set is still on
+   screen at this point but has stopped listening — see runStudioSegment's
+   finish(), which detaches every handler before adding this class.
+
+   620ms against the 700ms sweep timer in ui/dialogueBox.js: the node is
+   removed after the movement finishes, never during it. */
+.studio-fs.studio-handoff {
+  transform-origin: 50% 42%;
+  transform: scale(.82) translateY(-6%);
+  filter: brightness(.45) saturate(.7);
+  transition: transform 620ms cubic-bezier(.22, .61, .36, 1), filter 620ms linear;
+  pointer-events: none;
+}
+/* The coach box rides in from below. Applied to every dialogue box, not just
+   the one after a show: a box that simply appears is the thing this replaces. */
+.dlg-box { animation: dlg-box-rise 560ms cubic-bezier(.22, .61, .36, 1); }
+@keyframes dlg-box-rise {
+  from { transform: translateY(120%); }
+  to   { transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .studio-seat { transition: none; }
+  .studio-blinker { animation: none; }
+  .dlg-box { animation: none; }
+  /* The pull-back still happens, because the set must get out of the way —
+     but it happens at once rather than as a movement. */
+  .studio-fs.studio-handoff { transition: none; }
+}
+
+/* The owner's standing demand, under the dashboard hero. Deliberately one
+   quiet line: it has to be readable at a glance every time you open the
+   dashboard without competing with the record for attention. It only turns
+   warm when the job is actually at risk, so the colour means something. */
+.stakes-strip { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px;
+  margin: 10px 0 0; padding: 8px 12px; background: var(--surface-2);
+  border: 1px solid var(--line); border-left: 3px solid var(--line-strong);
+  border-radius: var(--r-sm); font-size: 13px; }
+.stakes-strip.is-warn { border-left-color: var(--warn); }
+.stakes-label { color: var(--text-mute); text-transform: uppercase; letter-spacing: .04em; font-size: 10px; }
+.stakes-mandate { color: var(--text); font-weight: 650; }
+.stakes-sep { color: var(--line-strong); }
+.stakes-job { color: var(--text); font-weight: 650; }
+.stakes-strip.is-warn .stakes-job { color: var(--warn); }
+.stakes-note { color: var(--text-dim); }
+.stakes-happy { margin-left: auto; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+
+/* Free agency outcomes. A refusal is not a signing and must not read like one:
+   losing a player is the one irreversible thing that screen can do to you, and
+   it used to be reported as an ordinary line in a panel titled "Recent
+   Signings", at the bottom of the page. */
+.fa-log-signed { color: var(--text); }
+.fa-log-lost { color: var(--loss); }
+.fa-log-flag { display: inline-block; padding: 1px 6px; margin-right: 6px; border-radius: var(--r-sm);
+  background: var(--loss); color: #0E1116; font-size: 10px; font-weight: 700; letter-spacing: .05em; }
+
+/* --- GM agenda -----------------------------------------------------------
+   Urgency is carried by a colour dot and a left edge, not by shouting: the
+   panel sits on the dashboard and has to be scannable in a second without
+   pulling the eye off everything else. Colours come from the existing accent
+   set rather than three new ones. */
+.agenda-panel { margin-bottom: 16px; }
+.agenda-title {
+  margin: 0 0 8px; font-size: .72rem; font-weight: 800; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--text-dim, #8b93a1);
+  display: flex; align-items: center; gap: 8px;
+}
+.agenda-count {
+  background: var(--surface-3, #232B37); color: var(--text, #e6e9ef);
+  border-radius: 10px; padding: 1px 7px; font-size: .7rem; letter-spacing: 0;
+}
+.agenda-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.agenda-item {
+  background: var(--surface-1, #131822); border: 1px solid var(--line, #232B37);
+  border-left: 3px solid var(--line, #232B37);
+  border-radius: 8px; padding: 10px 12px;
+}
+.agenda-critical    { border-left-color: #e5484d; }
+.agenda-developing  { border-left-color: #f5a524; }
+.agenda-opportunity { border-left-color: #30a46c; }
+.agenda-head { display: flex; align-items: center; gap: 8px; }
+.agenda-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex: none; }
+.agenda-critical .agenda-dot    { color: #e5484d; }
+.agenda-developing .agenda-dot  { color: #f5a524; }
+.agenda-opportunity .agenda-dot { color: #30a46c; }
+.agenda-headline { color: var(--text, #e6e9ef); font-size: .95rem; }
+/* The meaning leads; the number is small print underneath it. */
+.agenda-why { color: var(--text-dim, #8b93a1); font-size: .84rem; margin-top: 4px; line-height: 1.45; }
+.agenda-who { color: var(--text-faint, #6b7280); font-size: .78rem; margin-top: 3px; }
+.agenda-conseq { color: var(--text-faint, #6b7280); font-size: .78rem; margin-top: 4px; font-style: italic; }
+.agenda-acts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.agenda-act {
+  background: var(--surface-2, #1A2029); color: var(--text, #e6e9ef);
+  border: 1px solid var(--line, #232B37); border-radius: 6px;
+  padding: 4px 10px; font-size: .78rem; cursor: pointer;
+}
+.agenda-act:hover { border-color: var(--accent, #f5820f); }
+.agenda-tag {
+  margin-top: 7px; font-size: .68rem; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--text-faint, #6b7280);
+}
+.agenda-more { margin-top: 8px; font-size: .78rem; color: var(--text-faint, #6b7280); }
