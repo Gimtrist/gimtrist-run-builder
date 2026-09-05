@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <!-- FIX: Use aspect-ratio to prevent canvas distortion on resize -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>塔防游戏</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #0c0c1e, #1a1a3e);
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+        }
+        h1 {
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255,215,0,0.5);
+            margin: 10px 0;
+        }
+        .game-container {
+            position: relative;
+            display: inline-block;
+            border: 3px solid #ffd700;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(255,215,0,0.2);
+            /* FIX: Constrain width and use aspect-ratio to prevent distortion */
+            width: min(1050px, 100vw - 20px);
+            aspect-ratio: 1050 / 540;
+        }
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            background: #1a2a1a;
+            cursor: crosshair;
+        }
+        /* FIX: Show pointer cursor when hovering existing towers */
+        canvas.hovering-tower { cursor: pointer; }
+        .start-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.75);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            gap: 15px;
+        }
+        .start-overlay.hidden { display: none; }
+        .start-button {
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
+            color: #000; border: none;
+            padding: 15px 50px; font-size: 1.5rem; font-weight: bold;
+            border-radius: 12px; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255,215,0,0.4);
+            transition: all 0.2s;
+        }
+        .start-button:hover { transform: scale(1.05); }
+        .controls {
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            max-width: 1050px;
+        }
+        .tower-btn {
+            background: linear-gradient(135deg, #2a2a4a, #3a3a5a);
+            color: #e0e0e0; border: 2px solid #555;
+            padding: 8px 14px; font-size: 0.9rem;
+            border-radius: 8px; cursor: pointer;
+            transition: all 0.15s; white-space: nowrap;
+        }
+        .tower-btn:hover { border-color: #ffd700; transform: translateY(-2px); }
+        .tower-btn.selected {
+            border-color: #ffd700;
+            background: linear-gradient(135deg, #4a3a1a, #5a4a2a);
+            box-shadow: 0 0 10px rgba(255,215,0,0.3);
+            color: #ffd700;
+        }
+        .tower-btn .cost { font-size: 0.75rem; color: #aaa; }
+        .tower-btn.selected .cost { color: #ffd700; }
+        .info-bar {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            font-size: 1.1rem;
+            padding: 10px 20px;
+            background: rgba(0,0,0,0.4);
+            border-radius: 10px;
+            max-width: 1050px;
+        }
+        .info-item { display: flex; align-items: center; gap: 6px; }
+        .info-value { font-weight: bold; color: #ffd700; }
+        .instructions {
+            margin-top: 12px;
+            padding: 12px 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            max-width: 1050px;
+            line-height: 1.6;
+        }
+        .instructions h3 { color: #ffd700; margin-bottom: 6px; }
+        .tooltip {
+            display: none;
+            position: absolute;
+            background: rgba(0,0,0,0.92);
+            border: 1px solid #ffd700;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            color: #fff;
+            pointer-events: none;
+            z-index: 20;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>🏰 塔防游戏</h1>
+
+    <div class="game-container">
+        <!-- FIX: Use CSS aspect-ratio instead of fixed canvas dimensions -->
+        <canvas id="gameCanvas" width="1050" height="540"></canvas>
+        <div class="start-overlay" id="startOverlay">
+            <button class="start-button" id="startButton">开始游戏</button>
+            <p style="color:#aaa;">选择塔 → 点击地图放置 → 左键升级 / 右键出售</p>
+        </div>
+        <div class="tooltip" id="tooltip"></div>
+    </div>
+
+    <div class="controls">
+        <button class="tower-btn" data-tower="ARROW">🏹 箭塔 <span class="cost">100</span></button>
+        <button class="tower-btn" data-tower="CANNON">💣 炮塔 <span class="cost">200</span></button>
+        <button class="tower-btn" data-tower="MAGIC">🔮 魔法塔 <span class="cost">150</span></button>
+        <button class="tower-btn" data-tower="LASER">⚡ 激光塔 <span class="cost">250</span></button>
+        <button class="tower-btn" data-tower="ICE">❄️ 冰塔 <span class="cost">175</span></button>
+        <button class="tower-btn" data-tower="POISON">☠️ 毒塔 <span class="cost">225</span></button>
+        <button class="tower-btn" data-tower="SNIPER">🎯 狙击塔 <span class="cost">300</span></button>
+        <button class="tower-btn" data-tower="SUPPORT">🛡️ 支援塔 <span class="cost">275</span></button>
+    </div>
+
+    <div class="info-bar">
+        <div class="info-item">❤️ 生命: <span class="info-value" id="lives">30</span></div>
+        <div class="info-item">💰 金钱: <span class="info-value" id="money">300</span></div>
+        <div class="info-item">⭐ 分数: <span class="info-value" id="score">0</span></div>
+        <div class="info-item">🌊 波数: <span class="info-value" id="wave">0</span></div>
+    </div>
+
+    <div class="instructions">
+        <h3>📖 操作说明</h3>
+        <p>① 点击下方按钮选择塔 → ② 点击地图空地放置 → ③ <b>左键</b>已有塔=升级 &nbsp;|&nbsp; <b>右键</b>已有塔=出售 &nbsp;|&nbsp; 阻止敌人到达终点</p>
+    </div>
+
+    <script>
+    (function() {
+        const GS = 30, GW = 35, GH = 18;
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const TOWER_COLOR = {
+            ARROW:'#4fc3f7', CANNON:'#ef5350', MAGIC:'#ab47bc',
+            LASER:'#ffee58', ICE:'#29b6f6', POISON:'#66bb6a',
+            SNIPER:'#8d6e63', SUPPORT:'#ffa726'
+        };
+        const ENEMY_COLOR = {
+            NORMAL:'#90a4ae', FAST:'#66bb6a', TANK:'#ff7043',
+            BOSS:'#e53935', FLYING:'#ab47bc', STEALTH:'#546e7a',
+            HEALER:'#26a69a', SWARM:'#ef5350'
+        };
+        const TOWER_ICON = {
+            ARROW:'🏹', CANNON:'💣', MAGIC:'🔮', LASER:'⚡',
+            ICE:'❄️', POISON:'☠️', SNIPER:'🎯', SUPPORT:'🛡️'
+        };
+        const TOWER_NAME_ZH = {
+            ARROW:'箭塔', CANNON:'炮塔', MAGIC:'魔法塔', LASER:'激光塔',
+            ICE:'冰塔', POISON:'毒塔', SNIPER:'狙击塔', SUPPORT:'支援塔'
+        };
+
+        let gs = {
+            towers:[], enemies:[], current_wave:0,
+            lives:30, money:300, score:0,
+            is_running:false, selected_tower:null,
+            wave_timer:0, wave_interval:200,
+            spawn_timer:0, spawn_interval:12,
+            wave_enemies:0, wave_total:0, game_over:false
+        };
+
+        let serverPaths = [];
+        let frame = 0;
+        let syncLock = false;
+        const towerImgCache = {};
+
+        function hexToRgb(hex) {
+            const n = parseInt(hex.slice(1), 16);
+            return [(n>>16)&0xff, (n>>8)&0xff, n&0xff];
+        }
+
+        function lighten(hex, pct) {
+            let [r,g,b] = hexToRgb(hex);
+            const v = Math.floor(255 * pct / 100);
+            r = Math.min(255, r+v); g = Math.min(255, g+v); b = Math.min(255, b+v);
+            return '#' + ((1<<24)|(r<<16)|(g<<8)|b).toString(16).slice(1);
+        }
+
+        function getTowerImg(type, level) {
+            const key = type + '_' + level;
+            if (towerImgCache[key]) return towerImgCache[key];
+            const c = document.createElement('canvas');
+            c.width = GS; c.height = GS;
+            const g = c.getContext('2d');
+            const color = TOWER_COLOR[type] || '#ffffff';
+            const cx = GS/2, cy = GS/2;
+
+            // Shadow
+            g.fillStyle = 'rgba(0,0,0,0.35)';
+            g.beginPath(); g.arc(cx+2, cy+2, GS/3, 0, Math.PI*2); g.fill();
+
+            // Body with gradient
+            const gr = g.createRadialGradient(cx-3, cy-3, 1, cx, cy, GS/3);
+            gr.addColorStop(0, lighten(color, 50));
+            gr.addColorStop(0.7, color);
+            gr.addColorStop(1, lighten(color, -20));
+            g.fillStyle = gr;
+            g.beginPath(); g.arc(cx, cy, GS/3, 0, Math.PI*2); g.fill();
+
+            // Glow border
+            g.strokeStyle = lighten(color, 70);
+            g.lineWidth = 2;
+            g.beginPath(); g.arc(cx, cy, GS/3, 0, Math.PI*2); g.stroke();
+
+            // Emoji icon
+            g.fillStyle = '#fff';
+            g.textAlign = 'center'; g.textBaseline = 'middle';
+            g.font = '14px serif';
+            g.fillText(TOWER_ICON[type] || 'T', cx, cy + 1);
+
+            // Level indicator
+            if (level > 1) {
+                g.fillStyle = '#ffd700';
+                g.font = 'bold 10px Arial';
+                g.fillText('+' + level, cx + GS/3 - 5, cy - GS/3 + 5);
+            }
+
+            towerImgCache[key] = c;
+            return c;
+        }
+
+        async function fetchPaths() {
+            try {
+                const r = await fetch('/get_paths');
+                const d = await r.json();
+                if (Array.isArray(d) && d.length > 0) { serverPaths = d; return true; }
+            } catch(e) { /* use empty paths */ }
+            return false;
+        }
+
+        function canvasCoord(e) {
+            const rect = canvas.getBoundingClientRect();
+            const sx = canvas.width / rect.width;
+            const sy = canvas.height / rect.height;
+            return {
+                x: (e.clientX - rect.left) * sx,
+                y: (e.clientY - rect.top) * sy
+            };
+        }
+
+        function gridCoord(e) {
+            const {x, y} = canvasCoord(e);
+            return { gx: Math.floor(x / GS), gy: Math.floor(y / GS) };
+        }
+
+        function drawGrid() {
+            ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= GW; i++) {
+                ctx.beginPath(); ctx.moveTo(i*GS, 0); ctx.lineTo(i*GS, GH*GS); ctx.stroke();
+            }
+            for (let j = 0; j <= GH; j++) {
+                ctx.beginPath(); ctx.moveTo(0, j*GS); ctx.lineTo(0, GH*GS); ctx.stroke();
+            }
+        }
+
+        function drawPaths() {
+            if (!serverPaths.length) return;
+            serverPaths.forEach(path => {
+                // Shadow
+                ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+                ctx.lineWidth = 22; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+                ctx.beginPath();
+                path.forEach((p, i) => {
+                    const x = p[0]*GS+GS/2, y = p[1]*GS+GS/2;
+                    i === 0 ? ctx.moveTo(x+1,y+1) : ctx.lineTo(x+1,y+1);
+                });
+                ctx.stroke();
+
+                // Dirt
+                ctx.strokeStyle = '#6d4c41';
+                ctx.lineWidth = 18;
+                ctx.beginPath();
+                path.forEach((p, i) => {
+                    const x = p[0]*GS+GS/2, y = p[1]*GS+GS/2;
+                    i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+                });
+                ctx.stroke();
+
+                // Border
+                ctx.strokeStyle = '#8d6e63';
+                ctx.lineWidth = 20;
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.beginPath();
+                path.forEach((p, i) => {
+                    const x = p[0]*GS+GS/2, y = p[1]*GS+GS/2;
+                    i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+                });
+                ctx.stroke();
+                ctx.globalCompositeOperation = 'source-over';
+
+                // Surface
+                ctx.strokeStyle = '#8d7b6b';
+                ctx.lineWidth = 15;
+                ctx.beginPath();
+                path.forEach((p, i) => {
+                    const x = p[0]*GS+GS/2, y = p[1]*GS+GS/2;
+                    i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+                });
+                ctx.stroke();
+            });
+        }
+
+        function drawTowers() {
+            gs.towers.forEach(t => {
+                const x = t.x * GS + GS/2, y = t.y * GS + GS/2;
+                const img = getTowerImg(t.type, t.level);
+                ctx.drawImage(img, t.x * GS, t.y * GS);
+
+                if (t.level > 1) {
+                    ctx.fillStyle = '#ffd700';
+                    ctx.font = 'bold 9px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('Lv' + t.level, x, y - GS/3 - 4);
+                }
+            });
+        }
+
+        function drawEnemies() {
+            gs.enemies.forEach(e => {
+                const x = e.x * GS + GS/2, y = e.y * GS + GS/2;
+                const color = ENEMY_COLOR[e.type] || '#90a4ae';
+
+                // Stealth flicker
+                if (e.type === 'STEALTH' && e.stealth) {
+                    ctx.globalAlpha = 0.2 + 0.15 * Math.sin(frame * 0.4);
+                }
+
+                // Shadow
+                ctx.fillStyle = 'rgba(0,0,0,0.3)';
+                ctx.beginPath(); ctx.arc(x+1, y+2, GS/3, 0, Math.PI*2); ctx.fill();
+
+                // Body
+                const gr = ctx.createRadialGradient(x-2, y-2, 1, x, y, GS/3);
+                gr.addColorStop(0, lighten(color, 35));
+                gr.addColorStop(1, color);
+                ctx.fillStyle = gr;
+                ctx.beginPath(); ctx.arc(x, y, GS/3, 0, Math.PI*2); ctx.fill();
+                ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+                ctx.lineWidth = 1.5; ctx.stroke();
+
+                // Symbol
+                const sym = {NORMAL:'●', FAST:'»', TANK:'◆', BOSS:'★',
+                             FLYING:'✦', STEALTH:'◐', HEALER:'✚', SWARM:'•'};
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 11px Arial';
+                ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.fillText(sym[e.type] || '●', x, y);
+
+                ctx.globalAlpha = 1.0;
+
+                // Health bar
+                const bw = 26, bh = 4;
+                const bx = x - bw/2, by = y - GS/3 - 8;
+                ctx.fillStyle = 'rgba(0,0,0,0.6)';
+                ctx.fillRect(bx-1, by-1, bw+2, bh+2);
+                ctx.fillStyle = '#e74c3c';
+                ctx.fillRect(bx, by, bw, bh);
+                ctx.fillStyle = '#2ecc71';
+                ctx.fillRect(bx, by, bw * Math.max(0, e.health / e.max_health), bh);
+
+                // Status rings
+                if (e.frozen) {
+                    ctx.strokeStyle = '#00bfff'; ctx.lineWidth = 2;
+                    ctx.beginPath(); ctx.arc(x, y, GS/3+3, 0, Math.PI*2); ctx.stroke();
+                }
+                if (e.poisoned) {
+                    ctx.strokeStyle = '#32cd32'; ctx.lineWidth = 2;
+                    ctx.setLineDash([3,3]);
+                    ctx.beginPath(); ctx.arc(x, y, GS/3+3, 0, Math.PI*2); ctx.stroke();
+                    ctx.setLineDash([]);
+                }
+            });
+        }
+
+        function drawEffects() {
+            gs.towers.forEach(t => {
+                if (!t.target || !gs.enemies.includes(t.target)) return;
+                if (t.cooldown > t.attack_speed - 4) {
+                    const x1 = t.x*GS+GS/2, y1 = t.y*GS+GS/2;
+                    const x2 = t.target.x*GS+GS/2, y2 = t.target.y*GS+GS/2;
+                    const c = TOWER_COLOR[t.type] || '#fff';
+                    ctx.save();
+                    ctx.globalAlpha = 0.6;
+                    ctx.strokeStyle = c;
+                    ctx.lineWidth = t.type === 'LASER' ? 3 : 2;
+                    if (t.type === 'LASER') {
+                        ctx.shadowColor = c; ctx.shadowBlur = 8;
+                    }
+                    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+                    ctx.restore();
+                }
+            });
+        }
+
+        function drawHover() {
+            if (hoverGx < 0 || !gs.selected_tower) return;
+            ctx.fillStyle = 'rgba(255,215,0,0.12)';
+            ctx.fillRect(hoverGx*GS, hoverGy*GS, GS, GS);
+
+            const ranges = {ARROW:3,CANNON:2,MAGIC:3,LASER:4,ICE:3,POISON:3,SNIPER:5,SUPPORT:3};
+            const r = ranges[gs.selected_tower] || 3;
+            ctx.strokeStyle = 'rgba(255,215,0,0.25)';
+            ctx.lineWidth = 1; ctx.setLineDash([4,4]);
+            ctx.beginPath();
+            ctx.arc(hoverGx*GS+GS/2, hoverGy*GS+GS/2, r*GS, 0, Math.PI*2);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Tower count indicator
+            const count = gs.towers.filter(t => t.x === hoverGx && t.y === hoverGy).length;
+            if (count > 0) {
+                ctx.strokeStyle = 'rgba(255,215,0,0.5)';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(hoverGx*GS, hoverGy*GS, GS, GS);
+            }
+        }
+
+        let hoverGx = -1, hoverGy = -1;
+        let tooltipEl = document.getElementById('tooltip');
+
+        function showTooltip(e, html) {
+            tooltipEl.innerHTML = html;
+            tooltipEl.style.display = 'block';
+            const rect = canvas.getBoundingClientRect();
+            let tx = e.clientX - rect.left + 18;
+            let ty = e.clientY - rect.top - 10;
+            if (tx + 180 > rect.width) tx = e.clientX - rect.left - 180;
+            tooltipEl.style.left = tx + 'px';
+            tooltipEl.style.top = ty + 'px';
+        }
+
+        function hideTooltip() { tooltipEl.style.display = 'none'; }
+
+        function towerCost(t) {
+            return {ARROW:100,CANNON:200,MAGIC:150,LASER:250,ICE:175,POISON:225,SNIPER:300,SUPPORT:275}[t]||100;
+        }
+
+        canvas.addEventListener('mousemove', (e) => {
+            const {x, y} = canvasCoord(e);
+            hoverGx = Math.floor(x / GS);
+            hoverGy = Math.floor(y / GS);
+
+            const t = gs.towers.find(t => t.x === hoverGx && t.y === hoverGy);
+            if (t) {
+                const sell = Math.floor(towerCost(t.type) * 0.5 * t.level);
+                const upg = Math.floor(towerCost(t.type) * 0.6 * t.level);
+                showTooltip(e,
+                    `<b>${TOWER_NAME_ZH[t.type]||t.type}</b> Lv.${t.level}<br>` +
+                    `伤害: ${t.damage} | 范围: ${t.range} | 攻速: ${t.attack_speed}<br>` +
+                    `升级: 💰${upg} | 出售: 💰${sell}<br>` +
+                    `<small>左键升级 · 右键出售</small>`
+                );
+                // FIX: Show pointer cursor when hovering existing tower
+                canvas.classList.add('hovering-tower');
+            } else {
+                hideTooltip();
+                canvas.classList.remove('hovering-tower');
+            }
+        });
+
+        canvas.addEventListener('mouseleave', hideTooltip);
+
+        canvas.addEventListener('click', (e) => {
+            const {gx, gy} = gridCoord(e);
+            const existing = gs.towers.find(t => t.x === gx && t.y === gy);
+
+            if (existing) {
+                // Click on existing tower = upgrade
+                if (!gs.selected_tower) {
+                    upgradeTower(gx, gy);
+                    return;
+                }
+            }
+
+            // Place new tower
+            if (gs.selected_tower && gs.is_running) {
+                placeTower(gx, gy);
+            }
+        });
+
+        canvas.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            const {gx, gy} = gridCoord(e);
+            const t = gs.towers.find(t => t.x === gx && t.y === gy);
+            if (t) sellTower(gx, gy);
+        });
+
+        function selectTower(type) {
+            gs.selected_tower = gs.selected_tower === type ? null : type;
+            document.querySelectorAll('.tower-btn').forEach(b => {
+                b.classList.toggle('selected', b.dataset.tower === gs.selected_tower);
+            });
+        }
+
+        function placeTower(x, y) {
+            if (!gs.is_running || !gs.selected_tower) return;
+            syncLock = true;
+            fetch('/place_tower', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({type: gs.selected_tower, x, y})
+            })
+            .then(r => r.json())
+            .then(d => {
+                if (d.status === 'success') syncState();
+                else showToast(d.message);
+                syncLock = false;
+            })
+            .catch(() => { syncLock = false; });
+        }
+
+        function upgradeTower(x, y) {
+            if (!gs.is_running) return;
+            syncLock = true;
+            fetch('/upgrade_tower', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({x, y})
+            })
+            .then(r => r.json())
+            .then(d => {
+                if (d.status === 'success') {
+                    showToast('升级到 Lv.' + d.level + '!');
+                    syncState();
+                } else {
+                    showToast(d.message);
+                }
+                syncLock = false;
+            })
+            .catch(() => { syncLock = false; });
+        }
+
+        function sellTower(x, y) {
+            if (!gs.is_running) return;
+            syncLock = true;
+            fetch('/sell_tower', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({x, y})
+            })
+            .then(r => r.json())
+            .then(d => {
+                if (d.status === 'success') {
+                    showToast(d.message);
+                    syncState();
+                }
+                syncLock = false;
+            })
+            .catch(() => { syncLock = false; });
+        }
+
+        function syncState() {
+            fetch('/update_game', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'}
+            })
+            .then(r => r.json())
+            .then(d => {
+                // FIX: update_game returns game_state directly (no 'status' field)
+                // Apply server state directly
+                const keys = ['towers','enemies','current_wave','lives','money','score',
+                              'is_running','wave_timer','wave_interval','spawn_timer',
+                              'spawn_interval','wave_enemies','wave_total','game_over'];
+                keys.forEach(k => { if (k in d) gs[k] = d[k]; });
+                updateUI();
+            })
+            .catch(() => {});
+        }
+
+        function updateUI() {
+            document.getElementById('lives').textContent = gs.lives;
+            document.getElementById('money').textContent = gs.money;
+            document.getElementById('score').textContent = gs.score;
+            document.getElementById('wave').textContent = gs.current_wave;
+        }
+
+        function startGame() {
+            fetch('/start_game', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'}
+            })
+            .then(r => r.json())
+            .then(d => {
+                if (d.status === 'success') {
+                    gs.is_running = true;
+                    document.getElementById('startOverlay').classList.add('hidden');
+                    syncState();
+                } else {
+                    showToast(d.message);
+                }
+            });
+        }
+
+        function showToast(msg) {
+            const t = document.createElement('div');
+            t.style.cssText =
+                'position:fixed;top:20px;left:50%;transform:translateX(-50%);' +
+                'background:rgba(0,0,0,0.88);color:#ffd700;padding:10px 24px;border-radius:8px;' +
+                'z-index:100;font-size:0.95rem;border:1px solid #ffd700;transition:opacity 0.4s;';
+            t.textContent = msg;
+            document.body.appendChild(t);
+            setTimeout(() => t.style.opacity = '0', 1800);
+            setTimeout(() => t.remove(), 2300);
+        }
+
+        function gameLoop() {
+            frame++;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            drawGrid();
+            drawPaths();
+            drawTowers();
+            drawEnemies();
+            drawEffects();
+            drawHover();
+
+            // Sync with server every 8 frames (~7.5 times/sec)
+            if (gs.is_running && !gs.game_over && !syncLock && frame % 8 === 0) {
+                syncState();
+            }
+
+            // Game over overlay
+            if (gs.game_over) {
+                ctx.fillStyle = 'rgba(0,0,0,0.6)';
+                ctx.fillRect(0, canvas.height/2 - 50, canvas.width, 100);
+                ctx.fillStyle = '#ff4444';
+                ctx.font = 'bold 36px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('游戏结束', canvas.width/2, canvas.height/2 + 10);
+                ctx.font = '18px Arial';
+                ctx.fillStyle = '#ffd700';
+                ctx.fillText('点击"开始游戏"重新挑战', canvas.width/2, canvas.height/2 + 40);
+            }
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Bind tower buttons
+        document.querySelectorAll('.tower-btn').forEach(btn => {
+            btn.addEventListener('click', () => selectTower(btn.dataset.tower));
+        });
+
+        document.getElementById('startButton').addEventListener('click', startGame);
+
+        // Init
+        fetchPaths();
+        gameLoop();
+    })();
+    </script>
+</body>
+</html>
