@@ -1,0 +1,50 @@
+{
+  "name": "makone",
+  "version": "2.0.0",
+  "description": "Make Worlds with Code — a zero-backend harness for building 3D scenes, games and objects with a coding agent",
+  "keywords": [
+    "three.js",
+    "webgl",
+    "3d",
+    "procedural-generation",
+    "generative-art",
+    "game-development",
+    "csg",
+    "manifold",
+    "ai-agent"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wormholeportal/Makone.git"
+  },
+  "homepage": "https://makone.dev",
+  "bugs": {
+    "url": "https://github.com/wormholeportal/Makone/issues"
+  },
+  "scripts": {
+    "serve": "node harness/serve.mjs",
+    "create": "node harness/create.mjs",
+    "capture": "node harness/capture.mjs",
+    "inspect": "node harness/inspect.mjs",
+    "verify": "node harness/verify.mjs",
+    "catalog": "node harness/catalog.mjs",
+    "export": "node harness/export.mjs",
+    "check": "node harness/catalog.mjs --check",
+    "smoke": "node harness/smoke.mjs"
+  },
+  "dependencies": {
+    "@dimforge/rapier3d-compat": "^0.19.3",
+    "manifold-3d": "^3.0.0",
+    "mannequin-js": "^5.2.3",
+    "three": "^0.183.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.1",
+    "playwright": "^1.54.0"
+  }
+}

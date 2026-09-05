@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Makone player</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #05060a; overflow: hidden; }
+  #stage { position: fixed; inset: 0; }
+  #err { position: fixed; inset: auto 12px 40px 12px; color: #fca5a5;
+         font: 12px ui-monospace, monospace; white-space: pre-wrap; }
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "/node_modules/three/build/three.module.js",
+    "three/addons/": "/node_modules/three/examples/jsm/",
+    "manifold-3d": "/node_modules/manifold-3d/manifold.js",
+    "mannequin-js/": "/node_modules/mannequin-js/",
+    "makone/game": "/runtime/game/index.js",
+    "@dimforge/rapier3d-compat": "/node_modules/@dimforge/rapier3d-compat/rapier.mjs"
+  }
+}
+</script>
+</head>
+<body>
+<div id="stage"></div>
+<div id="err"></div>
+<script type="module">
+import { loadWorld } from '/runtime/world.js';
+
+const q = new URLSearchParams(location.search);
+const name = q.get('world');           // path under /worlds/, e.g. lighthouse
+const part = q.get('part');            // path under /worlds/, e.g. gramophone/parts/horn.js
+const captureMode = q.get('capture') === '1';
+window.__ready = false;
+
+try {
+  if (!name && !part) throw new Error('missing ?world=<name> (or ?part=<name>/parts/<file>.js)');
+  const { meta, world } = part
+    ? await loadPart(part, document.getElementById('stage'))
+    : await loadWorld(`/worlds/${name}`, document.getElementById('stage'));
+  window.__world = world;
+  window.__meta = meta;
+  document.title = `${meta.name} — Makone`;
+
+  // First paint before any loop (docs/principles.md E2): if this throws we see it now.
+  world.renderFrame(0);
+  window.__ready = true;
+
+  // Deterministic stepping + camera orbit hooks for the harness.
+  window.__step = (dt, n = 1) => { for (let i = 0; i < n; i++) world.renderFrame(dt); };
+
+  // Fraction of the frame that changed since the last call, 0..1 (verify's `animated` fact, D6).
+  // Fraction, not mean delta: averaging over the whole frame dilutes local motion into nothing —
+  // a steam wisp and two walking figures measured 0.0014 that way, i.e. "static".
+  // drawImage must happen in the same task as renderFrame or the WebGL buffer is already gone.
+  window.__motion = (() => {
+    const N = 96, EPS = 10;                 // per-channel 8-bit delta that counts as "changed"
+    const buf = document.createElement('canvas');
+    buf.width = buf.height = N;
+    const ctx = buf.getContext('2d', { willReadFrequently: true });
+    let prev = null;
+    return () => {
+      world.renderFrame(0);
+      ctx.drawImage(world.getCanvas(), 0, 0, N, N);
+      const cur = ctx.getImageData(0, 0, N, N).data;
+      let changed = 0;
+      if (prev) {
+        for (let i = 0; i < cur.length; i += 4) {
+          const d = (Math.abs(cur[i] - prev[i]) + Math.abs(cur[i + 1] - prev[i + 1])
+                   + Math.abs(cur[i + 2] - prev[i + 2])) / 3;
+          if (d > EPS) changed++;
+        }
+      }
+      prev = cur;
+      return changed / (N * N);
+    };
+  })();
+
+  // The value range of the frame, 0..1 (verify's `luma` fact, D6).
+  //
+  // Read AFTER tone mapping and colour management — this is the number the eye gets, not the
+  // linear one the shader computed, and "is this too dark to read" is a question about the eye.
+  //
+  // Three statistics, because one cannot tell the two failure modes apart:
+  //   median — is the picture as a whole sitting in the low end?
+  //   dark   — how much of it is crushed to unreadable black?
+  //   bright — is there a real highlight anywhere? A dark world is allowed to be dark, but a
+  //            dark world with no bright accent is mud, and that is the case worth catching.
+  //
+  // ...and two more about COLOUR, because value is only half of "is this frame any good" and it
+  // was the half with a number on it. A red canyon under a warm sun measured median 0.67, zero
+  // crushed pixels and a clean `natural` pass while being one single brown from floor to rim;
+  // five review rounds went by arguing about brightness. `sat` and `spread` are the other axis:
+  //   sat    — median saturation. How much colour is in the frame at all.
+  //   spread — the share of that colour NOT in its busiest 30° hue sector. Near zero is a
+  //            monochrome. Facts, not gates: a monochrome can be the whole point (fog, snow,
+  //            a foundry), and only the author knows whether it was chosen or drifted into.
+  window.__luma = (() => {
+    const N = 96;
+    const buf = document.createElement('canvas');
+    buf.width = buf.height = N;
+    const ctx = buf.getContext('2d', { willReadFrequently: true });
+    return () => {
+      world.renderFrame(0);
+      ctx.drawImage(world.getCanvas(), 0, 0, N, N);
+      const d = ctx.getImageData(0, 0, N, N).data;
+      const v = new Float32Array(N * N);
+      const s = new Float32Array(N * N);
+      const hue = new Float64Array(12);        // 30° buckets, weighted by saturation
+      let dark = 0, bright = 0, hueTotal = 0;
+      for (let i = 0, k = 0; i < d.length; i += 4, k++) {
+        const r = d[i], g = d[i + 1], b = d[i + 2];
+        // Rec. 709 relative luminance on the sRGB values as displayed
+        const y = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+        v[k] = y;
+        if (y < 0.05) dark++;
+        if (y > 0.55) bright++;
+
+        // HSV saturation and hue. Grey and near-black pixels carry no reliable hue, so they
+        // are counted for saturation but excluded from the hue histogram — otherwise a sky
+        // full of pale haze votes for whatever hue its rounding error happens to land on.
+        const mx = Math.max(r, g, b), mn = Math.min(r, g, b);
+        const sat = mx === 0 ? 0 : (mx - mn) / mx;
+        s[k] = sat;
+        if (sat < 0.15 || mx < 16) continue;
+        let h;
+        if (mx === r) h = ((g - b) / (mx - mn) + 6) % 6;
+        else if (mx === g) h = (b - r) / (mx - mn) + 2;
+        else h = (r - g) / (mx - mn) + 4;
+        hue[Math.min(11, Math.floor(h * 2))] += sat;
+        hueTotal += sat;
+      }
+      v.sort(); s.sort();
+      const q = (a, f) => a[Math.min(a.length - 1, Math.floor(f * a.length))];
+      // spread = the share of the frame's colour that is NOT in its single busiest hue sector.
+      // Near zero means every coloured pixel in the picture is the same hue — the measurable
+      // form of "this is one brown", which `luma` cannot see and which passes every key.
+      const dominant = hueTotal > 0 ? Math.max(...hue) / hueTotal : 0;
+      return {
+        median: q(v, 0.5), p95: q(v, 0.95),
+        dark: dark / (N * N), bright: bright / (N * N),
+        sat: q(s, 0.5), spread: hueTotal > 0 ? 1 - dominant : 0,
+      };
+    };
+  })();
+  // `radius` is optional and exists for one case: a world whose camera lives INSIDE it. The
+  // orbit radius is normally whatever distance the author framed from, and in a long room that
+  // is further than the room is wide — so swinging round it walks the camera out through a wall
+  // and photographs the outside of the building. harness/capture.mjs measures that and passes a
+  // radius that stays indoors.
+  window.__orbit = (azimuthDeg, elevationDeg = null, radius = null) => {
+    const cam = world.getCamera();
+    const target = world.getOrbitControls?.()?.target ?? { x: 0, y: 0, z: 0 };
+    const dx = cam.position.x - target.x, dy = cam.position.y - target.y, dz = cam.position.z - target.z;
+    const r = radius ?? Math.hypot(dx, dz);
+    const az = (azimuthDeg * Math.PI) / 180;
+    const y = elevationDeg == null ? dy : Math.hypot(r, dy) * Math.sin((elevationDeg * Math.PI) / 180);
+    cam.position.set(target.x + r * Math.sin(az), target.y + y, target.z + r * Math.cos(az));
+    cam.lookAt(target.x, target.y, target.z);
+    world.renderFrame(0);
+  };
+
+  // A NAMED viewpoint, for worlds that declare `capture.views` in their world.json. __orbit can
+  // only swing around whatever target the world already framed; a view with intent ("into the
+  // pool", "along the waterline") usually needs its own eye AND its own target, which is the
+  // whole difference between four angles and four shots somebody chose.
+  window.__view = ({ eye, at, fov } = {}) => {
+    const cam = world.getCamera();
+    if (fov) { cam.fov = fov; cam.updateProjectionMatrix(); }
+    if (eye) cam.position.set(eye[0], eye[1], eye[2]);
+    const t = at ?? world.getOrbitControls?.()?.target ?? { x: 0, y: 0, z: 0 };
+    const [tx, ty, tz] = Array.isArray(t) ? t : [t.x, t.y, t.z];
+    cam.lookAt(tx, ty, tz);
+    world.renderFrame(0);
+  };
+
+  if (!captureMode) {
+    let last = performance.now();
+    const loop = (now) => {
+      world.renderFrame(Math.min((now - last) / 1000, 0.05));
+      last = now;
+      requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
+    addEventListener('resize', () => world.resize());
+  }
+} catch (err) {
+  document.getElementById('err').textContent = String(err.stack || err);
+  console.error(err);
+}
+
+/** Load ONE part into the studio (D7). A part is a pure `build(params) -> Object3D`;
+ *  runtime/studio.js dresses it and hands back something that satisfies the WorldModule
+ *  contract, so everything downstream (capture, inspect, orbit hooks) works unchanged. */
+async function loadPart(rel, container) {
+  const mod = await import(`/worlds/${rel}`);
+  if (typeof mod.default !== 'function') throw new Error(`${rel} must export default build(params)`);
+  const MK = await import('/runtime/solid.js');
+  await MK.init();                       // parts may use CSG; init is idempotent and degrades on its own
+  const { createStudio } = await import('/runtime/studio.js');
+  const root = await mod.default(mod.params);
+  return {
+    meta: { name: rel, params: mod.params ?? null, inventory: mod.inventory ?? null,
+            datum: mod.datum ?? 'grounded' },
+    world: createStudio(container, root),
+  };
+}
+</script>
+</body>
+</html>
