@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aim Offset / Viewmodel Tuner — Three.js Demo</title>
+  <link rel="stylesheet" href="styles.css?v=20260905v72" />
+  <style>
+    /* Critical first-paint cover if styles.css is stale. Full rules live in styles.css. */
+    .boot-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 400;
+      background: #000;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 22vh;
+      opacity: 1;
+      transition: opacity 0.32s ease;
+    }
+    .boot-overlay.is-done { opacity: 0; pointer-events: none; }
+    .boot-overlay.is-gone,
+    .boot-overlay[hidden] { display: none !important; }
+  </style>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"
+      }
+    }
+    </script>
+</head>
+<body class="app-shell" data-game-style="sim">
+  <div id="bootOverlay" class="boot-overlay" role="status" aria-live="polite" aria-busy="true">
+    <div class="boot-overlay-inner">
+      <p class="boot-label" id="bootLabel">Loading…</p>
+      <div class="boot-bar" id="bootBar" role="progressbar" aria-labelledby="bootLabel" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div id="bootBarFill" class="boot-bar-fill"></div>
+      </div>
+      <p class="boot-continue" id="bootContinue" hidden>Press Space or any key to continue</p>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var FALLBACK_MS = 12000;
+      var FADE_MS = 320;
+      var dismissed = false;
+      function overlay() { return document.getElementById("bootOverlay"); }
+      function showContinue() {
+        var node = overlay();
+        if (!node || dismissed || node.classList.contains("is-done") || node.classList.contains("is-ready") || node.hidden) return;
+        node.classList.add("is-ready");
+        node.setAttribute("aria-busy", "false");
+        var fill = document.getElementById("bootBarFill");
+        if (fill) fill.style.width = "100%";
+        var bar = document.getElementById("bootBar");
+        if (bar) bar.setAttribute("aria-valuenow", "100");
+        var label = document.getElementById("bootLabel");
+        if (label) label.hidden = true;
+        var cont = document.getElementById("bootContinue");
+        if (cont) cont.hidden = false;
+      }
+      function fadeAway() {
+        var node = overlay();
+        if (!node || dismissed) return;
+        dismissed = true;
+        node.classList.add("is-done");
+        node.setAttribute("aria-busy", "false");
+        window.setTimeout(function () {
+          node.classList.add("is-gone");
+          node.hidden = true;
+          node.setAttribute("aria-hidden", "true");
+        }, FADE_MS + 40);
+      }
+      function passthrough(e) {
+        if (!e || e.type !== "keydown") return false;
+        if (e.metaKey || e.ctrlKey || e.altKey) return true;
+        return /^F\d{1,2}$/.test(e.key || "");
+      }
+      function onContinue(e) {
+        var node = overlay();
+        if (!node || dismissed || node.hidden || node.classList.contains("is-done")) return;
+        if (passthrough(e)) return;
+        if (window.__aimBootOverlay) return;
+        if (!node.classList.contains("is-ready")) {
+          if (e && e.cancelable) e.preventDefault();
+          return;
+        }
+        if (e && e.cancelable) e.preventDefault();
+        fadeAway();
+      }
+      window.setTimeout(showContinue, FALLBACK_MS);
+      window.addEventListener("keydown", onContinue, true);
+      window.addEventListener("pointerdown", onContinue, true);
+    })();
+  </script>
+  <div class="viewport-wrap">
+    <canvas id="view3d"></canvas>
+    <div id="buildStamp" class="build-stamp" aria-hidden="true"></div>
+    <div id="perfOverlay" class="perf-overlay" hidden aria-hidden="true">
+      <div>fps <span id="perfFps">0</span></div>
+      <div>ms <span id="perfMs">0.0</span></div>
+      <div>meshes <span id="perfMeshes">0</span></div>
+      <div>decals <span id="perfDecals">0</span></div>
+      <div>shells <span id="perfShells">0</span></div>
+      <div>slugs <span id="perfSlugs">0</span></div>
+    </div>
+    <div id="passLabPip" class="passlab-pip" hidden aria-hidden="true">
+      <canvas id="passLabPipCanvas" width="200" height="200"></canvas>
+      <div class="passlab-pip-src" id="passLabPipSrc">final</div>
+    </div>
+    <div id="passLabSampleRect" class="passlab-sample-rect" hidden aria-hidden="true"></div>
+    <div id="plugeOverlay" class="pluge-overlay" hidden aria-hidden="true">
+      <div class="pluge-swatch" style="background:#000000" title="Black"><span>Black</span></div>
+      <div class="pluge-swatch" style="background:#404040" title="Low"><span>Low</span></div>
+      <div class="pluge-swatch" style="background:#808080" title="Mid"><span>Mid</span></div>
+      <div class="pluge-swatch" style="background:#c0c0c0" title="High"><span>High</span></div>
+      <div class="pluge-swatch" style="background:#ffffff" title="White"><span>White</span></div>
+    </div>
+    <div class="crosshair" aria-hidden="true" id="hipCrosshair"></div>
+    <div class="optic-hud" id="opticHud" aria-hidden="true" hidden>
+      <div class="optic-vignette" id="opticVignette"></div>
+      <div class="optic-tube-frame" id="opticTubeFrame"></div>
+      <div class="reticle reticle-holo" id="reticleHolo" hidden>
+        <span class="holo-dot"></span>
+      </div>
+      <div class="reticle reticle-acog" id="reticleAcog" hidden>
+        <svg viewBox="0 0 120 120" width="120" height="120" aria-hidden="true">
+          <path d="M60 28 L72 58 L60 52 L48 58 Z" fill="#1a1a1a" stroke="#0a0a0a" stroke-width="1.5"/>
+          <path d="M36 62 H84" stroke="#1a1a1a" stroke-width="2" fill="none"/>
+          <path d="M44 70 H76 M50 78 H70" stroke="#1a1a1a" stroke-width="1.2" fill="none"/>
+        </svg>
+      </div>
+      <div class="reticle reticle-sniper" id="reticleSniper" hidden>
+        <svg viewBox="0 0 200 200" width="200" height="200" aria-hidden="true">
+          <line x1="100" y1="20" x2="100" y2="180" stroke="#111" stroke-width="1.4"/>
+          <line x1="20" y1="100" x2="180" y2="100" stroke="#111" stroke-width="1.4"/>
+          <circle cx="100" cy="100" r="2.2" fill="#111"/>
+          <!-- mil dots -->
+          <circle cx="100" cy="70" r="1.6" fill="#111"/>
+          <circle cx="100" cy="55" r="1.6" fill="#111"/>
+          <circle cx="100" cy="40" r="1.6" fill="#111"/>
+          <circle cx="100" cy="130" r="1.6" fill="#111"/>
+          <circle cx="100" cy="145" r="1.6" fill="#111"/>
+          <circle cx="100" cy="160" r="1.6" fill="#111"/>
+          <circle cx="70" cy="100" r="1.6" fill="#111"/>
+          <circle cx="55" cy="100" r="1.6" fill="#111"/>
+          <circle cx="40" cy="100" r="1.6" fill="#111"/>
+          <circle cx="130" cy="100" r="1.6" fill="#111"/>
+          <circle cx="145" cy="100" r="1.6" fill="#111"/>
+          <circle cx="160" cy="100" r="1.6" fill="#111"/>
+        </svg>
+      </div>
+    </div>
+    <div class="equip-prompt" id="equipPrompt" hidden></div>
+    <div class="breath-bar" id="breathBar" hidden><div class="breath-fill" id="breathFill"></div></div>
+    <div class="score-hud" id="scoreHud">Score 0</div>
+    <div class="ammo-cluster" id="ammoCluster">
+      <div class="fire-mode-hud" id="fireModeHud">AUTO</div>
+      <div class="ammo-hud" id="ammoHud" aria-live="polite">20/20 · ∞</div>
+    </div>
+    <div class="game-style-badge" id="gameStyleBadge" aria-live="polite">SIM</div>
+    <div id="floatLabels" class="float-labels" aria-hidden="true"></div>
+    <div class="hud-hint" id="hudHint">Press <kbd>`</kbd> — Viewmodel Debugger · <kbd>G</kbd> Guns · <kbd>X</kbd> drop kit · <kbd>F</kbd> bench / world kit · <kbd>R</kbd> reload · <kbd>C</kbd>/<kbd>Z</kbd> crouch · wheel height</div>
+
+    <aside id="debuggerPanel" class="debugger-panel closed" aria-hidden="true">
+      <div class="shell-inner">
+        <header class="top">
+          <div>
+            <h1>Viewmodel Tuner</h1>
+            <p class="sub">Three.js block-gun demo — in-engine style debug overlay</p>
+          </div>
+          <div class="meta">
+            <button type="button" id="btnGuns" title="G">Guns…</button>
+            <button type="button" id="btnSettings" title="O">Settings…</button>
+            <button type="button" id="btnAds" class="toggle" aria-pressed="false" title="Insert">ADS preview</button>
+            <button type="button" id="btnSway" class="toggle" aria-pressed="true" title="Toggle viewmodel sway">Sway</button>
+            <button type="button" id="btnPerf" class="toggle" aria-pressed="false" title="Toggle performance overlay">Perf</button>
+            <button type="button" id="btnCopy" title="Copy JSON">Copy JSON</button>
+            <button type="button" id="btnCloseDbg" title="`">Close</button>
+          </div>
+        </header>
+
+        <nav class="tabs" role="tablist">
+          <button role="tab" id="tab-view" aria-selected="true" aria-controls="panel-view">View tuning</button>
+          <button role="tab" id="tab-att" aria-selected="false" aria-controls="panel-att">Attachments</button>
+        </nav>
+
+        <section id="panel-view" class="panel" role="tabpanel" data-mode="weapon">
+          <div class="row-bar">
+            <label>Weapon
+              <select id="weaponSelect"></select>
+            </label>
+            <label>Pose
+              <select id="poseSelect"></select>
+            </label>
+            <label>Optic profile
+              <select id="opticSelect">
+                <option value="iron">Iron</option>
+                <option value="holo">Holo</option>
+                <option value="acog">Acog</option>
+                <option value="sniper_scope">Sniper scope</option>
+              </select>
+            </label>
+            <label>Step
+              <select id="stepSelect">
+                <option value="micro">MICRO</option>
+                <option value="fine" selected>FINE</option>
+                <option value="med">MED</option>
+                <option value="coarse">COARSE</option>
+              </select>
+            </label>
+            <div class="blend">
+              <span>ads_factor</span>
+              <input type="range" id="adsFactor" min="0" max="1" step="0.01" value="0" />
+              <code id="adsFactorVal">0.00</code>
+            </div>
+          </div>
+
+          <div class="ballistics-bar" id="ballisticsBar">
+            <h2>Ballistics</h2>
+            <div class="ballistics-row">
+              <div class="game-style-control" role="group" aria-label="Game style">
+                <span class="gs-label">Game style</span>
+                <div class="segmented" id="gameStyleSeg">
+                  <button type="button" id="btnGameSim" class="seg" aria-pressed="true" title="Sim: HoB + ballistic zero">Sim</button>
+                  <button type="button" id="btnGameArcade" class="seg" aria-pressed="false" title="Arcade: reticle-faithful aim">Arcade</button>
+                </div>
+              </div>
+              <label id="zeroDistLabel">Zero distance
+                <select id="zeroDistSelect">
+                  <option value="25">25 m</option>
+                  <option value="50">50 m</option>
+                  <option value="100" selected>100 m</option>
+                  <option value="200">200 m</option>
+                  <option value="300">300 m</option>
+                </select>
+              </label>
+              <button type="button" id="btnAimRays" class="toggle" aria-pressed="false" title="Draw sight ray vs bore/launch ray">Show aim/bore rays</button>
+              <code id="hobReadout">HoB — cm</code>
+            </div>
+            <p class="note" id="ballisticsNote">Sight ray = camera/optic aim. <strong>Sim</strong> launches along a ballistic zero so the gravity arc meets the sight ray at the zero distance (optics use the preset; <strong>irons are locked at 100&nbsp;m</strong>). <strong>Arcade</strong> is reticle-faithful: spawn at muzzle, velocity = camera forward (idealized bore=aim).</p>
+            <p class="note arcade-zero-hint" id="arcadeZeroHint" hidden>Zero distance mainly applies in Sim.</p>
+          </div>
+
+          <div class="split">
+            <div class="axes" id="viewAxes"></div>
+            <aside class="preview">
+              <h2>Live hold (blended)</h2>
+              <pre id="holdPreview"></pre>
+              <h2>Hotkeys</h2>
+              <ul class="keys">
+                <li><kbd>`</kbd> toggle debugger</li>
+                <li><kbd>G</kbd> gun select</li>
+                <li><kbd>C</kbd> crouch toggle · <kbd>Z</kbd> crouch hold · mouse wheel crouch height</li>
+                <li><kbd>WASD</kbd> move · <kbd>Shift</kbd> sprint (blocked while crouched; sprint+crouch = slide)</li>
+                <li><kbd>Q</kbd>/<kbd>E</kbd> lean (wall-clamped) · <kbd>U</kbd> cycle hold · RMB ADS</li>
+                <li>Hold <kbd>Space</kbd> vault (when prompted) · ADS + Space = hold breath · tap Space reserved</li>
+                <li><kbd>O</kbd> Settings (options) · <kbd>P</kbd> freeze &amp; save pass lab</li>
+                <li><kbd>B</kbd> fire mode (semi / auto — SMG only)</li>
+                <li><kbd>-</kbd>/<kbd>=</kbd> cycle optic zero (Sim) · irons locked 100 m</li>
+                <li>LMB fire (semi = click; SMG AUTO = hold; tracers from muzzle; Sim = HoB+zero by default)</li>
+                <li><kbd>R</kbd> reload mag · <kbd>X</kbd> drop kit · <kbd>F</kbd> bench pickup / world kit / mag / suppressor / table reset</li>
+                <li>Click canvas = mouse look</li>
+                <li>Optics table = <kbd>F</kbd>/click attach (SMG: holo/acog · Rifle: all rail optics · Sniper: iron/sniper · illegal = toast)</li>
+                <li>Weapons bench = <kbd>F</kbd>/click equip MP9-Z / SR-25 / M24 Sniper (fresh defaults) · world kits on the floor keep mag ammo / optic / can · red <strong>RESET TARGETS</strong> button clears paper holes, stands silhouettes, drops berm popups, restores floods</li>
+                <li>Kit table (left) = <kbd>F</kbd>/click seat mag (MP9-Z 20 stick / 45 banana / 60 double drum · SR-25 20 · M24 5) or mount/unmount that gun's suppressor. Wrong-gun mag/can does not highlight</li>
+                <li><kbd>Insert</kbd> ADS preview · Sway toggle in header</li>
+                <li><kbd>End</kbd> cycle pose</li>
+                <li><kbd>↑</kbd><kbd>↓</kbd> select axis · <kbd>←</kbd><kbd>→</kbd> nudge</li>
+                <li><kbd>PgUp</kbd><kbd>PgDn</kbd> step size</li>
+              </ul>
+              <p class="note">Hip aim = 3px white dot. ADS: FOV by optic + screen HUD reticle / peripheral tube (not primary in-lens reticle). Look sens scales with optic FOV. Composition: camera → authored hold → sway/recoil → attachments.</p>
+            </aside>
+          </div>
+        </section>
+
+        <section id="panel-att" class="panel hidden" role="tabpanel" hidden data-mode="attachment">
+          <div class="row-bar">
+            <label>Attachment
+              <select id="attSelect"></select>
+            </label>
+            <label>Step
+              <select id="attStepSelect">
+                <option value="micro">MICRO</option>
+                <option value="fine" selected>FINE</option>
+                <option value="med">MED</option>
+                <option value="coarse">COARSE</option>
+              </select>
+            </label>
+            <button type="button" id="btnCopyAtt">Copy attachment JSON</button>
+          </div>
+          <div class="split">
+            <div class="axes" id="attAxes"></div>
+            <aside class="preview">
+              <h2>Attachment local</h2>
+              <pre id="attPreview"></pre>
+              <p class="note">Offsets apply to holo / grip mesh local transforms in the 3D view.</p>
+            </aside>
+          </div>
+        </section>
+
+        <footer class="foot">
+          <span>Needs network (CDN) + local HTTP server for ES modules.</span>
+          <a href="../viewmodel_math.ts">viewmodel_math.ts</a>
+          ·
+          <a href="../../docs/03-tuner-ux.md">tuner UX</a>
+        </footer>
+      </div>
+    </aside>
+  </div>
+
+  <div id="gunModal" class="modal-backdrop" hidden>
+    <div class="gun-dialog" role="dialog" aria-labelledby="gunDialogTitle">
+      <h2 id="gunDialogTitle">Select weapon</h2>
+      <p class="hint">Debug Home-menu style picker — choose a demo gun to equip.</p>
+      <ul class="gun-list" id="gunList"></ul>
+      <div class="actions">
+        <button type="button" id="btnGunCancel">Cancel</button>
+        <button type="button" id="btnGunEquip">Equip</button>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="settingsModal" class="modal-backdrop settings-backdrop" hidden>
+    <div class="settings-dialog" role="dialog" aria-labelledby="settingsTitle">
+      <header class="settings-head">
+        <h2 id="settingsTitle">Settings</h2>
+        <div class="settings-actions">
+          <button type="button" id="btnSettingsReset">Reset defaults</button>
+          <button type="button" id="btnSettingsCopy">Copy settings</button>
+          <button type="button" id="btnSettingsClose" title="Esc / O">Close</button>
+        </div>
+      </header>
+      <p class="hint">Press <kbd>O</kbd> to open or close. Gameplay pauses. Tuners persist in this browser.</p>
+
+      <div class="settings-section">
+        <h3>Game style</h3>
+        <div class="segmented" id="settingsGameStyleSeg" role="group" aria-label="Game style">
+          <button type="button" id="btnSettingsSim" class="seg" aria-pressed="true">Sim</button>
+          <button type="button" id="btnSettingsArcade" class="seg" aria-pressed="false">Arcade</button>
+        </div>
+        <p class="note"><strong>Sim</strong> = HoB + ballistic zero. <strong>Arcade</strong> = reticle-faithful (bore = camera aim).</p>
+      </div>
+
+      <div class="settings-section">
+        <h3>Display</h3>
+        <div class="settings-checks">
+          <label class="check-row"><input type="checkbox" id="chkHipReticle" checked /> Show hip reticle</label>
+          <label class="check-row"><input type="checkbox" id="chkAimRays" /> Show aim/bore rays</label>
+        </div>
+        <label class="slider-row">Brightness
+          <input type="range" id="brightnessSlider" min="0.5" max="1.5" step="0.01" value="1.00" />
+          <code id="brightnessVal">1.00</code>
+        </label>
+        <label class="slider-row">Gamma
+          <input type="range" id="gammaSlider" min="0.8" max="1.6" step="0.01" value="1.00" />
+          <code id="gammaVal">1.00</code>
+        </label>
+        <p class="note">1.00 / 1.00 = ungraded sRGB. ToD owns the look; raise if the panel is dim.</p>
+        <div class="pluge-calib" aria-label="Grey scale test strip">
+          <div class="pluge-swatch" style="background:#000000"><span>Black</span></div>
+          <div class="pluge-swatch" style="background:#404040"><span>Low</span></div>
+          <div class="pluge-swatch" style="background:#808080"><span>Mid</span></div>
+          <div class="pluge-swatch" style="background:#c0c0c0"><span>High</span></div>
+          <div class="pluge-swatch" style="background:#ffffff"><span>White</span></div>
+        </div>
+        <label class="check-row"><input type="checkbox" id="chkPluge" /> Show PLUGE strip on viewport</label>
+        <p class="note">If Black blends into Low, shadows are crushed — raise Brightness/Gamma.</p>
+      </div>
+
+      <div class="settings-section">
+        <h3>Audio</h3>
+        <label class="slider-row">Voice
+          <input type="range" id="volVoiceSlider" min="0" max="2" step="0.01" value="1.00" />
+          <code id="volVoiceVal">100%</code>
+        </label>
+        <label class="slider-row">Music
+          <input type="range" id="volMusicSlider" min="0" max="2" step="0.01" value="1.00" />
+          <code id="volMusicVal">100%</code>
+        </label>
+        <label class="slider-row">FX
+          <input type="range" id="volFxSlider" min="0" max="2" step="0.01" value="1.00" />
+          <code id="volFxVal">100%</code>
+        </label>
+        <p class="note">Voice / Music reserved for later. FX is shots, reload, hits, glass, pickups.</p>
+      </div>
+
+      <div class="settings-section">
+        <h3>Pass lab</h3>
+        <label>Backdrop
+          <select id="passLabModeSelect">
+            <option value="off" selected>off</option>
+            <option value="gray_ramp">gray_ramp</option>
+            <option value="chroma">chroma</option>
+            <option value="gamma">gamma</option>
+            <option value="trans_checker">trans_checker</option>
+            <option value="fog_vs_near">fog_vs_near</option>
+          </select>
+        </label>
+        <label class="check-row"><input type="checkbox" id="chkPassLabPip" /> PIP probe (center crop)</label>
+        <label>PIP source
+          <select id="passLabPipSrcSelect">
+            <option value="final" selected>final (composite)</option>
+            <option value="scene">scene (pre-bloom dest)</option>
+            <option value="heat">heat grab</option>
+          </select>
+        </label>
+        <label class="check-row"><input type="checkbox" id="chkPassLabWorld" /> World backdrop (far quad, haze feel)</label>
+        <button type="button" id="btnPassLabFreeze">Freeze &amp; save pass lab</button>
+        <p class="note">Flat chart default (screen-space). Optional world far-quad for in-scene haze. PIP: <strong>final</strong> / <strong>scene</strong> / <strong>heat grab</strong> (heat fills when barrel cards or ground haze grab). <kbd>P</kbd> saves full + PIP. Off by default. <code>?passlab=chroma&amp;pip=1&amp;src=scene</code> · <code>?tod=22&amp;heat=1</code>.</p>
+      </div>
+
+      <div class="settings-section">
+        <h3>FX</h3>
+        <label class="slider-row">Hole cap
+          <input type="range" id="holeCapSlider" min="20" max="30000" step="100" value="30000" />
+          <code id="holeCapVal">30000</code>
+        </label>
+        <label class="slider-row">Casing cap
+          <input type="range" id="casingCapSlider" min="10" max="30000" step="100" value="30000" />
+          <code id="casingCapVal">30000</code>
+        </label>
+        <label class="slider-row">Hole fade
+          <input type="range" id="holeFadeSlider" min="0" max="60" step="1" value="18" />
+          <code id="holeFadeVal">18s</code>
+        </label>
+        <label class="slider-row">Casing fade
+          <input type="range" id="casingFadeSlider" min="0" max="60" step="1" value="12" />
+          <code id="casingFadeVal">12s</code>
+        </label>
+        <label class="slider-row">Decal draw
+          <input type="range" id="decalDrawSlider" min="50" max="2000" step="10" value="900" />
+          <code id="decalDrawVal">900 m</code>
+        </label>
+        <label class="slider-row">Casing draw
+          <input type="range" id="casingDrawSlider" min="8" max="200" step="1" value="55" />
+          <code id="casingDrawVal">55 m</code>
+        </label>
+        <p class="note">Env/silhouette holes FIFO-cap and can expire. Paper holes wait for table reset. Casings sleep then fade (0 = until cap recycles). Cap/fade pick from the oldest third (no firing-order zipper). Draw distance hides only — walk back and they return.</p>
+      </div>
+
+      <div class="settings-section">
+        <h3>Lighting</h3>
+        <label class="slider-row">Clock
+          <input type="range" id="todSlider" min="0" max="24" step="0.05" value="18.5" />
+          <code id="todVal">18:30</code>
+        </label>
+        <label class="slider-row">Clouds
+          <input type="range" id="cloudsSlider" min="0" max="1" step="0.01" value="0.55" />
+          <code id="cloudsVal">0.55</code>
+        </label>
+        <p class="note">Sun / sky / fog. Brightness/gamma stay as grade. Default dusk; night stays dark. Clouds 0 = clear. Intensities multiply the clock (1.00 = authored).</p>
+        <label class="slider-row">Ambient
+          <input type="range" id="lightAmbSlider" min="0" max="2.5" step="0.01" value="1.00" />
+          <code id="lightAmbVal">1.00×</code>
+        </label>
+        <label class="slider-row">Fill
+          <input type="range" id="lightFillSlider" min="0" max="2.5" step="0.01" value="1.00" />
+          <code id="lightFillVal">1.00×</code>
+        </label>
+        <label class="slider-row">Hemi
+          <input type="range" id="lightHemiSlider" min="0" max="2.5" step="0.01" value="1.00" />
+          <code id="lightHemiVal">1.00×</code>
+        </label>
+        <label class="slider-row">Sun / key
+          <input type="range" id="lightKeySlider" min="0" max="2.5" step="0.01" value="1.00" />
+          <code id="lightKeyVal">1.00×</code>
+        </label>
+        <label class="slider-row">Rim
+          <input type="range" id="lightRimSlider" min="0" max="2.5" step="0.01" value="1.00" />
+          <code id="lightRimVal">1.00×</code>
+        </label>
+        <label class="slider-row">Moon
+          <input type="range" id="lightMoonSlider" min="0" max="2.5" step="0.01" value="1.00" />
+          <code id="lightMoonVal">1.00×</code>
+        </label>
+        <label class="slider-row">Exposure
+          <input type="range" id="exposureSlider" min="0" max="2.5" step="0.01" value="1.00" />
+          <code id="exposureVal">1.00×</code>
+        </label>
+        <label class="slider-row">Sun size
+          <input type="range" id="sunSizeSlider" min="0.08" max="8" step="0.01" value="0.45" />
+          <code id="sunSizeVal">0.45°</code>
+        </label>
+        <label class="slider-row">Sun punch
+          <input type="range" id="sunPunchSlider" min="0" max="4" step="0.01" value="1.40" />
+          <code id="sunPunchVal">1.40</code>
+        </label>
+        <p class="note">Size = disc + sky halo only (real sun ≈ 0.5°), not bloom. Punch is the tiny core (soft-clamped). Halo stays below bloom.</p>
+        <label class="slider-row">God rays
+          <input type="range" id="godRaysSlider" min="0" max="2" step="0.01" value="0.90" />
+          <code id="godRaysVal">0.90</code>
+        </label>
+        <p class="note">Occlusion shafts from the sun shadow map, not a glow ball. Strongest toward low sun; noon milder; night off. 0 = skip.</p>
+        <label class="slider-row">Bloom
+          <input type="range" id="bloomSlider" min="0" max="2" step="0.01" value="0.22" />
+          <code id="bloomVal">0.22</code>
+        </label>
+        <p class="note">HDR glow on floods, muzzle, tracers, hot barrels, tiny sun core — not a second sun. 0 = skip.</p>
+        <label class="slider-row">Dither
+          <input type="range" id="ditherSlider" min="0" max="0.008" step="0.0001" value="0.001" />
+          <code id="ditherVal">0.0010</code>
+        </label>
+        <label class="slider-row">Dither scale
+          <input type="range" id="ditherScaleSlider" min="0.25" max="8" step="0.05" value="1" />
+          <code id="ditherScaleVal">1.00</code>
+        </label>
+        <label class="slider-row">Dither X
+          <input type="range" id="ditherOffXSlider" min="-32" max="32" step="0.25" value="0" />
+          <code id="ditherOffXVal">0.00</code>
+        </label>
+        <label class="slider-row">Dither Y
+          <input type="range" id="ditherOffYSlider" min="-32" max="32" step="0.25" value="0" />
+          <code id="ditherOffYVal">0.00</code>
+        </label>
+        <label>Dither type
+          <select id="ditherTypeSelect">
+            <option value="hash" selected>hash (luma TPDF)</option>
+            <option value="ign">ign</option>
+            <option value="bayer">bayer 8×8</option>
+          </select>
+        </label>
+        <label class="check-row"><input type="checkbox" id="chkDitherAnimate" /> Animate dither</label>
+        <p class="note">Banding floor after tone map, not grain. Hash = luma TPDF. Scale = frequency; offsets slide in px. Animate off (looks digital). 0 = skip.</p>
+        <label class="slider-row">Barrel heat
+          <input type="range" id="barrelHeatSlider" min="0" max="2" step="0.01" value="1.00" />
+          <code id="barrelHeatVal">1.00</code>
+        </label>
+        <p class="note">Orange/amber glow from rounds through the tube. A can takes some heat. SMG cooks fast; rifle warms; bolt barely ticks. 0 = off.</p>
+        <label class="slider-row">Haze strength
+          <input type="range" id="heatHazeStrengthSlider" min="0" max="2" step="0.01" value="1.00" />
+          <code id="heatHazeStrengthVal">1.00</code>
+        </label>
+        <label class="slider-row">Haze size
+          <input type="range" id="heatHazeSizeSlider" min="0.35" max="2" step="0.01" value="1.00" />
+          <code id="heatHazeSizeVal">1.00</code>
+        </label>
+        <div class="settings-checks">
+          <label class="check-row"><input type="checkbox" id="chkHeatHazeMaster" checked /> Heat haze master</label>
+          <label class="check-row"><input type="checkbox" id="chkBarrelHeatHaze" checked /> Barrel cards</label>
+          <label class="check-row"><input type="checkbox" id="chkGroundHeatHaze" /> Ground / height-fog</label>
+        </div>
+        <p class="note">Barrel cards: 40×20 lattice on the tube (bottoms locked; tops rise / trail). Grab + UV warp, depth-gated vs far fog and luma-locked so night sky stays black. <strong>Cards</strong> default ON. <strong>Ground / height-fog</strong> stays <strong>off</strong>. <strong>Master</strong> or strength 0 kills both. Size scales noise / lobe. Scene fog is a separate Fog control. Barrel heat slider stays the orange on the steel.</p>
+      </div>
+
+      <div class="settings-section">
+        <h3>Materials</h3>
+        <label class="slider-row">Wear
+          <input type="range" id="concreteWearSlider" min="0" max="1" step="0.01" value="0.40" />
+          <code id="concreteWearVal">0.40</code>
+        </label>
+        <label class="slider-row">Scale
+          <input type="range" id="concreteScaleSlider" min="0.40" max="1.60" step="0.02" value="1.00" />
+          <code id="concreteScaleVal">1.00</code>
+        </label>
+        <label class="slider-row">Variation
+          <input type="range" id="concreteVarSlider" min="0" max="2" step="0.02" value="1.00" />
+          <code id="concreteVarVal">1.00</code>
+        </label>
+        <p class="note">Wear = dust / edge fade. Scale = grain (low finer, high blotchier). Variation = per-panel value drift. Mid-slider is authored. Benches stay wood.</p>
+      </div>
+
+      <div class="settings-section">
+        <h3>Fog</h3>
+        <label class="check-row"><input type="checkbox" id="chkFog" checked /> Fog enabled</label>
+        <label class="slider-row">Near
+          <input type="range" id="fogNearSlider" min="20" max="450" step="1" value="375" />
+          <code id="fogNearVal">375</code>
+        </label>
+        <label class="slider-row">Far
+          <input type="range" id="fogFarSlider" min="200" max="650" step="1" value="520" />
+          <code id="fogFarVal">520</code>
+        </label>
+        <p class="note">Linear <code>THREE.Fog</code> (color tracks clear). Not heat haze — Lighting heat toggles do not change bay fog. Floor shimmer is Lighting → Ground haze (off).</p>
+      </div>
+
+      <div class="settings-section">
+        <h3>Camera clip</h3>
+        <p class="note">Depth planes. Default far <strong>2000</strong> so looking up does not clip at 520&nbsp;m; fog 375/520 still hides tracers. Log depth on.</p>
+        <label class="slider-row slider-row-num">Near
+          <input type="range" id="camNearSlider" min="0.01" max="0.5" step="0.01" value="0.05" />
+          <input type="number" id="camNearInput" min="0.001" max="2" step="0.01" value="0.05" />
+          <code id="camNearVal">0.050</code>
+        </label>
+        <label class="slider-row slider-row-num">Far
+          <input type="range" id="camFarSlider" min="100" max="5000" step="10" value="2000" />
+          <input type="number" id="camFarInput" min="50" max="5000" step="10" value="2000" />
+          <code id="camFarVal">2000</code>
+        </label>
+      </div>
+
+      <div class="settings-section">
+        <h3>Ballistics</h3>
+        <label>Zero distance
+          <select id="settingsZeroDist">
+            <option value="25">25 m</option>
+            <option value="50">50 m</option>
+            <option value="100" selected>100 m</option>
+            <option value="200">200 m</option>
+            <option value="300">300 m</option>
+          </select>
+        </label>
+        <p class="note arcade-zero-hint" id="settingsArcadeZeroHint" hidden>Zero distance mainly applies in Sim.</p>
+      </div>
+
+      <div class="settings-section">
+        <h3>Look</h3>
+        <label class="slider-row">Hip look
+          <input type="range" id="lookSensSlider" min="50" max="200" step="5" value="100" />
+          <code id="lookSensVal">100%</code>
+        </label>
+        <label class="slider-row">ADS look mul
+          <input type="range" id="adsLookMulSlider" min="50" max="150" step="5" value="100" />
+          <code id="adsLookMulVal">1.00×</code>
+        </label>
+        <label class="slider-row">DOF taps
+          <input type="range" id="adsDofTapsSlider" min="4" max="24" step="1" value="12" />
+          <code id="adsDofTapsVal">12</code>
+        </label>
+        <label class="slider-row">DOF blur
+          <input type="range" id="adsDofRadiusSlider" min="0" max="0.012" step="0.0001" value="0.0028" />
+          <code id="adsDofRadiusVal">0.0028</code>
+        </label>
+        <p class="note">ADS viewmodel only (half-res). Ring taps + center + inner ring. Range stays sharp.</p>
+      </div>
+
+      <div class="settings-section">
+        <h3>Controls cheat sheet</h3>
+        <ul class="keys settings-keys">
+          <li><kbd>WASD</kbd> move · <kbd>Shift</kbd> sprint</li>
+          <li><kbd>C</kbd> crouch toggle · <kbd>Z</kbd> crouch hold · mouse wheel crouch height</li>
+          <li><kbd>Q</kbd>/<kbd>E</kbd> lean (wall-clamped) · <kbd>U</kbd> cycle hold · RMB ADS · LMB fire</li>
+          <li><kbd>R</kbd> reload · hold <kbd>Space</kbd> vault (ADS: breath) · <kbd>B</kbd> fire mode</li>
+          <li><kbd>-</kbd>/<kbd>=</kbd> zero distance · <kbd>`</kbd> debugger · <kbd>G</kbd> guns</li>
+          <li><kbd>X</kbd> drop held kit · <kbd>F</kbd> bench / world kit / mag / suppressor / reset-targets (weapons + optics + kit table; <kbd>G</kbd> backup)</li>
+          <li>Weapon cues: fire / dry / reload / pickup / drop (procedural Web Audio; Settings Audio FX; file slots later)</li>
+          <li>Tuners persist locally · Reset defaults · Copy settings · <kbd>P</kbd> freeze pass lab</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-host" id="toastHost" aria-live="polite"></div>
+
+    <script type="module" src="app.js?v=20260905v72"></script>
+</body>
+</html>
