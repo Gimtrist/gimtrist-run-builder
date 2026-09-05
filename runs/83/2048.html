@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="theme-color" content="#0c1016">
+<title>2048 — Free Online Slide & Merge Puzzle Game | Board Gaming Hub</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Play 2048 free online. Slide tiles, merge matching numbers, reach the 2048 tile. No signup, no downloads — single-page browser game with arrow-key and swipe controls.">
+<meta name="keywords" content="2048, 2048 game, play 2048 online, free 2048, number puzzle, sliding tile game">
+<link rel="canonical" href="https://boardgaminghub.com/2048">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Board Gaming Hub">
+<meta property="og:url" content="https://boardgaminghub.com/2048">
+<meta property="og:title" content="2048 — Free Online Slide & Merge Puzzle">
+<meta property="og:description" content="Slide tiles, merge matching numbers, reach 2048. Free in-browser, single-file HTML.">
+<meta property="og:image" content="https://boardgaminghub.com/og/2048.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://boardgaminghub.com/og/2048.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "2048",
+  "description": "Slide tiles to merge matching numbers and reach the 2048 tile.",
+  "url": "https://boardgaminghub.com/2048",
+  "genre": "Puzzle",
+  "gamePlatform": "Web Browser",
+  "applicationCategory": "Game",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Board Gaming Hub","item":"https://boardgaminghub.com/"},{"@type":"ListItem","position":2,"name":"Puzzles & Classics","item":"https://boardgaminghub.com/#puzzles"},{"@type":"ListItem","position":3,"name":"2048","item":"https://boardgaminghub.com/2048"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do you play 2048?","acceptedAnswer":{"@type":"Answer","text":"Use arrow keys (or swipe on touch devices) to slide every tile in one direction. When two adjacent tiles with the same number meet, they merge into a single tile of double value. After every move a new 2 (90% of the time) or 4 (10%) appears in a random empty cell. The game ends when no moves are possible."}},{"@type":"Question","name":"What's the best 2048 strategy?","acceptedAnswer":{"@type":"Answer","text":"Pin the largest tile in one corner (most players use bottom-right) and never move it. Build a snake-pattern descending row that feeds into that corner: e.g., bottom row left-to-right increasing, second row right-to-left, etc. Avoid pressing the direction that would shift the corner — typically Up if your corner is bottom-right. With perfect play this strategy reaches 2048 reliably and 4096 often."}},{"@type":"Question","name":"What's the highest tile possible in 2048?","acceptedAnswer":{"@type":"Answer","text":"Theoretical maximum is 131,072 (2^17), achieved by merging tiles up to that value on a 4×4 grid. Practically the cap is far lower because once tiles fill the board and the highest tile cannot be merged, you lose. The 2048 tile (the win condition) is reached by ~5–10% of casual players; 4096 by perhaps 1%."}},{"@type":"Question","name":"How is the score calculated?","acceptedAnswer":{"@type":"Answer","text":"Each merge adds the value of the new tile to your score. Two 2s → 4 (+4). Two 8s → 16 (+16). Two 1024s → 2048 (+2048). Total score after reaching 2048 from a fresh game is around 20,000; reaching 4096 around 50,000."}},{"@type":"Question","name":"Why does the same tile keep spawning in the wrong place?","acceptedAnswer":{"@type":"Answer","text":"Spawn position is uniformly random among empty cells. It feels biased after a streak but isn't. The 2 vs 4 spawn is weighted 90/10 — getting a 4 spawn is meaningful because it skips a doubling step (and slightly accelerates filling the board)."}}]}</script>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background:
+    radial-gradient(ellipse at top, #1a1410 0%, #0a0608 60%) fixed;
+    color: #e8d8b8; font-family: Georgia, "Times New Roman", serif; }
+  #wrap { max-width: 540px; margin: 0 auto; padding: 28px 16px 60px; text-align: center; }
+  h1 { font-size: 2.2em; letter-spacing: 10px; color: transparent;
+    background: linear-gradient(180deg, #ffe8a8 0%, #d4a050 50%, #b07820 100%);
+    -webkit-background-clip: text; background-clip: text;
+    margin: 0 0 6px; text-shadow: 0 2px 6px rgba(0,0,0,0.5); }
+  .tag { color: #a09078; letter-spacing: 4px; font-size: 0.82em; margin-bottom: 18px; font-style: italic; }
+  .scorebar { display: flex; gap: 10px; justify-content: center; margin: 16px 0; }
+  .score { background: linear-gradient(180deg, #2a1c10, #1a1008); border: 1px solid #4a3820; border-radius: 6px; padding: 8px 14px; min-width: 90px; box-shadow: inset 0 1px 0 rgba(255,220,150,0.15), 0 2px 4px rgba(0,0,0,0.4); }
+  .score .lab { color: #8a7858; font-size: 0.7em; letter-spacing: 3px; }
+  .score .val { color: #ffd896; font-size: 1.4em; font-weight: bold; text-shadow: 0 1px 0 #000; }
+  .controls { margin: 14px 0; }
+  button { background: linear-gradient(180deg, #3a2818, #1f1408); color: #f0d89c; border: 1px solid #5a4028; border-radius: 4px; padding: 8px 16px; font-family: inherit; letter-spacing: 2px; font-size: 0.85em; cursor: pointer; box-shadow: inset 0 1px 0 rgba(255,220,150,0.2), 0 2px 4px rgba(0,0,0,0.4); }
+  button:hover { background: linear-gradient(180deg, #4a3624, #2a1c10); border-color: #7a5838; }
+  #board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 12px;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(255,220,160,0.05), transparent 60%),
+      linear-gradient(135deg, #1a1208 0%, #0a0604 100%);
+    border: 1px solid #4a3820;
+    border-radius: 8px; aspect-ratio: 1 / 1; margin: 0 auto; touch-action: none;
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,220,150,0.1), 0 8px 24px rgba(0,0,0,0.6); }
+  .cell { background: rgba(0,0,0,0.4); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: clamp(1.2em, 6vw, 2.4em); transition: transform 0.12s; box-shadow: inset 0 1px 2px rgba(0,0,0,0.6); }
+  /* Each value is a precious stone */
+  .v2 { background: radial-gradient(circle at 35% 30%, #fffef8, #e8e4dc 50%, #c8c0b4); color: #5a4a30;
+    box-shadow: inset 0 2px 4px rgba(255,255,255,0.6), inset 0 -2px 4px rgba(0,0,0,0.15), 0 2px 6px rgba(0,0,0,0.5); }
+  .v4 { background: radial-gradient(circle at 35% 30%, #fff8d8, #f0d896 60%, #c89848); color: #5a3810;
+    box-shadow: inset 0 2px 4px rgba(255,255,255,0.5), inset 0 -2px 4px rgba(0,0,0,0.2), 0 2px 6px rgba(0,0,0,0.5); }
+  .v8 { background: radial-gradient(circle at 35% 30%, #ffd0a0, #e89860 60%, #b86028); color: #fff8e8;
+    box-shadow: inset 0 2px 4px rgba(255,220,180,0.5), inset 0 -2px 4px rgba(0,0,0,0.25), 0 2px 6px rgba(0,0,0,0.5); }
+  .v16 { background: radial-gradient(circle at 35% 30%, #ffe0a0, #f0a850 60%, #b06808); color: #fff;
+    box-shadow: inset 0 2px 4px rgba(255,220,150,0.5), inset 0 -2px 4px rgba(0,0,0,0.3), 0 2px 6px rgba(0,0,0,0.5); }
+  .v32 { background: radial-gradient(circle at 35% 30%, #ffb0a0, #e06848 60%, #901810); color: #fff;
+    box-shadow: inset 0 2px 4px rgba(255,200,180,0.5), inset 0 -2px 4px rgba(0,0,0,0.3), 0 2px 8px rgba(180,30,30,0.4); }
+  .v64 { background: radial-gradient(circle at 35% 30%, #ff90a0, #d83048 60%, #800820); color: #fff;
+    box-shadow: inset 0 2px 4px rgba(255,180,180,0.5), inset 0 -2px 4px rgba(0,0,0,0.3), 0 2px 10px rgba(200,30,50,0.5); }
+  .v128 { background: radial-gradient(circle at 35% 30%, #b0c0ff, #4060d8 60%, #001880); color: #fff;
+    font-size: clamp(1em, 5vw, 2em);
+    box-shadow: inset 0 2px 4px rgba(180,200,255,0.5), inset 0 -2px 4px rgba(0,0,0,0.3), 0 2px 10px rgba(60,80,200,0.5); }
+  .v256 { background: radial-gradient(circle at 35% 30%, #c8a0ff, #6028c8 60%, #200858); color: #fff;
+    font-size: clamp(1em, 5vw, 2em);
+    box-shadow: inset 0 2px 4px rgba(200,160,255,0.5), inset 0 -2px 4px rgba(0,0,0,0.3), 0 2px 10px rgba(120,40,200,0.5); }
+  .v512 { background: radial-gradient(circle at 35% 30%, #a0ffd8, #20a060 60%, #003820); color: #fff;
+    font-size: clamp(1em, 5vw, 2em);
+    box-shadow: inset 0 2px 4px rgba(160,255,200,0.5), inset 0 -2px 4px rgba(0,0,0,0.3), 0 2px 12px rgba(40,180,100,0.5); }
+  .v1024 { background: radial-gradient(circle at 35% 30%, #ffe8d0, #f8c060 50%, #b07020); color: #2a1808;
+    font-size: clamp(0.9em, 4.4vw, 1.8em); font-style: italic;
+    box-shadow: inset 0 2px 4px rgba(255,240,200,0.7), inset 0 -2px 4px rgba(0,0,0,0.2), 0 2px 14px rgba(255,200,60,0.6); }
+  .v2048 { background:
+    radial-gradient(circle at 30% 25%, rgba(255,255,255,0.6), transparent 40%),
+    radial-gradient(circle at 70% 75%, rgba(255,200,150,0.4), transparent 50%),
+    linear-gradient(135deg, #fff4d0 0%, #f0c860 50%, #c08820 100%);
+    color: #4a2810; font-size: clamp(0.9em, 4.4vw, 1.8em);
+    box-shadow: inset 0 2px 6px rgba(255,255,200,0.8), inset 0 -2px 4px rgba(0,0,0,0.2), 0 0 20px rgba(255,200,60,0.7), 0 2px 8px rgba(0,0,0,0.5); }
+  .v4096, .v8192 { background:
+    radial-gradient(circle at 30% 25%, rgba(255,200,255,0.4), transparent 40%),
+    linear-gradient(135deg, #1a0824, #4a1060 50%, #200840);
+    color: #f0d8ff; font-size: clamp(0.85em, 4vw, 1.6em);
+    box-shadow: inset 0 0 20px rgba(255,180,255,0.3), 0 0 16px rgba(180,80,255,0.5); }
+  #msg { margin-top: 16px; min-height: 1.2em; color: #f0d89c; letter-spacing: 3px; font-size: 0.9em; }
+  nav { margin-top: 22px; font-size: 0.82em; letter-spacing: 2px; }
+  nav a { color: #a09078; text-decoration: none; margin: 0 10px; }
+  nav a:hover { color: #f0d89c; }
+  .info { color: #8a7858; font-size: 0.82em; line-height: 1.6; margin-top: 30px; text-align: left; padding: 0 6px; }
+  .info h2 { color: #d4a050; font-size: 0.95em; letter-spacing: 4px; text-transform: uppercase; margin: 18px 0 8px; }
+  .info strong { color: #f0d89c; }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <h1>2048</h1>
+  <div class="tag">SLIDE &amp; MERGE</div>
+  <div class="scorebar">
+    <div class="score"><div class="lab">SCORE</div><div class="val" id="score">0</div></div>
+    <div class="score"><div class="lab">BEST</div><div class="val" id="best">0</div></div>
+  </div>
+  <div class="controls">
+    <button id="newgame">NEW GAME</button>
+    <button id="undo">UNDO</button>
+  </div>
+  <div id="board"></div>
+  <div id="msg"></div>
+  <nav><a href="/">All games</a> · <a href="/sudoku">Sudoku</a> · <a href="/minesweeper">Minesweeper</a></nav>
+
+  <div class="info">
+    <h2>How to play 2048</h2>
+    <p>Use the arrow keys (or swipe on touch) to slide all tiles in one direction. When two tiles with the same number collide, they merge into one whose value is their sum. After every move a new <strong>2</strong> or <strong>4</strong> appears in an empty cell. The goal is to reach the <strong>2048</strong> tile — but you can keep going for 4096 and beyond.</p>
+    <h2>Strategy</h2>
+    <p>Pick a corner and keep your highest tile pinned there. Build a descending chain along one row or column. Avoid moves that disturb the corner — usually never press the direction that empties it. The game ends when the board fills up and no merges remain.</p>
+  </div>
+</div>
+<script>
+(() => {
+  const N = 4;
+  let grid, score, best, history, won;
+  const $ = id => document.getElementById(id);
+
+  function load() {
+    best = +(localStorage.getItem('g2048_best') || 0);
+    $('best').textContent = best;
+    const saved = localStorage.getItem('g2048_state');
+    if (saved) {
+      try { const s = JSON.parse(saved); grid = s.grid; score = s.score; history = s.history || []; won = s.won || false; render(); return; }
+      catch(e){}
+    }
+    newGame();
+  }
+  function save() {
+    localStorage.setItem('g2048_state', JSON.stringify({grid, score, history: history.slice(-20), won}));
+    if (score > best) { best = score; localStorage.setItem('g2048_best', best); $('best').textContent = best; }
+  }
+  function newGame() {
+    grid = Array.from({length: N}, () => Array(N).fill(0));
+    score = 0; history = []; won = false;
+    addRandom(); addRandom();
+    render(); save();
+    $('msg').textContent = '';
+  }
+  function addRandom() {
+    const empty = [];
+    for (let r=0;r<N;r++) for (let c=0;c<N;c++) if (!grid[r][c]) empty.push([r,c]);
+    if (!empty.length) return;
+    const [r,c] = empty[Math.floor(Math.random()*empty.length)];
+    grid[r][c] = Math.random() < 0.9 ? 2 : 4;
+  }
+  function render() {
+    const b = $('board'); b.innerHTML = '';
+    for (let r=0;r<N;r++) for (let c=0;c<N;c++) {
+      const v = grid[r][c];
+      const d = document.createElement('div');
+      d.className = 'cell' + (v ? ' v'+v : '');
+      d.textContent = v || '';
+      b.appendChild(d);
+    }
+    $('score').textContent = score;
+  }
+  function snapshot() { history.push({grid: grid.map(r=>r.slice()), score}); if (history.length > 20) history.shift(); }
+  function undo() {
+    if (!history.length) return;
+    const s = history.pop();
+    grid = s.grid; score = s.score;
+    render(); save();
+    $('msg').textContent = '';
+  }
+  function slideRow(row) {
+    const filtered = row.filter(v => v);
+    let gained = 0;
+    for (let i=0;i<filtered.length-1;i++) {
+      if (filtered[i] === filtered[i+1]) {
+        filtered[i] *= 2; gained += filtered[i];
+        filtered.splice(i+1, 1);
+      }
+    }
+    while (filtered.length < N) filtered.push(0);
+    return {row: filtered, gained};
+  }
+  function move(dir) {
+    snapshot();
+    const before = JSON.stringify(grid);
+    let gained = 0;
+    if (dir === 'L') {
+      for (let r=0;r<N;r++) { const s = slideRow(grid[r]); grid[r] = s.row; gained += s.gained; }
+    } else if (dir === 'R') {
+      for (let r=0;r<N;r++) { const s = slideRow(grid[r].slice().reverse()); grid[r] = s.row.reverse(); gained += s.gained; }
+    } else if (dir === 'U') {
+      for (let c=0;c<N;c++) { const col = grid.map(r=>r[c]); const s = slideRow(col); for (let r=0;r<N;r++) grid[r][c] = s.row[r]; gained += s.gained; }
+    } else if (dir === 'D') {
+      for (let c=0;c<N;c++) { const col = grid.map(r=>r[c]).reverse(); const s = slideRow(col); const out = s.row.reverse(); for (let r=0;r<N;r++) grid[r][c] = out[r]; gained += s.gained; }
+    }
+    if (JSON.stringify(grid) === before) { history.pop(); return false; }
+    score += gained;
+    addRandom();
+    render(); save();
+    if (!won && gridHas(2048)) { won = true; $('msg').textContent = 'YOU REACHED 2048 — KEEP GOING'; }
+    if (!canMove()) $('msg').textContent = 'GAME OVER — NEW GAME?';
+    return true;
+  }
+  function gridHas(v) { return grid.some(r => r.includes(v)); }
+  function canMove() {
+    for (let r=0;r<N;r++) for (let c=0;c<N;c++) {
+      if (!grid[r][c]) return true;
+      if (c<N-1 && grid[r][c]===grid[r][c+1]) return true;
+      if (r<N-1 && grid[r][c]===grid[r+1][c]) return true;
+    }
+    return false;
+  }
+  document.addEventListener('keydown', e => {
+    const k = {ArrowLeft:'L',ArrowRight:'R',ArrowUp:'U',ArrowDown:'D',a:'L',d:'R',w:'U',s:'D'}[e.key];
+    if (k) { e.preventDefault(); move(k); }
+  });
+  let tx, ty;
+  $('board').addEventListener('touchstart', e => { const t = e.touches[0]; tx = t.clientX; ty = t.clientY; }, {passive: true});
+  $('board').addEventListener('touchend', e => {
+    if (tx == null) return;
+    const t = e.changedTouches[0]; const dx = t.clientX - tx, dy = t.clientY - ty;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < 24) return;
+    if (Math.abs(dx) > Math.abs(dy)) move(dx > 0 ? 'R' : 'L'); else move(dy > 0 ? 'D' : 'U');
+    tx = ty = null;
+  });
+  $('newgame').onclick = newGame;
+  $('undo').onclick = undo;
+  load();
+})();
+</script>
+<script src="/analytics.js"></script>
+<section class="seo-content">
+  <h2>About 2048</h2>
+  <p>2048 is a single-player tile-merging puzzle on a 4×4 grid, designed by Italian programmer Gabriele Cirulli in 2014 and released as open-source the same week. The goal is to combine matching numbered tiles by sliding them, doubling each merge until you create a tile valued <strong>2048</strong>. Game ends when no further moves are possible.</p>
+
+  <h3>How to play</h3>
+  <p>Press an arrow key (or swipe on touch) to slide every tile in that direction. Two adjacent tiles with the same number merge into one of double value. After every move, a new <strong>2</strong> (90% of the time) or <strong>4</strong> (10%) appears in a random empty cell. The board fills as you fail to merge; the game ends when no slide produces movement or merge.</p>
+
+  <h3>Tile values &amp; scoring</h3>
+  <table>
+    <thead><tr><th>Tile</th><th>Source</th><th class="num">Score on merge</th></tr></thead>
+    <tbody>
+      <tr><td>2</td><td>Spawn (90%)</td><td class="num">—</td></tr>
+      <tr><td>4</td><td>Spawn (10%) or two 2s</td><td class="num">+4</td></tr>
+      <tr><td>8</td><td>Two 4s</td><td class="num">+8</td></tr>
+      <tr><td>16, 32, 64, 128</td><td>Two of half-value</td><td class="num">+value</td></tr>
+      <tr><td>256, 512, 1024</td><td>Two of half-value</td><td class="num">+value</td></tr>
+      <tr><td><strong>2048</strong> (win)</td><td>Two 1024s</td><td class="num"><strong>+2048</strong></td></tr>
+      <tr><td>4096, 8192…</td><td>Continue past the win</td><td class="num">+value</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Strategy: corner + snake</h3>
+  <p>The dominant strategy is the <strong>corner snake</strong>: pin your largest tile in one corner (most use bottom-right) and never move it. Build a descending zig-zag from that corner: bottom row right-to-left increasing, second row left-to-right, etc. Avoid pressing the direction that would shift the corner away — typically Up if your corner is bottom-right. With perfect play this strategy reaches 2048 reliably and 4096 often.</p>
+
+  <h3>Frequently asked questions</h3>
+  <details><summary>How do you play 2048?</summary><p>Arrow keys or swipe to slide all tiles in one direction. Adjacent matching tiles merge into one of double value. A new 2 or 4 spawns each move. Reach 2048 to win; keep going for higher tiles.</p></details>
+  <details><summary>Best strategy?</summary><p>Pin the largest tile in a corner; never move it. Build a snake-pattern row that feeds into it. Avoid pressing the direction that would shift the corner.</p></details>
+  <details><summary>Highest tile possible?</summary><p>Theoretically 131,072 (2¹⁷). Practically the game ends earlier when the board fills. The 2048 win tile is reached by ~5–10% of casual players; 4096 by ~1%.</p></details>
+  <details><summary>How is the score calculated?</summary><p>Each merge adds the value of the new tile to your score. Reaching 2048 from a fresh game scores ~20,000; reaching 4096 ~50,000.</p></details>
+  <details><summary>Why does the same spot keep spawning?</summary><p>Spawn position is uniformly random among empty cells. It feels biased after a streak but isn't. The 2-vs-4 spawn is weighted 90/10.</p></details>
+
+  <h3>Related games</h3>
+  <ul>
+    <li><a href="/sudoku">Sudoku</a> — number puzzle, pure logic.</li>
+    <li><a href="/solitaire">Solitaire</a> — solo card game, similar pace.</li>
+    <li><a href="/minesweeper">Minesweeper</a> — solo logic puzzle, deduction-driven.</li>
+    <li><a href="/mahjong">Mahjong Solitaire</a> — solo pattern matching.</li>
+  </ul>
+</section>
+
+<section style="max-width:900px;margin:60px auto 40px;padding:0 20px;font-family:Georgia,'Times New Roman',serif;color:#d8d0c0;">
+  <h2 style="color:#f0d89c;letter-spacing:4px;font-size:1.0em;text-transform:uppercase;border-bottom:1px solid #2a3540;padding-bottom:8px;margin-bottom:16px;">Discussion</h2>
+  <p style="color:#8098a8;font-size:0.9em;margin-bottom:18px;line-height:1.5;">Sign in with GitHub to share strategies, ask questions, or report a bug.</p>
+  <div class="giscus"></div>
+</section>
+<script src="https://giscus.app/client.js"
+  data-repo="mf4633/board-gaming"
+  data-repo-id="R_kgDOKyyThA"
+  data-category="Announcements"
+  data-category-id="DIC_kwDOKyyThM4C75Cz"
+  data-mapping="pathname"
+  data-strict="0"
+  data-reactions-enabled="1"
+  data-emit-metadata="0"
+  data-input-position="bottom"
+  data-theme="dark"
+  data-lang="en"
+  crossorigin="anonymous"
+  async></script>
+<script src="/nav.js" defer></script>
+</body>
+</html>

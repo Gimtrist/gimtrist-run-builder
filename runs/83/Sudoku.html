@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="theme-color" content="#0c1016">
+<title>Sudoku — Free Online Daily Puzzle, Easy to Expert | Board Gaming Hub</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Play Sudoku free online: easy, medium, hard, and expert puzzles. Pencil-mark notes, hint and check, daily seed. No signup, no downloads — single-page browser game.">
+<meta name="keywords" content="sudoku, play sudoku online, free sudoku, sudoku puzzle, daily sudoku, hard sudoku">
+<link rel="canonical" href="https://boardgaminghub.com/sudoku">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://boardgaminghub.com/sudoku">
+<meta property="og:title" content="Sudoku — Free Online Daily Puzzle">
+<meta property="og:description" content="Easy to expert puzzles, pencil notes, hint mode, daily seed. Free, in-browser, single-file HTML.">
+<meta property="og:image" content="https://boardgaminghub.com/og/sudoku.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://boardgaminghub.com/og/sudoku.png">
+<script type="application/ld+json">
+{ "@context": "https://schema.org", "@type": "VideoGame", "name": "Sudoku",
+  "description": "Place digits 1–9 so that every row, column, and 3×3 box contains each digit exactly once.",
+  "url": "https://boardgaminghub.com/sudoku", "genre": "Logic Puzzle",
+  "applicationCategory": "Game", "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" } }
+</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Board Gaming Hub","item":"https://boardgaminghub.com/"},{"@type":"ListItem","position":2,"name":"Puzzles & Classics","item":"https://boardgaminghub.com/#puzzles"},{"@type":"ListItem","position":3,"name":"Sudoku","item":"https://boardgaminghub.com/sudoku"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What are the rules of sudoku?","acceptedAnswer":{"@type":"Answer","text":"Fill the 9×9 grid with digits 1–9 so that every row, every column, and every 3×3 box contains each digit exactly once. The puzzle starts with some cells already filled (clues); a well-formed puzzle has exactly one solution reachable by logic alone — no guessing required."}},{"@type":"Question","name":"What's the difference between a naked single and a hidden single?","acceptedAnswer":{"@type":"Answer","text":"Naked single: a cell where only one digit is still possible after eliminating digits already in its row, column, and box. Hidden single: a digit that has only one possible cell in a particular row, column, or box, even if that cell could in principle hold other digits. Both are the easiest deductions; expert puzzles require chains of these plus advanced techniques (X-Wing, Swordfish)."}},{"@type":"Question","name":"How do pencil marks work?","acceptedAnswer":{"@type":"Answer","text":"Pencil marks (or candidates) are small notes inside an empty cell listing the digits still possible there. As you fill cells and eliminate possibilities, you erase pencil marks accordingly. They make advanced techniques tractable — most expert puzzles are unsolvable without them."}},{"@type":"Question","name":"Can every sudoku be solved by logic alone?","acceptedAnswer":{"@type":"Answer","text":"Every well-formed (single-solution) sudoku CAN be solved by some logical chain — but the chain may require techniques most humans don't use (forcing chains, nishio, etc.). Most published \"expert\" puzzles are solvable with X-Wing, swordfish, and unique-rectangle techniques. The minimum number of clues for a unique-solution sudoku is 17 (proven 2012)."}},{"@type":"Question","name":"What's the difference between easy and expert difficulty?","acceptedAnswer":{"@type":"Answer","text":"Easy puzzles solve with naked-singles and hidden-singles only. Medium adds naked pairs and pointing pairs. Hard requires X-Wings and swordfish. Expert requires chains and unique-rectangle reasoning. The clue count is a poor proxy for difficulty — a 30-clue \"expert\" can be much harder than a 24-clue \"hard\"."}}]}</script>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0;
+    background:
+      radial-gradient(ellipse at top, #1a1410 0%, #0a0604 70%) fixed;
+    color: #e8d8b8; font-family: Georgia, "Times New Roman", serif; }
+  #wrap { max-width: 560px; margin: 0 auto; padding: 28px 12px 60px; text-align: center; }
+  h1 { font-size: 2.2em; letter-spacing: 10px; margin: 0 0 6px;
+    background: linear-gradient(180deg, #ffe8a8 0%, #d4a050 50%, #905028 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.6); }
+  .tag { color: #a09078; letter-spacing: 4px; font-size: 0.82em; margin-bottom: 16px; font-style: italic; }
+  .controls { margin: 12px 0; display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
+  button { background: linear-gradient(180deg, #3a2818, #1f1408); color: #f0d89c; border: 1px solid #5a4028; border-radius: 4px; padding: 8px 12px; font-family: inherit; letter-spacing: 1.5px; font-size: 0.78em; cursor: pointer; box-shadow: inset 0 1px 0 rgba(255,220,150,0.15), 0 2px 4px rgba(0,0,0,0.4); }
+  button:hover { background: linear-gradient(180deg, #4a3624, #2a1c10); border-color: #7a5838; }
+  button.active { background: linear-gradient(180deg, #f0d89c, #b08838); color: #1a1008; border-color: #b07810; }
+  .stats { display: flex; gap: 10px; justify-content: center; margin: 10px 0 14px; color: #a09078; font-size: 0.82em; letter-spacing: 3px; }
+  .stats span { color: #ffd896; text-shadow: 0 1px 0 #000; }
+  /* Marble grid with gilt borders */
+  #board { display: inline-grid; grid-template-columns: repeat(9, 1fr); gap: 0;
+    background:
+      radial-gradient(ellipse at 20% 30%, rgba(220,210,200,0.5) 0%, transparent 40%),
+      radial-gradient(ellipse at 75% 70%, rgba(180,160,140,0.4) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(255,250,240,0.2) 0%, transparent 60%),
+      linear-gradient(140deg, #f5efe2 0%, #ebe1cf 50%, #f4ecde 100%);
+    border: 3px solid;
+    border-image: linear-gradient(135deg, #f0d89c, #b08838, #f0d89c, #b08838) 1;
+    border-radius: 4px;
+    user-select: none; max-width: 100%; aspect-ratio: 1 / 1; width: min(540px, 96vw);
+    box-shadow: 0 0 0 1px #5a3818, 0 4px 14px rgba(0,0,0,0.6), inset 0 0 30px rgba(120,80,40,0.15); }
+  .cell { background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; font-weight: bold; font-size: clamp(1em, 4.5vw, 1.6em);
+    font-family: "Palatino", "Book Antiqua", Georgia, serif; }
+  .cell.given { color: #2a1810; }
+  .cell.user { color: #8a4818; font-style: italic; }
+  .cell.bad { color: #b8201a; }
+  .cell.sel { background: rgba(255,200,80,0.35); box-shadow: inset 0 0 0 2px #b07810; }
+  .cell.peer { background: rgba(255,220,150,0.15); }
+  .cell.same { background: rgba(255,180,80,0.25); }
+  .cell.b-r { border-right: 1px solid rgba(120,80,40,0.35); }
+  .cell.b-b { border-bottom: 1px solid rgba(120,80,40,0.35); }
+  .cell.b-rh { border-right: 2px solid #8a5018; }
+  .cell.b-bh { border-bottom: 2px solid #8a5018; }
+  .notes { display: grid; grid-template-columns: repeat(3, 1fr); width: 100%; height: 100%; padding: 2px; font-size: 0.42em; color: #6a5028; font-weight: normal; }
+  .notes div { display: flex; align-items: center; justify-content: center; }
+  .pad { margin: 14px 0 8px; display: grid; grid-template-columns: repeat(9, 1fr); gap: 4px; max-width: 540px; margin-left: auto; margin-right: auto; }
+  .pad button { padding: 12px 0; font-size: 1em;
+    background: linear-gradient(180deg, #f0d89c 0%, #b08838 100%); color: #1a1008; border-color: #8a5818;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.3); }
+  .pad button:hover { background: linear-gradient(180deg, #ffe8b0, #c89848); }
+  .pad button.notemode { background: linear-gradient(180deg, #8050a0, #4a2870); color: #fff; }
+  .toolbar { display: flex; gap: 6px; justify-content: center; margin: 6px 0; flex-wrap: wrap; }
+  #msg { margin-top: 12px; min-height: 1.2em; color: #f0d89c; letter-spacing: 3px; font-size: 0.9em; }
+  nav { margin-top: 22px; font-size: 0.82em; letter-spacing: 2px; }
+  nav a { color: #a09078; text-decoration: none; margin: 0 10px; }
+  nav a:hover { color: #f0d89c; }
+  .info { color: #8a7858; font-size: 0.82em; line-height: 1.6; margin-top: 30px; text-align: left; padding: 0 6px; }
+  .info h2 { color: #d4a050; font-size: 0.95em; letter-spacing: 4px; text-transform: uppercase; margin: 18px 0 8px; }
+  .info strong { color: #f0d89c; }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <h1>SUDOKU</h1>
+  <div class="tag">PLACE 1–9</div>
+  <div class="controls">
+    <button data-d="easy" class="active">EASY</button>
+    <button data-d="medium">MEDIUM</button>
+    <button data-d="hard">HARD</button>
+    <button data-d="expert">EXPERT</button>
+  </div>
+  <div class="toolbar">
+    <button id="newgame">NEW</button>
+    <button id="daily">DAILY</button>
+    <button id="notes">NOTES</button>
+    <button id="hint">HINT</button>
+    <button id="check">CHECK</button>
+    <button id="erase">ERASE</button>
+    <button id="undo">UNDO</button>
+  </div>
+  <div class="stats">DIFFICULTY <span id="dlbl">EASY</span> · TIME <span id="time">0:00</span> · MISTAKES <span id="errs">0</span></div>
+  <div id="board"></div>
+  <div class="pad" id="pad"></div>
+  <div id="msg"></div>
+  <nav><a href="/">All games</a> · <a href="/2048">2048</a> · <a href="/minesweeper">Minesweeper</a></nav>
+
+  <div class="info">
+    <h2>How to play Sudoku</h2>
+    <p>Fill the 9×9 grid so every <strong>row</strong>, every <strong>column</strong>, and every 3×3 <strong>box</strong> contains each digit 1–9 exactly once. Tap a cell to select it, then tap a digit on the keypad — or use a number key. <strong>NOTES</strong> mode lets you pencil in candidates without committing.</p>
+    <h2>Solving techniques</h2>
+    <p>Start with rows, columns, or boxes that already have many digits — they constrain the rest. Look for "naked singles" (cells with only one possible value) and "hidden singles" (boxes where a digit can only legally go in one place). Pencil-mark candidates and eliminate them as you commit digits.</p>
+  </div>
+</div>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const SIZE = 9, BOX = 3;
+  let solution, puzzle, given, user, notes, sel = null, noteMode = false, errs = 0, t0, timer, history = [], diff = 'easy', isDaily = false, dailyDone = false;
+
+  const targetClues = { easy: 40, medium: 32, hard: 28, expert: 24 };
+
+  function shuffle(a) { for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+  function solve(g, count) {
+    for (let r=0;r<SIZE;r++) for (let c=0;c<SIZE;c++) if (!g[r][c]) {
+      const tries = shuffle([1,2,3,4,5,6,7,8,9]);
+      for (const v of tries) {
+        if (canPlace(g, r, c, v)) {
+          g[r][c] = v;
+          if (count) { count.n += solveCount(g, count.limit - count.n); if (count.n >= count.limit) { g[r][c] = 0; return count.n; } }
+          else if (solve(g)) return true;
+          g[r][c] = 0;
+        }
+      }
+      return count ? count.n : false;
+    }
+    return count ? 1 : true;
+  }
+  function solveCount(g, lim) {
+    for (let r=0;r<SIZE;r++) for (let c=0;c<SIZE;c++) if (!g[r][c]) {
+      let n = 0;
+      for (let v=1;v<=9;v++) if (canPlace(g, r, c, v)) {
+        g[r][c] = v; n += solveCount(g, lim - n); g[r][c] = 0;
+        if (n >= lim) return n;
+      }
+      return n;
+    }
+    return 1;
+  }
+  function canPlace(g, r, c, v) {
+    for (let i=0;i<SIZE;i++) if (g[r][i]===v||g[i][c]===v) return false;
+    const br = Math.floor(r/3)*3, bc = Math.floor(c/3)*3;
+    for (let i=0;i<3;i++) for (let j=0;j<3;j++) if (g[br+i][bc+j]===v) return false;
+    return true;
+  }
+  function generate(target) {
+    solution = Array.from({length:9}, () => Array(9).fill(0));
+    solve(solution);
+    puzzle = solution.map(r => r.slice());
+    const positions = shuffle([...Array(81).keys()]);
+    for (const p of positions) {
+      const r = Math.floor(p/9), c = p%9;
+      if (!puzzle[r][c]) continue;
+      const removed = puzzle[r][c]; puzzle[r][c] = 0;
+      // count solutions up to 2 to verify uniqueness
+      let solutions = 0;
+      (function rec(g) {
+        if (solutions >= 2) return;
+        for (let i=0;i<SIZE;i++) for (let j=0;j<SIZE;j++) if (!g[i][j]) {
+          for (let v=1;v<=9;v++) if (canPlace(g, i, j, v)) { g[i][j]=v; rec(g); g[i][j]=0; if (solutions>=2) return; }
+          return;
+        }
+        solutions++;
+      })(puzzle.map(row => row.slice()));
+      if (solutions !== 1) puzzle[r][c] = removed;
+      const clues = puzzle.flat().filter(v=>v).length;
+      if (clues <= target) break;
+    }
+  }
+  function dailyGenerate() {
+    const today = new Date().toISOString().slice(0,10);
+    let h = 0; for (const ch of today) h = (h*31 + ch.charCodeAt(0)) >>> 0;
+    let s = h || 1;
+    const origRandom = Math.random; // always capture the real Math.random, not a stale saved copy
+    Math.random = () => { s = (s * 1103515245 + 12345) >>> 0; return s / 4294967296; };
+    try { generate(34); } finally { Math.random = origRandom; }
+  }
+  function newGame(target) {
+    generate(target || targetClues[diff]);
+    given = puzzle.map(r => r.map(v => v !== 0));
+    user = puzzle.map(r => r.slice());
+    notes = Array.from({length:9}, () => Array.from({length:9}, () => new Set()));
+    sel = null; noteMode = false; errs = 0; history = []; isDaily = false;
+    if (timer) clearInterval(timer); t0 = Date.now();
+    timer = setInterval(updateTime, 1000);
+    $('errs').textContent = '0'; $('msg').textContent = '';
+    $('dlbl').textContent = diff.toUpperCase();
+    render();
+  }
+  function updateTime() {
+    const s = Math.floor((Date.now()-t0)/1000);
+    $('time').textContent = Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+  }
+  // ----- Daily puzzle: same grid for everyone, shareable spoiler-free result -----
+  function dailyNumber() { return Math.floor((Date.now() - Date.UTC(2025, 0, 1)) / 86400000); }
+  function startDaily() {
+    dailyGenerate();
+    given = puzzle.map(r => r.map(v => v !== 0));
+    user = puzzle.map(r => r.slice());
+    notes = Array.from({length:9}, () => Array.from({length:9}, () => new Set()));
+    sel = null; errs = 0; history = []; isDaily = true; dailyDone = false;
+    if (timer) clearInterval(timer); t0 = Date.now();
+    timer = setInterval(updateTime, 1000);
+    $('errs').textContent = '0';
+    $('dlbl').textContent = 'DAILY';
+    $('msg').textContent = 'DAILY #' + dailyNumber() + ' — ' + new Date().toISOString().slice(0,10);
+    render();
+  }
+  function recordDailyWin() {
+    const st = JSON.parse(localStorage.getItem('sudoku_daily') || '{"lastDay":-1,"streak":0,"solves":0}');
+    const day = dailyNumber();
+    if (st.lastDay === day) return st; // already counted today
+    st.solves++;
+    st.streak = (st.lastDay === day - 1) ? st.streak + 1 : 1;
+    st.lastDay = day;
+    localStorage.setItem('sudoku_daily', JSON.stringify(st));
+    return st;
+  }
+  async function shareDaily() {
+    const txt = 'Sudoku #' + dailyNumber() + ' — ' + $('time').textContent + ', ' + errs +
+      ' mistake' + (errs === 1 ? '' : 's') + '\nhttps://boardgaminghub.com/sudoku#daily';
+    try { if (navigator.share) { await navigator.share({ text: txt }); return; } } catch (e) { /* fall through */ }
+    try { await navigator.clipboard.writeText(txt); $('msg').textContent = 'RESULT COPIED — PASTE TO SHARE'; }
+    catch (e) { $('msg').textContent = txt; }
+  }
+  function render() {
+    const b = $('board'); b.innerHTML = '';
+    for (let r=0;r<9;r++) for (let c=0;c<9;c++) {
+      const d = document.createElement('div');
+      d.className = 'cell';
+      if (c % 3 === 2 && c < 8) d.classList.add('b-rh'); else if (c < 8) d.classList.add('b-r');
+      if (r % 3 === 2 && r < 8) d.classList.add('b-bh'); else if (r < 8) d.classList.add('b-b');
+      if (sel && sel[0]===r && sel[1]===c) d.classList.add('sel');
+      else if (sel && (sel[0]===r || sel[1]===c || (Math.floor(sel[0]/3)===Math.floor(r/3) && Math.floor(sel[1]/3)===Math.floor(c/3)))) d.classList.add('peer');
+      if (sel && user[sel[0]][sel[1]] && user[r][c] === user[sel[0]][sel[1]]) d.classList.add('same');
+      if (user[r][c]) {
+        d.classList.add(given[r][c] ? 'given' : 'user');
+        if (!given[r][c] && user[r][c] !== solution[r][c]) d.classList.add('bad');
+        d.textContent = user[r][c];
+      } else if (notes[r][c].size) {
+        const nd = document.createElement('div'); nd.className = 'notes';
+        for (let n=1;n<=9;n++) { const x = document.createElement('div'); x.textContent = notes[r][c].has(n) ? n : ''; nd.appendChild(x); }
+        d.appendChild(nd);
+      }
+      d.onclick = () => { sel = [r,c]; render(); };
+      b.appendChild(d);
+    }
+    const pad = $('pad'); pad.innerHTML = '';
+    for (let n=1;n<=9;n++) {
+      const btn = document.createElement('button'); btn.textContent = n;
+      btn.onclick = () => place(n); pad.appendChild(btn);
+    }
+    $('notes').classList.toggle('notemode', noteMode);
+  }
+  function place(v) {
+    if (!sel) return;
+    const [r,c] = sel; if (given[r][c]) return;
+    history.push({ user: user.map(r=>r.slice()), notes: notes.map(r=>r.map(s=>new Set(s))), errs });
+    if (noteMode) {
+      if (notes[r][c].has(v)) notes[r][c].delete(v); else notes[r][c].add(v);
+      user[r][c] = 0;
+    } else {
+      if (user[r][c] === v) user[r][c] = 0;
+      else { user[r][c] = v; notes[r][c].clear();
+        if (v !== solution[r][c]) { errs++; $('errs').textContent = errs; }
+      }
+    }
+    render(); checkWin();
+  }
+  function erase() { if (!sel) return; const [r,c]=sel; if (given[r][c]) return;
+    history.push({ user: user.map(r=>r.slice()), notes: notes.map(r=>r.map(s=>new Set(s))), errs });
+    user[r][c] = 0; notes[r][c].clear(); render(); }
+  function hint() { if (!sel) return; const [r,c]=sel; if (given[r][c]||user[r][c]===solution[r][c]) return;
+    history.push({ user: user.map(r=>r.slice()), notes: notes.map(r=>r.map(s=>new Set(s))), errs });
+    user[r][c] = solution[r][c]; notes[r][c].clear(); render(); checkWin(); }
+  function check() {
+    let bad = 0;
+    for (let r=0;r<9;r++) for (let c=0;c<9;c++) if (user[r][c] && user[r][c] !== solution[r][c]) bad++;
+    $('msg').textContent = bad ? bad + ' WRONG ENTRIES' : 'NO MISTAKES';
+  }
+  function undo() {
+    if (!history.length) return;
+    const s = history.pop();
+    user = s.user; notes = s.notes; errs = s.errs;
+    $('errs').textContent = errs; render();
+  }
+  function checkWin() {
+    for (let r=0;r<9;r++) for (let c=0;c<9;c++) if (user[r][c] !== solution[r][c]) return;
+    clearInterval(timer);
+    let m = 'SOLVED IN ' + $('time').textContent + ' (' + errs + ' MISTAKE' + (errs === 1 ? '' : 'S') + ')';
+    if (isDaily && !dailyDone) {
+      dailyDone = true;
+      const st = recordDailyWin();
+      $('msg').textContent = m + ' · DAILY #' + dailyNumber() + ' · STREAK ' + st.streak + ' 🔥';
+      const b = document.createElement('button');
+      b.id = 'share'; b.textContent = 'SHARE RESULT'; b.style.marginTop = '10px';
+      b.onclick = shareDaily;
+      $('msg').appendChild(document.createElement('br'));
+      $('msg').appendChild(b);
+    } else {
+      $('msg').textContent = m;
+    }
+  }
+  document.querySelectorAll('[data-d]').forEach(b => b.onclick = () => {
+    diff = b.dataset.d;
+    document.querySelectorAll('[data-d]').forEach(x => x.classList.toggle('active', x === b));
+    newGame();
+  });
+  $('newgame').onclick = () => newGame();
+  $('daily').onclick = () => startDaily();
+  $('notes').onclick = () => { noteMode = !noteMode; render(); };
+  $('hint').onclick = hint;
+  $('check').onclick = check;
+  $('erase').onclick = erase;
+  $('undo').onclick = undo;
+  document.addEventListener('keydown', e => {
+    if (e.key >= '1' && e.key <= '9') place(+e.key);
+    else if (e.key === 'Backspace' || e.key === 'Delete' || e.key === '0') erase();
+    else if (e.key === 'n' || e.key === 'N') { noteMode = !noteMode; render(); }
+    else if (sel && e.key.startsWith('Arrow')) {
+      let [r,c] = sel;
+      if (e.key === 'ArrowUp') r = (r+8)%9;
+      if (e.key === 'ArrowDown') r = (r+1)%9;
+      if (e.key === 'ArrowLeft') c = (c+8)%9;
+      if (e.key === 'ArrowRight') c = (c+1)%9;
+      sel = [r,c]; render(); e.preventDefault();
+    }
+  });
+  if ((location.hash || '').toLowerCase() === '#daily') startDaily(); else newGame();
+})();
+</script>
+<script src="/analytics.js"></script>
+<section class="seo-content">
+  <h2>About Sudoku</h2>
+  <p>Sudoku is a logic-based number-placement puzzle. Fill a 9×9 grid with digits 1 through 9 so that every row, every column, and every 3×3 box contains each digit exactly once. The puzzle starts with some cells already filled (clues); a properly-formed sudoku has exactly one solution and is deducible by logic alone — no guessing required.</p>
+
+  <h3>How to play</h3>
+  <p>Tap a cell, then tap a digit 1–9 to place it. Use pencil marks to record what's still possible in each cell — essential at hard and expert difficulty. As you place a digit, eliminate it from the same row, column, and 3×3 box. The puzzle is complete when every row, column, and box contains 1–9 with no duplicates.</p>
+
+  <h3>Solving techniques by difficulty</h3>
+  <table>
+    <thead><tr><th>Technique</th><th>Description</th><th>Difficulty</th></tr></thead>
+    <tbody>
+      <tr><td>Naked single</td><td>Cell has only one possible digit after eliminations</td><td>Easy</td></tr>
+      <tr><td>Hidden single</td><td>A digit has only one possible cell in a row, column, or box</td><td>Easy</td></tr>
+      <tr><td>Naked pair / triple</td><td>Two (or three) cells in a unit share the same two (or three) candidates</td><td>Medium</td></tr>
+      <tr><td>Pointing pair / triple</td><td>A box's only spots for a digit lie in one row or column — eliminate from the rest of that row/column</td><td>Medium</td></tr>
+      <tr><td>X-Wing</td><td>Two parallel rows have two candidate cells each in the same two columns — eliminate that digit elsewhere in those columns</td><td>Hard</td></tr>
+      <tr><td>Swordfish</td><td>X-Wing extended to 3 rows / 3 columns</td><td>Expert</td></tr>
+      <tr><td>Coloring / chains</td><td>Trace a candidate's implications through the grid until it forces a contradiction</td><td>Expert</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Logical reachability</h3>
+  <p>Every well-formed sudoku has exactly one solution and is logically deducible. The minimum number of clues for a unique-solution sudoku is <strong>17</strong> (proven by computer search, 2012). Most published expert puzzles solve with X-Wing + swordfish + unique-rectangle techniques; harder ones require chains.</p>
+
+  <h3>Frequently asked questions</h3>
+  <details><summary>What are the rules?</summary><p>Fill the 9×9 grid with digits 1–9 so each row, each column, and each 3×3 box contains every digit exactly once. Some cells start pre-filled.</p></details>
+  <details><summary>Naked single vs hidden single?</summary><p>Naked single: a cell has only one possible digit. Hidden single: a digit has only one possible cell in a row, column, or box. Both are the easiest deductions.</p></details>
+  <details><summary>How do pencil marks work?</summary><p>Small notes inside an empty cell listing the digits still possible there. As you fill cells and eliminate possibilities, erase marks accordingly. Most expert puzzles are unsolvable without them.</p></details>
+  <details><summary>Can every sudoku be solved by logic alone?</summary><p>Every well-formed (single-solution) sudoku is logically solvable in principle. In practice, expert puzzles may require techniques most humans don't use day-to-day.</p></details>
+  <details><summary>Easy vs Expert difficulty?</summary><p>Easy = naked + hidden singles only. Medium adds naked pairs and pointing pairs. Hard requires X-Wings and swordfish. Expert requires chains and unique-rectangle reasoning.</p></details>
+
+  <h3>Related games</h3>
+  <ul>
+    <li><a href="/minesweeper">Minesweeper</a> — pure-deduction logic puzzle.</li>
+    <li><a href="/2048">2048</a> — number puzzle with movement.</li>
+    <li><a href="/chess">Chess</a> — strategic logic across moves.</li>
+    <li><a href="/mahjong">Mahjong Solitaire</a> — pattern-matching puzzle.</li>
+  </ul>
+</section>
+
+<section style="max-width:900px;margin:60px auto 40px;padding:0 20px;font-family:Georgia,'Times New Roman',serif;color:#d8d0c0;">
+  <h2 style="color:#f0d89c;letter-spacing:4px;font-size:1.0em;text-transform:uppercase;border-bottom:1px solid #2a3540;padding-bottom:8px;margin-bottom:16px;">Discussion</h2>
+  <p style="color:#8098a8;font-size:0.9em;margin-bottom:18px;line-height:1.5;">Sign in with GitHub to share strategies, ask questions, or report a bug.</p>
+  <div class="giscus"></div>
+</section>
+<script src="https://giscus.app/client.js"
+  data-repo="mf4633/board-gaming"
+  data-repo-id="R_kgDOKyyThA"
+  data-category="Announcements"
+  data-category-id="DIC_kwDOKyyThM4C75Cz"
+  data-mapping="pathname"
+  data-strict="0"
+  data-reactions-enabled="1"
+  data-emit-metadata="0"
+  data-input-position="bottom"
+  data-theme="dark"
+  data-lang="en"
+  crossorigin="anonymous"
+  async></script>
+<script src="/nav.js" defer></script>
+</body>
+</html>

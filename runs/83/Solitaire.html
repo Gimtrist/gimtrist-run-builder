@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="theme-color" content="#0c1016">
+<title>Solitaire — Free Online Klondike Card Game | Board Gaming Hub</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Play Klondike Solitaire free online: classic single-player card game. Smart-click to auto-move cards, undo, draw 1 or draw 3. No signup, no downloads, mobile-friendly.">
+<meta name="keywords" content="solitaire, klondike, play solitaire online, free solitaire, classic solitaire, card game">
+<link rel="canonical" href="https://boardgaminghub.com/solitaire">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://boardgaminghub.com/solitaire">
+<meta property="og:title" content="Solitaire — Free Online Klondike">
+<meta property="og:description" content="The classic single-player card game. Free, in-browser, single-file HTML.">
+<meta property="og:image" content="https://boardgaminghub.com/og/solitaire.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://boardgaminghub.com/og/solitaire.png">
+<script type="application/ld+json">
+{ "@context": "https://schema.org", "@type": "VideoGame", "name": "Solitaire (Klondike)",
+  "description": "Build foundations from Ace to King in each suit, using a tableau of seven columns and a draw stock.",
+  "url": "https://boardgaminghub.com/solitaire", "genre": "Card Game",
+  "applicationCategory": "Game", "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" } }
+</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Board Gaming Hub","item":"https://boardgaminghub.com/"},{"@type":"ListItem","position":2,"name":"Puzzles & Classics","item":"https://boardgaminghub.com/#puzzles"},{"@type":"ListItem","position":3,"name":"Solitaire","item":"https://boardgaminghub.com/solitaire"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I win Klondike Solitaire?","acceptedAnswer":{"@type":"Answer","text":"Build all four foundations from Ace to King by suit. The tableau is built downward with alternating colors; foundations are built upward by suit. Use the stock and waste pile to feed cards you cannot place directly on the tableau. The game is won when all 52 cards have moved to the foundations."}},{"@type":"Question","name":"What does smart-click do?","acceptedAnswer":{"@type":"Answer","text":"Smart-click (also called auto-move) sends a card to its best legal destination automatically — a foundation if it can go there, or the most useful tableau slot otherwise. Saves time once many cards are in play."}},{"@type":"Question","name":"What's the difference between Draw 1 and Draw 3?","acceptedAnswer":{"@type":"Answer","text":"Draw 1 deals one card from the stock to the waste at a time and lets you play it directly. Draw 3 deals three cards face-up but only the top is playable, making the game considerably harder. Draw 1 wins about 80% of deals with perfect play; Draw 3 closer to 5%."}},{"@type":"Question","name":"Are all Klondike deals winnable?","acceptedAnswer":{"@type":"Answer","text":"No. With perfect play and Draw 1 rules, an estimated 80–82% of deals are solvable. Draw 3 falls to roughly 4–5%. Some deals are mathematically unwinnable from the start; the rate is higher when undo is permitted."}},{"@type":"Question","name":"What is the talon (stock and waste)?","acceptedAnswer":{"@type":"Answer","text":"After dealing the tableau, the remaining 24 cards form the stock pile, face-down. Clicking the stock turns the top card (or three) onto the waste pile, where the top card is playable. When the stock empties you can usually recycle the waste back into the stock."}}]}</script>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0;
+    background:
+      radial-gradient(ellipse at top, #1a0c08 0%, #0a0604 70%) fixed;
+    color: #e8d8b8; font-family: Georgia, "Times New Roman", serif; }
+  #wrap { max-width: 1000px; margin: 0 auto; padding: 24px 8px 60px; }
+  header { text-align: center; }
+  h1 { font-size: 2.2em; letter-spacing: 10px; margin: 0 0 6px;
+    background: linear-gradient(180deg, #ffe8a8 0%, #d4a050 50%, #905028 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.6); }
+  .tag { color: #a09078; letter-spacing: 4px; font-size: 0.82em; margin-bottom: 14px; font-style: italic; }
+  .controls { margin: 12px 0; display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
+  button { background: linear-gradient(180deg, #3a2818, #1f1408); color: #f0d89c; border: 1px solid #5a4028; border-radius: 4px; padding: 8px 14px; font-family: inherit; letter-spacing: 2px; font-size: 0.82em; cursor: pointer; box-shadow: inset 0 1px 0 rgba(255,220,150,0.2), 0 2px 4px rgba(0,0,0,0.4); }
+  button:hover { background: linear-gradient(180deg, #4a3624, #2a1c10); border-color: #7a5838; }
+  button.active { background: linear-gradient(180deg, #f0d89c, #b08838); color: #1a1008; border-color: #b07810; }
+  .stats { color: #a09078; font-size: 0.82em; letter-spacing: 3px; text-align: center; margin: 6px 0 14px; }
+  .stats span { color: #ffd896; text-shadow: 0 1px 0 #000; }
+  /* Felt table — green baize with subtle weave */
+  #board {
+    background:
+      radial-gradient(circle at 30% 20%, rgba(255,255,200,0.04), transparent 60%),
+      radial-gradient(circle at 70% 80%, rgba(0,40,20,0.4), transparent 60%),
+      repeating-linear-gradient(45deg, rgba(0,0,0,0.04) 0 1px, transparent 1px 3px),
+      linear-gradient(135deg, #0e3a26 0%, #0a2818 100%);
+    border: 1px solid #2a4a38;
+    border-radius: 8px; padding: 16px; min-height: 600px; position: relative;
+    box-shadow: inset 0 0 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,220,150,0.1), 0 8px 24px rgba(0,0,0,0.7); }
+  .top-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 18px; }
+  .pile-slot { aspect-ratio: 5/7; max-width: 90px; min-height: 100px; border: 1px dashed rgba(255,220,150,0.25); border-radius: 6px; position: relative; cursor: pointer; background: rgba(0,0,0,0.15); }
+  .tableau { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+  .col { min-height: 360px; position: relative; cursor: pointer; }
+  .col .pile-slot { width: 100%; }
+  /* Cards: aged ivory with embossed face */
+  .card { position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 15%, rgba(255,255,255,0.6), transparent 50%),
+      linear-gradient(180deg, #fbf4e2 0%, #f0e4cc 100%);
+    border: 1px solid #2a1810; border-radius: 6px;
+    padding: 4px 6px; font-weight: bold; font-size: 0.95em;
+    color: #1a0e08;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.7),
+      inset 0 -1px 0 rgba(120,80,40,0.2),
+      1px 2px 4px rgba(0,0,0,0.5);
+    user-select: none; line-height: 1.1;
+    font-family: "Palatino", "Book Antiqua", Georgia, serif; }
+  .card.red { color: #9a1820; }
+  /* Card back: gold filigree on indigo */
+  .card.back {
+    background:
+      repeating-linear-gradient(45deg, rgba(255,220,150,0.18) 0 2px, transparent 2px 8px),
+      repeating-linear-gradient(-45deg, rgba(255,220,150,0.12) 0 2px, transparent 2px 8px),
+      radial-gradient(circle at center, #2a1850, #100828 80%);
+    border: 1px solid #4a3010;
+    box-shadow:
+      inset 0 0 0 4px rgba(255,220,150,0.25),
+      inset 0 0 0 5px #1a0c30,
+      inset 0 1px 0 rgba(255,220,150,0.2),
+      1px 2px 4px rgba(0,0,0,0.5); }
+  .card .rank { font-size: 1.15em; }
+  .card .suit { font-size: 1em; }
+  .card .center { position: absolute; bottom: 4px; right: 6px; font-size: 1.7em; transform: rotate(180deg); opacity: 0.9; }
+  .card.sel { box-shadow: 0 0 0 3px #ffd896, 0 0 12px rgba(255,200,100,0.6), 1px 2px 4px rgba(0,0,0,0.5); z-index: 1000 !important; }
+  #msg { margin-top: 14px; min-height: 1.4em; color: #f0d89c; letter-spacing: 3px; font-size: 0.95em; text-align: center; }
+  nav { margin-top: 22px; font-size: 0.82em; letter-spacing: 2px; text-align: center; }
+  nav a { color: #a09078; text-decoration: none; margin: 0 10px; }
+  nav a:hover { color: #f0d89c; }
+  .info { color: #8a7858; font-size: 0.82em; line-height: 1.6; margin-top: 30px; padding: 0 10px; }
+  .info h2 { color: #d4a050; font-size: 0.95em; letter-spacing: 4px; text-transform: uppercase; margin: 18px 0 8px; }
+  .info strong { color: #f0d89c; }
+  @media (max-width: 700px) {
+    .card { font-size: 0.78em; padding: 2px 4px; }
+    .card .center { font-size: 1.1em; bottom: 2px; right: 4px; }
+  }
+</style>
+<style>
+/* ===== MOBILE OVERFLOW FIX ===== */
+/* Cards are placed in the board's own coordinate space, so shrinking the grid
+   scatters them. Keep the board at its natural size and let it scroll inside
+   the page instead of dragging the whole document sideways. */
+@media (max-width: 820px) {
+  #board { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  #wrap { overflow-x: hidden; }
+}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <header>
+    <h1>SOLITAIRE</h1>
+    <div class="tag">KLONDIKE</div>
+  </header>
+  <div class="controls">
+    <button id="newgame">NEW DEAL</button>
+    <button id="undo">UNDO</button>
+    <button id="auto">AUTO-COMPLETE</button>
+    <button data-draw="1" class="active">DRAW 1</button>
+    <button data-draw="3">DRAW 3</button>
+  </div>
+  <div class="stats">MOVES <span id="moves">0</span> · TIME <span id="time">0:00</span> · WINS <span id="wins">0</span></div>
+  <div id="board">
+    <div class="top-row">
+      <div class="pile-slot" id="stock"></div>
+      <div class="pile-slot" id="waste"></div>
+      <div></div>
+      <div class="pile-slot" id="f0" data-found="0"></div>
+      <div class="pile-slot" id="f1" data-found="1"></div>
+      <div class="pile-slot" id="f2" data-found="2"></div>
+      <div class="pile-slot" id="f3" data-found="3"></div>
+    </div>
+    <div class="tableau" id="tableau"></div>
+  </div>
+  <div id="msg"></div>
+  <nav><a href="/">All games</a> · <a href="/sudoku">Sudoku</a> · <a href="/mahjong">Mahjong</a> · <a href="/wordform">Wordform</a></nav>
+
+  <div class="info">
+    <h2>How to play Klondike Solitaire</h2>
+    <p>Move all 52 cards to the four foundations, building each suit from <strong>Ace to King</strong>. The seven tableau columns are built downward in <strong>alternating colors</strong> (red on black, black on red). Only Kings can fill an empty column. Click the stock pile to draw cards into the waste; when empty, click again to recycle.</p>
+    <h2>Controls</h2>
+    <p>Click any card to <strong>auto-move</strong> it — Solitaire picks the best legal destination (foundation first, then tableau). To move a stack, click the bottom card. Empty stock recycles automatically. Use <strong>AUTO-COMPLETE</strong> when all cards are face-up to finish in one click.</p>
+  </div>
+</div>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const SUITS = ['♠','♥','♦','♣'];
+  const COLORS = {'♠':'b','♥':'r','♦':'r','♣':'b'};
+  const RANKS = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+  const RV = r => RANKS.indexOf(r);
+
+  let stock, waste, found, tabl, sel, history, draw = 1, moves = 0, t0, timer, wins = +(localStorage.getItem('sol_wins')||0);
+
+  function newDeck() {
+    const d = [];
+    for (const s of SUITS) for (const r of RANKS) d.push({ s, r, up: false });
+    for (let i=d.length-1;i>0;i--) { const j = Math.floor(Math.random()*(i+1)); [d[i],d[j]] = [d[j],d[i]]; }
+    return d;
+  }
+  function deal() {
+    const d = newDeck();
+    tabl = [[],[],[],[],[],[],[]];
+    for (let c=0;c<7;c++) for (let r=0;r<=c;r++) {
+      const card = d.pop();
+      if (r === c) card.up = true;
+      tabl[c].push(card);
+    }
+    stock = d.map(c => ({...c, up:false}));
+    waste = []; found = [[],[],[],[]];
+  }
+  function newGame() {
+    deal(); sel = null; history = []; moves = 0;
+    if (timer) clearInterval(timer); t0 = Date.now();
+    timer = setInterval(() => {
+      const s = Math.floor((Date.now()-t0)/1000);
+      $('time').textContent = Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+    }, 250);
+    $('msg').textContent = ''; $('moves').textContent = 0; $('wins').textContent = wins;
+    render();
+  }
+  function snapshot() {
+    history.push({
+      stock: JSON.parse(JSON.stringify(stock)),
+      waste: JSON.parse(JSON.stringify(waste)),
+      found: JSON.parse(JSON.stringify(found)),
+      tabl: JSON.parse(JSON.stringify(tabl)),
+      moves
+    });
+    if (history.length > 200) history.shift();
+  }
+  function undo() {
+    if (!history.length) return;
+    const s = history.pop();
+    stock = s.stock; waste = s.waste; found = s.found; tabl = s.tabl; moves = s.moves;
+    sel = null; $('msg').textContent = ''; $('moves').textContent = moves;
+    render();
+  }
+
+  function canPlaceFound(card, fIdx) {
+    const f = found[fIdx];
+    if (!f.length) return card.r === 'A';
+    return f[0].s === card.s && RV(card.r) === RV(f[f.length-1].r) + 1;
+  }
+  function canStackTabl(card, col) {
+    const t = tabl[col];
+    if (!t.length) return card.r === 'K';
+    const top = t[t.length-1]; if (!top.up) return false;
+    return COLORS[top.s] !== COLORS[card.s] && RV(top.r) === RV(card.r) + 1;
+  }
+  function findMove(card, fromCol /* tableau col index, or 'w' */, fromIdx) {
+    // Try foundation first only if single card
+    const isSingle = (fromCol === 'w') || (fromIdx === tabl[fromCol].length - 1);
+    if (isSingle) {
+      for (let f=0; f<4; f++) if (canPlaceFound(card, f)) return { type:'found', idx:f };
+    }
+    for (let c=0; c<7; c++) {
+      if (fromCol === c) continue;
+      if (canStackTabl(card, c)) return { type:'tabl', idx:c };
+    }
+    return null;
+  }
+  function clickWaste() {
+    if (!waste.length) return;
+    const card = waste[waste.length-1];
+    const m = findMove(card, 'w');
+    if (!m) { sel = null; render(); return; }
+    snapshot();
+    waste.pop();
+    if (m.type === 'found') found[m.idx].push(card);
+    else tabl[m.idx].push(card);
+    moves++; afterMove();
+  }
+  function clickTabl(col, idx) {
+    const t = tabl[col]; if (idx >= t.length) return;
+    const card = t[idx]; if (!card.up) {
+      if (idx === t.length - 1) { snapshot(); card.up = true; moves++; afterMove(); }
+      return;
+    }
+    const stack = t.slice(idx);
+    // try moving the stack
+    if (stack.length === 1) {
+      const m = findMove(card, col, idx);
+      if (!m) return;
+      snapshot();
+      tabl[col].splice(idx);
+      if (m.type === 'found') found[m.idx].push(card);
+      else tabl[m.idx].push(card);
+      if (tabl[col].length && !tabl[col][tabl[col].length-1].up) tabl[col][tabl[col].length-1].up = true;
+      moves++; afterMove();
+    } else {
+      // multi-card: only to tableau
+      for (let c=0;c<7;c++) {
+        if (c === col) continue;
+        if (canStackTabl(card, c)) {
+          snapshot();
+          tabl[col].splice(idx);
+          tabl[c].push(...stack);
+          if (tabl[col].length && !tabl[col][tabl[col].length-1].up) tabl[col][tabl[col].length-1].up = true;
+          moves++; afterMove();
+          return;
+        }
+      }
+    }
+  }
+  function clickStock() {
+    if (!stock.length && !waste.length) return; // nothing to do; avoid spurious snapshot/move
+    snapshot();
+    if (!stock.length) {
+      while (waste.length) { const c = waste.pop(); c.up = false; stock.push(c); }
+    } else {
+      for (let i=0;i<draw && stock.length;i++) {
+        const c = stock.pop(); c.up = true; waste.push(c);
+      }
+    }
+    moves++; afterMove();
+  }
+  function afterMove() {
+    $('moves').textContent = moves;
+    sel = null; render();
+    if (found.every(f => f.length === 13)) {
+      clearInterval(timer); wins++; localStorage.setItem('sol_wins', wins);
+      $('wins').textContent = wins;
+      $('msg').textContent = 'WIN — ' + moves + ' MOVES IN ' + $('time').textContent;
+    }
+  }
+  function autoComplete() {
+    const allUp = tabl.every(c => c.every(card => card.up)) && stock.length === 0;
+    if (!allUp) { $('msg').textContent = 'AUTO ONLY WHEN ALL FACE-UP'; return; }
+    // Take one snapshot so undo reverses the whole auto-complete, not card-by-card.
+    snapshot();
+    let any = true;
+    while (any) {
+      any = false;
+      // try waste
+      if (waste.length) {
+        const c = waste[waste.length-1];
+        for (let f=0;f<4;f++) if (canPlaceFound(c, f)) { waste.pop(); found[f].push(c); moves++; any = true; break; }
+      }
+      // try tableau tops
+      for (let i=0;i<7;i++) {
+        const t = tabl[i]; if (!t.length) continue;
+        const c = t[t.length-1];
+        for (let f=0;f<4;f++) if (canPlaceFound(c, f)) { t.pop(); found[f].push(c); moves++; any = true; break; }
+      }
+    }
+    afterMove();
+  }
+  function cardEl(card, top) {
+    const d = document.createElement('div');
+    d.className = 'card';
+    if (!card.up) { d.classList.add('back'); return d; }
+    if (COLORS[card.s] === 'r') d.classList.add('red');
+    d.innerHTML = `<div class="rank">${card.r}<br>${card.s}</div><div class="center">${card.s}</div>`;
+    return d;
+  }
+  function render() {
+    // Stock
+    const sk = $('stock'); sk.innerHTML = ''; sk.style.background = '';
+    if (stock.length) sk.appendChild(cardEl(stock[stock.length-1]));
+    else { sk.style.background = '#143828'; }
+    sk.onclick = clickStock;
+    // Waste
+    const w = $('waste'); w.innerHTML = '';
+    if (waste.length) {
+      const c = waste[waste.length-1];
+      const e = cardEl(c); w.appendChild(e);
+      e.onclick = e2 => { e2.stopPropagation(); clickWaste(); };
+    }
+    // Foundations
+    for (let f=0; f<4; f++) {
+      const fs = $('f'+f); fs.innerHTML = '';
+      if (found[f].length) fs.appendChild(cardEl(found[f][found[f].length-1]));
+      fs.onclick = () => {
+        if (!found[f].length) return;
+        const c = found[f][found[f].length-1];
+        // try moving back to tableau
+        for (let col=0; col<7; col++) if (canStackTabl(c, col)) {
+          snapshot(); found[f].pop(); tabl[col].push(c); moves++; afterMove(); return;
+        }
+      };
+    }
+    // Tableau
+    const tab = $('tableau'); tab.innerHTML = '';
+    for (let c=0;c<7;c++) {
+      const colDiv = document.createElement('div'); colDiv.className = 'col';
+      const t = tabl[c];
+      if (!t.length) {
+        const slot = document.createElement('div'); slot.className = 'pile-slot';
+        slot.onclick = () => clickTabl(c, 0);
+        colDiv.appendChild(slot);
+      } else {
+        for (let i=0;i<t.length;i++) {
+          const card = t[i];
+          const wrap = document.createElement('div'); wrap.className = 'pile-slot';
+          wrap.style.position = 'relative'; wrap.style.minHeight = '0';
+          wrap.style.height = (i === t.length-1 ? '100px' : '24px');
+          wrap.style.marginTop = i === 0 ? '0' : '-78px';
+          wrap.style.zIndex = i + 1;
+          const e = cardEl(card);
+          e.style.position = 'absolute'; e.style.inset = '0';
+          e.onclick = ev => { ev.stopPropagation(); clickTabl(c, i); };
+          wrap.appendChild(e);
+          colDiv.appendChild(wrap);
+        }
+      }
+      tab.appendChild(colDiv);
+    }
+  }
+  document.querySelectorAll('[data-draw]').forEach(b => b.onclick = () => {
+    draw = +b.dataset.draw;
+    document.querySelectorAll('[data-draw]').forEach(x => x.classList.toggle('active', x === b));
+    newGame();
+  });
+  $('newgame').onclick = newGame;
+  $('undo').onclick = undo;
+  $('auto').onclick = autoComplete;
+  newGame();
+})();
+</script>
+<script src="/analytics.js"></script>
+<section class="seo-content">
+  <h2>About Klondike Solitaire</h2>
+  <p>Klondike is the canonical Solitaire — a single-player card game using a standard 52-card deck where the goal is to build four foundation piles from Ace to King by suit. Originated in late-19th-century North America and bundled with Microsoft Windows since 1990, Klondike is the most-played card game in the world.</p>
+
+  <h3>How to play</h3>
+  <p>The deal puts 28 cards into a 7-column tableau (1 card in column 1, 2 in column 2, … 7 in column 7) — only the bottom card in each column is face-up. The remaining 24 cards form the stock; the four foundation slots and the waste pile start empty. Build the tableau downward in alternating colors (e.g., black 7 on red 8); flip a face-down card when the cards on top of it are moved. Build foundations upward by suit, starting from Ace. You may move the top card of the waste, the top of any tableau column, or any face-up run as a group.</p>
+
+  <h3>Layout reference</h3>
+  <table>
+    <thead><tr><th>Element</th><th>Cards</th><th>Build rule</th></tr></thead>
+    <tbody>
+      <tr><td>Tableau</td><td>7 columns, 28 cards (1+2+…+7)</td><td>Down by alternating color</td></tr>
+      <tr><td>Stock</td><td>24 cards face-down</td><td>Click to deal to waste</td></tr>
+      <tr><td>Waste</td><td>0–24 cards</td><td>Top card playable</td></tr>
+      <tr><td>Foundations</td><td>4 piles, one per suit</td><td>Up from Ace (♠♥♦♣) to King</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Win condition &amp; solvability</h3>
+  <p>Win by moving all 52 cards onto the foundations. Solvability with perfect play: <strong>~80% Draw 1</strong>, <strong>~5% Draw 3</strong>. The casual win rate is much lower because most human players don't backtrack optimally. Allowing unlimited undo nearly closes the gap.</p>
+
+  <h3>Frequently asked questions</h3>
+  <details><summary>How do I win Klondike?</summary><p>Build all four foundations from Ace to King by suit. Use the tableau (down, alternating colors) and the stock-waste cycle to feed cards onto the foundations. The game ends when all 52 cards have moved up.</p></details>
+  <details><summary>What does smart-click do?</summary><p>Auto-moves the clicked card to its best legal destination — usually a foundation if eligible, otherwise the most useful tableau column.</p></details>
+  <details><summary>Draw 1 vs Draw 3?</summary><p>Draw 1 deals one stock card at a time, directly playable. Draw 3 deals three face-up but only the top is playable, making the game far harder. Draw 1 wins ~80% of deals; Draw 3 ~5%.</p></details>
+  <details><summary>Are all deals winnable?</summary><p>No. With perfect Draw 1 play, ~80–82% of random deals are solvable. Some are mathematically dead from the deal.</p></details>
+  <details><summary>What is the talon?</summary><p>The combined stock + waste pile. Stock starts with 24 face-down cards; clicking deals to the waste. When stock empties, the waste typically recycles back — usually unlimited times.</p></details>
+
+  <h3>Related games</h3>
+  <ul>
+    <li><a href="/mahjong">Mahjong Solitaire</a> — solo tile-matching, similar pace.</li>
+    <li><a href="/sudoku">Sudoku</a> — pure logic, no luck.</li>
+    <li><a href="/2048">2048</a> — slide-and-merge solo puzzle.</li>
+    <li><a href="/chess">Chess</a> — two-player abstract strategy.</li>
+  </ul>
+</section>
+
+<section style="max-width:900px;margin:60px auto 40px;padding:0 20px;font-family:Georgia,'Times New Roman',serif;color:#d8d0c0;">
+  <h2 style="color:#f0d89c;letter-spacing:4px;font-size:1.0em;text-transform:uppercase;border-bottom:1px solid #2a3540;padding-bottom:8px;margin-bottom:16px;">Discussion</h2>
+  <p style="color:#8098a8;font-size:0.9em;margin-bottom:18px;line-height:1.5;">Sign in with GitHub to share strategies, ask questions, or report a bug.</p>
+  <div class="giscus"></div>
+</section>
+<script src="https://giscus.app/client.js"
+  data-repo="mf4633/board-gaming"
+  data-repo-id="R_kgDOKyyThA"
+  data-category="Announcements"
+  data-category-id="DIC_kwDOKyyThM4C75Cz"
+  data-mapping="pathname"
+  data-strict="0"
+  data-reactions-enabled="1"
+  data-emit-metadata="0"
+  data-input-position="bottom"
+  data-theme="dark"
+  data-lang="en"
+  crossorigin="anonymous"
+  async></script>
+<script src="/nav.js" defer></script>
+</body>
+</html>
