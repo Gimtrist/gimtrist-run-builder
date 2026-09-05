@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; form-action 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co; img-src 'self' data:">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0a1c6e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MARIO">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<link rel="manifest" href="./manifest.webmanifest">
+<title>SUPER CLI MARIO</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: #0b0e1a;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    font-family: ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+  body { touch-action: none; overscroll-behavior: none; -webkit-tap-highlight-color: transparent; user-select: none; }
+  @supports (height: 100dvh) { body { height: 100dvh; position: fixed; inset: 0; width: 100%; } }
+  #bar {
+    flex: 0 0 auto;
+    padding: 6px 16px;
+    padding-top: max(6px, env(safe-area-inset-top));
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+    background: #0a1c6e; color: #fff;
+    font-weight: 700; letter-spacing: 2px;
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 2px solid #e4221b;
+  }
+  #bar .dim { font-weight: 400; letter-spacing: 0; color: #9fb6d9; font-size: 12px; }
+  body.touch #bar .dim { display: none; }
+  #stage {
+    flex: 1 1 auto; min-height: 0;
+    display: flex; align-items: center; justify-content: center;
+    cursor: text;
+  }
+  #game { image-rendering: pixelated; }
+  #note {
+    flex: 0 0 auto;
+    padding: 4px 16px; font-size: 12px; color: #6d7a99;
+    padding-bottom: max(4px, env(safe-area-inset-bottom));
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+    background: #071330; text-align: center;
+  }
+  #note a { color: #9fb6d9; }
+  /* ---- loading screen: the boot screen IS a level of the game. All
+     art, palette and the 3×5 font are ports of render/*.go, so the
+     loader and the title screen read as one continuous world. ---- */
+  #stage { position: relative; }
+  #stage { touch-action: none; }
+  #loader {
+    position: absolute; inset: 0; z-index: 5;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 14px;
+    background: #0b0e1a;
+    transition: opacity .45s ease;
+  }
+  #loader.done { opacity: 0; pointer-events: none; }
+  #boot { image-rendering: pixelated; display: block; }
+  .meta { display: flex; gap: 16px; align-items: baseline; font-size: 13px; color: #9fb6d9; }
+  .meta .pct { min-width: 4ch; text-align: right; color: #fff; font-weight: 700; }
+  .phase::after { content: "_"; animation: blink 1.1s steps(1) infinite; }
+  .phase.err::after { content: none; }
+  #loader .about { font-size: 11px; color: #7e93b5; }
+  @keyframes blink { 50% { opacity: 0; } }
+  /* ---- leaderboard: real DOM text over the canvas (the game pushes
+     JSON snapshots via window.marioBoard) ---- */
+  #board {
+    position: absolute; inset: 0; z-index: 4;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: rgba(13,8,3,.84);
+    pointer-events: none;
+  }
+  #board.off { display: none; }
+  #board.on-touch { pointer-events: auto; touch-action: pan-y; overflow-y: auto; }
+  #board h3 { color:#FFF3B0; letter-spacing:.35em; font-size:15px; margin:0 0 14px; font-weight:700; }
+  #board p { margin:4px 0; color:#fff; font-size:14px; }
+  #board .gold { color:#FFF3B0; }
+  #board .hint { color:#9fb6d9; font-size:12px; }
+  #board .score { font-size:16px; }
+  #board .field { font-size:16px; letter-spacing:.08em; }
+  #board table { border-collapse: collapse; margin: 2px 0 10px; }
+  #board td { padding: 1px 10px; font-size: 14px; color: #fff; font-variant-numeric: tabular-nums; }
+  #board td.rk { text-align: right; color: #9fb6d9; }
+  #board td.nm { text-align: left; min-width: 9ch; }
+  #board td.sc { text-align: right; }
+  #board td.lv { text-align: right; color: #9fb6d9; }
+  #board tr.mine td { color: #FFF3B0; font-weight: 700; }
+  #board .vfy { color: #80D010; font-weight: 700; }
+  @keyframes ui-blink { 50% { opacity: 0; } }
+  #board .blink { animation: ui-blink 1.2s steps(1) infinite; }
+  #board th { font-size: 10px; letter-spacing: .18em; color: #6d7a99; font-weight: 700; padding: 0 10px 3px; }
+  #board th:nth-child(1) { text-align: right; } #board th:nth-child(3), #board th:nth-child(4) { text-align: right; }
+  #board .card {
+    background: rgba(6,12,38,.93);
+    border: 2px solid #2a4a9e;
+    border-radius: 18px;
+    padding: 18px 26px 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.65);
+    max-width: min(88vw, 400px);
+    text-align: center;
+  }
+  #board.on-touch .card p { font-size: 15px; }
+  #board.on-touch .card .score, #board.on-touch .card .field { font-size: 17px; }
+  #board.on-touch .card td { font-size: 15px; padding: 2px 10px; }
+
+
+  /* ---- touch pad: a translucent overlay deck in the game's own palette.
+     The canvas fills the whole viewport; the joystick (bottom-left) and
+     A/B (bottom-right) float above it, so small devices lose no screen
+     space to controls. ---- */
+  #pad {
+    position: fixed; inset: 0; z-index: 4;
+    display: none; /* body.touch shows it */
+    pointer-events: none;
+  }
+  body.touch #pad { display: block; }
+  /* translucent deck: the game reads through the controls; a held
+     control brightens so the thumb sees it registered. */
+  #pad .pbtn, #pad .stick, #pad .stick-knob { opacity: .55; }
+  #pad .pbtn.held, #pad .pbtn:active, #pad .stick.active { opacity: .9; }
+  #pad .grp { position: absolute; pointer-events: auto; display: flex; gap: 10px; align-items: center; }
+  #pad .stick-grp { inset: 0; } /* full-viewport anchor for the stick's own left/bottom */
+  .pbtn {
+    appearance: none; border: 1px solid #2a4a9e; background: #0a1c6e; color: #fff;
+    font-weight: 700; letter-spacing: .08em;
+    display: flex; align-items: center; justify-content: center;
+    width: 48px; height: 48px; touch-action: none; -webkit-touch-callout: none;
+    text-shadow: 0 1px 0 rgba(0,0,0,.5);
+    box-shadow: 0 4px 0 #06123f, inset 0 1px 0 rgba(255,255,255,.08);
+    transition: transform .06s ease, box-shadow .06s ease, filter .06s ease;
+  }
+  .pbtn.held, .pbtn:active {
+    background: #16309a;
+    transform: translateY(4px);
+    box-shadow: 0 0 0 #06123f;
+  }
+  /* virtual joystick: tilt to run, pull down to duck */
+  #pad .stick {
+    position: absolute;
+    left: max(18px, env(safe-area-inset-left));
+    bottom: max(16px, env(safe-area-inset-bottom));
+    width: 128px; height: 128px; border-radius: 50%;
+    pointer-events: auto; touch-action: none; -webkit-touch-callout: none;
+    background: radial-gradient(circle at 50% 40%, #12245c 0%, #0a1740 72%);
+    border: 2px solid #2a4a9e;
+    box-shadow: 0 4px 0 #06123f, inset 0 2px 12px rgba(0,0,0,.5);
+  }
+  #pad .stick.active { border-color: #4a6ad4; }
+  #pad .stick-knob {
+    position: absolute; left: 50%; top: 50%; width: 54px; height: 54px;
+    margin: -27px 0 0 -27px; border-radius: 50%;
+    background: linear-gradient(#1a3aa0, #0d2154);
+    border: 2px solid #4a6ad4;
+    box-shadow: 0 3px 0 #06123f, inset 0 1px 0 rgba(255,255,255,.15);
+    transition: transform .05s ease;
+  }
+  #pad .stick.active .stick-knob { border-color: #FCD000; }
+  /* A/B: thumb-sized action buttons, bottom-right */
+  #pad .act-grp {
+    right: max(16px, env(safe-area-inset-right));
+    bottom: max(16px, env(safe-area-inset-bottom));
+    gap: 14px;
+  }
+  .pbtn.act-btn {
+    width: 74px; height: 74px; border-radius: 50%; font-size: 20px;
+    background: linear-gradient(#c2211b, #8f120c); border-color: #f75550;
+    box-shadow: 0 5px 0 #4d0805, inset 0 2px 0 rgba(255,255,255,.22);
+  }
+  .pbtn.b-btn {
+    background: linear-gradient(#1c2f7a, #101c4e); border-color: #4a6ad4;
+    box-shadow: 0 5px 0 #060d2a, inset 0 2px 0 rgba(255,255,255,.14);
+    margin-top: 26px;
+  }
+  .pbtn.act-btn.held, .pbtn.act-btn:active {
+    transform: translateY(5px);
+    box-shadow: 0 0 0 #4d0805, inset 0 3px 10px rgba(0,0,0,.3);
+  }
+  .pbtn.b-btn.held, .pbtn.b-btn:active { box-shadow: 0 0 0 #060d2a; }
+  /* mid row: pause / die / restart / START / SCORES — small pills, bottom-centre.
+     Stretched anchor (not left:50%+translate) so flex-wrap can pack a second
+     line on narrow phones instead of shrink-to-fitting to half the viewport.
+     Arrange-mode layouts override left/right/transform explicitly, so saved
+     positions are unaffected. */
+  #pad .mid-grp {
+    left: 12px; right: 12px;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    gap: 8px; row-gap: 6px;
+    flex-wrap: wrap; justify-content: center;
+  }
+  .pbtn.mid-btn {
+    width: auto; min-width: 44px; height: 40px; padding: 0 10px;
+    border-radius: 20px; font-size: 12px;
+  }
+  /* ask / board / entry: modal overlays over the frozen game */
+  #pad-ask, #pad-board {
+    position: absolute; inset: 0;
+    display: none; align-items: center; justify-content: center; gap: 16px;
+    pointer-events: auto;
+    background: rgba(4,10,32,.78);
+  }
+  #pad-entry {
+    position: absolute; inset: 0;
+    display: none; align-items: center; justify-content: center;
+    pointer-events: auto;
+    background: rgba(4,10,32,.78);
+  }
+  #pad .btn-yes, #pad .btn-no { width: 140px; height: 64px; font-size: 18px; letter-spacing: .12em; border-radius: 16px; }
+  #pad .btn-yes {
+    color: #241a00; text-shadow: 0 1px 0 #ffe98a;
+    background: linear-gradient(#ffd94d, #d9a600);
+    border-color: #fff3b0;
+    box-shadow: 0 4px 0 #7d5c00, inset 0 1px 0 rgba(255,255,255,.55);
+  }
+  #pad .btn-yes.held, #pad .btn-yes:active {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 #7d5c00, inset 0 3px 8px rgba(0,0,0,.2);
+  }
+  #pad .btn-no {
+    background: linear-gradient(#1c2650, #10173a);
+    box-shadow: 0 4px 0 #060b22, inset 0 1px 0 rgba(255,255,255,.08);
+  }
+  #pad .btn-no.held, #pad .btn-no:active {
+    transform: translateY(4px); box-shadow: 0 0 0 #060b22;
+  }
+  #pad.keypad #pad-entry {
+    display: grid; grid-template-columns: repeat(10, 1fr); gap: 7px;
+    align-content: center; padding: 12px; width: 100%; max-width: 520px; margin: 0 auto;
+  }
+  #pad.keypad .pbtn { width: 100%; height: 46px; border-radius: 10px; font-size: 15px; letter-spacing: 0; }
+  #pad.keypad .ok {
+    grid-column: span 2;
+    background: linear-gradient(#e4221b, #a01208); border-color: #f75550;
+    box-shadow: 0 4px 0 #5c0b06, inset 0 1px 0 rgba(255,255,255,.2);
+  }
+  #pad.keypad .ok.held, #pad.keypad .ok:active {
+    background: #b21813; transform: translateY(4px); box-shadow: 0 0 0 #5c0b06;
+  }
+  /* touch mode: the game owns the whole viewport; the hint line floats
+     at the top so it never steals height from the canvas. */
+  body.touch #note {
+    position: fixed; top: 34px; left: 0; right: 0; z-index: 3;
+    color: #8ea3c9; background: transparent;
+  }
+  /* ---- arrange mode: drag controls where your thumbs want them ---- */
+  #pad.arrange { pointer-events: auto; }
+  #pad.arrange .pbtn, #pad.arrange .stick {
+    outline: 2px dashed #FCD000; outline-offset: 3px;
+  }
+  #pad.arrange .pbtn.held, #pad.arrange .stick.active { opacity: .95; }
+  #pad .pbtn.mid-btn.arranging {
+    background: #d9a600; color: #241a00;
+  }
+  @media (orientation: portrait) {
+    #pad .stick { width: 108px; height: 108px; bottom: 168px; }
+    #pad .act-grp { bottom: 160px; }
+    .pbtn.act-btn { width: 70px; height: 70px; }
+    .pbtn.b-btn { margin-top: 16px; }
+  }
+  /* ---- top-bar controls + rotate hint ---- */
+  #bar .bar-r { display: flex; align-items: center; gap: 10px; }
+  #bar .cbtn {
+    appearance: none; border: 1px solid #2a4a9e; background: #0a1c6e; color: #fff;
+    border-radius: 8px; font-size: 14px; line-height: 1;
+    width: 32px; height: 28px; padding: 0; cursor: pointer;
+    box-shadow: 0 2px 0 #06123f;
+  }
+  #bar .cbtn:active { transform: translateY(2px); box-shadow: none; }
+  .pbtn[hidden] { display: none; } /* [hidden] loses to .pbtn's flex otherwise */
+  #rotate {
+    display: none; flex: 0 0 auto;
+    justify-content: center; align-items: center; gap: 10px;
+    background: #0a1c6e; color: #FCD000;
+    border-bottom: 2px solid #2a4a9e;
+    font-size: 12px; font-weight: 700; letter-spacing: 1px;
+    padding: 4px 12px;
+  }
+  #rotate button {
+    appearance: none; border: 0; background: none; color: #9fb6d9;
+    font-size: 14px; font-weight: 700; padding: 0 4px; cursor: pointer;
+  }
+  @media (orientation: portrait) { body.touch #rotate:not(.off) { display: flex; } }
+  @media (prefers-reduced-motion: reduce) { .pbtn { transition: none; } }
+.cbtn.off { text-decoration: line-through; opacity: .55; }
+</style>
+</head>
+<body>
+<div id="bar">
+  <span>SUPER CLI MARIO</span>
+  <span class="bar-r">
+    <span class="dim">a/d move · w jump · s duck · x run/fire · p pause · k die · r restart</span>
+    <button id="pad-btn" class="cbtn" tabindex="-1" aria-label="toggle on-screen pad">🎮</button>
+    <button id="fs-btn" class="cbtn" tabindex="-1" aria-label="fullscreen">⛶</button>
+    <button id="music-btn" class="cbtn" tabindex="-1" aria-label="toggle music">🎵</button>
+    <button id="mute-btn" class="cbtn" tabindex="-1" aria-label="toggle sound">🔊</button>
+  </span>
+</div>
+<div id="rotate"><span>↻ ROTATE FOR THE FULL VIEW</span><button id="rotate-x" tabindex="-1" aria-label="dismiss rotate hint">✕</button></div>
+<div id="stage">
+  <canvas id="game"></canvas>
+  <div id="loader" role="status">
+    <canvas id="boot" width="160" height="56"></canvas>
+    <div class="meta" aria-live="polite">
+      <span class="phase" id="phase">downloading</span>
+      <span class="pct" id="pct">0%</span>
+    </div>
+    <div class="about">unofficial fan game · not affiliated with nintendo</div>
+  </div>
+  <div id="board" class="off"></div>
+</div>
+<div id="pad"></div>
+<div id="note">click the game to focus · <a href="#">restart</a></div>
+
+<!-- All asset paths are RELATIVE so the site works under a GitHub Pages
+     sub-path (user.github.io/repo/). -->
+<script src="./wasm_exec.js"></script>
+<script src="./boot.js"></script>
+</body>
+</html>
