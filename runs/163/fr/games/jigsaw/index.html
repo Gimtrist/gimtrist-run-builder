@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="fr" dir="ltr">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <!-- FIRST, and synchronous. data-theme is deliberately never baked into
+             these documents - they are cached and it would be wrong for whoever
+             chose the other theme - so this is what sets it before the first
+             paint. A module import runs far too late and the page visibly
+             flashes the other theme. Generated from themes.ts, never written
+             out here, so adding a theme cannot leave it behind. -->
+        <script>
+          (function(){try{var t=localStorage.getItem("ellaz:theme");if(t&&["market","night"].indexOf(t)>-1&&t!=="market")document.documentElement.setAttribute("data-theme",t)}catch(e){}})()
+        </script>
+        <meta name="theme-color" content="#ff4d8d" />
+        <title>Puzzle - jeu d&#39;images à assembler gratuit | Ellaz</title>
+        <meta name="description" content="Puzzle gratuit dans le navigateur pour enfants. Appuyez sur une pièce, appuyez sur sa place, l&#39;image se reconstitue. Six, douze ou vingt pièces. Sans compte." />
+        <link rel="canonical" href="https://ellaz.fun/fr/games/jigsaw/" />
+        <link rel="alternate" hreflang="en" href="https://ellaz.fun/games/jigsaw/" /><link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/jigsaw/" /><link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/jigsaw/" /><link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/jigsaw/" />
+        <link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/jigsaw/" />
+        
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Ellaz" />
+        <meta property="og:locale" content="fr_FR" />
+        <meta property="og:locale:alternate" content="en_US" /><meta property="og:locale:alternate" content="he_IL" /><meta property="og:locale:alternate" content="es_ES" />
+        <meta property="og:title" content="Puzzle - jeu d&#39;images à assembler gratuit | Ellaz" />
+        <meta property="og:description" content="Puzzle gratuit dans le navigateur pour enfants. Appuyez sur une pièce, appuyez sur sa place, l&#39;image se reconstitue. Six, douze ou vingt pièces. Sans compte." />
+        <meta property="og:url" content="https://ellaz.fun/fr/games/jigsaw/" />
+        <meta property="og:image" content="https://ellaz.fun/og/game-jigsaw-fr-3e54bbeb.png" />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+          <meta property="og:image:alt" content="Puzzle - jeu d&#39;images à assembler gratuit | Ellaz" />
+          <meta name="twitter:image" content="https://ellaz.fun/og/game-jigsaw-fr-3e54bbeb.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <!-- Measurement, on EVERY emitted document and not only the app shell.
+             Search Console says the arrivals land on GAME pages from Hebrew
+             queries, so a shell-only tag would have measured almost none of
+             them. Empty on any non-primary base, so the noindex mirror never
+             reports. Config and its deliberate limits: src/build/analytics.ts. -->
+        
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E25QBB8420"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied'});gtag('set','ads_data_redaction',true);gtag('js',new Date());gtag('config','G-E25QBB8420',{client_storage:'none',allow_google_signals:false,allow_ad_personalization_signals:false});</script>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;800&amp;family=Fredoka:wght@500;600&amp;display=swap" />
+        <style>
+          *,*::before,*::after{box-sizing:border-box}
+:root{
+  --doc-ink:var(--text,#1b1b2b);
+  --doc-soft:var(--text-dim,#5a5a72);
+  --doc-line:var(--line,#e4e2ef);
+  --doc-bg:var(--bg,#fdfcff);
+  --doc-card:var(--surface,#ffffff);
+  --doc-brand:var(--brand-ink,#6c5ce7);
+  --doc-sun:var(--yellow,#ffc730);
+  --doc-stage:var(--stage-bg,#12142b);
+}
+:root[data-theme="night"]{
+  --doc-ink:var(--text,#f5f6ff);
+  --doc-soft:var(--text-dim,#b3b8e0);
+  --doc-line:var(--line,#2a2f55);
+  --doc-bg:var(--bg,#0f1226);
+  --doc-card:var(--surface,#1e2240);
+  --doc-brand:var(--brand-ink,#a29bfe);
+  --doc-sun:var(--yellow,#fdcb6e);
+  --doc-stage:var(--stage-bg,#12142b);
+}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--doc-bg);color:var(--doc-ink);
+  font:400 17px/1.7 Heebo,Assistant,Rubik,system-ui,-apple-system,sans-serif}
+main{max-width:44rem;margin-inline:auto;padding:0 20px 72px}
+h1,h2,h3{font-family:Fredoka,Heebo,system-ui,sans-serif;line-height:1.25;margin:0;
+  color:var(--doc-ink)}
+h1{font-size:2rem;font-weight:600;margin-block:8px 12px}
+h2{font-size:1.35rem;font-weight:600;margin-block:44px 12px}
+h3{font-size:1.05rem;font-weight:600;margin-block:22px 4px}
+p{margin-block:0 14px}
+a{color:var(--doc-brand)}
+.top{border-block-end:1px solid var(--doc-line);background:var(--doc-card)}
+.top .in{max-width:44rem;margin-inline:auto;padding:12px 20px;display:flex;
+  align-items:center;gap:12px}
+.brand{font-family:Fredoka,system-ui,sans-serif;font-size:1.15rem;font-weight:600;
+  color:var(--doc-ink);text-decoration:none}
+.tagline{color:var(--doc-soft);font-size:.82rem;flex:1}
+#wallet-slot{flex:0 0 auto}
+.bc{font-size:.82rem;font-weight:600;color:var(--doc-soft);margin-block:18px 0}
+.bc a{text-decoration:none}
+.vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;
+  clip-path:inset(50%);white-space:nowrap;border:0}
+.beta{font-size:.68rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
+  padding:3px 8px;border-radius:var(--radius-pill,999px);
+  background:#F2B93F;color:#241C17;white-space:nowrap;flex:0 0 auto;align-self:center}
+body.screen .urow:has(.beta) .bc{margin-inline-end:0}
+body.screen .urow .beta{margin-inline-end:auto}
+.lede{font-size:1.12rem;color:var(--doc-ink)}
+img.art{display:block;width:100%;max-width:520px;aspect-ratio:4/3;height:auto;margin:18px 0 0;border-radius:14px;border:1px solid var(--doc-line);background:var(--doc-card)}
+.facts{list-style:none;display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:18px 0 0}
+.facts li{border:1px solid var(--doc-line);background:var(--doc-card);border-radius:999px;
+  padding:5px 13px;font-size:.82rem;font-weight:600;color:var(--doc-soft)}
+.cta{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin:26px 0 8px}
+.play{display:inline-flex;align-items:center;justify-content:center;min-height:76px;
+  padding:0 40px;border:none;border-radius:22px;background:var(--doc-sun);
+  color:var(--doc-ink);text-decoration:none;font-family:Fredoka,system-ui,sans-serif;
+  font-size:1.3rem;font-weight:600;box-shadow:0 4px 0 var(--doc-line);cursor:pointer}
+.cta .note{color:var(--doc-soft);font-size:.86rem;flex:1 1 12rem}
+ol,ul.steps{padding-inline-start:1.3em}
+ol li,ul.steps li{margin-block-end:8px}
+table{border-collapse:collapse;width:100%;margin-block:14px;font-size:.95rem}
+th,td{border:1px solid var(--doc-line);padding:8px 12px;text-align:start}
+th{background:var(--doc-card);font-weight:600}
+.grid{list-style:none;padding:0;margin:20px 0 0;display:grid;gap:12px;
+  grid-template-columns:repeat(auto-fill,minmax(9.5rem,1fr))}
+.grid a{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--doc-card);
+  border:1px solid var(--doc-line);border-radius:16px;text-decoration:none;
+  color:var(--doc-ink);font-weight:600}
+.grid .em{font-size:1.5rem;line-height:1}
+.grid .cat{display:block;font-size:.75rem;font-weight:400;color:var(--doc-soft)}
+footer{border-block-start:1px solid var(--doc-line);margin-block-start:56px;
+  padding:22px 20px 40px;color:var(--doc-soft);font-size:.85rem}
+footer .in{max-width:44rem;margin-inline:auto;display:flex;flex-wrap:wrap;gap:14px}
+.stage{position:relative;margin-block:14px 6px;margin-inline:-20px}
+@media (min-width:720px){.stage{margin-inline:0}}
+.stage .box{position:relative;border-radius:22px;overflow:hidden;
+  background:var(--doc-stage);box-shadow:0 5px 0 var(--doc-line);
+  min-height:clamp(420px,calc(100dvh - 145px),860px);display:flex;flex-direction:column}
+.stage.room .box{min-height:clamp(460px,calc(100dvh - 120px),880px)}
+.stage.boards .box{min-height:clamp(300px,46dvh,560px)}
+#game-frame{flex:1;min-height:0;display:flex;flex-direction:column}
+#game-poster{position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:18px;text-align:center;padding:24px;
+  color:var(--doc-ink);transition:opacity .25s ease}
+#game-poster[hidden]{display:none}
+#game-poster .em{font-size:64px;line-height:1}
+#game-poster .msg{font-size:.95rem;opacity:.75;max-width:22ch}
+.stage .noscript{position:absolute;inset-inline:0;bottom:0;padding:12px;
+  background:var(--badge-fill,rgba(0,0,0,.55));color:var(--on-brand,#fff);font-size:.85rem;text-align:center}
+@media (max-width:719px){.stage .box{border-radius:0;box-shadow:none;
+  border-block:1px solid var(--doc-line)}}
+body[data-page="game"] main,body[data-page="world"] main{max-width:none;padding-inline:0}
+body[data-page="game"] main>:not(.stage),
+body[data-page="world"] main>:not(.stage){max-width:44rem;margin-inline:auto;
+  padding-inline:20px}
+body[data-page="game"] .stage,body[data-page="world"] .stage{margin-block:0;
+  margin-inline:0}
+body[data-page="game"] .stage .box,body[data-page="world"] .stage .box{
+  height:calc(100dvh - var(--hh) - var(--uh) - var(--oh));min-height:0;border-radius:0;
+  box-shadow:none;border:0;justify-content:center}
+body[data-page="game"] .stage .box{justify-content:flex-start}
+body[data-page="world"] #game-frame:empty{min-height:100%}
+body[data-page="game"] #game-frame,body[data-page="world"] #game-frame{flex:0 0 auto}
+body.screen .urow{display:flex;align-items:center;gap:10px;height:var(--uh);
+  padding-inline:var(--hpad);background:var(--doc-bg)}
+body.screen .urow .bc{margin:0;flex:0 1 auto;margin-inline-end:auto;min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+body.screen .urow .bc a{color:inherit;text-decoration:underline;
+  text-underline-offset:3px;text-decoration-thickness:1px;
+  display:inline-block;padding-block:12px;margin-block:-12px;
+  text-decoration-color:color-mix(in srgb,currentColor 55%,transparent)}
+body.screen .urow .tools{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.ubtn{display:inline-flex;align-items:center;justify-content:center;
+  width:var(--tap);height:var(--tap);flex:0 0 auto;border:0;padding:0;
+  cursor:pointer;border-radius:var(--urad);background:var(--doc-card);
+  color:var(--doc-ink);box-shadow:0 2px 0 var(--doc-line)}
+.ubtn[hidden]{display:none}
+.ubtn .gl{display:flex}
+.ubtn svg{display:block;width:var(--hicon);height:var(--hicon);fill:none;
+  stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+body.screen{--hh:60px;--uh:60px;--oh:0px;--tap:44px;--hgap:12px;--hpad:20px;
+  --hbrand:22px;--hfont:14.5px;--hicon:22px;--hrad:99px;--urad:14px;
+  --hdr-ink:#FFF6E9}
+@media (max-width:719px){body.screen{--hh:58px;--uh:56px;--hbrand:20px;--hgap:8px;--hpad:12px}}
+body.screen{--gc-cell-bg:var(--surface)}
+@supports (background:color-mix(in oklab,red 10%,blue)){
+body.screen{--gc-cell-bg:color-mix(in oklab,var(--g,var(--brand)) 16%,var(--surface))}}
+body.screen .top{position:relative;z-index:6;height:var(--hh);
+  display:flex;align-items:center;padding:0;border-block-end:0;
+  color:var(--hdr-ink);
+  background:color-mix(in oklch, var(--g,#4F5BD5) 46%, #0C0812);
+  background:oklch(from var(--g,#4F5BD5) .30 calc(c * 1.05) h)}
+body.screen .top .in{max-width:none;margin:0;width:100%;
+  padding:0 var(--hpad);gap:var(--hgap);justify-content:space-between}
+body.screen .tagline{display:none}
+body.screen .gname{flex:1 1 0;min-width:0;
+  font:600 16px/1 Fredoka,system-ui,sans-serif;color:var(--hdr-ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-inline:2px}
+@media (max-width:719px){body.screen .gname{display:none}}
+.hbtn.home{gap:7px;padding:0 15px}
+.hbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  height:var(--tap);
+  border:0;margin:0;cursor:pointer;text-decoration:none;flex:0 0 auto;
+  border-radius:var(--hrad);padding:0 calc(var(--tap) * .39);white-space:nowrap;
+  font:600 var(--hfont)/1 inherit;
+  background:rgba(255,255,255,.12);color:var(--hdr-ink)}
+.hbtn.ico{width:var(--tap);padding:0}
+body.screen .top .lang{margin-inline-start:auto}
+body.screen .top .lang + [data-sound]{margin-inline-start:0}
+body.screen .top [data-sound]{margin-inline-start:auto}
+body.screen .top .lang{position:relative;flex:0 0 auto}
+body.screen .top .lang>summary{list-style:none}
+body.screen .top .lang>summary::-webkit-details-marker{display:none}
+body.screen .top .lang>summary::marker{content:""}
+.langsheet{position:absolute;inset-inline-end:0;top:calc(var(--tap) + 6px);
+  z-index:7;min-width:152px;max-width:min(84vw,300px);padding:6px;
+  display:flex;flex-direction:column;gap:2px;
+  border-radius:var(--urad);background:var(--doc-card);
+  border:1px solid var(--doc-line);box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.langsheet>a,.langsheet>b{display:flex;align-items:center;gap:8px;
+  min-height:var(--tap);padding:0 10px;border-radius:10px;
+  font:600 15px/1 inherit;color:var(--doc-ink);text-decoration:none}
+.langsheet>a:hover{background:color-mix(in oklab,var(--doc-ink) 8%,transparent)}
+.langsheet>b{font-weight:800;
+  background:color-mix(in oklab,var(--doc-ink) 8%,transparent)}
+.langsheet>a>span,.langsheet>b>span{width:14px;flex:0 0 14px;text-align:center}
+.hbtn:hover{background:rgba(255,255,255,.2)}
+.hbtn.pri{background:#FFF6E9;color:#241C2B}
+.hbtn.pri:hover{background:#fff}
+.hbtn[hidden]{display:none}
+.hbtn .gl{display:flex;flex:0 0 auto}
+.hbtn svg{width:var(--hicon);height:var(--hicon);
+  display:block;fill:none;stroke:currentColor;stroke-width:2.2;
+  stroke-linecap:round;stroke-linejoin:round}
+#wallet-slot svg{width:var(--hicon);height:var(--hicon);stroke-width:2.2}
+[dir="rtl"] .hbtn .gl .arw{transform:scaleX(-1);transform-origin:center}
+.wallet-wrap{display:inline-flex;align-items:center;height:var(--tap);
+  border-radius:99px;padding:0 calc(var(--tap) * .34);
+  background:rgba(255,255,255,.12)}
+body.screen #wallet-slot>*{background:none;box-shadow:none;border:0;
+  padding:0;color:var(--hdr-ink);height:var(--tap);gap:10px}
+@media (max-width:719px){
+  .hbtn .tx{display:none}
+  .wallet-wrap{padding:0 10px}
+}
+@media (max-width:480px){body{font-size:16px}h1{font-size:1.6rem}.play{width:100%}
+  .stage .box{min-height:clamp(420px,calc(100dvh - 120px),860px)}
+  .tagline{display:none}}
+.lang-offer{display:none}
+html[data-offer] .lang-offer{position:relative;z-index:8;display:flex;
+  justify-content:center;height:46px;box-sizing:border-box;
+  background:var(--doc-card);border-bottom:1px solid var(--doc-line)}
+.lang-offer .in{flex:1 1 auto;max-width:700px;display:none;align-items:center;
+  gap:10px;padding:0 12px;box-sizing:border-box}
+html[data-offer="en"] .lang-offer .in[data-for="en"]{display:flex}
+html[data-offer="he"] .lang-offer .in[data-for="he"]{display:flex}
+html[data-offer="es"] .lang-offer .in[data-for="es"]{display:flex}
+html[data-offer="fr"] .lang-offer .in[data-for="fr"]{display:flex}
+.lang-offer .txt{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;font-weight:500;font-size:14px;color:var(--doc-soft)}
+.lang-offer a{flex:0 0 auto;display:inline-flex;align-items:center;height:32px;
+  padding:0 14px;border-radius:999px;text-decoration:none;font-weight:700;
+  font-size:14px;background:var(--doc-ink);color:var(--doc-card)}
+.lang-offer button{flex:0 0 auto;width:32px;height:32px;display:grid;
+  place-items:center;border:0;border-radius:999px;background:none;cursor:pointer;
+  color:var(--doc-soft);font-size:17px;line-height:1}
+html[data-offer] body.screen{--oh:46px}
+        </style>
+        <script type="application/ld+json">
+          {"@context":"https://schema.org","@graph":[{"@type":["VideoGame","SoftwareApplication"],"@id":"https://ellaz.fun/fr/games/jigsaw/#game","name":"Puzzle","url":"https://ellaz.fun/fr/games/jigsaw/","image":["https://ellaz.fun/art/jigsaw-4d150ac0.svg","https://ellaz.fun/og/game-jigsaw-fr-3e54bbeb.png"],"description":"Un puzzle gratuit, directement dans le navigateur. Vous appuyez sur une pièce du plateau du bas, vous appuyez sur une case de la grille, et la pièce s'y pose. Une mauvaise case l'accepte aussi, et vous pouvez toujours la ressortir. L'image est finie quand chaque pièce est à sa place.","inLanguage":"fr","gamePlatform":["Web Browser","Mobile","Tablet","Desktop"],"playMode":"SinglePlayer","applicationCategory":"GameApplication","operatingSystem":"Any","isAccessibleForFree":true,"isFamilyFriendly":true,"typicalAgeRange":"3-10","genre":["Casual","Educational"],"offers":{"@type":"Offer","price":"0","priceCurrency":"ILS","availability":"https://schema.org/InStock"},"publisher":{"@id":"https://ellaz.fun/#org"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://ellaz.fun/fr/"},{"@type":"ListItem","position":2,"name":"Pour les petits","item":"https://ellaz.fun/fr/games/kids/"},{"@type":"ListItem","position":3,"name":"Puzzle","item":"https://ellaz.fun/fr/games/jigsaw/"}]},{"@type":"HowTo","name":"Comment on joue ?","inLanguage":"fr","step":[{"@type":"HowToStep","position":1,"name":"Choisir un niveau","text":"Six pièces, douze ou vingt. Changer de niveau distribue aussi une nouvelle image."},{"@type":"HowToStep","position":2,"name":"Appuyer sur une pièce","text":"Une de celles du plateau, sous la grille. Un contour apparaît autour d'elle."},{"@type":"HowToStep","position":3,"name":"Appuyer sur une case","text":"La pièce s'y pose, même quand ce n'est pas sa place."},{"@type":"HowToStep","position":4,"name":"La ressortir","text":"Appuyer sur une pièce déjà posée la renvoie au plateau et vous la met en main."},{"@type":"HowToStep","position":5,"name":"Échanger","text":"Avec une pièce en main, appuyer sur une case occupée les échange. L'ancienne repart au plateau."}]},{"@type":"FAQPage","inLanguage":"fr","mainEntity":[{"@type":"Question","name":"Faut-il faire glisser les pièces ?","acceptedAnswer":{"@type":"Answer","text":"Non, et ce n'est pas possible. Vous appuyez sur une pièce, puis sur une case. Deux appuis font le même travail et conviennent à une petite main comme à une entrée alternative."}},{"@type":"Question","name":"Que se passe-t-il si je pose une pièce au mauvais endroit ?","acceptedAnswer":{"@type":"Answer","text":"Rien. Elle y reste jusqu'à ce que vous la ressortiez. Aucun son d'erreur, aucun point retiré, et l'image n'est simplement pas encore terminée."}},{"@type":"Question","name":"Combien y a-t-il d'images ?","acceptedAnswer":{"@type":"Answer","text":"Huit, et toutes sont le dessin principal d'autres jeux du site. Après dix puzzles, vous en reverrez une."}},{"@type":"Question","name":"Que mesure le record ?","acceptedAnswer":{"@type":"Answer","text":"Le nombre de poses qu'il a fallu pour terminer, et moins il y en a, mieux c'est. Le plancher est le nombre de pièces, soit six, douze ou vingt."}},{"@type":"Question","name":"Le jeu se souvient-il de ma partie ?","acceptedAnswer":{"@type":"Answer","text":"Oui. L'image, les pièces déjà placées et ce qui reste au plateau reviennent tels quels, sur cet appareil."}},{"@type":"Question","name":"Peut-on tourner les pièces ?","acceptedAnswer":{"@type":"Answer","text":"Ce n'est pas nécessaire. Chaque pièce est déjà dans le bon sens, donc la seule question est de savoir où elle va. Cela retire une étape entière au puzzle d'un enfant de trois ans et laisse la partie qui apprend vraiment quelque chose, lire l'image."}}]},{"@type":"Organization","@id":"https://ellaz.fun/#org","name":"Ellaz","url":"https://ellaz.fun/","logo":"https://ellaz.fun/icon.svg","description":"Free browser games, no download and no account","sameAs":["https://github.com/Sigmafier/ellaz"]}]}
+        </script>
+        <script type="module" crossorigin src="/assets/index-BoKUdFQW.js"></script><link rel="modulepreload" crossorigin href="/assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="/assets/shell-Bfq-Y9RE.js"><link rel="stylesheet" crossorigin href="/assets/shell-DkfkxXv9.css"><link rel="manifest" href="/manifest.webmanifest">
+        <link rel="modulepreload" crossorigin href="/assets/page-DgoEHUQu.js"><link rel="modulepreload" crossorigin href="/assets/game-jigsaw-CMQML-hO.js">
+      </head>
+      <body class="screen" style="--g:#17798F" data-page="game" data-game="jigsaw" data-locale="fr">
+        
+    <div id="lang-offer" class="lang-offer">
+      <div class="in" data-for="en" lang="en" dir="ltr"><span class="txt">This page is also in English</span><a href="/games/jigsaw/" hreflang="en">English</a><button type="button" aria-label="Close">✕</button></div><div class="in" data-for="he" lang="he" dir="rtl"><span class="txt">העמוד הזה קיים גם בעברית</span><a href="/he/games/jigsaw/" hreflang="he">עברית</a><button type="button" aria-label="סגירה">✕</button></div><div class="in" data-for="es" lang="es" dir="ltr"><span class="txt">Esta página también está en español</span><a href="/es/games/jigsaw/" hreflang="es">Español</a><button type="button" aria-label="Cerrar">✕</button></div>
+    </div>
+    <script>
+      (function(){try{var d=document.documentElement,b=document.getElementById("lang-offer");if(!b)return;try{if(localStorage.getItem("ellaz:offer:v1"))return}catch(e){}var r=b.querySelectorAll("[data-for]"),h={},i;for(i=0;i<r.length;i++)h[r[i].getAttribute("data-for")]=1;var L=navigator.languages||[navigator.language||""],w="";for(i=0;i<L.length;i++){var t=String(L[i]).toLowerCase().split("-")[0];if(t==="fr")return;if(h[t]){w=t;break}}if(!w)return;d.setAttribute("data-offer",w);var x=b.querySelector("button");if(x)x.addEventListener("click",function(){try{localStorage.setItem("ellaz:offer:v1","1")}catch(e){}d.removeAttribute("data-offer")});}catch(e){}})()
+    </script>
+    <header class="top"  style="--g:#17798F">
+      <div class="in">
+        
+    <a class="hbtn home" href="/fr/" aria-label="Tous les jeux">
+      <span class="gl"><svg class="arw" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19.4 12H5.6"/><path d="M11.4 6.2 5.6 12l5.8 5.8"/></svg></span><span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3.8 10.6 12 4.2l8.2 6.4"/><path d="M5.9 12.2v6.6a1.4 1.4 0 0 0 1.4 1.4h9.4a1.4 1.4 0 0 0 1.4-1.4v-6.6"/><path d="M9.9 20.2v-4.6h4.2v4.6"/></svg></span>
+    </a>
+    <b class="gname">Puzzle</b>
+    <details class="lang">
+    <summary class="hbtn ico" aria-label="Langue: Français">
+      <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0"/><path d="M16 12a4 9 0 1 1-8 0 4 9 0 0 1 8 0"/><path d="M3.4 9h17.2"/><path d="M3.4 15h17.2"/></svg></span>
+    </summary>
+    <div class="langsheet" role="group" aria-label="Langue">
+      <a
+              href="/games/jigsaw/"
+              hreflang="en"
+              lang="en"
+              dir="ltr"
+              ><span aria-hidden="true"></span>English</a
+            ><a
+              href="/he/games/jigsaw/"
+              hreflang="he"
+              lang="he"
+              dir="rtl"
+              ><span aria-hidden="true"></span>עברית</a
+            ><a
+              href="/es/games/jigsaw/"
+              hreflang="es"
+              lang="es"
+              dir="ltr"
+              ><span aria-hidden="true"></span>Español</a
+            ><b lang="fr" dir="ltr" class="on"
+              ><span aria-hidden="true">&#10003;</span>Français</b
+            >
+    </div>
+  </details>
+    <button type="button" class="hbtn ico" data-sound aria-label="Son" hidden>
+      <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4.4 9.6h2.9L11.6 6v12L7.3 14.4H4.4z"/><path d="M15.1 9.5a4.4 4.4 0 0 1 0 5"/><path d="M17.9 6.9a8.4 8.4 0 0 1 0 10.2"/></svg></span>
+    </button>
+    <div class="wallet-wrap"><span id="wallet-slot"></span></div>
+  
+      </div>
+    </header>
+    <main>
+    <div class="urow">
+    <nav class="bc">
+        <a href="/fr/">Accueil</a> ›
+        <a href="/fr/games/kids/">Pour les petits</a> › Puzzle
+      </nav><div class="tools"><button
+            type="button"
+            class="ubtn"
+            data-pause
+            data-label-pause="Pause"
+            data-label-resume="Reprendre"
+            aria-label="Pause"
+            hidden
+          >
+            <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M9.4 5.6v12.8"/><path d="M14.6 5.6v12.8"/></svg></span>
+          </button>
+          <button type="button" class="ubtn" data-restart aria-label="Recommencer" hidden>
+            <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20.4 4.2v4.4h-4.4"/></svg></span>
+          </button>
+          <button
+            type="button"
+            class="ubtn"
+            data-share
+            data-share-title="Puzzle"
+            data-share-emoji="🧩"
+            aria-label="Partager"
+            hidden
+          >
+            <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M15.2 5.6a2.6 2.6 0 1 0 5.2 0 2.6 2.6 0 1 0-5.2 0"/><path d="M3.6 12a2.6 2.6 0 1 0 5.2 0 2.6 2.6 0 1 0-5.2 0"/><path d="M15.2 18.4a2.6 2.6 0 1 0 5.2 0 2.6 2.6 0 1 0-5.2 0"/><path d="M8.5 10.7 15.5 7"/><path d="M8.5 13.3 15.5 17"/></svg></span>
+          </button><button type="button" class="ubtn" data-fullscreen aria-label="Plein écran" hidden>
+        <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4.6 9.4V4.6h4.8"/><path d="M19.4 9.4V4.6h-4.8"/><path d="M4.6 14.6v4.8h4.8"/><path d="M19.4 14.6v4.8h-4.8"/></svg></span>
+      </button><button type="button" class="ubtn" data-report aria-label="Dites-nous" hidden>
+        <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M6.4 20.4V4.4"/><path d="M6.4 5.4h11.4l-2.5 3.6 2.5 3.6H6.4"/></svg></span>
+      </button></div>
+  </div>
+    <div class="stage">
+    <div class="box">
+      <div id="game-frame"></div>
+      <div
+        id="game-poster"
+        data-loading="Le jeu se charge tout seul. Il n&#39;y a rien à toucher."
+        data-saver="L&#39;économiseur de données est actif, alors nous attendons que vous appuyiez."
+      >
+        <span class="em" aria-hidden="true">🧩</span>
+        <button class="play" id="game-play" type="button">Jouer</button>
+        <span class="msg" id="game-msg">Le jeu a besoin de JavaScript. Le reste de la page, non.</span>
+      </div>
+    </div>
+  </div>
+
+    <h1>Puzzle</h1>
+    <p class="lede">Un puzzle gratuit, directement dans le navigateur. Vous appuyez sur une pièce du plateau du bas, vous appuyez sur une case de la grille, et la pièce s&#39;y pose. Une mauvaise case l&#39;accepte aussi, et vous pouvez toujours la ressortir. L&#39;image est finie quand chaque pièce est à sa place.</p>
+
+    <!--
+      The page's own picture, and the first image in the article body.
+
+      Google chooses the thumbnail beside a text result from images embedded on
+      the page. Until 2026-08-22 there were none: the stage above draws the
+      emoji as TEXT and the art everywhere else is inline <svg>, which has no
+      URL and cannot be indexed as an image. So the result was permanently
+      pictureless with nothing failing anywhere.
+
+      width/height are the SVG's own declared box, so the browser reserves
+      the space from the attributes and this adds nothing to the layout shift.
+      loading is EAGER on purpose - it is the main image, above most of the
+      prose, and a lazy main image is one Google may not see.
+
+      The alt is one template per language with the game's name filled in.
+      It was the page's own H1 for an hour, which reads as "Snake" and "2048"
+      in three of the four languages - a name, not a description of a picture.
+    -->
+    <img
+      class="art"
+      src="/art/jigsaw-4d150ac0.svg"
+      alt="Puzzle - illustration du jeu"
+      width="1200"
+      height="900"
+      decoding="async"
+    />
+    <ul class="facts">
+      <li>Gratuit</li><li>Sans publicité</li><li>Sans compte</li><li>Sans téléchargement</li><li>Marche hors ligne</li><li>Un joueur</li>
+    </ul>
+
+    <h2>Comment on joue ?</h2>
+    <ol>
+    <li><b>Choisir un niveau</b> - Six pièces, douze ou vingt. Changer de niveau distribue aussi une nouvelle image.</li><li><b>Appuyer sur une pièce</b> - Une de celles du plateau, sous la grille. Un contour apparaît autour d&#39;elle.</li><li><b>Appuyer sur une case</b> - La pièce s&#39;y pose, même quand ce n&#39;est pas sa place.</li><li><b>La ressortir</b> - Appuyer sur une pièce déjà posée la renvoie au plateau et vous la met en main.</li><li><b>Échanger</b> - Avec une pièce en main, appuyer sur une case occupée les échange. L&#39;ancienne repart au plateau.</li>
+  </ol>
+
+    <h2>À propos du jeu</h2>
+    <p>Vous appuyez sur une pièce. Vous appuyez sur une case. Voilà.</p><p>Ici on ne fait rien glisser, et ce n&#39;est pas de la paresse. La main d&#39;un enfant de quatre ans ne tient pas un tracé continu sur un écran, et celle de quelqu&#39;un qui utilise une entrée alternative non plus. Deux appuis font exactement le même travail et conviennent à tout le monde, donc ce sont deux appuis. On pourra ajouter le glissement par-dessus plus tard, mais il ne remplacera jamais ceci.</p><p>Une mauvaise case accepte la pièce. C&#39;est une décision, pas un défaut : essayer une pièce quelque part et voir qu&#39;elle ne va pas, c&#39;est exactement ainsi qu&#39;un puzzle se résout, et refuser le placement en ferait un examen. Combien cela coûte-t-il ? Nous avons lancé 20 000 parties avec un programme qui ne regarde jamais l&#39;image et se souvient seulement de ce qu&#39;il a déjà essayé. Six pièces lui demandent 13,5 poses en moyenne, douze lui en demandent 44,9, et vingt lui en demandent 115,2. Un enfant qui regarde termine en six, douze ou vingt poses exactement. Regarder vaut donc 2,3 fois sur la petite découpe et 5,8 fois sur la grande.</p><p>Ce chiffre est sorti deux fois, par deux chemins différents, et c&#39;est pour cela qu&#39;on peut le citer. La simulation a joué le vrai jeu. Le calcul dit que trouver la bonne pièce parmi k en demande (k+1)/2 en moyenne, soit n(n+3)/4 pour la grille entière, ce qui donne 13,5, 45 et 115. Les deux se rejoignent.</p><p>Les images sont le dessin principal d&#39;autres jeux du site. Il y en a huit, et c&#39;est l&#39;aveu : un enfant qui résout dix puzzles en reverra une. Nous l&#39;avons choisi exprès, parce qu&#39;un dessin propre à chaque puzzle alourdirait chaque première visite du site, y compris celle de quelqu&#39;un qui n&#39;ouvrira jamais ce jeu.</p>
+
+    <h2>Qu&#39;est-ce que ça apprend ?</h2>
+    <h3>Raisonnement spatial</h3>
+    <p>Retourner une image dans sa tête et décider où elle va, c&#39;est la capacité que la géométrie demandera plus tard.</p><h3>Persévérance</h3>
+    <p>Vingt pièces prennent du temps. Une grille qui ne se termine pas en trente secondes apprend à rester.</p><h3>La partie et le tout</h3>
+    <p>Voir qu&#39;une image est faite de morceaux est l&#39;étape qui précède les fractions.</p><h3>Corriger sans tout refaire</h3>
+    <p>Une pièce mal posée ne casse rien. On la ressort et on réessaie.</p>
+
+    <h2>Conseils</h2>
+    <h3>Les coins d&#39;abord</h3>
+    <p>Les quatre coins sont les seules pièces à deux côtés plats, donc les plus faciles à reconnaître, et ils fixent l&#39;orientation de tout le reste.</p><h3>Suivez une ligne coupée</h3>
+    <p>Une longue ligne du dessin, le bord d&#39;une colline ou d&#39;une table, se prolonge exactement dans la pièce voisine. C&#39;est l&#39;indice le plus fort de la grille.</p><h3>Un aplat de couleur est un indice faible</h3>
+    <p>Une pièce entièrement remplie d&#39;une seule couleur de fond va presque partout. Gardez-la pour la fin, quand il ne lui reste que deux cases.</p><h3>Ne sautez pas celui de douze</h3>
+    <p>Le jeu à l&#39;aveugle passe de 44,9 poses à 115,2 entre les deux découpes, et cet écart est exactement ce que votre œil doit couvrir. Le niveau moyen est là pour l&#39;apprendre.</p>
+
+    <h2>À partir de quel âge ?</h2>
+    <h3>3 à 4 ans</h3>
+    <p>Six pièces. Résoluble en six poses, et même un programme aveugle termine en 13,5.</p><h3>5 à 6 ans</h3>
+    <p>Douze. L&#39;image se reconstitue encore à force d&#39;essais, mais regarder commence à payer.</p><h3>7 ans et plus</h3>
+    <p>Vingt. Il existe 2 432 902 008 176 640 000 façons de les disposer et une seule est l&#39;image.</p><h3>Adultes</h3>
+    <p>Vingt poses pour vingt pièces, c&#39;est parfait. C&#39;est plus dur qu&#39;il n&#39;y paraît.</p>
+
+    <h2>Accessibilité</h2>
+    <p>Un appui par action et aucun glissement nulle part, donc le jeu fonctionne avec des entrées alternatives comme avec une petite main qui vise encore mal. Ce n&#39;est pas une version réduite du puzzle, c&#39;est la seule manière d&#39;y jouer ici. Aucune horloge et aucun compte à rebours, on peut donc s&#39;arrêter au milieu et réfléchir autant qu&#39;on veut. Aucune pose n&#39;est fausse, il n&#39;y a donc pas de son d&#39;erreur ni rien à perdre, et un compteur indique combien de pièces sont déjà à leur place. Chaque case porte sa colonne, sa ligne et la pièce qui l&#39;occupe dans son étiquette, pour qu&#39;un lecteur d&#39;écran les distingue au lieu de lire vingt fois la même chose. On peut jouer en silence complet sans rien perdre.</p>
+
+    <h2>Jouer à deux</h2>
+    <h3>La moitié chacun</h3>
+    <p>L&#39;un prend la ligne du haut, l&#39;autre celle du bas. D&#39;un coup, il faut se parler.</p><h3>Comptez les poses</h3>
+    <p>Même niveau, deux appareils, et on compte combien il en a fallu. Le minimum possible est le nombre de pièces.</p><h3>Expliquez le coin</h3>
+    <p>Demandez comment vous saviez que cette pièce était un coin. Un enfant capable de répondre lit déjà l&#39;image.</p><h3>À l&#39;envers</h3>
+    <p>Défaites une image terminée et remontez-la de la dernière pièce à la première.</p>
+
+    <h2>Questions fréquentes</h2>
+    <h3>Faut-il faire glisser les pièces ?</h3>
+      <p>Non, et ce n&#39;est pas possible. Vous appuyez sur une pièce, puis sur une case. Deux appuis font le même travail et conviennent à une petite main comme à une entrée alternative.</p><h3>Que se passe-t-il si je pose une pièce au mauvais endroit ?</h3>
+      <p>Rien. Elle y reste jusqu&#39;à ce que vous la ressortiez. Aucun son d&#39;erreur, aucun point retiré, et l&#39;image n&#39;est simplement pas encore terminée.</p><h3>Combien y a-t-il d&#39;images ?</h3>
+      <p>Huit, et toutes sont le dessin principal d&#39;autres jeux du site. Après dix puzzles, vous en reverrez une.</p><h3>Que mesure le record ?</h3>
+      <p>Le nombre de poses qu&#39;il a fallu pour terminer, et moins il y en a, mieux c&#39;est. Le plancher est le nombre de pièces, soit six, douze ou vingt.</p><h3>Le jeu se souvient-il de ma partie ?</h3>
+      <p>Oui. L&#39;image, les pièces déjà placées et ce qui reste au plateau reviennent tels quels, sur cet appareil.</p><h3>Peut-on tourner les pièces ?</h3>
+      <p>Ce n&#39;est pas nécessaire. Chaque pièce est déjà dans le bon sens, donc la seule question est de savoir où elle va. Cela retire une étape entière au puzzle d&#39;un enfant de trois ans et laisse la partie qui apprend vraiment quelque chose, lire l&#39;image.</p>
+
+    <h2>D&#39;autres jeux</h2>
+    <ul class="grid">
+    <li>
+        <a href="/fr/games/memory/">
+          <span class="em" aria-hidden="true">🧠</span>
+          <span>Mémoire<span class="cat">Pour les petits</span></span>
+        </a>
+      </li><li>
+        <a href="/fr/games/evolve/">
+          <span class="em" aria-hidden="true">🦖</span>
+          <span>Évolution<span class="cat">Pour les petits</span></span>
+        </a>
+      </li><li>
+        <a href="/fr/games/coloring/">
+          <span class="em" aria-hidden="true">🎨</span>
+          <span>Coloriage<span class="cat">Pour les petits</span></span>
+        </a>
+      </li><li>
+        <a href="/fr/games/finddiff/">
+          <span class="em" aria-hidden="true">🔍</span>
+          <span>Les différences<span class="cat">Pour les petits</span></span>
+        </a>
+      </li><li>
+        <a href="/fr/games/hidden/">
+          <span class="em" aria-hidden="true">👀</span>
+          <span>Objets cachés<span class="cat">Pour les petits</span></span>
+        </a>
+      </li><li>
+        <a href="/fr/games/balloons/">
+          <span class="em" aria-hidden="true">🎈</span>
+          <span>Les ballons<span class="cat">Pour les petits</span></span>
+        </a>
+      </li>
+  </ul>
+
+    <section class="embed" id="embed">
+    <h2>Mettez ce jeu sur votre site</h2>
+    <p>Copiez le code et collez-le dans votre page. La ligne sous le cadre est celle qui compte : un lien dans le cadre reste sur ellaz.fun, et seul celui que vous collez est le vôtre.</p>
+    <iframe
+      src="/embed/jigsaw/?lang=fr"
+      width="100%"
+      height="940"
+      style="border:0;border-radius:12px;background:var(--doc-stage)"
+      allow="fullscreen"
+      loading="lazy"
+      title="Puzzle - ellaz.fun"
+    ></iframe>
+    <p class="embed-credit"><p>Jouez à <a href="https://ellaz.fun/fr/games/jigsaw/">Puzzle</a> et à d'autres jeux gratuits sur <a href="https://ellaz.fun/">ellaz.fun</a></p></p>
+    <pre
+      class="embed-code"
+      data-embed-code
+      dir="ltr"
+      style="white-space:pre-wrap;word-break:break-all;padding:14px;border-radius:12px;background:var(--doc-card);border:1px solid var(--doc-line);font-size:.85rem"
+    >&lt;iframe src=&quot;https://ellaz.fun/embed/jigsaw/?lang=fr&quot; width=&quot;100%&quot; height=&quot;940&quot; style=&quot;border:0;border-radius:12px&quot; allow=&quot;fullscreen&quot; title=&quot;Puzzle - ellaz.fun&quot;&gt;&lt;/iframe&gt;
+&lt;p&gt;Jouez à &lt;a href=&quot;https://ellaz.fun/fr/games/jigsaw/&quot;&gt;Puzzle&lt;/a&gt; et à d&#39;autres jeux gratuits sur &lt;a href=&quot;https://ellaz.fun/&quot;&gt;ellaz.fun&lt;/a&gt;&lt;/p&gt;</pre>
+    <button
+      type="button"
+      class="play"
+      data-embed-copy
+      data-label-copied="Copié"
+      data-label-select="Le code est sélectionné : copiez-le"
+      hidden
+    >Copier le code</button>
+  </section>
+  </main>
+    <footer>
+      <div class="in">
+        <span>Ellaz - des jeux gratuits en hébreu, en anglais, en espagnol et en français. Sans publicité, sans compte, et sans rien collecter au sujet d&#39;un enfant.</span>
+        <a href="/games/jigsaw/" hreflang="en" lang="en">English</a><a href="/he/games/jigsaw/" hreflang="he" lang="he">עברית</a><a href="/es/games/jigsaw/" hreflang="es" lang="es">Español</a>
+      </div>
+    </footer>
+  
+        <div id="consent" class="consent" role="dialog" aria-live="polite" lang="fr" dir="ltr"><p>Nous comptons les visites avec un petit cookie Google. Sans publicité ni suivi personnel.</p><button type="button" data-yes>Accepter</button><button type="button" data-no>Non merci</button></div>
+    <style>
+      .consent{display:none;position:fixed;inset-inline:0;bottom:0;z-index:60;padding:12px;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;background:#1d1b2e;color:#fff;font-size:14px}[data-consent] .consent{display:flex}.consent p{margin:0;max-width:48ch}.consent button{font:inherit;font-weight:600;padding:8px 18px;min-height:40px;border:0;border-radius:8px;background:#fff;color:#1d1b2e}
+    </style>
+    <script>
+      (function(){try{var d=document.documentElement,b=document.getElementById("consent");if(!b||!window.gtag)return;var v=null;try{v=localStorage.getItem("ellaz:consent:v1")}catch(e){}if(v==="granted"){gtag("consent","update",{analytics_storage:"granted"});return}if(v==="denied")return;d.setAttribute("data-consent","1");function done(a){try{localStorage.setItem("ellaz:consent:v1",a)}catch(e){}if(a==="granted")gtag("consent","update",{analytics_storage:"granted"});d.removeAttribute("data-consent")}var y=b.querySelector("[data-yes]"),n=b.querySelector("[data-no]");if(y)y.addEventListener("click",function(){done("granted")});if(n)n.addEventListener("click",function(){done("denied")});}catch(e){}})()
+    </script>
+      </body>
+    </html>

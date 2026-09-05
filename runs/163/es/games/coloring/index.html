@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="es" dir="ltr">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <!-- FIRST, and synchronous. data-theme is deliberately never baked into
+             these documents - they are cached and it would be wrong for whoever
+             chose the other theme - so this is what sets it before the first
+             paint. A module import runs far too late and the page visibly
+             flashes the other theme. Generated from themes.ts, never written
+             out here, so adding a theme cannot leave it behind. -->
+        <script>
+          (function(){try{var t=localStorage.getItem("ellaz:theme");if(t&&["market","night"].indexOf(t)>-1&&t!=="market")document.documentElement.setAttribute("data-theme",t)}catch(e){}})()
+        </script>
+        <meta name="theme-color" content="#ff4d8d" />
+        <title>Colorear - dibujos para pintar gratis online | Ellaz</title>
+        <meta name="description" content="Juego de colorear gratis en el navegador. 20 dibujos y 20 colores, sin puntuación y sin forma de hacerlo mal. Sin registro." />
+        <link rel="canonical" href="https://ellaz.fun/es/games/coloring/" />
+        <link rel="alternate" hreflang="en" href="https://ellaz.fun/games/coloring/" /><link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/coloring/" /><link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/coloring/" /><link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/coloring/" />
+        <link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/coloring/" />
+        
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Ellaz" />
+        <meta property="og:locale" content="es_ES" />
+        <meta property="og:locale:alternate" content="en_US" /><meta property="og:locale:alternate" content="he_IL" /><meta property="og:locale:alternate" content="fr_FR" />
+        <meta property="og:title" content="Colorear - dibujos para pintar gratis online | Ellaz" />
+        <meta property="og:description" content="Juego de colorear gratis en el navegador. 20 dibujos y 20 colores, sin puntuación y sin forma de hacerlo mal. Sin registro." />
+        <meta property="og:url" content="https://ellaz.fun/es/games/coloring/" />
+        <meta property="og:image" content="https://ellaz.fun/og/game-coloring-es-d0b7760c.png" />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+          <meta property="og:image:alt" content="Colorear - dibujos para pintar gratis online | Ellaz" />
+          <meta name="twitter:image" content="https://ellaz.fun/og/game-coloring-es-d0b7760c.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <!-- Measurement, on EVERY emitted document and not only the app shell.
+             Search Console says the arrivals land on GAME pages from Hebrew
+             queries, so a shell-only tag would have measured almost none of
+             them. Empty on any non-primary base, so the noindex mirror never
+             reports. Config and its deliberate limits: src/build/analytics.ts. -->
+        
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E25QBB8420"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied'});gtag('set','ads_data_redaction',true);gtag('js',new Date());gtag('config','G-E25QBB8420',{client_storage:'none',allow_google_signals:false,allow_ad_personalization_signals:false});</script>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;800&amp;family=Fredoka:wght@500;600&amp;display=swap" />
+        <style>
+          *,*::before,*::after{box-sizing:border-box}
+:root{
+  --doc-ink:var(--text,#1b1b2b);
+  --doc-soft:var(--text-dim,#5a5a72);
+  --doc-line:var(--line,#e4e2ef);
+  --doc-bg:var(--bg,#fdfcff);
+  --doc-card:var(--surface,#ffffff);
+  --doc-brand:var(--brand-ink,#6c5ce7);
+  --doc-sun:var(--yellow,#ffc730);
+  --doc-stage:var(--stage-bg,#12142b);
+}
+:root[data-theme="night"]{
+  --doc-ink:var(--text,#f5f6ff);
+  --doc-soft:var(--text-dim,#b3b8e0);
+  --doc-line:var(--line,#2a2f55);
+  --doc-bg:var(--bg,#0f1226);
+  --doc-card:var(--surface,#1e2240);
+  --doc-brand:var(--brand-ink,#a29bfe);
+  --doc-sun:var(--yellow,#fdcb6e);
+  --doc-stage:var(--stage-bg,#12142b);
+}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--doc-bg);color:var(--doc-ink);
+  font:400 17px/1.7 Heebo,Assistant,Rubik,system-ui,-apple-system,sans-serif}
+main{max-width:44rem;margin-inline:auto;padding:0 20px 72px}
+h1,h2,h3{font-family:Fredoka,Heebo,system-ui,sans-serif;line-height:1.25;margin:0;
+  color:var(--doc-ink)}
+h1{font-size:2rem;font-weight:600;margin-block:8px 12px}
+h2{font-size:1.35rem;font-weight:600;margin-block:44px 12px}
+h3{font-size:1.05rem;font-weight:600;margin-block:22px 4px}
+p{margin-block:0 14px}
+a{color:var(--doc-brand)}
+.top{border-block-end:1px solid var(--doc-line);background:var(--doc-card)}
+.top .in{max-width:44rem;margin-inline:auto;padding:12px 20px;display:flex;
+  align-items:center;gap:12px}
+.brand{font-family:Fredoka,system-ui,sans-serif;font-size:1.15rem;font-weight:600;
+  color:var(--doc-ink);text-decoration:none}
+.tagline{color:var(--doc-soft);font-size:.82rem;flex:1}
+#wallet-slot{flex:0 0 auto}
+.bc{font-size:.82rem;font-weight:600;color:var(--doc-soft);margin-block:18px 0}
+.bc a{text-decoration:none}
+.vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;
+  clip-path:inset(50%);white-space:nowrap;border:0}
+.beta{font-size:.68rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
+  padding:3px 8px;border-radius:var(--radius-pill,999px);
+  background:#F2B93F;color:#241C17;white-space:nowrap;flex:0 0 auto;align-self:center}
+body.screen .urow:has(.beta) .bc{margin-inline-end:0}
+body.screen .urow .beta{margin-inline-end:auto}
+.lede{font-size:1.12rem;color:var(--doc-ink)}
+img.art{display:block;width:100%;max-width:520px;aspect-ratio:4/3;height:auto;margin:18px 0 0;border-radius:14px;border:1px solid var(--doc-line);background:var(--doc-card)}
+.facts{list-style:none;display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:18px 0 0}
+.facts li{border:1px solid var(--doc-line);background:var(--doc-card);border-radius:999px;
+  padding:5px 13px;font-size:.82rem;font-weight:600;color:var(--doc-soft)}
+.cta{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin:26px 0 8px}
+.play{display:inline-flex;align-items:center;justify-content:center;min-height:76px;
+  padding:0 40px;border:none;border-radius:22px;background:var(--doc-sun);
+  color:var(--doc-ink);text-decoration:none;font-family:Fredoka,system-ui,sans-serif;
+  font-size:1.3rem;font-weight:600;box-shadow:0 4px 0 var(--doc-line);cursor:pointer}
+.cta .note{color:var(--doc-soft);font-size:.86rem;flex:1 1 12rem}
+ol,ul.steps{padding-inline-start:1.3em}
+ol li,ul.steps li{margin-block-end:8px}
+table{border-collapse:collapse;width:100%;margin-block:14px;font-size:.95rem}
+th,td{border:1px solid var(--doc-line);padding:8px 12px;text-align:start}
+th{background:var(--doc-card);font-weight:600}
+.grid{list-style:none;padding:0;margin:20px 0 0;display:grid;gap:12px;
+  grid-template-columns:repeat(auto-fill,minmax(9.5rem,1fr))}
+.grid a{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--doc-card);
+  border:1px solid var(--doc-line);border-radius:16px;text-decoration:none;
+  color:var(--doc-ink);font-weight:600}
+.grid .em{font-size:1.5rem;line-height:1}
+.grid .cat{display:block;font-size:.75rem;font-weight:400;color:var(--doc-soft)}
+footer{border-block-start:1px solid var(--doc-line);margin-block-start:56px;
+  padding:22px 20px 40px;color:var(--doc-soft);font-size:.85rem}
+footer .in{max-width:44rem;margin-inline:auto;display:flex;flex-wrap:wrap;gap:14px}
+.stage{position:relative;margin-block:14px 6px;margin-inline:-20px}
+@media (min-width:720px){.stage{margin-inline:0}}
+.stage .box{position:relative;border-radius:22px;overflow:hidden;
+  background:var(--doc-stage);box-shadow:0 5px 0 var(--doc-line);
+  min-height:clamp(420px,calc(100dvh - 145px),860px);display:flex;flex-direction:column}
+.stage.room .box{min-height:clamp(460px,calc(100dvh - 120px),880px)}
+.stage.boards .box{min-height:clamp(300px,46dvh,560px)}
+#game-frame{flex:1;min-height:0;display:flex;flex-direction:column}
+#game-poster{position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:18px;text-align:center;padding:24px;
+  color:var(--doc-ink);transition:opacity .25s ease}
+#game-poster[hidden]{display:none}
+#game-poster .em{font-size:64px;line-height:1}
+#game-poster .msg{font-size:.95rem;opacity:.75;max-width:22ch}
+.stage .noscript{position:absolute;inset-inline:0;bottom:0;padding:12px;
+  background:var(--badge-fill,rgba(0,0,0,.55));color:var(--on-brand,#fff);font-size:.85rem;text-align:center}
+@media (max-width:719px){.stage .box{border-radius:0;box-shadow:none;
+  border-block:1px solid var(--doc-line)}}
+body[data-page="game"] main,body[data-page="world"] main{max-width:none;padding-inline:0}
+body[data-page="game"] main>:not(.stage),
+body[data-page="world"] main>:not(.stage){max-width:44rem;margin-inline:auto;
+  padding-inline:20px}
+body[data-page="game"] .stage,body[data-page="world"] .stage{margin-block:0;
+  margin-inline:0}
+body[data-page="game"] .stage .box,body[data-page="world"] .stage .box{
+  height:calc(100dvh - var(--hh) - var(--uh) - var(--oh));min-height:0;border-radius:0;
+  box-shadow:none;border:0;justify-content:center}
+body[data-page="game"] .stage .box{justify-content:flex-start}
+body[data-page="world"] #game-frame:empty{min-height:100%}
+body[data-page="game"] #game-frame,body[data-page="world"] #game-frame{flex:0 0 auto}
+body.screen .urow{display:flex;align-items:center;gap:10px;height:var(--uh);
+  padding-inline:var(--hpad);background:var(--doc-bg)}
+body.screen .urow .bc{margin:0;flex:0 1 auto;margin-inline-end:auto;min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+body.screen .urow .bc a{color:inherit;text-decoration:underline;
+  text-underline-offset:3px;text-decoration-thickness:1px;
+  display:inline-block;padding-block:12px;margin-block:-12px;
+  text-decoration-color:color-mix(in srgb,currentColor 55%,transparent)}
+body.screen .urow .tools{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.ubtn{display:inline-flex;align-items:center;justify-content:center;
+  width:var(--tap);height:var(--tap);flex:0 0 auto;border:0;padding:0;
+  cursor:pointer;border-radius:var(--urad);background:var(--doc-card);
+  color:var(--doc-ink);box-shadow:0 2px 0 var(--doc-line)}
+.ubtn[hidden]{display:none}
+.ubtn .gl{display:flex}
+.ubtn svg{display:block;width:var(--hicon);height:var(--hicon);fill:none;
+  stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+body.screen{--hh:60px;--uh:60px;--oh:0px;--tap:44px;--hgap:12px;--hpad:20px;
+  --hbrand:22px;--hfont:14.5px;--hicon:22px;--hrad:99px;--urad:14px;
+  --hdr-ink:#FFF6E9}
+@media (max-width:719px){body.screen{--hh:58px;--uh:56px;--hbrand:20px;--hgap:8px;--hpad:12px}}
+body.screen{--gc-cell-bg:var(--surface)}
+@supports (background:color-mix(in oklab,red 10%,blue)){
+body.screen{--gc-cell-bg:color-mix(in oklab,var(--g,var(--brand)) 16%,var(--surface))}}
+body.screen .top{position:relative;z-index:6;height:var(--hh);
+  display:flex;align-items:center;padding:0;border-block-end:0;
+  color:var(--hdr-ink);
+  background:color-mix(in oklch, var(--g,#4F5BD5) 46%, #0C0812);
+  background:oklch(from var(--g,#4F5BD5) .30 calc(c * 1.05) h)}
+body.screen .top .in{max-width:none;margin:0;width:100%;
+  padding:0 var(--hpad);gap:var(--hgap);justify-content:space-between}
+body.screen .tagline{display:none}
+body.screen .gname{flex:1 1 0;min-width:0;
+  font:600 16px/1 Fredoka,system-ui,sans-serif;color:var(--hdr-ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-inline:2px}
+@media (max-width:719px){body.screen .gname{display:none}}
+.hbtn.home{gap:7px;padding:0 15px}
+.hbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  height:var(--tap);
+  border:0;margin:0;cursor:pointer;text-decoration:none;flex:0 0 auto;
+  border-radius:var(--hrad);padding:0 calc(var(--tap) * .39);white-space:nowrap;
+  font:600 var(--hfont)/1 inherit;
+  background:rgba(255,255,255,.12);color:var(--hdr-ink)}
+.hbtn.ico{width:var(--tap);padding:0}
+body.screen .top .lang{margin-inline-start:auto}
+body.screen .top .lang + [data-sound]{margin-inline-start:0}
+body.screen .top [data-sound]{margin-inline-start:auto}
+body.screen .top .lang{position:relative;flex:0 0 auto}
+body.screen .top .lang>summary{list-style:none}
+body.screen .top .lang>summary::-webkit-details-marker{display:none}
+body.screen .top .lang>summary::marker{content:""}
+.langsheet{position:absolute;inset-inline-end:0;top:calc(var(--tap) + 6px);
+  z-index:7;min-width:152px;max-width:min(84vw,300px);padding:6px;
+  display:flex;flex-direction:column;gap:2px;
+  border-radius:var(--urad);background:var(--doc-card);
+  border:1px solid var(--doc-line);box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.langsheet>a,.langsheet>b{display:flex;align-items:center;gap:8px;
+  min-height:var(--tap);padding:0 10px;border-radius:10px;
+  font:600 15px/1 inherit;color:var(--doc-ink);text-decoration:none}
+.langsheet>a:hover{background:color-mix(in oklab,var(--doc-ink) 8%,transparent)}
+.langsheet>b{font-weight:800;
+  background:color-mix(in oklab,var(--doc-ink) 8%,transparent)}
+.langsheet>a>span,.langsheet>b>span{width:14px;flex:0 0 14px;text-align:center}
+.hbtn:hover{background:rgba(255,255,255,.2)}
+.hbtn.pri{background:#FFF6E9;color:#241C2B}
+.hbtn.pri:hover{background:#fff}
+.hbtn[hidden]{display:none}
+.hbtn .gl{display:flex;flex:0 0 auto}
+.hbtn svg{width:var(--hicon);height:var(--hicon);
+  display:block;fill:none;stroke:currentColor;stroke-width:2.2;
+  stroke-linecap:round;stroke-linejoin:round}
+#wallet-slot svg{width:var(--hicon);height:var(--hicon);stroke-width:2.2}
+[dir="rtl"] .hbtn .gl .arw{transform:scaleX(-1);transform-origin:center}
+.wallet-wrap{display:inline-flex;align-items:center;height:var(--tap);
+  border-radius:99px;padding:0 calc(var(--tap) * .34);
+  background:rgba(255,255,255,.12)}
+body.screen #wallet-slot>*{background:none;box-shadow:none;border:0;
+  padding:0;color:var(--hdr-ink);height:var(--tap);gap:10px}
+@media (max-width:719px){
+  .hbtn .tx{display:none}
+  .wallet-wrap{padding:0 10px}
+}
+@media (max-width:480px){body{font-size:16px}h1{font-size:1.6rem}.play{width:100%}
+  .stage .box{min-height:clamp(420px,calc(100dvh - 120px),860px)}
+  .tagline{display:none}}
+.lang-offer{display:none}
+html[data-offer] .lang-offer{position:relative;z-index:8;display:flex;
+  justify-content:center;height:46px;box-sizing:border-box;
+  background:var(--doc-card);border-bottom:1px solid var(--doc-line)}
+.lang-offer .in{flex:1 1 auto;max-width:700px;display:none;align-items:center;
+  gap:10px;padding:0 12px;box-sizing:border-box}
+html[data-offer="en"] .lang-offer .in[data-for="en"]{display:flex}
+html[data-offer="he"] .lang-offer .in[data-for="he"]{display:flex}
+html[data-offer="es"] .lang-offer .in[data-for="es"]{display:flex}
+html[data-offer="fr"] .lang-offer .in[data-for="fr"]{display:flex}
+.lang-offer .txt{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;font-weight:500;font-size:14px;color:var(--doc-soft)}
+.lang-offer a{flex:0 0 auto;display:inline-flex;align-items:center;height:32px;
+  padding:0 14px;border-radius:999px;text-decoration:none;font-weight:700;
+  font-size:14px;background:var(--doc-ink);color:var(--doc-card)}
+.lang-offer button{flex:0 0 auto;width:32px;height:32px;display:grid;
+  place-items:center;border:0;border-radius:999px;background:none;cursor:pointer;
+  color:var(--doc-soft);font-size:17px;line-height:1}
+html[data-offer] body.screen{--oh:46px}
+        </style>
+        <script type="application/ld+json">
+          {"@context":"https://schema.org","@graph":[{"@type":["VideoGame","SoftwareApplication"],"@id":"https://ellaz.fun/es/games/coloring/#game","name":"Colorear","url":"https://ellaz.fun/es/games/coloring/","image":["https://ellaz.fun/art/coloring-2fff8950.svg","https://ellaz.fun/og/game-coloring-es-d0b7760c.png"],"description":"Un juego de colorear gratuito para niños. Eliges un dibujo, eliges un color, tocas una zona y se rellena. Sin puntuación, sin reloj, y sin ninguna forma de colorear algo incorrectamente.","inLanguage":"es","gamePlatform":["Web Browser","Mobile","Tablet","Desktop"],"playMode":"SinglePlayer","applicationCategory":"GameApplication","operatingSystem":"Any","isAccessibleForFree":true,"isFamilyFriendly":true,"typicalAgeRange":"3-10","genre":["Casual","Educational"],"offers":{"@type":"Offer","price":"0","priceCurrency":"ILS","availability":"https://schema.org/InStock"},"publisher":{"@id":"https://ellaz.fun/#org"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Inicio","item":"https://ellaz.fun/es/"},{"@type":"ListItem","position":2,"name":"Para peques","item":"https://ellaz.fun/es/games/kids/"},{"@type":"ListItem","position":3,"name":"Colorear","item":"https://ellaz.fun/es/games/coloring/"}]},{"@type":"HowTo","name":"¿Cómo se juega?","inLanguage":"es","step":[{"@type":"HowToStep","position":1,"name":"Elige un dibujo","text":"Hay 13, todos abiertos desde el principio. No hay nada bloqueado."},{"@type":"HowToStep","position":2,"name":"Elige un color","text":"20 colores en la barra lateral. Un toque lo selecciona."},{"@type":"HowToStep","position":3,"name":"Toca una zona","text":"Se rellena con el color elegido. Sin arrastrar y sin necesidad de puntería."},{"@type":"HowToStep","position":4,"name":"Cambia de idea","text":"Toca la misma zona otra vez con otro color. Sin límite."}]},{"@type":"FAQPage","inLanguage":"es","mainEntity":[{"@type":"Question","name":"¿El juego de colorear es gratis?","acceptedAnswer":{"@type":"Answer","text":"Del todo. Nada que pagar, ninguna compra, y ningún dibujo desbloqueado con dinero. Los 20 están abiertos desde el primer segundo."}},{"@type":"Question","name":"¿Hay que descargar algo o registrarse?","acceptedAnswer":{"@type":"Answer","text":"Ni una cosa ni la otra. Funciona en el navegador sin descarga y sin cuenta, y no pedimos ningún correo."}},{"@type":"Question","name":"¿Por qué este juego no tiene puntuación?","acceptedAnswer":{"@type":"Answer","text":"Porque aquí no hay bien ni mal. Todos los demás juegos de la web guardan un récord y este es el que nunca lo hará. Puntuar el dibujo de un niño significa decirle que podría haberlo hecho mejor."}},{"@type":"Question","name":"¿Se puede pintar fuera de las líneas?","acceptedAnswer":{"@type":"Answer","text":"No, y es a propósito. Un toque rellena una zona entera, así que un niño de tres años obtiene exactamente lo que pretendía sin necesitar un control motriz que todavía no tiene."}},{"@type":"Question","name":"¿Tiene anuncios?","acceptedAnswer":{"@type":"Answer","text":"Ninguno. Ni banners ni vídeo entre dibujo y dibujo."}},{"@type":"Question","name":"¿Funciona sin conexión?","acceptedAnswer":{"@type":"Answer","text":"Sí. Después de una visita el juego queda guardado en el aparato y funciona en un avión."}},{"@type":"Question","name":"¿Se guardan los dibujos?","acceptedAnswer":{"@type":"Answer","text":"Sí, en el propio aparato y sobre la marcha. No hay copia en la nube ni cuenta, así que borrar el historial del navegador los borra."}},{"@type":"Question","name":"¿Cuántos dibujos y colores hay?","acceptedAnswer":{"@type":"Answer","text":"20 dibujos y 20 colores. Cada dibujo está dividido en zonas cerradas y cualquier zona se puede recolorear las veces que se quiera."}},{"@type":"Question","name":"¿Para qué edad es?","acceptedAnswer":{"@type":"Answer","text":"Desde unos dos años. No hay que leer ni tener puntería, y no existe ningún estado en el que algo salga mal."}},{"@type":"Question","name":"¿Recoge datos sobre mi hijo?","acceptedAnswer":{"@type":"Answer","text":"No. No hay registro ni nombre. Nada graba la sesión y nada dirige publicidad según el comportamiento. Contamos cuántas veces se ha abierto un juego, sin nada al lado que identifique a quién lo abrió."}}]},{"@type":"Organization","@id":"https://ellaz.fun/#org","name":"Ellaz","url":"https://ellaz.fun/","logo":"https://ellaz.fun/icon.svg","description":"Free browser games, no download and no account","sameAs":["https://github.com/Sigmafier/ellaz"]}]}
+        </script>
+        <script type="module" crossorigin src="/assets/index-BoKUdFQW.js"></script><link rel="modulepreload" crossorigin href="/assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="/assets/shell-Bfq-Y9RE.js"><link rel="stylesheet" crossorigin href="/assets/shell-DkfkxXv9.css"><link rel="manifest" href="/manifest.webmanifest">
+        <link rel="modulepreload" crossorigin href="/assets/page-DgoEHUQu.js"><link rel="modulepreload" crossorigin href="/assets/game-coloring-DGvgnEU1.js">
+      </head>
+      <body class="screen" style="--g:#FF8A3D" data-page="game" data-game="coloring" data-locale="es">
+        
+    <div id="lang-offer" class="lang-offer">
+      <div class="in" data-for="en" lang="en" dir="ltr"><span class="txt">This page is also in English</span><a href="/games/coloring/" hreflang="en">English</a><button type="button" aria-label="Close">✕</button></div><div class="in" data-for="he" lang="he" dir="rtl"><span class="txt">העמוד הזה קיים גם בעברית</span><a href="/he/games/coloring/" hreflang="he">עברית</a><button type="button" aria-label="סגירה">✕</button></div><div class="in" data-for="fr" lang="fr" dir="ltr"><span class="txt">Cette page existe aussi en français</span><a href="/fr/games/coloring/" hreflang="fr">Français</a><button type="button" aria-label="Fermer">✕</button></div>
+    </div>
+    <script>
+      (function(){try{var d=document.documentElement,b=document.getElementById("lang-offer");if(!b)return;try{if(localStorage.getItem("ellaz:offer:v1"))return}catch(e){}var r=b.querySelectorAll("[data-for]"),h={},i;for(i=0;i<r.length;i++)h[r[i].getAttribute("data-for")]=1;var L=navigator.languages||[navigator.language||""],w="";for(i=0;i<L.length;i++){var t=String(L[i]).toLowerCase().split("-")[0];if(t==="es")return;if(h[t]){w=t;break}}if(!w)return;d.setAttribute("data-offer",w);var x=b.querySelector("button");if(x)x.addEventListener("click",function(){try{localStorage.setItem("ellaz:offer:v1","1")}catch(e){}d.removeAttribute("data-offer")});}catch(e){}})()
+    </script>
+    <header class="top"  style="--g:#FF8A3D">
+      <div class="in">
+        
+    <a class="hbtn home" href="/es/" aria-label="Todos los juegos">
+      <span class="gl"><svg class="arw" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19.4 12H5.6"/><path d="M11.4 6.2 5.6 12l5.8 5.8"/></svg></span><span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3.8 10.6 12 4.2l8.2 6.4"/><path d="M5.9 12.2v6.6a1.4 1.4 0 0 0 1.4 1.4h9.4a1.4 1.4 0 0 0 1.4-1.4v-6.6"/><path d="M9.9 20.2v-4.6h4.2v4.6"/></svg></span>
+    </a>
+    <b class="gname">Colorear</b>
+    <details class="lang">
+    <summary class="hbtn ico" aria-label="Idioma: Español">
+      <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0"/><path d="M16 12a4 9 0 1 1-8 0 4 9 0 0 1 8 0"/><path d="M3.4 9h17.2"/><path d="M3.4 15h17.2"/></svg></span>
+    </summary>
+    <div class="langsheet" role="group" aria-label="Idioma">
+      <a
+              href="/games/coloring/"
+              hreflang="en"
+              lang="en"
+              dir="ltr"
+              ><span aria-hidden="true"></span>English</a
+            ><a
+              href="/he/games/coloring/"
+              hreflang="he"
+              lang="he"
+              dir="rtl"
+              ><span aria-hidden="true"></span>עברית</a
+            ><b lang="es" dir="ltr" class="on"
+              ><span aria-hidden="true">&#10003;</span>Español</b
+            ><a
+              href="/fr/games/coloring/"
+              hreflang="fr"
+              lang="fr"
+              dir="ltr"
+              ><span aria-hidden="true"></span>Français</a
+            >
+    </div>
+  </details>
+    <button type="button" class="hbtn ico" data-sound aria-label="Sonido" hidden>
+      <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4.4 9.6h2.9L11.6 6v12L7.3 14.4H4.4z"/><path d="M15.1 9.5a4.4 4.4 0 0 1 0 5"/><path d="M17.9 6.9a8.4 8.4 0 0 1 0 10.2"/></svg></span>
+    </button>
+    <div class="wallet-wrap"><span id="wallet-slot"></span></div>
+  
+      </div>
+    </header>
+    <main>
+    <div class="urow">
+    <nav class="bc">
+        <a href="/es/">Inicio</a> ›
+        <a href="/es/games/kids/">Para peques</a> › Colorear
+      </nav><div class="tools"><button
+            type="button"
+            class="ubtn"
+            data-pause
+            data-label-pause="Pausa"
+            data-label-resume="Continuar"
+            aria-label="Pausa"
+            hidden
+          >
+            <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M9.4 5.6v12.8"/><path d="M14.6 5.6v12.8"/></svg></span>
+          </button>
+          <button type="button" class="ubtn" data-restart aria-label="Reiniciar" hidden>
+            <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20.4 4.2v4.4h-4.4"/></svg></span>
+          </button>
+          <button
+            type="button"
+            class="ubtn"
+            data-share
+            data-share-title="Colorear"
+            data-share-emoji="🎨"
+            aria-label="Compartir"
+            hidden
+          >
+            <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M15.2 5.6a2.6 2.6 0 1 0 5.2 0 2.6 2.6 0 1 0-5.2 0"/><path d="M3.6 12a2.6 2.6 0 1 0 5.2 0 2.6 2.6 0 1 0-5.2 0"/><path d="M15.2 18.4a2.6 2.6 0 1 0 5.2 0 2.6 2.6 0 1 0-5.2 0"/><path d="M8.5 10.7 15.5 7"/><path d="M8.5 13.3 15.5 17"/></svg></span>
+          </button><button type="button" class="ubtn" data-fullscreen aria-label="Pantalla completa" hidden>
+        <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4.6 9.4V4.6h4.8"/><path d="M19.4 9.4V4.6h-4.8"/><path d="M4.6 14.6v4.8h4.8"/><path d="M19.4 14.6v4.8h-4.8"/></svg></span>
+      </button><button type="button" class="ubtn" data-report aria-label="Cuéntanos" hidden>
+        <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M6.4 20.4V4.4"/><path d="M6.4 5.4h11.4l-2.5 3.6 2.5 3.6H6.4"/></svg></span>
+      </button></div>
+  </div>
+    <div class="stage">
+    <div class="box">
+      <div id="game-frame"></div>
+      <div
+        id="game-poster"
+        data-loading="El juego se carga solo. No hay que tocar nada."
+        data-saver="Tienes el ahorro de datos activado, así que esperamos a que toques tú."
+      >
+        <span class="em" aria-hidden="true">🎨</span>
+        <button class="play" id="game-play" type="button">Jugar</button>
+        <span class="msg" id="game-msg">El juego necesita JavaScript. El resto de la página, no.</span>
+      </div>
+    </div>
+  </div>
+
+    <h1>Colorear</h1>
+    <p class="lede">Un juego de colorear gratuito para niños. Eliges un dibujo, eliges un color, tocas una zona y se rellena. Sin puntuación, sin reloj, y sin ninguna forma de colorear algo incorrectamente.</p>
+
+    <!--
+      The page's own picture, and the first image in the article body.
+
+      Google chooses the thumbnail beside a text result from images embedded on
+      the page. Until 2026-08-22 there were none: the stage above draws the
+      emoji as TEXT and the art everywhere else is inline <svg>, which has no
+      URL and cannot be indexed as an image. So the result was permanently
+      pictureless with nothing failing anywhere.
+
+      width/height are the SVG's own declared box, so the browser reserves
+      the space from the attributes and this adds nothing to the layout shift.
+      loading is EAGER on purpose - it is the main image, above most of the
+      prose, and a lazy main image is one Google may not see.
+
+      The alt is one template per language with the game's name filled in.
+      It was the page's own H1 for an hour, which reads as "Snake" and "2048"
+      in three of the four languages - a name, not a description of a picture.
+    -->
+    <img
+      class="art"
+      src="/art/coloring-2fff8950.svg"
+      alt="Colorear - ilustración del juego"
+      width="1200"
+      height="900"
+      decoding="async"
+    />
+    <ul class="facts">
+      <li>Gratis</li><li>Sin anuncios</li><li>Sin cuenta</li><li>Sin descargas</li><li>Funciona sin internet</li><li>Un jugador</li>
+    </ul>
+
+    <h2>¿Cómo se juega?</h2>
+    <ol>
+    <li><b>Elige un dibujo</b> - Hay 13, todos abiertos desde el principio. No hay nada bloqueado.</li><li><b>Elige un color</b> - 20 colores en la barra lateral. Un toque lo selecciona.</li><li><b>Toca una zona</b> - Se rellena con el color elegido. Sin arrastrar y sin necesidad de puntería.</li><li><b>Cambia de idea</b> - Toca la misma zona otra vez con otro color. Sin límite.</li>
+  </ol>
+
+    <h2>Sobre el juego</h2>
+    <p>Un dibujo de líneas. 20 colores al lado. Tocas. Se rellena.</p><p>Este es el único juego de la web que no guarda ningún récord, y nunca lo hará. Todos los demás tienen uno, porque un tiempo de resolución o una racha se pueden comparar honestamente con los de ayer. El dibujo de un niño no. Puntuarlo significa decirle que podría haberlo hecho mejor, y a los cuatro años esa es exactamente la frase que hace que los niños dejen de dibujar. Aquí no hay bien ni mal, así que no hay nada que contar.</p><p>20 dibujos en total: una casa, un pez, una mariposa, una flor y más. Cada uno está dividido en zonas cerradas, y cualquier zona admite cualquier color las veces que quieras. Un cielo rosa es una decisión y no un error, y nunca va a aparecer ningún mensaje sugiriendo lo contrario.</p><p>No hay pincel ni hay que arrastrar. Tocas una zona y se rellena, lo que significa que una mano pequeña y poco firme obtiene exactamente el resultado que pretendía. Es a propósito: una herramienta de dibujo libre le daría a un niño de siete años más control y a uno de tres nada más que frustración.</p><p>El trabajo se guarda en el aparato sobre la marcha, así que podéis cerrarlo y volver. No hay copia en la nube ni cuenta, lo que significa que borrar el historial del navegador borra los dibujos. Ese es el precio de no pediros nada.</p>
+
+    <h2>¿Qué enseña?</h2>
+    <h3>Nombres de colores</h3>
+    <p>20 colores que se repiten en todos los dibujos, y los niños empiezan a pedirlos por su nombre.</p><h3>Puntería</h3>
+    <p>Las zonas pequeñas piden un dedo dirigido, y eso se practica sin que nadie lo llame ejercicio.</p><h3>Planificar</h3>
+    <p>Qué color va dónde es una decisión, y casi todos los niños empiezan a planificar en su segundo dibujo.</p><h3>Que no hay respuesta correcta</h3>
+    <p>Suena a poca cosa y no lo es. Un juego en el que no puedes equivocarte es una experiencia rara para un niño al que todo lo demás mide.</p>
+
+    <h2>Consejos</h2>
+    <h3>Empieza por las zonas grandes</h3>
+    <p>Primero el fondo y el cielo, los detalles después. El dibujo parece entero pronto, así que el niño no lo abandona a mitad.</p><h3>Coloread mal a propósito</h3>
+    <p>Un elefante morado es una buena elección. Este juego no corrige a nadie, y esa es su razón de ser entera.</p><h3>Volved a uno antiguo</h3>
+    <p>El trabajo se guarda, así que un dibujo a medias puede esperar hasta mañana.</p><h3>Dejadle elegir el dibujo</h3>
+    <p>Elegir es la mitad del asunto, sobre todo para los niños que pocas veces eligen algo.</p>
+
+    <h2>¿Para qué edad es?</h2>
+    <h3>2 a 3</h3>
+    <p>Ideal. Un toque rellena una zona entera, así que no hay ninguna frustración motriz.</p><h3>4 a 6</h3>
+    <p>Aquí es donde los colores empiezan a elegirse a propósito y no al azar.</p><h3>7 en adelante</h3>
+    <p>Sigue siendo agradable, aunque a esta edad suelen querer una herramienta más libre.</p><h3>Padres</h3>
+    <p>Este es el que podéis dar sin pensarlo dos veces. Sin reloj y sin puntuación, y sin ningún momento en el que os llamen.</p>
+
+    <h2>Accesibilidad</h2>
+    <p>Un toque rellena una zona, sin arrastrar y sin mantener pulsado, así que una mano poco firme o un dispositivo de entrada alternativo obtienen exactamente el resultado pretendido. Las zonas son grandes y las líneas gruesas. Los 20 colores se diferencian en luminosidad además de en tono, y cada uno lleva su nombre hablado para lectores de pantalla, de modo que se puede elegir un color sin verlo. Sin reloj y sin nada que parpadee, y no hay ningún estado de error del que avisar porque no puede producirse.</p>
+
+    <h2>Jugar juntos</h2>
+    <h3>Un dibujo, dos personas</h3>
+    <p>Turnaos rellenando una zona cada uno. El resultado es raro y esa es la parte buena.</p><h3>Elegid el uno por el otro</h3>
+    <p>Tú eliges el color y él la zona. De repente todo el mundo tiene que explicarse.</p><h3>Contad la historia</h3>
+    <p>Cuando esté terminado, preguntad qué está pasando en el dibujo. El coloreado se convierte en el principio.</p><h3>El mismo dibujo dos veces</h3>
+    <p>Coloread un mismo dibujo con dos paletas distintas y comparad. Las mismas líneas, dos dibujos.</p>
+
+    <h2>Preguntas frecuentes</h2>
+    <h3>¿El juego de colorear es gratis?</h3>
+      <p>Del todo. Nada que pagar, ninguna compra, y ningún dibujo desbloqueado con dinero. Los 20 están abiertos desde el primer segundo.</p><h3>¿Hay que descargar algo o registrarse?</h3>
+      <p>Ni una cosa ni la otra. Funciona en el navegador sin descarga y sin cuenta, y no pedimos ningún correo.</p><h3>¿Por qué este juego no tiene puntuación?</h3>
+      <p>Porque aquí no hay bien ni mal. Todos los demás juegos de la web guardan un récord y este es el que nunca lo hará. Puntuar el dibujo de un niño significa decirle que podría haberlo hecho mejor.</p><h3>¿Se puede pintar fuera de las líneas?</h3>
+      <p>No, y es a propósito. Un toque rellena una zona entera, así que un niño de tres años obtiene exactamente lo que pretendía sin necesitar un control motriz que todavía no tiene.</p><h3>¿Tiene anuncios?</h3>
+      <p>Ninguno. Ni banners ni vídeo entre dibujo y dibujo.</p><h3>¿Funciona sin conexión?</h3>
+      <p>Sí. Después de una visita el juego queda guardado en el aparato y funciona en un avión.</p><h3>¿Se guardan los dibujos?</h3>
+      <p>Sí, en el propio aparato y sobre la marcha. No hay copia en la nube ni cuenta, así que borrar el historial del navegador los borra.</p><h3>¿Cuántos dibujos y colores hay?</h3>
+      <p>20 dibujos y 20 colores. Cada dibujo está dividido en zonas cerradas y cualquier zona se puede recolorear las veces que se quiera.</p><h3>¿Para qué edad es?</h3>
+      <p>Desde unos dos años. No hay que leer ni tener puntería, y no existe ningún estado en el que algo salga mal.</p><h3>¿Recoge datos sobre mi hijo?</h3>
+      <p>No. No hay registro ni nombre. Nada graba la sesión y nada dirige publicidad según el comportamiento. Contamos cuántas veces se ha abierto un juego, sin nada al lado que identifique a quién lo abrió.</p>
+
+    <h2>Más juegos</h2>
+    <ul class="grid">
+    <li>
+        <a href="/es/games/memory/">
+          <span class="em" aria-hidden="true">🧠</span>
+          <span>Memoria<span class="cat">Para peques</span></span>
+        </a>
+      </li><li>
+        <a href="/es/games/evolve/">
+          <span class="em" aria-hidden="true">🦖</span>
+          <span>Evolución<span class="cat">Para peques</span></span>
+        </a>
+      </li><li>
+        <a href="/es/games/finddiff/">
+          <span class="em" aria-hidden="true">🔍</span>
+          <span>Busca las diferencias<span class="cat">Para peques</span></span>
+        </a>
+      </li><li>
+        <a href="/es/games/hidden/">
+          <span class="em" aria-hidden="true">👀</span>
+          <span>Encuéntrame<span class="cat">Para peques</span></span>
+        </a>
+      </li><li>
+        <a href="/es/games/balloons/">
+          <span class="em" aria-hidden="true">🎈</span>
+          <span>Revienta globos<span class="cat">Para peques</span></span>
+        </a>
+      </li><li>
+        <a href="/es/games/pet/">
+          <span class="em" aria-hidden="true">🐣</span>
+          <span>Mi Mascota<span class="cat">Para peques</span></span>
+        </a>
+      </li>
+  </ul>
+
+    <section class="embed" id="embed">
+    <h2>Pon este juego en tu web</h2>
+    <p>Copia el código y pégalo en tu página. La línea bajo el marco es la que cuenta: un enlace dentro del marco se queda en ellaz.fun, y solo el que pegas es tuyo.</p>
+    <iframe
+      src="/embed/coloring/?lang=es"
+      width="100%"
+      height="940"
+      style="border:0;border-radius:12px;background:var(--doc-stage)"
+      allow="fullscreen"
+      loading="lazy"
+      title="Colorear - ellaz.fun"
+    ></iframe>
+    <p class="embed-credit"><p>Juega a <a href="https://ellaz.fun/es/games/coloring/">Colorear</a> y a más juegos gratis en <a href="https://ellaz.fun/">ellaz.fun</a></p></p>
+    <pre
+      class="embed-code"
+      data-embed-code
+      dir="ltr"
+      style="white-space:pre-wrap;word-break:break-all;padding:14px;border-radius:12px;background:var(--doc-card);border:1px solid var(--doc-line);font-size:.85rem"
+    >&lt;iframe src=&quot;https://ellaz.fun/embed/coloring/?lang=es&quot; width=&quot;100%&quot; height=&quot;940&quot; style=&quot;border:0;border-radius:12px&quot; allow=&quot;fullscreen&quot; title=&quot;Colorear - ellaz.fun&quot;&gt;&lt;/iframe&gt;
+&lt;p&gt;Juega a &lt;a href=&quot;https://ellaz.fun/es/games/coloring/&quot;&gt;Colorear&lt;/a&gt; y a más juegos gratis en &lt;a href=&quot;https://ellaz.fun/&quot;&gt;ellaz.fun&lt;/a&gt;&lt;/p&gt;</pre>
+    <button
+      type="button"
+      class="play"
+      data-embed-copy
+      data-label-copied="Copiado"
+      data-label-select="El código está seleccionado: cópialo"
+      hidden
+    >Copiar el código</button>
+  </section>
+  </main>
+    <footer>
+      <div class="in">
+        <span>Ellaz - juegos gratis en hebreo, inglés, español y francés. Sin anuncios, sin cuentas y sin recoger nada sobre ningún niño.</span>
+        <a href="/games/coloring/" hreflang="en" lang="en">English</a><a href="/he/games/coloring/" hreflang="he" lang="he">עברית</a><a href="/fr/games/coloring/" hreflang="fr" lang="fr">Français</a>
+      </div>
+    </footer>
+  
+        <div id="consent" class="consent" role="dialog" aria-live="polite" lang="es" dir="ltr"><p>Contamos visitas con una cookie pequeña de Google. Sin anuncios ni seguimiento personal.</p><button type="button" data-yes>Aceptar</button><button type="button" data-no>No, gracias</button></div>
+    <style>
+      .consent{display:none;position:fixed;inset-inline:0;bottom:0;z-index:60;padding:12px;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;background:#1d1b2e;color:#fff;font-size:14px}[data-consent] .consent{display:flex}.consent p{margin:0;max-width:48ch}.consent button{font:inherit;font-weight:600;padding:8px 18px;min-height:40px;border:0;border-radius:8px;background:#fff;color:#1d1b2e}
+    </style>
+    <script>
+      (function(){try{var d=document.documentElement,b=document.getElementById("consent");if(!b||!window.gtag)return;var v=null;try{v=localStorage.getItem("ellaz:consent:v1")}catch(e){}if(v==="granted"){gtag("consent","update",{analytics_storage:"granted"});return}if(v==="denied")return;d.setAttribute("data-consent","1");function done(a){try{localStorage.setItem("ellaz:consent:v1",a)}catch(e){}if(a==="granted")gtag("consent","update",{analytics_storage:"granted"});d.removeAttribute("data-consent")}var y=b.querySelector("[data-yes]"),n=b.querySelector("[data-no]");if(y)y.addEventListener("click",function(){done("granted")});if(n)n.addEventListener("click",function(){done("denied")});}catch(e){}})()
+    </script>
+      </body>
+    </html>

@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="fr" dir="ltr">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <!-- FIRST, and synchronous. data-theme is deliberately never baked into
+             these documents - they are cached and it would be wrong for whoever
+             chose the other theme - so this is what sets it before the first
+             paint. A module import runs far too late and the page visibly
+             flashes the other theme. Generated from themes.ts, never written
+             out here, so adding a theme cannot leave it behind. -->
+        <script>
+          (function(){try{var t=localStorage.getItem("ellaz:theme");if(t&&["market","night"].indexOf(t)>-1&&t!=="market")document.documentElement.setAttribute("data-theme",t)}catch(e){}})()
+        </script>
+        <meta name="theme-color" content="#ff4d8d" />
+        <title>Lettres croisées - Jeu de mots gratuit, sans téléchargement</title>
+        <meta name="description" content="Posez des jetons de lettres sur un plateau de 9 sur 9 et formez des mots croisés. Quatre jokers, 94 jetons. Gratuit, sans compte, hors ligne." />
+        <link rel="canonical" href="https://ellaz.fun/fr/games/lettercross/" />
+        <link rel="alternate" hreflang="en" href="https://ellaz.fun/games/lettercross/" /><link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/lettercross/" /><link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/lettercross/" /><link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/lettercross/" />
+        <link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/lettercross/" />
+        
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Ellaz" />
+        <meta property="og:locale" content="fr_FR" />
+        <meta property="og:locale:alternate" content="en_US" /><meta property="og:locale:alternate" content="he_IL" /><meta property="og:locale:alternate" content="es_ES" />
+        <meta property="og:title" content="Lettres croisées - Jeu de mots gratuit, sans téléchargement" />
+        <meta property="og:description" content="Posez des jetons de lettres sur un plateau de 9 sur 9 et formez des mots croisés. Quatre jokers, 94 jetons. Gratuit, sans compte, hors ligne." />
+        <meta property="og:url" content="https://ellaz.fun/fr/games/lettercross/" />
+        <meta property="og:image" content="https://ellaz.fun/og/game-lettercross-fr-58602ed0.png" />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+          <meta property="og:image:alt" content="Lettres croisées - Jeu de mots gratuit, sans téléchargement" />
+          <meta name="twitter:image" content="https://ellaz.fun/og/game-lettercross-fr-58602ed0.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <!-- Measurement, on EVERY emitted document and not only the app shell.
+             Search Console says the arrivals land on GAME pages from Hebrew
+             queries, so a shell-only tag would have measured almost none of
+             them. Empty on any non-primary base, so the noindex mirror never
+             reports. Config and its deliberate limits: src/build/analytics.ts. -->
+        
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E25QBB8420"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied'});gtag('set','ads_data_redaction',true);gtag('js',new Date());gtag('config','G-E25QBB8420',{client_storage:'none',allow_google_signals:false,allow_ad_personalization_signals:false});</script>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;800&amp;family=Fredoka:wght@500;600&amp;display=swap" />
+        <style>
+          *,*::before,*::after{box-sizing:border-box}
+:root{
+  --doc-ink:var(--text,#1b1b2b);
+  --doc-soft:var(--text-dim,#5a5a72);
+  --doc-line:var(--line,#e4e2ef);
+  --doc-bg:var(--bg,#fdfcff);
+  --doc-card:var(--surface,#ffffff);
+  --doc-brand:var(--brand-ink,#6c5ce7);
+  --doc-sun:var(--yellow,#ffc730);
+  --doc-stage:var(--stage-bg,#12142b);
+}
+:root[data-theme="night"]{
+  --doc-ink:var(--text,#f5f6ff);
+  --doc-soft:var(--text-dim,#b3b8e0);
+  --doc-line:var(--line,#2a2f55);
+  --doc-bg:var(--bg,#0f1226);
+  --doc-card:var(--surface,#1e2240);
+  --doc-brand:var(--brand-ink,#a29bfe);
+  --doc-sun:var(--yellow,#fdcb6e);
+  --doc-stage:var(--stage-bg,#12142b);
+}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--doc-bg);color:var(--doc-ink);
+  font:400 17px/1.7 Heebo,Assistant,Rubik,system-ui,-apple-system,sans-serif}
+main{max-width:44rem;margin-inline:auto;padding:0 20px 72px}
+h1,h2,h3{font-family:Fredoka,Heebo,system-ui,sans-serif;line-height:1.25;margin:0;
+  color:var(--doc-ink)}
+h1{font-size:2rem;font-weight:600;margin-block:8px 12px}
+h2{font-size:1.35rem;font-weight:600;margin-block:44px 12px}
+h3{font-size:1.05rem;font-weight:600;margin-block:22px 4px}
+p{margin-block:0 14px}
+a{color:var(--doc-brand)}
+.top{border-block-end:1px solid var(--doc-line);background:var(--doc-card)}
+.top .in{max-width:44rem;margin-inline:auto;padding:12px 20px;display:flex;
+  align-items:center;gap:12px}
+.brand{font-family:Fredoka,system-ui,sans-serif;font-size:1.15rem;font-weight:600;
+  color:var(--doc-ink);text-decoration:none}
+.tagline{color:var(--doc-soft);font-size:.82rem;flex:1}
+#wallet-slot{flex:0 0 auto}
+.bc{font-size:.82rem;font-weight:600;color:var(--doc-soft);margin-block:18px 0}
+.bc a{text-decoration:none}
+.vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;
+  clip-path:inset(50%);white-space:nowrap;border:0}
+.beta{font-size:.68rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
+  padding:3px 8px;border-radius:var(--radius-pill,999px);
+  background:#F2B93F;color:#241C17;white-space:nowrap;flex:0 0 auto;align-self:center}
+body.screen .urow:has(.beta) .bc{margin-inline-end:0}
+body.screen .urow .beta{margin-inline-end:auto}
+.lede{font-size:1.12rem;color:var(--doc-ink)}
+img.art{display:block;width:100%;max-width:520px;aspect-ratio:4/3;height:auto;margin:18px 0 0;border-radius:14px;border:1px solid var(--doc-line);background:var(--doc-card)}
+.facts{list-style:none;display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:18px 0 0}
+.facts li{border:1px solid var(--doc-line);background:var(--doc-card);border-radius:999px;
+  padding:5px 13px;font-size:.82rem;font-weight:600;color:var(--doc-soft)}
+.cta{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin:26px 0 8px}
+.play{display:inline-flex;align-items:center;justify-content:center;min-height:76px;
+  padding:0 40px;border:none;border-radius:22px;background:var(--doc-sun);
+  color:var(--doc-ink);text-decoration:none;font-family:Fredoka,system-ui,sans-serif;
+  font-size:1.3rem;font-weight:600;box-shadow:0 4px 0 var(--doc-line);cursor:pointer}
+.cta .note{color:var(--doc-soft);font-size:.86rem;flex:1 1 12rem}
+ol,ul.steps{padding-inline-start:1.3em}
+ol li,ul.steps li{margin-block-end:8px}
+table{border-collapse:collapse;width:100%;margin-block:14px;font-size:.95rem}
+th,td{border:1px solid var(--doc-line);padding:8px 12px;text-align:start}
+th{background:var(--doc-card);font-weight:600}
+.grid{list-style:none;padding:0;margin:20px 0 0;display:grid;gap:12px;
+  grid-template-columns:repeat(auto-fill,minmax(9.5rem,1fr))}
+.grid a{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--doc-card);
+  border:1px solid var(--doc-line);border-radius:16px;text-decoration:none;
+  color:var(--doc-ink);font-weight:600}
+.grid .em{font-size:1.5rem;line-height:1}
+.grid .cat{display:block;font-size:.75rem;font-weight:400;color:var(--doc-soft)}
+footer{border-block-start:1px solid var(--doc-line);margin-block-start:56px;
+  padding:22px 20px 40px;color:var(--doc-soft);font-size:.85rem}
+footer .in{max-width:44rem;margin-inline:auto;display:flex;flex-wrap:wrap;gap:14px}
+.stage{position:relative;margin-block:14px 6px;margin-inline:-20px}
+@media (min-width:720px){.stage{margin-inline:0}}
+.stage .box{position:relative;border-radius:22px;overflow:hidden;
+  background:var(--doc-stage);box-shadow:0 5px 0 var(--doc-line);
+  min-height:clamp(420px,calc(100dvh - 145px),860px);display:flex;flex-direction:column}
+.stage.room .box{min-height:clamp(460px,calc(100dvh - 120px),880px)}
+.stage.boards .box{min-height:clamp(300px,46dvh,560px)}
+#game-frame{flex:1;min-height:0;display:flex;flex-direction:column}
+#game-poster{position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:18px;text-align:center;padding:24px;
+  color:var(--doc-ink);transition:opacity .25s ease}
+#game-poster[hidden]{display:none}
+#game-poster .em{font-size:64px;line-height:1}
+#game-poster .msg{font-size:.95rem;opacity:.75;max-width:22ch}
+.stage .noscript{position:absolute;inset-inline:0;bottom:0;padding:12px;
+  background:var(--badge-fill,rgba(0,0,0,.55));color:var(--on-brand,#fff);font-size:.85rem;text-align:center}
+@media (max-width:719px){.stage .box{border-radius:0;box-shadow:none;
+  border-block:1px solid var(--doc-line)}}
+body[data-page="game"] main,body[data-page="world"] main{max-width:none;padding-inline:0}
+body[data-page="game"] main>:not(.stage),
+body[data-page="world"] main>:not(.stage){max-width:44rem;margin-inline:auto;
+  padding-inline:20px}
+body[data-page="game"] .stage,body[data-page="world"] .stage{margin-block:0;
+  margin-inline:0}
+body[data-page="game"] .stage .box,body[data-page="world"] .stage .box{
+  height:calc(100dvh - var(--hh) - var(--uh) - var(--oh));min-height:0;border-radius:0;
+  box-shadow:none;border:0;justify-content:center}
+body[data-page="game"] .stage .box{justify-content:flex-start}
+body[data-page="world"] #game-frame:empty{min-height:100%}
+body[data-page="game"] #game-frame,body[data-page="world"] #game-frame{flex:0 0 auto}
+body.screen .urow{display:flex;align-items:center;gap:10px;height:var(--uh);
+  padding-inline:var(--hpad);background:var(--doc-bg)}
+body.screen .urow .bc{margin:0;flex:0 1 auto;margin-inline-end:auto;min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+body.screen .urow .bc a{color:inherit;text-decoration:underline;
+  text-underline-offset:3px;text-decoration-thickness:1px;
+  display:inline-block;padding-block:12px;margin-block:-12px;
+  text-decoration-color:color-mix(in srgb,currentColor 55%,transparent)}
+body.screen .urow .tools{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.ubtn{display:inline-flex;align-items:center;justify-content:center;
+  width:var(--tap);height:var(--tap);flex:0 0 auto;border:0;padding:0;
+  cursor:pointer;border-radius:var(--urad);background:var(--doc-card);
+  color:var(--doc-ink);box-shadow:0 2px 0 var(--doc-line)}
+.ubtn[hidden]{display:none}
+.ubtn .gl{display:flex}
+.ubtn svg{display:block;width:var(--hicon);height:var(--hicon);fill:none;
+  stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+body.screen{--hh:60px;--uh:60px;--oh:0px;--tap:44px;--hgap:12px;--hpad:20px;
+  --hbrand:22px;--hfont:14.5px;--hicon:22px;--hrad:99px;--urad:14px;
+  --hdr-ink:#FFF6E9}
+@media (max-width:719px){body.screen{--hh:58px;--uh:56px;--hbrand:20px;--hgap:8px;--hpad:12px}}
+body.screen{--gc-cell-bg:var(--surface)}
+@supports (background:color-mix(in oklab,red 10%,blue)){
+body.screen{--gc-cell-bg:color-mix(in oklab,var(--g,var(--brand)) 16%,var(--surface))}}
+body.screen .top{position:relative;z-index:6;height:var(--hh);
+  display:flex;align-items:center;padding:0;border-block-end:0;
+  color:var(--hdr-ink);
+  background:color-mix(in oklch, var(--g,#4F5BD5) 46%, #0C0812);
+  background:oklch(from var(--g,#4F5BD5) .30 calc(c * 1.05) h)}
+body.screen .top .in{max-width:none;margin:0;width:100%;
+  padding:0 var(--hpad);gap:var(--hgap);justify-content:space-between}
+body.screen .tagline{display:none}
+body.screen .gname{flex:1 1 0;min-width:0;
+  font:600 16px/1 Fredoka,system-ui,sans-serif;color:var(--hdr-ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-inline:2px}
+@media (max-width:719px){body.screen .gname{display:none}}
+.hbtn.home{gap:7px;padding:0 15px}
+.hbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  height:var(--tap);
+  border:0;margin:0;cursor:pointer;text-decoration:none;flex:0 0 auto;
+  border-radius:var(--hrad);padding:0 calc(var(--tap) * .39);white-space:nowrap;
+  font:600 var(--hfont)/1 inherit;
+  background:rgba(255,255,255,.12);color:var(--hdr-ink)}
+.hbtn.ico{width:var(--tap);padding:0}
+body.screen .top .lang{margin-inline-start:auto}
+body.screen .top .lang + [data-sound]{margin-inline-start:0}
+body.screen .top [data-sound]{margin-inline-start:auto}
+body.screen .top .lang{position:relative;flex:0 0 auto}
+body.screen .top .lang>summary{list-style:none}
+body.screen .top .lang>summary::-webkit-details-marker{display:none}
+body.screen .top .lang>summary::marker{content:""}
+.langsheet{position:absolute;inset-inline-end:0;top:calc(var(--tap) + 6px);
+  z-index:7;min-width:152px;max-width:min(84vw,300px);padding:6px;
+  display:flex;flex-direction:column;gap:2px;
+  border-radius:var(--urad);background:var(--doc-card);
+  border:1px solid var(--doc-line);box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.langsheet>a,.langsheet>b{display:flex;align-items:center;gap:8px;
+  min-height:var(--tap);padding:0 10px;border-radius:10px;
+  font:600 15px/1 inherit;color:var(--doc-ink);text-decoration:none}
+.langsheet>a:hover{background:color-mix(in oklab,var(--doc-ink) 8%,transparent)}
+.langsheet>b{font-weight:800;
+  background:color-mix(in oklab,var(--doc-ink) 8%,transparent)}
+.langsheet>a>span,.langsheet>b>span{width:14px;flex:0 0 14px;text-align:center}
+.hbtn:hover{background:rgba(255,255,255,.2)}
+.hbtn.pri{background:#FFF6E9;color:#241C2B}
+.hbtn.pri:hover{background:#fff}
+.hbtn[hidden]{display:none}
+.hbtn .gl{display:flex;flex:0 0 auto}
+.hbtn svg{width:var(--hicon);height:var(--hicon);
+  display:block;fill:none;stroke:currentColor;stroke-width:2.2;
+  stroke-linecap:round;stroke-linejoin:round}
+#wallet-slot svg{width:var(--hicon);height:var(--hicon);stroke-width:2.2}
+[dir="rtl"] .hbtn .gl .arw{transform:scaleX(-1);transform-origin:center}
+.wallet-wrap{display:inline-flex;align-items:center;height:var(--tap);
+  border-radius:99px;padding:0 calc(var(--tap) * .34);
+  background:rgba(255,255,255,.12)}
+body.screen #wallet-slot>*{background:none;box-shadow:none;border:0;
+  padding:0;color:var(--hdr-ink);height:var(--tap);gap:10px}
+@media (max-width:719px){
+  .hbtn .tx{display:none}
+  .wallet-wrap{padding:0 10px}
+}
+@media (max-width:480px){body{font-size:16px}h1{font-size:1.6rem}.play{width:100%}
+  .stage .box{min-height:clamp(420px,calc(100dvh - 120px),860px)}
+  .tagline{display:none}}
+.lang-offer{display:none}
+html[data-offer] .lang-offer{position:relative;z-index:8;display:flex;
+  justify-content:center;height:46px;box-sizing:border-box;
+  background:var(--doc-card);border-bottom:1px solid var(--doc-line)}
+.lang-offer .in{flex:1 1 auto;max-width:700px;display:none;align-items:center;
+  gap:10px;padding:0 12px;box-sizing:border-box}
+html[data-offer="en"] .lang-offer .in[data-for="en"]{display:flex}
+html[data-offer="he"] .lang-offer .in[data-for="he"]{display:flex}
+html[data-offer="es"] .lang-offer .in[data-for="es"]{display:flex}
+html[data-offer="fr"] .lang-offer .in[data-for="fr"]{display:flex}
+.lang-offer .txt{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;font-weight:500;font-size:14px;color:var(--doc-soft)}
+.lang-offer a{flex:0 0 auto;display:inline-flex;align-items:center;height:32px;
+  padding:0 14px;border-radius:999px;text-decoration:none;font-weight:700;
+  font-size:14px;background:var(--doc-ink);color:var(--doc-card)}
+.lang-offer button{flex:0 0 auto;width:32px;height:32px;display:grid;
+  place-items:center;border:0;border-radius:999px;background:none;cursor:pointer;
+  color:var(--doc-soft);font-size:17px;line-height:1}
+html[data-offer] body.screen{--oh:46px}
+        </style>
+        <script type="application/ld+json">
+          {"@context":"https://schema.org","@graph":[{"@type":["VideoGame","SoftwareApplication"],"@id":"https://ellaz.fun/fr/games/lettercross/#game","name":"Lettres croisées","url":"https://ellaz.fun/fr/games/lettercross/","image":["https://ellaz.fun/art/lettercross-3cb1e662.svg","https://ellaz.fun/og/game-lettercross-fr-58602ed0.png"],"description":"Lettres croisées est un jeu de jetons qui s'ouvre et se joue tout de suite. Vous recevez huit lettres. Vous posez un mot où vous voulez. Le suivant va lui aussi où vous voulez, et la seule chose que le plateau demande, c'est que tout ce que le nouveau mot effleure se lise encore comme un mot.","inLanguage":"fr","gamePlatform":["Web Browser","Mobile","Tablet","Desktop"],"playMode":"SinglePlayer","applicationCategory":"GameApplication","operatingSystem":"Any","isAccessibleForFree":true,"isFamilyFriendly":true,"typicalAgeRange":"5-99","genre":["Puzzle","Board Game"],"offers":{"@type":"Offer","price":"0","priceCurrency":"ILS","availability":"https://schema.org/InStock"},"publisher":{"@id":"https://ellaz.fun/#org"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://ellaz.fun/fr/"},{"@type":"ListItem","position":2,"name":"Classiques","item":"https://ellaz.fun/fr/games/classics/"},{"@type":"ListItem","position":3,"name":"Lettres croisées","item":"https://ellaz.fun/fr/games/lettercross/"}]},{"@type":"HowTo","name":"Comment on joue ?","inLanguage":"fr","step":[{"@type":"HowToStep","position":1,"name":"Touchez une lettre puis une case","text":"Choisissez un jeton sur le chevalet. Touchez l'endroit voulu. Touchez-le à nouveau pour le reprendre. Rien ne se glisse au doigt, donc cela fonctionne pareil sur téléphone, sur tablette et sur ordinateur."},{"@type":"HowToStep","position":2,"name":"Le premier mot passe par le centre","text":"Il n'y a pas de case de départ et rien n'oblige à toucher ce qui est déjà posé. Un mot tient sur une seule ligne, sans trou dedans, et c'est un vrai mot. C'est tout."},{"@type":"HowToStep","position":3,"name":"Appuyez sur jouer quand cela vous convient","text":"Le plateau vérifie tous les mots que vos jetons ont formés, y compris ceux de l'autre sens. Si quelque chose n'est pas un mot, les jetons restent en place et le jeu vous dit pourquoi."}]},{"@type":"FAQPage","inLanguage":"fr","mainEntity":[{"@type":"Question","name":"Lettres croisées, c'est gratuit ?","acceptedAnswer":{"@type":"Answer","text":"Oui. Pas de compte, pas de publicité, rien à acheter. Votre meilleur score est enregistré sur votre appareil et n'est envoyé nulle part."}},{"@type":"Question","name":"Peut-on jouer sans connexion ?","acceptedAnswer":{"@type":"Answer","text":"Oui. Une fois la page chargée, elle continue de fonctionner hors ligne."}},{"@type":"Question","name":"Combien de mots le jeu connaît-il ?","acceptedAnswer":{"@type":"Answer","text":"‏28,515 mots anglais, de deux à six lettres. Ils viennent d'une liste du domaine public et sont filtrés, de sorte que le jeu n'accepte ni les mots que personne ne connaît ni les mots qu'aucun enfant ne devrait voir."}},{"@type":"Question","name":"Pourquoi onze cases et pas quinze ?","acceptedAnswer":{"@type":"Answer","text":"Parce qu'une partie plus courte est une partie qu'on termine. Un petit plateau met aussi les cases multiplicatrices à portée presque à chaque tour, ce qui rend une main de lettres ordinaire plus intéressante."}},{"@type":"Question","name":"Combien vaut un joker ?","acceptedAnswer":{"@type":"Answer","text":"Rien. Il marque zéro point où que vous le posiez. Cela vaut quand même la peine de le jouer, car il permet de terminer un mot autrement impossible."}},{"@type":"Question","name":"Le jeu garde-t-il mon score ?","acceptedAnswer":{"@type":"Answer","text":"Chacun des trois niveaux garde son propre record, parce qu'une main de sept jetons et une main de neuf ne sont pas le même jeu. Il est enregistré sur votre appareil et n'en sort pas."}}]},{"@type":"Organization","@id":"https://ellaz.fun/#org","name":"Ellaz","url":"https://ellaz.fun/","logo":"https://ellaz.fun/icon.svg","description":"Free browser games, no download and no account","sameAs":["https://github.com/Sigmafier/ellaz"]}]}
+        </script>
+        <script type="module" crossorigin src="/assets/index-BoKUdFQW.js"></script><link rel="modulepreload" crossorigin href="/assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="/assets/shell-Bfq-Y9RE.js"><link rel="stylesheet" crossorigin href="/assets/shell-DkfkxXv9.css"><link rel="manifest" href="/manifest.webmanifest">
+        <link rel="modulepreload" crossorigin href="/assets/page-DgoEHUQu.js"><link rel="modulepreload" crossorigin href="/assets/game-lettercross-DmCm2zQZ.js">
+      </head>
+      <body class="screen" style="--g:#B33A3A" data-page="game" data-game="lettercross" data-locale="fr">
+        
+    <div id="lang-offer" class="lang-offer">
+      <div class="in" data-for="en" lang="en" dir="ltr"><span class="txt">This page is also in English</span><a href="/games/lettercross/" hreflang="en">English</a><button type="button" aria-label="Close">✕</button></div><div class="in" data-for="he" lang="he" dir="rtl"><span class="txt">העמוד הזה קיים גם בעברית</span><a href="/he/games/lettercross/" hreflang="he">עברית</a><button type="button" aria-label="סגירה">✕</button></div><div class="in" data-for="es" lang="es" dir="ltr"><span class="txt">Esta página también está en español</span><a href="/es/games/lettercross/" hreflang="es">Español</a><button type="button" aria-label="Cerrar">✕</button></div>
+    </div>
+    <script>
+      (function(){try{var d=document.documentElement,b=document.getElementById("lang-offer");if(!b)return;try{if(localStorage.getItem("ellaz:offer:v1"))return}catch(e){}var r=b.querySelectorAll("[data-for]"),h={},i;for(i=0;i<r.length;i++)h[r[i].getAttribute("data-for")]=1;var L=navigator.languages||[navigator.language||""],w="";for(i=0;i<L.length;i++){var t=String(L[i]).toLowerCase().split("-")[0];if(t==="fr")return;if(h[t]){w=t;break}}if(!w)return;d.setAttribute("data-offer",w);var x=b.querySelector("button");if(x)x.addEventListener("click",function(){try{localStorage.setItem("ellaz:offer:v1","1")}catch(e){}d.removeAttribute("data-offer")});}catch(e){}})()
+    </script>
+    <header class="top"  style="--g:#B33A3A">
+      <div class="in">
+        
+    <a class="hbtn home" href="/fr/" aria-label="Tous les jeux">
+      <span class="gl"><svg class="arw" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19.4 12H5.6"/><path d="M11.4 6.2 5.6 12l5.8 5.8"/></svg></span><span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3.8 10.6 12 4.2l8.2 6.4"/><path d="M5.9 12.2v6.6a1.4 1.4 0 0 0 1.4 1.4h9.4a1.4 1.4 0 0 0 1.4-1.4v-6.6"/><path d="M9.9 20.2v-4.6h4.2v4.6"/></svg></span>
+    </a>
+    <b class="gname">Lettres croisées</b>
+    <details class="lang">
+    <summary class="hbtn ico" aria-label="Langue: Français">
+      <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0"/><path d="M16 12a4 9 0 1 1-8 0 4 9 0 0 1 8 0"/><path d="M3.4 9h17.2"/><path d="M3.4 15h17.2"/></svg></span>
+    </summary>
+    <div class="langsheet" role="group" aria-label="Langue">
+      <a
+              href="/games/lettercross/"
+              hreflang="en"
+              lang="en"
+              dir="ltr"
+              ><span aria-hidden="true"></span>English</a
+            ><a
+              href="/he/games/lettercross/"
+              hreflang="he"
+              lang="he"
+              dir="rtl"
+              ><span aria-hidden="true"></span>עברית</a
+            ><a
+              href="/es/games/lettercross/"
+              hreflang="es"
+              lang="es"
+              dir="ltr"
+              ><span aria-hidden="true"></span>Español</a
+            ><b lang="fr" dir="ltr" class="on"
+              ><span aria-hidden="true">&#10003;</span>Français</b
+            >
+    </div>
+  </details>
+    <button type="button" class="hbtn ico" data-sound aria-label="Son" hidden>
+      <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4.4 9.6h2.9L11.6 6v12L7.3 14.4H4.4z"/><path d="M15.1 9.5a4.4 4.4 0 0 1 0 5"/><path d="M17.9 6.9a8.4 8.4 0 0 1 0 10.2"/></svg></span>
+    </button>
+    <div class="wallet-wrap"><span id="wallet-slot"></span></div>
+  
+      </div>
+    </header>
+    <main>
+    <div class="urow">
+    <nav class="bc">
+        <a href="/fr/">Accueil</a> ›
+        <a href="/fr/games/classics/">Classiques</a> › Lettres croisées
+      </nav><span class="beta" title="Ce jeu est encore en construction">
+    <span aria-hidden="true">Bêta</span>
+    <span class="vh">Ce jeu est encore en construction</span>
+  </span><div class="tools"><button
+            type="button"
+            class="ubtn"
+            data-pause
+            data-label-pause="Pause"
+            data-label-resume="Reprendre"
+            aria-label="Pause"
+            hidden
+          >
+            <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M9.4 5.6v12.8"/><path d="M14.6 5.6v12.8"/></svg></span>
+          </button>
+          <button type="button" class="ubtn" data-restart aria-label="Recommencer" hidden>
+            <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20.4 4.2v4.4h-4.4"/></svg></span>
+          </button>
+          <button
+            type="button"
+            class="ubtn"
+            data-share
+            data-share-title="Lettres croisées"
+            data-share-emoji="🅰️"
+            aria-label="Partager"
+            hidden
+          >
+            <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M15.2 5.6a2.6 2.6 0 1 0 5.2 0 2.6 2.6 0 1 0-5.2 0"/><path d="M3.6 12a2.6 2.6 0 1 0 5.2 0 2.6 2.6 0 1 0-5.2 0"/><path d="M15.2 18.4a2.6 2.6 0 1 0 5.2 0 2.6 2.6 0 1 0-5.2 0"/><path d="M8.5 10.7 15.5 7"/><path d="M8.5 13.3 15.5 17"/></svg></span>
+          </button><button type="button" class="ubtn" data-fullscreen aria-label="Plein écran" hidden>
+        <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4.6 9.4V4.6h4.8"/><path d="M19.4 9.4V4.6h-4.8"/><path d="M4.6 14.6v4.8h4.8"/><path d="M19.4 14.6v4.8h-4.8"/></svg></span>
+      </button><button type="button" class="ubtn" data-report aria-label="Dites-nous" hidden>
+        <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M6.4 20.4V4.4"/><path d="M6.4 5.4h11.4l-2.5 3.6 2.5 3.6H6.4"/></svg></span>
+      </button></div>
+  </div>
+    <div class="stage">
+    <div class="box">
+      <div id="game-frame"></div>
+      <div
+        id="game-poster"
+        data-loading="Le jeu se charge tout seul. Il n&#39;y a rien à toucher."
+        data-saver="L&#39;économiseur de données est actif, alors nous attendons que vous appuyiez."
+      >
+        <span class="em" aria-hidden="true">🅰️</span>
+        <button class="play" id="game-play" type="button">Jouer</button>
+        <span class="msg" id="game-msg">Le jeu a besoin de JavaScript. Le reste de la page, non.</span>
+      </div>
+    </div>
+  </div>
+
+    <h1>Lettres croisées</h1>
+    <p class="lede">Lettres croisées est un jeu de jetons qui s&#39;ouvre et se joue tout de suite. Vous recevez huit lettres. Vous posez un mot où vous voulez. Le suivant va lui aussi où vous voulez, et la seule chose que le plateau demande, c&#39;est que tout ce que le nouveau mot effleure se lise encore comme un mot.</p>
+
+    <!--
+      The page's own picture, and the first image in the article body.
+
+      Google chooses the thumbnail beside a text result from images embedded on
+      the page. Until 2026-08-22 there were none: the stage above draws the
+      emoji as TEXT and the art everywhere else is inline <svg>, which has no
+      URL and cannot be indexed as an image. So the result was permanently
+      pictureless with nothing failing anywhere.
+
+      width/height are the SVG's own declared box, so the browser reserves
+      the space from the attributes and this adds nothing to the layout shift.
+      loading is EAGER on purpose - it is the main image, above most of the
+      prose, and a lazy main image is one Google may not see.
+
+      The alt is one template per language with the game's name filled in.
+      It was the page's own H1 for an hour, which reads as "Snake" and "2048"
+      in three of the four languages - a name, not a description of a picture.
+    -->
+    <img
+      class="art"
+      src="/art/lettercross-3cb1e662.svg"
+      alt="Lettres croisées - illustration du jeu"
+      width="1200"
+      height="900"
+      decoding="async"
+    />
+    <ul class="facts">
+      <li>Gratuit</li><li>Sans publicité</li><li>Sans compte</li><li>Sans téléchargement</li><li>Marche hors ligne</li><li>Un joueur</li>
+    </ul>
+
+    <h2>Comment on joue ?</h2>
+    <ol>
+    <li><b>Touchez une lettre puis une case</b> - Choisissez un jeton sur le chevalet. Touchez l&#39;endroit voulu. Touchez-le à nouveau pour le reprendre. Rien ne se glisse au doigt, donc cela fonctionne pareil sur téléphone, sur tablette et sur ordinateur.</li><li><b>Le premier mot passe par le centre</b> - Il n&#39;y a pas de case de départ et rien n&#39;oblige à toucher ce qui est déjà posé. Un mot tient sur une seule ligne, sans trou dedans, et c&#39;est un vrai mot. C&#39;est tout.</li><li><b>Appuyez sur jouer quand cela vous convient</b> - Le plateau vérifie tous les mots que vos jetons ont formés, y compris ceux de l&#39;autre sens. Si quelque chose n&#39;est pas un mot, les jetons restent en place et le jeu vous dit pourquoi.</li>
+  </ol>
+
+    <h2>À propos du jeu</h2>
+    <p>Le plateau fait neuf cases sur neuf. C&#39;est plus petit que celui que vous imaginez sans doute, et cela change la partie bien plus que ça n&#39;en a l&#39;air : les bords arrivent vite, chaque case est exactement la même case, si bien que l&#39;endroit où vous jouez est votre décision et jamais celle du plateau, et une partie se termine dans le temps dont vous disposez vraiment, pas dans celui qu&#39;un jeu de société suppose.</p><p>Il y a 94 jetons. Quatre-vingt-dix sont des lettres et quatre sont des jokers, soit deux fois plus que d&#39;habitude. Un joker prend la lettre que vous voulez. Il ne rapporte aucun point, et il reste le plus souvent le meilleur jeton de la main, parce que la lettre qui vous manque est justement celle qui bloque le mot que vous voyez déjà.</p><p>Les mots se posent à l&#39;horizontale ou à la verticale. Deux lettres suffisent. C&#39;est tout.</p><p>Quand vous posez des jetons contre des lettres déjà présentes, chaque nouvelle suite de deux lettres ou plus doit également former un vrai mot. C&#39;est la partie qui surprend, et c&#39;est aussi celle qui rend le jeu intéressant plutôt que mécanique.</p><p>Le score, ce sont les lettres, et rien d&#39;autre. Une lettre rare vaut 12 points et une lettre courante en vaut un. Aucune case ne double quoi que ce soit, aucune ne multiplie un mot, et il n&#39;y a pas de coin porte-bonheur. Un mot faible reste faible où que vous le posiez.</p><p>Le dictionnaire compte 28,515 mots anglais. Il est construit à partir d&#39;une liste du domaine public puis filtré, et le filtrage est voulu : les mots obscurs de deux lettres qui n&#39;existent qu&#39;en compétition n&#39;y sont pas.</p>
+
+    <h2>Qu&#39;est-ce que ça apprend ?</h2>
+    <h3>De l&#39;orthographe qui sert</h3>
+    <p>Ce ne sont pas des exercices. Vous cherchez un mot qui entre dans une forme donnée, ce qui est une opération mentale très différente de celle qu&#39;on vous demande en dictée, et cela reste mieux en tête.</p><h3>Du calcul sans fiche d&#39;exercices</h3>
+    <p>Additionner un mot avec une lettre doublée et un mot triplé, c&#39;est du calcul mental pour de bon, et personne ne le vit comme un devoir de maths.</p><h3>Anticiper d&#39;un tour</h3>
+    <p>Le mot qui rapporte le plus maintenant est souvent celui qui vous bouche la ligne dont vous aviez besoin ensuite. Le remarquer, c&#39;est de la stratégie, et les enfants l&#39;attrapent plus vite que les adultes ne le croient.</p>
+
+    <h2>Conseils</h2>
+    <h3>Gardez le joker</h3>
+    <p>On a envie de dépenser un joker dès qu&#39;il arrive. Gardez-le. Le tour où il vous manque une seule lettre revient souvent, et c&#39;est là que le joker vaut le plus cher.</p><h3>Les mots de deux lettres font tout</h3>
+    <p>Poser un mot le long d&#39;un autre marque chaque paire ainsi créée, d&#39;un seul coup. Un mot de cinq lettres posé en parallèle d&#39;un autre peut marquer six mots en un tour.</p><h3>L&#39;endroit où vous ouvrez compte vraiment</h3>
+    <p>Rien ne pousse le premier mot vers le milieu. Près d&#39;un bord, le plateau reste ouvert et les croisements sont rares. Au milieu, vous avez quatre directions pour grandir et moins de place dans chacune.</p>
+
+    <h2>À partir de quel âge ?</h2>
+    <h3>Seul à partir de huit ans</h3>
+    <p>Un lecteur à l&#39;aise joue seul sans problème. Le niveau facile distribue neuf jetons au lieu de huit, donc plus de choix et moins de tours bloqués.</p><h3>Plus jeune, à côté de quelqu&#39;un</h3>
+    <p>Un enfant de cinq ans ne jouera pas à cela tout seul, et nous n&#39;allons pas prétendre le contraire. S&#39;asseoir à côté d&#39;un adulte et chercher ensemble des mots de trois lettres est un vrai bon moment pour les deux.</p><h3>Les adultes, sans s&#39;excuser</h3>
+    <p>Ce n&#39;est pas un jeu pour enfants avec un mode adulte ajouté par-dessus. Le niveau difficile distribue sept jetons au lieu de huit, ce qui est réellement plus dur, et le plateau de 9 sur 9 récompense celui qui voit deux tours à l&#39;avance.</p>
+
+    <h2>Accessibilité</h2>
+    <p>Chaque jeton est un bouton, accessible au clavier et lisible par un lecteur d&#39;écran. Rien n&#39;exige de glisser ni de maintenir appuyé. Le plateau est fixé de gauche à droite même quand le reste du site est en hébreu, si bien que les mots ne sortent jamais à l&#39;envers.</p>
+
+    <h2>Jouer à deux</h2>
+    <h3>Passez le téléphone</h3>
+    <p>Jouez chacun votre tour sur le même appareil et notez les scores séparément sur une feuille. Le jeu ne l&#39;impose pas, ce qui vous laisse assouplir les règles pour un plus jeune sans discuter avec le logiciel.</p><h3>Vérifiez avant d&#39;abandonner</h3>
+    <p>Quand le plateau refuse un mot, cherchez-le ensemble plutôt que de passer à autre chose. C&#39;est le moment où quelqu&#39;un apprend un mot, et c&#39;est le seul moment que le jeu fabrique exprès.</p><h3>Jouez la forme, pas le score</h3>
+    <p>Essayez une manche dont le seul but est le mot le plus long que quelqu&#39;un arrive à poser. Cela donne quelque chose à gagner au joueur le plus faible pendant que l&#39;autre court après les points.</p>
+
+    <h2>Questions fréquentes</h2>
+    <h3>Lettres croisées, c&#39;est gratuit ?</h3>
+      <p>Oui. Pas de compte, pas de publicité, rien à acheter. Votre meilleur score est enregistré sur votre appareil et n&#39;est envoyé nulle part.</p><h3>Peut-on jouer sans connexion ?</h3>
+      <p>Oui. Une fois la page chargée, elle continue de fonctionner hors ligne.</p><h3>Combien de mots le jeu connaît-il ?</h3>
+      <p>‏28,515 mots anglais, de deux à six lettres. Ils viennent d&#39;une liste du domaine public et sont filtrés, de sorte que le jeu n&#39;accepte ni les mots que personne ne connaît ni les mots qu&#39;aucun enfant ne devrait voir.</p><h3>Pourquoi onze cases et pas quinze ?</h3>
+      <p>Parce qu&#39;une partie plus courte est une partie qu&#39;on termine. Un petit plateau met aussi les cases multiplicatrices à portée presque à chaque tour, ce qui rend une main de lettres ordinaire plus intéressante.</p><h3>Combien vaut un joker ?</h3>
+      <p>Rien. Il marque zéro point où que vous le posiez. Cela vaut quand même la peine de le jouer, car il permet de terminer un mot autrement impossible.</p><h3>Le jeu garde-t-il mon score ?</h3>
+      <p>Chacun des trois niveaux garde son propre record, parce qu&#39;une main de sept jetons et une main de neuf ne sont pas le même jeu. Il est enregistré sur votre appareil et n&#39;en sort pas.</p>
+
+    <h2>D&#39;autres jeux</h2>
+    <ul class="grid">
+    <li>
+        <a href="/fr/games/2048/">
+          <span class="em" aria-hidden="true">🔢</span>
+          <span>2048<span class="cat">Classiques</span></span>
+        </a>
+      </li><li>
+        <a href="/fr/games/tictactoe/">
+          <span class="em" aria-hidden="true">⭕</span>
+          <span>Morpion<span class="cat">Classiques</span></span>
+        </a>
+      </li><li>
+        <a href="/fr/games/minesweeper/">
+          <span class="em" aria-hidden="true">💣</span>
+          <span>Démineur<span class="cat">Classiques</span></span>
+        </a>
+      </li><li>
+        <a href="/fr/games/sudoku/">
+          <span class="em" aria-hidden="true">🔡</span>
+          <span>Sudoku<span class="cat">Classiques</span></span>
+        </a>
+      </li><li>
+        <a href="/fr/games/snake/">
+          <span class="em" aria-hidden="true">🐍</span>
+          <span>Serpent<span class="cat">Classiques</span></span>
+        </a>
+      </li><li>
+        <a href="/fr/games/blocks/">
+          <span class="em" aria-hidden="true">🧱</span>
+          <span>Blocs<span class="cat">Classiques</span></span>
+        </a>
+      </li>
+  </ul>
+
+    <section class="embed" id="embed">
+    <h2>Mettez ce jeu sur votre site</h2>
+    <p>Copiez le code et collez-le dans votre page. La ligne sous le cadre est celle qui compte : un lien dans le cadre reste sur ellaz.fun, et seul celui que vous collez est le vôtre.</p>
+    <iframe
+      src="/embed/lettercross/?lang=fr"
+      width="100%"
+      height="940"
+      style="border:0;border-radius:12px;background:var(--doc-stage)"
+      allow="fullscreen"
+      loading="lazy"
+      title="Lettres croisées - ellaz.fun"
+    ></iframe>
+    <p class="embed-credit"><p>Jouez à <a href="https://ellaz.fun/fr/games/lettercross/">Lettres croisées</a> et à d'autres jeux gratuits sur <a href="https://ellaz.fun/">ellaz.fun</a></p></p>
+    <pre
+      class="embed-code"
+      data-embed-code
+      dir="ltr"
+      style="white-space:pre-wrap;word-break:break-all;padding:14px;border-radius:12px;background:var(--doc-card);border:1px solid var(--doc-line);font-size:.85rem"
+    >&lt;iframe src=&quot;https://ellaz.fun/embed/lettercross/?lang=fr&quot; width=&quot;100%&quot; height=&quot;940&quot; style=&quot;border:0;border-radius:12px&quot; allow=&quot;fullscreen&quot; title=&quot;Lettres croisées - ellaz.fun&quot;&gt;&lt;/iframe&gt;
+&lt;p&gt;Jouez à &lt;a href=&quot;https://ellaz.fun/fr/games/lettercross/&quot;&gt;Lettres croisées&lt;/a&gt; et à d&#39;autres jeux gratuits sur &lt;a href=&quot;https://ellaz.fun/&quot;&gt;ellaz.fun&lt;/a&gt;&lt;/p&gt;</pre>
+    <button
+      type="button"
+      class="play"
+      data-embed-copy
+      data-label-copied="Copié"
+      data-label-select="Le code est sélectionné : copiez-le"
+      hidden
+    >Copier le code</button>
+  </section>
+  </main>
+    <footer>
+      <div class="in">
+        <span>Ellaz - des jeux gratuits en hébreu, en anglais, en espagnol et en français. Sans publicité, sans compte, et sans rien collecter au sujet d&#39;un enfant.</span>
+        <a href="/games/lettercross/" hreflang="en" lang="en">English</a><a href="/he/games/lettercross/" hreflang="he" lang="he">עברית</a><a href="/es/games/lettercross/" hreflang="es" lang="es">Español</a>
+      </div>
+    </footer>
+  
+        <div id="consent" class="consent" role="dialog" aria-live="polite" lang="fr" dir="ltr"><p>Nous comptons les visites avec un petit cookie Google. Sans publicité ni suivi personnel.</p><button type="button" data-yes>Accepter</button><button type="button" data-no>Non merci</button></div>
+    <style>
+      .consent{display:none;position:fixed;inset-inline:0;bottom:0;z-index:60;padding:12px;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;background:#1d1b2e;color:#fff;font-size:14px}[data-consent] .consent{display:flex}.consent p{margin:0;max-width:48ch}.consent button{font:inherit;font-weight:600;padding:8px 18px;min-height:40px;border:0;border-radius:8px;background:#fff;color:#1d1b2e}
+    </style>
+    <script>
+      (function(){try{var d=document.documentElement,b=document.getElementById("consent");if(!b||!window.gtag)return;var v=null;try{v=localStorage.getItem("ellaz:consent:v1")}catch(e){}if(v==="granted"){gtag("consent","update",{analytics_storage:"granted"});return}if(v==="denied")return;d.setAttribute("data-consent","1");function done(a){try{localStorage.setItem("ellaz:consent:v1",a)}catch(e){}if(a==="granted")gtag("consent","update",{analytics_storage:"granted"});d.removeAttribute("data-consent")}var y=b.querySelector("[data-yes]"),n=b.querySelector("[data-no]");if(y)y.addEventListener("click",function(){done("granted")});if(n)n.addEventListener("click",function(){done("denied")});}catch(e){}})()
+    </script>
+      </body>
+    </html>

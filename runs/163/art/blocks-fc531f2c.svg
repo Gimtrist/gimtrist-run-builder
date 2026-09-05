@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" class="ellaz-art" viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect width="200" height="150" fill="#6D4BD6"/><path d="M0 104 200 56v94H0z" fill="#8A6CE4"/>
+    <g stroke="#241C3B" stroke-width="3">
+      <rect x="70" y="16" width="26" height="26" rx="5" fill="#FFC730"/>
+      <rect x="96" y="16" width="26" height="26" rx="5" fill="#FFC730"/>
+      <rect x="96" y="42" width="26" height="26" rx="5" fill="#FFC730"/>
+    </g>
+    <path d="M108 76v16M100 86l8 8 8-8" stroke="#FFF7EC" stroke-width="5"
+          stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".8"/>
+    <g stroke="#241C3B" stroke-width="3">
+      <rect x="18" y="98" width="26" height="26" rx="5" fill="#26B0E6"/>
+      <rect x="44" y="98" width="26" height="26" rx="5" fill="#17B98A"/>
+      <rect x="18" y="124" width="26" height="26" rx="5" fill="#FF4D8D"/>
+      <rect x="44" y="124" width="26" height="26" rx="5" fill="#FF8A3D"/>
+      <rect x="70" y="124" width="26" height="26" rx="5" fill="#6FD44E"/>
+      <rect x="122" y="98" width="26" height="26" rx="5" fill="#E4572E"/>
+      <rect x="148" y="98" width="26" height="26" rx="5" fill="#A855C9"/>
+      <rect x="122" y="124" width="26" height="26" rx="5" fill="#26B0E6"/>
+      <rect x="148" y="124" width="26" height="26" rx="5" fill="#FFC730"/>
+      <rect x="174" y="124" width="26" height="26" rx="5" fill="#17B98A"/>
+    </g><rect width="200" height="150" style="fill:transparent"/></svg>

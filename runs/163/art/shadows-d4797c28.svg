@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" class="ellaz-art" viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect width="200" height="150" fill="#4F5BD5"/><path d="M-10 150c30-46 62-62 110-62s72 22 110 62z" fill="#7B85EA"/>
+    <path d="M96 20h96v110H96z" fill="#FFF7EC" opacity=".9"/>
+    <path d="M56 38l10.5 22 24 3.5-17.5 17 4 24L56 93.5 35 104.5l4-24-17.5-17 24-3.5z" fill="#FFC730"/>
+    <path d="M144 38l10.5 22 24 3.5-17.5 17 4 24L144 93.5 123 104.5l4-24-17.5-17 24-3.5z" fill="#241C3B"/>
+    <ellipse cx="56" cy="122" rx="27" ry="6" fill="#241C3B" opacity=".3"/>
+    <ellipse cx="144" cy="122" rx="27" ry="6" fill="#241C3B" opacity=".16"/><rect width="200" height="150" style="fill:transparent"/></svg>

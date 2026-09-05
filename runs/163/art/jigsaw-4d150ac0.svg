@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" class="ellaz-art" viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect width="200" height="150" fill="#17798F"/><path d="M-10 150c30-46 62-62 110-62s72 22 110 62z" fill="#4FB6CC"/>
+    <g stroke="#241C3B" stroke-width="3">
+      <rect x="34" y="36" width="38" height="38" rx="6" fill="#FF4D8D"/>
+      <rect x="76" y="36" width="38" height="38" rx="6" fill="#FFC730"/>
+      <rect x="34" y="78" width="38" height="38" rx="6" fill="#6FD44E"/>
+      <rect x="76" y="78" width="38" height="38" rx="6" fill="#A855C9"/>
+      <rect x="118" y="78" width="38" height="38" rx="6" fill="#FF8A3D"/>
+    </g>
+    <rect x="118" y="36" width="38" height="38" rx="6" fill="#241C3B" opacity=".28"
+          stroke="#FFF7EC" stroke-width="3" stroke-dasharray="6 5"/>
+    <g transform="rotate(-12 160 24)">
+      <rect x="141" y="6" width="38" height="38" rx="6" fill="#26B0E6"
+            stroke="#241C3B" stroke-width="3"/>
+      <circle cx="160" cy="25" r="6" fill="#FFF7EC" opacity=".5"/>
+    </g>
+    <g fill="#FFF7EC" opacity=".85">
+      <circle cx="20" cy="26" r="3.4"/><circle cx="186" cy="70" r="2.8"/><circle cx="24" cy="132" r="2.8"/></g><rect width="200" height="150" style="fill:transparent"/></svg>

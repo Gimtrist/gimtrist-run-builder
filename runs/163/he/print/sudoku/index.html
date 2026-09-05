@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <!-- FIRST, and synchronous. data-theme is deliberately never baked into
+             these documents - they are cached and it would be wrong for whoever
+             chose the other theme - so this is what sets it before the first
+             paint. A module import runs far too late and the page visibly
+             flashes the other theme. Generated from themes.ts, never written
+             out here, so adding a theme cannot leave it behind. -->
+        <script>
+          (function(){try{var t=localStorage.getItem("ellaz:theme");if(t&&["market","night"].indexOf(t)>-1&&t!=="market")document.documentElement.setAttribute("data-theme",t)}catch(e){}})()
+        </script>
+        <meta name="theme-color" content="#ff4d8d" />
+        <title>סודוקו להדפסה לילדים - דפי עבודה חינם</title>
+        <meta name="description" content="6 דפי סודוקו להדפסה בחינם, מלוח 4x4 קטן ועד 9x9 מלא, עם פתרונות בעמוד נפרד. בלי הרשמה ובלי תשלום." />
+        <link rel="canonical" href="https://ellaz.fun/he/print/sudoku/" />
+        <link rel="alternate" hreflang="he" href="https://ellaz.fun/he/print/sudoku/" />
+        
+        
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Ellaz" />
+        <meta property="og:locale" content="he_IL" />
+        
+        <meta property="og:title" content="סודוקו להדפסה לילדים - דפי עבודה חינם" />
+        <meta property="og:description" content="6 דפי סודוקו להדפסה בחינם, מלוח 4x4 קטן ועד 9x9 מלא, עם פתרונות בעמוד נפרד. בלי הרשמה ובלי תשלום." />
+        <meta property="og:url" content="https://ellaz.fun/he/print/sudoku/" />
+        <meta property="og:image" content="https://ellaz.fun/og/game-sudoku-he-e84254eb.png" />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+          <meta property="og:image:alt" content="סודוקו להדפסה לילדים - דפי עבודה חינם" />
+          <meta name="twitter:image" content="https://ellaz.fun/og/game-sudoku-he-e84254eb.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <!-- Measurement, on EVERY emitted document and not only the app shell.
+             Search Console says the arrivals land on GAME pages from Hebrew
+             queries, so a shell-only tag would have measured almost none of
+             them. Empty on any non-primary base, so the noindex mirror never
+             reports. Config and its deliberate limits: src/build/analytics.ts. -->
+        
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E25QBB8420"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied'});gtag('set','ads_data_redaction',true);gtag('js',new Date());gtag('config','G-E25QBB8420',{client_storage:'none',allow_google_signals:false,allow_ad_personalization_signals:false});</script>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;800&amp;family=Fredoka:wght@500;600&amp;display=swap" />
+        <style>
+          *,*::before,*::after{box-sizing:border-box}
+:root{
+  --doc-ink:var(--text,#1b1b2b);
+  --doc-soft:var(--text-dim,#5a5a72);
+  --doc-line:var(--line,#e4e2ef);
+  --doc-bg:var(--bg,#fdfcff);
+  --doc-card:var(--surface,#ffffff);
+  --doc-brand:var(--brand-ink,#6c5ce7);
+  --doc-sun:var(--yellow,#ffc730);
+  --doc-stage:var(--stage-bg,#12142b);
+}
+:root[data-theme="night"]{
+  --doc-ink:var(--text,#f5f6ff);
+  --doc-soft:var(--text-dim,#b3b8e0);
+  --doc-line:var(--line,#2a2f55);
+  --doc-bg:var(--bg,#0f1226);
+  --doc-card:var(--surface,#1e2240);
+  --doc-brand:var(--brand-ink,#a29bfe);
+  --doc-sun:var(--yellow,#fdcb6e);
+  --doc-stage:var(--stage-bg,#12142b);
+}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--doc-bg);color:var(--doc-ink);
+  font:400 17px/1.7 Heebo,Assistant,Rubik,system-ui,-apple-system,sans-serif}
+main{max-width:44rem;margin-inline:auto;padding:0 20px 72px}
+h1,h2,h3{font-family:Fredoka,Heebo,system-ui,sans-serif;line-height:1.25;margin:0;
+  color:var(--doc-ink)}
+h1{font-size:2rem;font-weight:600;margin-block:8px 12px}
+h2{font-size:1.35rem;font-weight:600;margin-block:44px 12px}
+h3{font-size:1.05rem;font-weight:600;margin-block:22px 4px}
+p{margin-block:0 14px}
+a{color:var(--doc-brand)}
+.top{border-block-end:1px solid var(--doc-line);background:var(--doc-card)}
+.top .in{max-width:44rem;margin-inline:auto;padding:12px 20px;display:flex;
+  align-items:center;gap:12px}
+.brand{font-family:Fredoka,system-ui,sans-serif;font-size:1.15rem;font-weight:600;
+  color:var(--doc-ink);text-decoration:none}
+.tagline{color:var(--doc-soft);font-size:.82rem;flex:1}
+#wallet-slot{flex:0 0 auto}
+.bc{font-size:.82rem;font-weight:600;color:var(--doc-soft);margin-block:18px 0}
+.bc a{text-decoration:none}
+.vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;
+  clip-path:inset(50%);white-space:nowrap;border:0}
+.beta{font-size:.68rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
+  padding:3px 8px;border-radius:var(--radius-pill,999px);
+  background:#F2B93F;color:#241C17;white-space:nowrap;flex:0 0 auto;align-self:center}
+body.screen .urow:has(.beta) .bc{margin-inline-end:0}
+body.screen .urow .beta{margin-inline-end:auto}
+.lede{font-size:1.12rem;color:var(--doc-ink)}
+img.art{display:block;width:100%;max-width:520px;aspect-ratio:4/3;height:auto;margin:18px 0 0;border-radius:14px;border:1px solid var(--doc-line);background:var(--doc-card)}
+.facts{list-style:none;display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:18px 0 0}
+.facts li{border:1px solid var(--doc-line);background:var(--doc-card);border-radius:999px;
+  padding:5px 13px;font-size:.82rem;font-weight:600;color:var(--doc-soft)}
+.cta{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin:26px 0 8px}
+.play{display:inline-flex;align-items:center;justify-content:center;min-height:76px;
+  padding:0 40px;border:none;border-radius:22px;background:var(--doc-sun);
+  color:var(--doc-ink);text-decoration:none;font-family:Fredoka,system-ui,sans-serif;
+  font-size:1.3rem;font-weight:600;box-shadow:0 4px 0 var(--doc-line);cursor:pointer}
+.cta .note{color:var(--doc-soft);font-size:.86rem;flex:1 1 12rem}
+ol,ul.steps{padding-inline-start:1.3em}
+ol li,ul.steps li{margin-block-end:8px}
+table{border-collapse:collapse;width:100%;margin-block:14px;font-size:.95rem}
+th,td{border:1px solid var(--doc-line);padding:8px 12px;text-align:start}
+th{background:var(--doc-card);font-weight:600}
+.grid{list-style:none;padding:0;margin:20px 0 0;display:grid;gap:12px;
+  grid-template-columns:repeat(auto-fill,minmax(9.5rem,1fr))}
+.grid a{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--doc-card);
+  border:1px solid var(--doc-line);border-radius:16px;text-decoration:none;
+  color:var(--doc-ink);font-weight:600}
+.grid .em{font-size:1.5rem;line-height:1}
+.grid .cat{display:block;font-size:.75rem;font-weight:400;color:var(--doc-soft)}
+footer{border-block-start:1px solid var(--doc-line);margin-block-start:56px;
+  padding:22px 20px 40px;color:var(--doc-soft);font-size:.85rem}
+footer .in{max-width:44rem;margin-inline:auto;display:flex;flex-wrap:wrap;gap:14px}
+.stage{position:relative;margin-block:14px 6px;margin-inline:-20px}
+@media (min-width:720px){.stage{margin-inline:0}}
+.stage .box{position:relative;border-radius:22px;overflow:hidden;
+  background:var(--doc-stage);box-shadow:0 5px 0 var(--doc-line);
+  min-height:clamp(420px,calc(100dvh - 145px),860px);display:flex;flex-direction:column}
+.stage.room .box{min-height:clamp(460px,calc(100dvh - 120px),880px)}
+.stage.boards .box{min-height:clamp(300px,46dvh,560px)}
+#game-frame{flex:1;min-height:0;display:flex;flex-direction:column}
+#game-poster{position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:18px;text-align:center;padding:24px;
+  color:var(--doc-ink);transition:opacity .25s ease}
+#game-poster[hidden]{display:none}
+#game-poster .em{font-size:64px;line-height:1}
+#game-poster .msg{font-size:.95rem;opacity:.75;max-width:22ch}
+.stage .noscript{position:absolute;inset-inline:0;bottom:0;padding:12px;
+  background:var(--badge-fill,rgba(0,0,0,.55));color:var(--on-brand,#fff);font-size:.85rem;text-align:center}
+@media (max-width:719px){.stage .box{border-radius:0;box-shadow:none;
+  border-block:1px solid var(--doc-line)}}
+body[data-page="game"] main,body[data-page="world"] main{max-width:none;padding-inline:0}
+body[data-page="game"] main>:not(.stage),
+body[data-page="world"] main>:not(.stage){max-width:44rem;margin-inline:auto;
+  padding-inline:20px}
+body[data-page="game"] .stage,body[data-page="world"] .stage{margin-block:0;
+  margin-inline:0}
+body[data-page="game"] .stage .box,body[data-page="world"] .stage .box{
+  height:calc(100dvh - var(--hh) - var(--uh) - var(--oh));min-height:0;border-radius:0;
+  box-shadow:none;border:0;justify-content:center}
+body[data-page="game"] .stage .box{justify-content:flex-start}
+body[data-page="world"] #game-frame:empty{min-height:100%}
+body[data-page="game"] #game-frame,body[data-page="world"] #game-frame{flex:0 0 auto}
+body.screen .urow{display:flex;align-items:center;gap:10px;height:var(--uh);
+  padding-inline:var(--hpad);background:var(--doc-bg)}
+body.screen .urow .bc{margin:0;flex:0 1 auto;margin-inline-end:auto;min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+body.screen .urow .bc a{color:inherit;text-decoration:underline;
+  text-underline-offset:3px;text-decoration-thickness:1px;
+  display:inline-block;padding-block:12px;margin-block:-12px;
+  text-decoration-color:color-mix(in srgb,currentColor 55%,transparent)}
+body.screen .urow .tools{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.ubtn{display:inline-flex;align-items:center;justify-content:center;
+  width:var(--tap);height:var(--tap);flex:0 0 auto;border:0;padding:0;
+  cursor:pointer;border-radius:var(--urad);background:var(--doc-card);
+  color:var(--doc-ink);box-shadow:0 2px 0 var(--doc-line)}
+.ubtn[hidden]{display:none}
+.ubtn .gl{display:flex}
+.ubtn svg{display:block;width:var(--hicon);height:var(--hicon);fill:none;
+  stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+body.screen{--hh:60px;--uh:60px;--oh:0px;--tap:44px;--hgap:12px;--hpad:20px;
+  --hbrand:22px;--hfont:14.5px;--hicon:22px;--hrad:99px;--urad:14px;
+  --hdr-ink:#FFF6E9}
+@media (max-width:719px){body.screen{--hh:58px;--uh:56px;--hbrand:20px;--hgap:8px;--hpad:12px}}
+body.screen{--gc-cell-bg:var(--surface)}
+@supports (background:color-mix(in oklab,red 10%,blue)){
+body.screen{--gc-cell-bg:color-mix(in oklab,var(--g,var(--brand)) 16%,var(--surface))}}
+body.screen .top{position:relative;z-index:6;height:var(--hh);
+  display:flex;align-items:center;padding:0;border-block-end:0;
+  color:var(--hdr-ink);
+  background:color-mix(in oklch, var(--g,#4F5BD5) 46%, #0C0812);
+  background:oklch(from var(--g,#4F5BD5) .30 calc(c * 1.05) h)}
+body.screen .top .in{max-width:none;margin:0;width:100%;
+  padding:0 var(--hpad);gap:var(--hgap);justify-content:space-between}
+body.screen .tagline{display:none}
+body.screen .gname{flex:1 1 0;min-width:0;
+  font:600 16px/1 Fredoka,system-ui,sans-serif;color:var(--hdr-ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-inline:2px}
+@media (max-width:719px){body.screen .gname{display:none}}
+.hbtn.home{gap:7px;padding:0 15px}
+.hbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  height:var(--tap);
+  border:0;margin:0;cursor:pointer;text-decoration:none;flex:0 0 auto;
+  border-radius:var(--hrad);padding:0 calc(var(--tap) * .39);white-space:nowrap;
+  font:600 var(--hfont)/1 inherit;
+  background:rgba(255,255,255,.12);color:var(--hdr-ink)}
+.hbtn.ico{width:var(--tap);padding:0}
+body.screen .top .lang{margin-inline-start:auto}
+body.screen .top .lang + [data-sound]{margin-inline-start:0}
+body.screen .top [data-sound]{margin-inline-start:auto}
+body.screen .top .lang{position:relative;flex:0 0 auto}
+body.screen .top .lang>summary{list-style:none}
+body.screen .top .lang>summary::-webkit-details-marker{display:none}
+body.screen .top .lang>summary::marker{content:""}
+.langsheet{position:absolute;inset-inline-end:0;top:calc(var(--tap) + 6px);
+  z-index:7;min-width:152px;max-width:min(84vw,300px);padding:6px;
+  display:flex;flex-direction:column;gap:2px;
+  border-radius:var(--urad);background:var(--doc-card);
+  border:1px solid var(--doc-line);box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.langsheet>a,.langsheet>b{display:flex;align-items:center;gap:8px;
+  min-height:var(--tap);padding:0 10px;border-radius:10px;
+  font:600 15px/1 inherit;color:var(--doc-ink);text-decoration:none}
+.langsheet>a:hover{background:color-mix(in oklab,var(--doc-ink) 8%,transparent)}
+.langsheet>b{font-weight:800;
+  background:color-mix(in oklab,var(--doc-ink) 8%,transparent)}
+.langsheet>a>span,.langsheet>b>span{width:14px;flex:0 0 14px;text-align:center}
+.hbtn:hover{background:rgba(255,255,255,.2)}
+.hbtn.pri{background:#FFF6E9;color:#241C2B}
+.hbtn.pri:hover{background:#fff}
+.hbtn[hidden]{display:none}
+.hbtn .gl{display:flex;flex:0 0 auto}
+.hbtn svg{width:var(--hicon);height:var(--hicon);
+  display:block;fill:none;stroke:currentColor;stroke-width:2.2;
+  stroke-linecap:round;stroke-linejoin:round}
+#wallet-slot svg{width:var(--hicon);height:var(--hicon);stroke-width:2.2}
+[dir="rtl"] .hbtn .gl .arw{transform:scaleX(-1);transform-origin:center}
+.wallet-wrap{display:inline-flex;align-items:center;height:var(--tap);
+  border-radius:99px;padding:0 calc(var(--tap) * .34);
+  background:rgba(255,255,255,.12)}
+body.screen #wallet-slot>*{background:none;box-shadow:none;border:0;
+  padding:0;color:var(--hdr-ink);height:var(--tap);gap:10px}
+@media (max-width:719px){
+  .hbtn .tx{display:none}
+  .wallet-wrap{padding:0 10px}
+}
+@media (max-width:480px){body{font-size:16px}h1{font-size:1.6rem}.play{width:100%}
+  .stage .box{min-height:clamp(420px,calc(100dvh - 120px),860px)}
+  .tagline{display:none}}
+.lang-offer{display:none}
+html[data-offer] .lang-offer{position:relative;z-index:8;display:flex;
+  justify-content:center;height:46px;box-sizing:border-box;
+  background:var(--doc-card);border-bottom:1px solid var(--doc-line)}
+.lang-offer .in{flex:1 1 auto;max-width:700px;display:none;align-items:center;
+  gap:10px;padding:0 12px;box-sizing:border-box}
+html[data-offer="en"] .lang-offer .in[data-for="en"]{display:flex}
+html[data-offer="he"] .lang-offer .in[data-for="he"]{display:flex}
+html[data-offer="es"] .lang-offer .in[data-for="es"]{display:flex}
+html[data-offer="fr"] .lang-offer .in[data-for="fr"]{display:flex}
+.lang-offer .txt{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;font-weight:500;font-size:14px;color:var(--doc-soft)}
+.lang-offer a{flex:0 0 auto;display:inline-flex;align-items:center;height:32px;
+  padding:0 14px;border-radius:999px;text-decoration:none;font-weight:700;
+  font-size:14px;background:var(--doc-ink);color:var(--doc-card)}
+.lang-offer button{flex:0 0 auto;width:32px;height:32px;display:grid;
+  place-items:center;border:0;border-radius:999px;background:none;cursor:pointer;
+  color:var(--doc-soft);font-size:17px;line-height:1}
+html[data-offer] body.screen{--oh:46px}
+        </style>
+        <script type="application/ld+json">
+          {"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://ellaz.fun/he/print/sudoku/","url":"https://ellaz.fun/he/print/sudoku/","name":"סודוקו להדפסה לילדים - דפי עבודה חינם","description":"6 דפי סודוקו להדפסה בחינם, מלוח 4x4 קטן ועד 9x9 מלא, עם פתרונות בעמוד נפרד. בלי הרשמה ובלי תשלום.","inLanguage":"he","isPartOf":{"@type":"WebSite","name":"Ellaz","url":"https://ellaz.fun/he/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"בית","item":"https://ellaz.fun/he/"},{"@type":"ListItem","position":2,"name":"סודוקו להדפסה לילדים - דפי עבודה חינם","item":"https://ellaz.fun/he/print/sudoku/"}]}]}
+        </script>
+        
+        
+      </head>
+      <body >
+        
+    
+    <header class="top" >
+      <div class="in">
+        <a class="brand" href="/he/">Ellaz</a>
+              <span class="tagline">משחקים חינם בעברית, ישר בדפדפן</span>
+              
+      </div>
+    </header>
+    <main>
+    <style>
+.pk-cta{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin:26px 0 6px}
+.pk-btn{display:inline-flex;align-items:center;justify-content:center;min-height:64px;
+  padding:0 30px;border:none;border-radius:20px;background:var(--doc-sun);color:var(--doc-ink);
+  text-decoration:none;font:inherit;font-family:Fredoka,Heebo,system-ui,sans-serif;
+  font-size:1.15rem;font-weight:600;box-shadow:0 4px 0 var(--doc-line);cursor:pointer}
+.pk-btn.alt{background:var(--doc-card);border:1px solid var(--doc-line)}
+.pk-note{color:var(--doc-soft);font-size:.85rem;margin:0 0 8px}
+.pk-sheets{display:grid;grid-template-columns:repeat(auto-fit,minmax(17rem,1fr));gap:20px;
+  margin:18px 0 0;list-style:none;padding:0}
+.pk-sheet{background:#fff;color:#111;border:1px solid #d9d6e4;border-radius:14px;padding:14px}
+.pk-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;
+  font-size:.85rem;font-weight:600;color:#333}
+.pk-inst{font-size:.8rem;color:#444;margin:6px 0 12px}
+.pk-foot{display:flex;justify-content:space-between;gap:10px;margin-top:12px;padding-top:8px;
+  border-top:1px solid #ddd;font-size:.7rem;color:#555}
+/* The domain is Latin inside an RTL line. Isolated, or the punctuation in it
+   reorders and the page prints a URL nobody can type back in. */
+.pk-url{direction:ltr;unicode-bidi:isolate}
+/* THE BOARDS ARE PINNED LTR. Their cells are addressed by a flat row-major
+   index, so an RTL container would mirror every one of them - and the word
+   search would mirror INTO its own generator's assumption, which plants Hebrew
+   words leftwards on an LTR grid (see readingSense in wordsearch/logic.ts).
+   The game's own board carries dir="ltr" for the same reason. */
+.pk-board{direction:ltr}
+table.pk-grid{border-collapse:collapse;width:100%;table-layout:fixed;margin:0}
+table.pk-grid td{border:1px solid #9b97ad;padding:0;text-align:center;vertical-align:middle;
+  font-size:1.05rem;line-height:1;font-weight:600;color:#111}
+table.pk-grid td::before{content:"";display:block;padding-top:100%}
+table.pk-grid td span{position:absolute;inset:0;display:flex;align-items:center;
+  justify-content:center}
+table.pk-grid td{position:relative}
+table.pk-grid td.bx{border-inline-end-width:3px}
+table.pk-grid td.by{border-bottom-width:3px}
+table.pk-grid td.blank{color:transparent}
+table.pk-grid td.key{font-weight:800}
+table.pk-grid td.dim{color:#8a86a0;font-weight:400}
+.pk-words{margin:10px 0 0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px 12px;
+  font-size:.9rem;color:#111}
+.pk-words li{white-space:nowrap}
+svg.pk-svg{display:block;width:100%;height:auto}
+.pk-answers{margin-top:34px}
+@media (max-width:34rem){.pk-sheets{grid-template-columns:1fr}}
+@media print{
+  /* WHAT IS ON THE PAPER: the sheets, and nothing else. The prose is for a
+     reader and for a search engine; printing it would put four pages of
+     paragraphs between the boards and the answer key. */
+  header,footer,.bc,.pk-intro,.pk-prose,#lang-offer,#consent{display:none!important}
+  html,body{background:#fff!important;color:#000!important}
+  main{max-width:none!important;margin:0!important;padding:0!important}
+  .pk-sheets{display:block!important;margin:0!important}
+  .pk-sheet{border:0!important;border-radius:0!important;padding:0!important;margin:0!important;
+    break-inside:avoid;page-break-inside:avoid;break-after:page;page-break-after:always}
+  .pk-sheet:last-child{break-after:auto;page-break-after:auto}
+  .pk-answers{break-before:page;page-break-before:always}
+  .pk-answers h2{margin-top:0}
+  table.pk-grid td{border-color:#000}
+  @page{margin:12mm}
+}
+</style>
+    <nav class="bc">
+      <a href="/he/">בית</a> › דפים להדפסה
+    </nav>
+    <!-- EVERYTHING A READER NEEDS AND A PRINTER DOES NOT, in one block, so the
+         print rule that hides it is one selector rather than five. Measured
+         2026-09-03 on real Chrome PDFs: without this, the title and the lede
+         took a page of their own on Letter (the first sheet cannot break, so it
+         moved down) and on A4 the colouring pack printed its first picture
+         underneath a heading. 13 pages where 12 were wanted, and no gate that
+         reads bytes could see either. -->
+    <div class="pk-intro">
+      <h1>סודוקו להדפסה לילדים - דפי עבודה חינם</h1>
+      <p class="lede">6 לוחות סודוקו מוכנים להדפסה, מסודרים מהקל לקשה. הדפיסו, תנו עיפרון, וזהו.</p>
+      <div class="pk-cta">
+      <!-- A REAL BUTTON, and the only script on the page. The words on it are an
+           instruction, so the thing carrying them has to answer a tap - see
+           .claude/rules/a-control-that-carries-an-imperative-must-be-a-control.md.
+           It is inline rather than a module because this page deliberately
+           fetches nothing: a print button that waits on a bundle is a button
+           that does nothing on a slow connection. -->
+      <button type="button" class="pk-btn" onclick="window.print()">הדפיסו את הדפים</button>
+      <a class="pk-btn alt" href="/he/games/sudoku/">לשחק על המסך</a>
+      </div>
+      <p class="pk-note">הכפתור פותח את חלון ההדפסה של הדפדפן. אפשר גם לשמור כקובץ PDF.</p>
+      <h2>הדפים</h2>
+    </div>
+    <!--sheets-->
+    <ul class="pk-sheets"><li class="pk-sheet">
+    <div class="pk-head">
+      <span>דף 1</span>
+      <span></span>
+    </div>
+    <p class="pk-inst">מלאו את המשבצות הריקות כך שבכל שורה, בכל עמודה ובכל מלבן תופיע כל ספרה פעם אחת בלבד.</p>
+    <div class="pk-board"><table class="pk-grid">
+    <tbody>
+      <tr><td><span></span></td><td class="bx"><span></span></td><td><span></span></td><td><span>2</span></td></tr><tr><td class="by"><span></span></td><td class="bx by"><span>1</span></td><td class="by"><span>3</span></td><td class="by"><span>4</span></td></tr><tr><td><span>1</span></td><td class="bx"><span>2</span></td><td><span>4</span></td><td><span>3</span></td></tr><tr><td><span></span></td><td class="bx"><span>3</span></td><td><span></span></td><td><span></span></td></tr>
+    </tbody>
+  </table></div>
+    <div class="pk-foot">
+      <span class="pk-url">ellaz.fun/he/print/sudoku/</span>
+      <span>שם: ________________</span>
+    </div>
+  </li><li class="pk-sheet">
+    <div class="pk-head">
+      <span>דף 2</span>
+      <span></span>
+    </div>
+    <p class="pk-inst">מלאו את המשבצות הריקות כך שבכל שורה, בכל עמודה ובכל מלבן תופיע כל ספרה פעם אחת בלבד.</p>
+    <div class="pk-board"><table class="pk-grid">
+    <tbody>
+      <tr><td><span></span></td><td><span>5</span></td><td class="bx"><span></span></td><td><span></span></td><td><span>3</span></td><td><span>2</span></td></tr><tr><td class="by"><span></span></td><td class="by"><span>2</span></td><td class="bx by"><span></span></td><td class="by"><span>6</span></td><td class="by"><span>5</span></td><td class="by"><span>4</span></td></tr><tr><td><span>4</span></td><td><span></span></td><td class="bx"><span></span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr><tr><td class="by"><span>2</span></td><td class="by"><span></span></td><td class="bx by"><span></span></td><td class="by"><span>4</span></td><td class="by"><span>6</span></td><td class="by"><span>1</span></td></tr><tr><td><span></span></td><td><span></span></td><td class="bx"><span>1</span></td><td><span>2</span></td><td><span>4</span></td><td><span>3</span></td></tr><tr><td><span>3</span></td><td><span></span></td><td class="bx"><span></span></td><td><span>5</span></td><td><span></span></td><td><span></span></td></tr>
+    </tbody>
+  </table></div>
+    <div class="pk-foot">
+      <span class="pk-url">ellaz.fun/he/print/sudoku/</span>
+      <span>שם: ________________</span>
+    </div>
+  </li><li class="pk-sheet">
+    <div class="pk-head">
+      <span>דף 3</span>
+      <span></span>
+    </div>
+    <p class="pk-inst">מלאו את המשבצות הריקות כך שבכל שורה, בכל עמודה ובכל מלבן תופיע כל ספרה פעם אחת בלבד.</p>
+    <div class="pk-board"><table class="pk-grid">
+    <tbody>
+      <tr><td><span></span></td><td><span></span></td><td class="bx"><span>6</span></td><td><span>1</span></td><td><span>2</span></td><td><span></span></td></tr><tr><td class="by"><span>2</span></td><td class="by"><span></span></td><td class="bx by"><span>3</span></td><td class="by"><span>4</span></td><td class="by"><span></span></td><td class="by"><span>5</span></td></tr><tr><td><span></span></td><td><span>2</span></td><td class="bx"><span></span></td><td><span>6</span></td><td><span>4</span></td><td><span></span></td></tr><tr><td class="by"><span></span></td><td class="by"><span>6</span></td><td class="bx by"><span></span></td><td class="by"><span></span></td><td class="by"><span></span></td><td class="by"><span>2</span></td></tr><tr><td><span></span></td><td><span></span></td><td class="bx"><span>4</span></td><td><span>2</span></td><td><span></span></td><td><span></span></td></tr><tr><td><span>6</span></td><td><span>3</span></td><td class="bx"><span></span></td><td><span>5</span></td><td><span></span></td><td><span>4</span></td></tr>
+    </tbody>
+  </table></div>
+    <div class="pk-foot">
+      <span class="pk-url">ellaz.fun/he/print/sudoku/</span>
+      <span>שם: ________________</span>
+    </div>
+  </li><li class="pk-sheet">
+    <div class="pk-head">
+      <span>דף 4</span>
+      <span></span>
+    </div>
+    <p class="pk-inst">מלאו את המשבצות הריקות כך שבכל שורה, בכל עמודה ובכל מלבן תופיע כל ספרה פעם אחת בלבד.</p>
+    <div class="pk-board"><table class="pk-grid">
+    <tbody>
+      <tr><td><span>9</span></td><td><span></span></td><td class="bx"><span></span></td><td><span></span></td><td><span>2</span></td><td class="bx"><span>7</span></td><td><span>5</span></td><td><span></span></td><td><span></span></td></tr><tr><td><span></span></td><td><span></span></td><td class="bx"><span></span></td><td><span></span></td><td><span>5</span></td><td class="bx"><span></span></td><td><span></span></td><td><span>8</span></td><td><span>9</span></td></tr><tr><td class="by"><span></span></td><td class="by"><span></span></td><td class="bx by"><span></span></td><td class="by"><span>8</span></td><td class="by"><span>1</span></td><td class="bx by"><span></span></td><td class="by"><span>2</span></td><td class="by"><span></span></td><td class="by"><span>4</span></td></tr><tr><td><span>1</span></td><td><span></span></td><td class="bx"><span></span></td><td><span></span></td><td><span></span></td><td class="bx"><span></span></td><td><span></span></td><td><span>5</span></td><td><span>8</span></td></tr><tr><td><span></span></td><td><span>2</span></td><td class="bx"><span></span></td><td><span>5</span></td><td><span></span></td><td class="bx"><span>1</span></td><td><span>6</span></td><td><span></span></td><td><span>7</span></td></tr><tr><td class="by"><span></span></td><td class="by"><span></span></td><td class="bx by"><span></span></td><td class="by"><span></span></td><td class="by"><span>3</span></td><td class="bx by"><span>8</span></td><td class="by"><span>4</span></td><td class="by"><span>1</span></td><td class="by"><span>2</span></td></tr><tr><td><span>5</span></td><td><span>9</span></td><td class="bx"><span></span></td><td><span></span></td><td><span>7</span></td><td class="bx"><span></span></td><td><span></span></td><td><span>2</span></td><td><span>6</span></td></tr><tr><td><span>3</span></td><td><span>7</span></td><td class="bx"><span></span></td><td><span>1</span></td><td><span></span></td><td class="bx"><span>2</span></td><td><span>9</span></td><td><span></span></td><td><span>5</span></td></tr><tr><td><span></span></td><td><span>6</span></td><td class="bx"><span>4</span></td><td><span>9</span></td><td><span>8</span></td><td class="bx"><span>5</span></td><td><span>1</span></td><td><span>7</span></td><td><span></span></td></tr>
+    </tbody>
+  </table></div>
+    <div class="pk-foot">
+      <span class="pk-url">ellaz.fun/he/print/sudoku/</span>
+      <span>שם: ________________</span>
+    </div>
+  </li><li class="pk-sheet">
+    <div class="pk-head">
+      <span>דף 5</span>
+      <span></span>
+    </div>
+    <p class="pk-inst">מלאו את המשבצות הריקות כך שבכל שורה, בכל עמודה ובכל מלבן תופיע כל ספרה פעם אחת בלבד.</p>
+    <div class="pk-board"><table class="pk-grid">
+    <tbody>
+      <tr><td><span>6</span></td><td><span>1</span></td><td class="bx"><span>8</span></td><td><span>2</span></td><td><span></span></td><td class="bx"><span>9</span></td><td><span></span></td><td><span>4</span></td><td><span></span></td></tr><tr><td><span></span></td><td><span>2</span></td><td class="bx"><span>5</span></td><td><span>6</span></td><td><span></span></td><td class="bx"><span>4</span></td><td><span></span></td><td><span>1</span></td><td><span></span></td></tr><tr><td class="by"><span>3</span></td><td class="by"><span></span></td><td class="bx by"><span></span></td><td class="by"><span>1</span></td><td class="by"><span>5</span></td><td class="bx by"><span>8</span></td><td class="by"><span>6</span></td><td class="by"><span>9</span></td><td class="by"><span></span></td></tr><tr><td><span></span></td><td><span></span></td><td class="bx"><span></span></td><td><span></span></td><td><span>8</span></td><td class="bx"><span>6</span></td><td><span></span></td><td><span>3</span></td><td><span>9</span></td></tr><tr><td><span></span></td><td><span>9</span></td><td class="bx"><span></span></td><td><span></span></td><td><span>4</span></td><td class="bx"><span>2</span></td><td><span></span></td><td><span></span></td><td><span></span></td></tr><tr><td class="by"><span>5</span></td><td class="by"><span>8</span></td><td class="bx by"><span></span></td><td class="by"><span>9</span></td><td class="by"><span></span></td><td class="bx by"><span></span></td><td class="by"><span></span></td><td class="by"><span>2</span></td><td class="by"><span></span></td></tr><tr><td><span></span></td><td><span>6</span></td><td class="bx"><span>7</span></td><td><span></span></td><td><span></span></td><td class="bx"><span></span></td><td><span>4</span></td><td><span></span></td><td><span>5</span></td></tr><tr><td><span></span></td><td><span></span></td><td class="bx"><span>9</span></td><td><span>4</span></td><td><span>6</span></td><td class="bx"><span>5</span></td><td><span></span></td><td><span>7</span></td><td><span></span></td></tr><tr><td><span></span></td><td><span>5</span></td><td class="bx"><span></span></td><td><span>8</span></td><td><span>2</span></td><td class="bx"><span>7</span></td><td><span></span></td><td><span>6</span></td><td><span></span></td></tr>
+    </tbody>
+  </table></div>
+    <div class="pk-foot">
+      <span class="pk-url">ellaz.fun/he/print/sudoku/</span>
+      <span>שם: ________________</span>
+    </div>
+  </li><li class="pk-sheet">
+    <div class="pk-head">
+      <span>דף 6</span>
+      <span></span>
+    </div>
+    <p class="pk-inst">מלאו את המשבצות הריקות כך שבכל שורה, בכל עמודה ובכל מלבן תופיע כל ספרה פעם אחת בלבד.</p>
+    <div class="pk-board"><table class="pk-grid">
+    <tbody>
+      <tr><td><span></span></td><td><span></span></td><td class="bx"><span></span></td><td><span></span></td><td><span></span></td><td class="bx"><span>9</span></td><td><span>8</span></td><td><span>6</span></td><td><span></span></td></tr><tr><td><span></span></td><td><span></span></td><td class="bx"><span></span></td><td><span></span></td><td><span>4</span></td><td class="bx"><span>1</span></td><td><span></span></td><td><span>5</span></td><td><span>9</span></td></tr><tr><td class="by"><span>1</span></td><td class="by"><span></span></td><td class="bx by"><span>6</span></td><td class="by"><span>2</span></td><td class="by"><span></span></td><td class="bx by"><span></span></td><td class="by"><span>3</span></td><td class="by"><span></span></td><td class="by"><span></span></td></tr><tr><td><span>8</span></td><td><span>6</span></td><td class="bx"><span></span></td><td><span>4</span></td><td><span></span></td><td class="bx"><span></span></td><td><span>7</span></td><td><span></span></td><td><span></span></td></tr><tr><td><span></span></td><td><span></span></td><td class="bx"><span></span></td><td><span></span></td><td><span></span></td><td class="bx"><span></span></td><td><span>9</span></td><td><span>3</span></td><td><span>5</span></td></tr><tr><td class="by"><span>9</span></td><td class="by"><span></span></td><td class="bx by"><span></span></td><td class="by"><span>5</span></td><td class="by"><span></span></td><td class="bx by"><span></span></td><td class="by"><span>4</span></td><td class="by"><span>8</span></td><td class="by"><span>6</span></td></tr><tr><td><span>2</span></td><td><span>4</span></td><td class="bx"><span>3</span></td><td><span></span></td><td><span>5</span></td><td class="bx"><span></span></td><td><span>1</span></td><td><span>9</span></td><td><span></span></td></tr><tr><td><span>7</span></td><td><span></span></td><td class="bx"><span></span></td><td><span></span></td><td><span></span></td><td class="bx"><span></span></td><td><span></span></td><td><span>2</span></td><td><span></span></td></tr><tr><td><span></span></td><td><span>1</span></td><td class="bx"><span></span></td><td><span></span></td><td><span>7</span></td><td class="bx"><span></span></td><td><span></span></td><td><span></span></td><td><span>3</span></td></tr>
+    </tbody>
+  </table></div>
+    <div class="pk-foot">
+      <span class="pk-url">ellaz.fun/he/print/sudoku/</span>
+      <span>שם: ________________</span>
+    </div>
+  </li></ul>
+    <!--/sheets-->
+
+    <div class="pk-prose">
+      <h2>לאיזה גיל זה מתאים</h2>
+          <p>הלוחות הראשונים כאן הם 4x4, וילדה בת ארבע או חמש שכבר מזהה ספרות תסתדר איתם. אין מה לחשב, אין מה לזכור בעל פה: מסתכלים על שורה, רואים איזו ספרה חסרה, וכותבים אותה. בלוח כזה יש רק ארבעה סימנים, ולכן כל טעות מתגלה תוך שנייה ואפשר לתקן אותה בלי למחוק חצי דף.</p><p>אחרי זה מגיעים לוחות של שש על שש, והם הקפיצה האמיתית. פתאום צריך להסתכל גם על המלבן הקטן וגם על השורה וגם על העמודה, שלושה כללים בבת אחת. רוב הילדים בגן חובה ובכיתה א צריכים כאן יד מלווה בהתחלה.</p><p>9x9 הוא כבר סודוקו של מבוגרים. שמנו כאן שניים ברמת פתיחה ועוד אחד קשה יותר, כי הורים מדפיסים לעצמם לא פחות מאשר לילדים.</p><p>הודאה קטנה: לילד בן שלוש הדפים האלה לא מתאימים. הוא עוד לא סופר בביטחון, והתסכול יגיע לפני ההנאה. עדיף להתחיל בדפי הצביעה שלנו ולחזור לכאן בעוד שנה.</p><h2>מה זה מאמן</h2>
+          <p>סודוקו הוא תרגיל בהיגיון ולא בחשבון. הספרות הן רק סימנים, ואפשר להחליף אותן בצורות או בצבעים בלי לשנות דבר במשחק. מה שהילד מתאמן עליו הוא היכולת לומר: הספרה הזאת לא יכולה להיות כאן, כי היא כבר נמצאת שם.</p><p>זאת שלילה, וזאת אחת ההתקדמויות היפות בחשיבה של ילד בגיל הזה. במקום לנחש ולבדוק, הוא לומד להוציא אפשרויות מהמשחק אחת אחרי השנייה עד שנשארת אחת.</p><p>יש גם צד שקט יותר. דף סודוקו דורש לשבת עם דבר אחד עשר דקות רצופות. זה לא מעט.</p><h2>איך לעזור בלי לפתור במקום</h2>
+          <p>הפיתוי הגדול הוא להצביע על משבצת ולומר איזו ספרה שייכת לה. זה גומר את התרגיל. במקום זה, הפנו את המבט: שאלו איזו שורה הכי מלאה, או בקשו לספור יחד אילו ספרות כבר יש במלבן הזה.</p><p>אם הילד תקוע לגמרי, אפשר לצמצם את השאלה. במקום הלוח כולו, כסו הכול חוץ משורה אחת ושאלו מה חסר בה. ברגע שנפתחה משבצת אחת, השאר בדרך כלל נפתח לבד.</p><p>וטעות היא לא אסון. אם הילד גילה בעצמו שאותה ספרה מופיעה פעמיים בשורה, הוא בדיוק עשה את הדבר שבאנו לתרגל. תנו לו למחוק ולהמשיך.</p><h2>המספרים שמאחורי הדפים</h2>
+          <p>הלוחות כאן לא נבחרו ביד. הם נוצרו על ידי אותו מחולל שמייצר את הלוחות במשחק עצמו, עם כלל אחד קשיח: רמז מוסר מהלוח רק אם אחריו עדיין קיים בדיוק פתרון אחד. לכן אף דף כאן לא ידרוש ניחוש, ולעולם לא תגיעו לשני פתרונות חוקיים.</p><p>הדף הראשון יוצא מהמחולל עם 9 רמזים על הלוח, וזה בכוונה הרבה. דף פתיחה שנראה ריק מבריח ילדים.</p><p>כל דף נדפס עם אותו מספר סידורי בכל פעם. דף שלוש היום הוא דף שלוש בעוד שנה, כך שקישור שאתם שולחים למישהו לא ישתנה מתחתיו.</p><h2>איך להדפיס דף שנוח לכתוב עליו</h2>
+          <p>בחרו בחלון ההדפסה התאמה לרוחב העמוד, ובטלו כותרות עליונות ותחתונות. כל דף כאן בנוי להיכנס לעמוד אחד שלם, ב-A4 ובגודל Letter כאחד, ובלי ההתאמה הזאת השורה התחתונה נחתכת.</p><p>עיפרון עדיף על עט. בסודוקו מוחקים הרבה, וזה חלק מהעניין ולא תקלה.</p><p>ואם אתם מדפיסים לילד קטן, שקלו להדפיס רק את שני הדפים הראשונים. חבילה שלמה של שישה דפים נראית לילד בן חמש כמו מטלה.</p><h2>למה שישה דפים ולא אינסוף</h2>
+          <p>אפשר היה לייצר כאן לוח חדש בכל טעינה של הדף. בחרנו לא, ומסיבה אחת: קישור צריך להישאר נכון. אם מורה שלחה להורים את הדף הזה, ובשבוע הבא הוא כבר לוח אחר, השיחה על הדף השלישי מפסיקה להיות אפשרית.</p><p>אז הלוחות כאן קבועים. אותם שישה, לכל אורך הזמן, לכל מי שנכנס.</p><p>מי שרוצה לוח חדש בכל פעם ימצא אותו במשחק עצמו, שמחלק לוח חדש בכל סיבוב.</p>
+      <h2>שאלות שנשאלות</h2>
+      <h3>זה באמת בחינם?</h3>
+          <p>כן. אין הרשמה, אין חשבון, אין תשלום ואין פרסומות. הדף הזה הוא כל מה שיש.</p><h3>אפשר לשמור כקובץ PDF במקום להדפיס?</h3>
+          <p>כן. בחלון ההדפסה בוחרים ביעד שמירה כ-PDF במקום המדפסת. בטלפון האפשרות נמצאת באותו מסך.</p><h3>איך מדפיסים בלי הפתרונות?</h3>
+          <p>הפתרונות יושבים בעמוד אחרון נפרד. בחלון ההדפסה אפשר לבקש טווח עמודים ולהשאיר את האחרון בחוץ.</p><h3>מותר להדפיס את זה לכיתה שלמה?</h3>
+          <p>מותר. מורות וגננות מוזמנות להדפיס כמה עותקים שצריך, בלי לבקש רשות ובלי לשלם.</p><h3>הדפים יוצאים חתוכים בקצה</h3>
+          <p>בחלון ההדפסה כדאי לבחור התאמה לרוחב העמוד ולבטל כותרות עליונות ותחתונות. כל דף בנוי להיכנס לעמוד אחד בגודל A4 או Letter.</p><h3>יש דפים גם למי שכבר יודע?</h3>
+          <p>הדף האחרון בחבילה הוא 9x9 ברמה בינונית, והוא ייקח גם למבוגר כמה דקות טובות. במשחק עצמו יש רמות קשות יותר.</p>
+      <p><a href="/he/">לכל המשחקים</a></p>
+    </div>
+
+    <section class="pk-answers">
+      <h2>פתרונות</h2>
+      <p class="pk-note">העמוד הזה נדפס בנפרד. אפשר פשוט לא להדפיס אותו.</p>
+      <!--sheets-->
+      <ul class="pk-sheets"><li class="pk-sheet">
+    <div class="pk-head">
+      <span>דף 1</span>
+      <span>פתרונות</span>
+    </div>
+    
+    <div class="pk-board"><table class="pk-grid">
+    <tbody>
+      <tr><td class="key"><span>3</span></td><td class="bx key"><span>4</span></td><td class="key"><span>1</span></td><td class="dim"><span>2</span></td></tr><tr><td class="by key"><span>2</span></td><td class="bx by dim"><span>1</span></td><td class="by dim"><span>3</span></td><td class="by dim"><span>4</span></td></tr><tr><td class="dim"><span>1</span></td><td class="bx dim"><span>2</span></td><td class="dim"><span>4</span></td><td class="dim"><span>3</span></td></tr><tr><td class="key"><span>4</span></td><td class="bx dim"><span>3</span></td><td class="key"><span>2</span></td><td class="key"><span>1</span></td></tr>
+    </tbody>
+  </table></div>
+    <div class="pk-foot">
+      <span class="pk-url">ellaz.fun/he/print/sudoku/</span>
+      <span></span>
+    </div>
+  </li><li class="pk-sheet">
+    <div class="pk-head">
+      <span>דף 2</span>
+      <span>פתרונות</span>
+    </div>
+    
+    <div class="pk-board"><table class="pk-grid">
+    <tbody>
+      <tr><td class="key"><span>6</span></td><td class="dim"><span>5</span></td><td class="bx key"><span>4</span></td><td class="key"><span>1</span></td><td class="dim"><span>3</span></td><td class="dim"><span>2</span></td></tr><tr><td class="by key"><span>1</span></td><td class="by dim"><span>2</span></td><td class="bx by key"><span>3</span></td><td class="by dim"><span>6</span></td><td class="by dim"><span>5</span></td><td class="by dim"><span>4</span></td></tr><tr><td class="dim"><span>4</span></td><td class="key"><span>1</span></td><td class="bx key"><span>6</span></td><td class="key"><span>3</span></td><td class="key"><span>2</span></td><td class="key"><span>5</span></td></tr><tr><td class="by dim"><span>2</span></td><td class="by key"><span>3</span></td><td class="bx by key"><span>5</span></td><td class="by dim"><span>4</span></td><td class="by dim"><span>6</span></td><td class="by dim"><span>1</span></td></tr><tr><td class="key"><span>5</span></td><td class="key"><span>6</span></td><td class="bx dim"><span>1</span></td><td class="dim"><span>2</span></td><td class="dim"><span>4</span></td><td class="dim"><span>3</span></td></tr><tr><td class="dim"><span>3</span></td><td class="key"><span>4</span></td><td class="bx key"><span>2</span></td><td class="dim"><span>5</span></td><td class="key"><span>1</span></td><td class="key"><span>6</span></td></tr>
+    </tbody>
+  </table></div>
+    <div class="pk-foot">
+      <span class="pk-url">ellaz.fun/he/print/sudoku/</span>
+      <span></span>
+    </div>
+  </li><li class="pk-sheet">
+    <div class="pk-head">
+      <span>דף 3</span>
+      <span>פתרונות</span>
+    </div>
+    
+    <div class="pk-board"><table class="pk-grid">
+    <tbody>
+      <tr><td class="key"><span>5</span></td><td class="key"><span>4</span></td><td class="bx dim"><span>6</span></td><td class="dim"><span>1</span></td><td class="dim"><span>2</span></td><td class="key"><span>3</span></td></tr><tr><td class="by dim"><span>2</span></td><td class="by key"><span>1</span></td><td class="bx by dim"><span>3</span></td><td class="by dim"><span>4</span></td><td class="by key"><span>6</span></td><td class="by dim"><span>5</span></td></tr><tr><td class="key"><span>3</span></td><td class="dim"><span>2</span></td><td class="bx key"><span>5</span></td><td class="dim"><span>6</span></td><td class="dim"><span>4</span></td><td class="key"><span>1</span></td></tr><tr><td class="by key"><span>4</span></td><td class="by dim"><span>6</span></td><td class="bx by key"><span>1</span></td><td class="by key"><span>3</span></td><td class="by key"><span>5</span></td><td class="by dim"><span>2</span></td></tr><tr><td class="key"><span>1</span></td><td class="key"><span>5</span></td><td class="bx dim"><span>4</span></td><td class="dim"><span>2</span></td><td class="key"><span>3</span></td><td class="key"><span>6</span></td></tr><tr><td class="dim"><span>6</span></td><td class="dim"><span>3</span></td><td class="bx key"><span>2</span></td><td class="dim"><span>5</span></td><td class="key"><span>1</span></td><td class="dim"><span>4</span></td></tr>
+    </tbody>
+  </table></div>
+    <div class="pk-foot">
+      <span class="pk-url">ellaz.fun/he/print/sudoku/</span>
+      <span></span>
+    </div>
+  </li><li class="pk-sheet">
+    <div class="pk-head">
+      <span>דף 4</span>
+      <span>פתרונות</span>
+    </div>
+    
+    <div class="pk-board"><table class="pk-grid">
+    <tbody>
+      <tr><td class="dim"><span>9</span></td><td class="key"><span>8</span></td><td class="bx key"><span>6</span></td><td class="key"><span>4</span></td><td class="dim"><span>2</span></td><td class="bx dim"><span>7</span></td><td class="dim"><span>5</span></td><td class="key"><span>3</span></td><td class="key"><span>1</span></td></tr><tr><td class="key"><span>4</span></td><td class="key"><span>1</span></td><td class="bx key"><span>2</span></td><td class="key"><span>6</span></td><td class="dim"><span>5</span></td><td class="bx key"><span>3</span></td><td class="key"><span>7</span></td><td class="dim"><span>8</span></td><td class="dim"><span>9</span></td></tr><tr><td class="by key"><span>7</span></td><td class="by key"><span>3</span></td><td class="bx by key"><span>5</span></td><td class="by dim"><span>8</span></td><td class="by dim"><span>1</span></td><td class="bx by key"><span>9</span></td><td class="by dim"><span>2</span></td><td class="by key"><span>6</span></td><td class="by dim"><span>4</span></td></tr><tr><td class="dim"><span>1</span></td><td class="key"><span>4</span></td><td class="bx key"><span>7</span></td><td class="key"><span>2</span></td><td class="key"><span>9</span></td><td class="bx key"><span>6</span></td><td class="key"><span>3</span></td><td class="dim"><span>5</span></td><td class="dim"><span>8</span></td></tr><tr><td class="key"><span>8</span></td><td class="dim"><span>2</span></td><td class="bx key"><span>3</span></td><td class="dim"><span>5</span></td><td class="key"><span>4</span></td><td class="bx dim"><span>1</span></td><td class="dim"><span>6</span></td><td class="key"><span>9</span></td><td class="dim"><span>7</span></td></tr><tr><td class="by key"><span>6</span></td><td class="by key"><span>5</span></td><td class="bx by key"><span>9</span></td><td class="by key"><span>7</span></td><td class="by dim"><span>3</span></td><td class="bx by dim"><span>8</span></td><td class="by dim"><span>4</span></td><td class="by dim"><span>1</span></td><td class="by dim"><span>2</span></td></tr><tr><td class="dim"><span>5</span></td><td class="dim"><span>9</span></td><td class="bx key"><span>1</span></td><td class="key"><span>3</span></td><td class="dim"><span>7</span></td><td class="bx key"><span>4</span></td><td class="key"><span>8</span></td><td class="dim"><span>2</span></td><td class="dim"><span>6</span></td></tr><tr><td class="dim"><span>3</span></td><td class="dim"><span>7</span></td><td class="bx key"><span>8</span></td><td class="dim"><span>1</span></td><td class="key"><span>6</span></td><td class="bx dim"><span>2</span></td><td class="dim"><span>9</span></td><td class="key"><span>4</span></td><td class="dim"><span>5</span></td></tr><tr><td class="key"><span>2</span></td><td class="dim"><span>6</span></td><td class="bx dim"><span>4</span></td><td class="dim"><span>9</span></td><td class="dim"><span>8</span></td><td class="bx dim"><span>5</span></td><td class="dim"><span>1</span></td><td class="dim"><span>7</span></td><td class="key"><span>3</span></td></tr>
+    </tbody>
+  </table></div>
+    <div class="pk-foot">
+      <span class="pk-url">ellaz.fun/he/print/sudoku/</span>
+      <span></span>
+    </div>
+  </li><li class="pk-sheet">
+    <div class="pk-head">
+      <span>דף 5</span>
+      <span>פתרונות</span>
+    </div>
+    
+    <div class="pk-board"><table class="pk-grid">
+    <tbody>
+      <tr><td class="dim"><span>6</span></td><td class="dim"><span>1</span></td><td class="bx dim"><span>8</span></td><td class="dim"><span>2</span></td><td class="key"><span>3</span></td><td class="bx dim"><span>9</span></td><td class="key"><span>5</span></td><td class="dim"><span>4</span></td><td class="key"><span>7</span></td></tr><tr><td class="key"><span>9</span></td><td class="dim"><span>2</span></td><td class="bx dim"><span>5</span></td><td class="dim"><span>6</span></td><td class="key"><span>7</span></td><td class="bx dim"><span>4</span></td><td class="key"><span>3</span></td><td class="dim"><span>1</span></td><td class="key"><span>8</span></td></tr><tr><td class="by dim"><span>3</span></td><td class="by key"><span>7</span></td><td class="bx by key"><span>4</span></td><td class="by dim"><span>1</span></td><td class="by dim"><span>5</span></td><td class="bx by dim"><span>8</span></td><td class="by dim"><span>6</span></td><td class="by dim"><span>9</span></td><td class="by key"><span>2</span></td></tr><tr><td class="key"><span>7</span></td><td class="key"><span>4</span></td><td class="bx key"><span>2</span></td><td class="key"><span>5</span></td><td class="dim"><span>8</span></td><td class="bx dim"><span>6</span></td><td class="key"><span>1</span></td><td class="dim"><span>3</span></td><td class="dim"><span>9</span></td></tr><tr><td class="key"><span>1</span></td><td class="dim"><span>9</span></td><td class="bx key"><span>3</span></td><td class="key"><span>7</span></td><td class="dim"><span>4</span></td><td class="bx dim"><span>2</span></td><td class="key"><span>8</span></td><td class="key"><span>5</span></td><td class="key"><span>6</span></td></tr><tr><td class="by dim"><span>5</span></td><td class="by dim"><span>8</span></td><td class="bx by key"><span>6</span></td><td class="by dim"><span>9</span></td><td class="by key"><span>1</span></td><td class="bx by key"><span>3</span></td><td class="by key"><span>7</span></td><td class="by dim"><span>2</span></td><td class="by key"><span>4</span></td></tr><tr><td class="key"><span>2</span></td><td class="dim"><span>6</span></td><td class="bx dim"><span>7</span></td><td class="key"><span>3</span></td><td class="key"><span>9</span></td><td class="bx key"><span>1</span></td><td class="dim"><span>4</span></td><td class="key"><span>8</span></td><td class="dim"><span>5</span></td></tr><tr><td class="key"><span>8</span></td><td class="key"><span>3</span></td><td class="bx dim"><span>9</span></td><td class="dim"><span>4</span></td><td class="dim"><span>6</span></td><td class="bx dim"><span>5</span></td><td class="key"><span>2</span></td><td class="dim"><span>7</span></td><td class="key"><span>1</span></td></tr><tr><td class="key"><span>4</span></td><td class="dim"><span>5</span></td><td class="bx key"><span>1</span></td><td class="dim"><span>8</span></td><td class="dim"><span>2</span></td><td class="bx dim"><span>7</span></td><td class="key"><span>9</span></td><td class="dim"><span>6</span></td><td class="key"><span>3</span></td></tr>
+    </tbody>
+  </table></div>
+    <div class="pk-foot">
+      <span class="pk-url">ellaz.fun/he/print/sudoku/</span>
+      <span></span>
+    </div>
+  </li><li class="pk-sheet">
+    <div class="pk-head">
+      <span>דף 6</span>
+      <span>פתרונות</span>
+    </div>
+    
+    <div class="pk-board"><table class="pk-grid">
+    <tbody>
+      <tr><td class="key"><span>5</span></td><td class="key"><span>2</span></td><td class="bx key"><span>4</span></td><td class="key"><span>7</span></td><td class="key"><span>3</span></td><td class="bx dim"><span>9</span></td><td class="dim"><span>8</span></td><td class="dim"><span>6</span></td><td class="key"><span>1</span></td></tr><tr><td class="key"><span>3</span></td><td class="key"><span>8</span></td><td class="bx key"><span>7</span></td><td class="key"><span>6</span></td><td class="dim"><span>4</span></td><td class="bx dim"><span>1</span></td><td class="key"><span>2</span></td><td class="dim"><span>5</span></td><td class="dim"><span>9</span></td></tr><tr><td class="by dim"><span>1</span></td><td class="by key"><span>9</span></td><td class="bx by dim"><span>6</span></td><td class="by dim"><span>2</span></td><td class="by key"><span>8</span></td><td class="bx by key"><span>5</span></td><td class="by dim"><span>3</span></td><td class="by key"><span>7</span></td><td class="by key"><span>4</span></td></tr><tr><td class="dim"><span>8</span></td><td class="dim"><span>6</span></td><td class="bx key"><span>5</span></td><td class="dim"><span>4</span></td><td class="key"><span>9</span></td><td class="bx key"><span>3</span></td><td class="dim"><span>7</span></td><td class="key"><span>1</span></td><td class="key"><span>2</span></td></tr><tr><td class="key"><span>4</span></td><td class="key"><span>7</span></td><td class="bx key"><span>2</span></td><td class="key"><span>1</span></td><td class="key"><span>6</span></td><td class="bx key"><span>8</span></td><td class="dim"><span>9</span></td><td class="dim"><span>3</span></td><td class="dim"><span>5</span></td></tr><tr><td class="by dim"><span>9</span></td><td class="by key"><span>3</span></td><td class="bx by key"><span>1</span></td><td class="by dim"><span>5</span></td><td class="by key"><span>2</span></td><td class="bx by key"><span>7</span></td><td class="by dim"><span>4</span></td><td class="by dim"><span>8</span></td><td class="by dim"><span>6</span></td></tr><tr><td class="dim"><span>2</span></td><td class="dim"><span>4</span></td><td class="bx dim"><span>3</span></td><td class="key"><span>8</span></td><td class="dim"><span>5</span></td><td class="bx key"><span>6</span></td><td class="dim"><span>1</span></td><td class="dim"><span>9</span></td><td class="key"><span>7</span></td></tr><tr><td class="dim"><span>7</span></td><td class="key"><span>5</span></td><td class="bx key"><span>9</span></td><td class="key"><span>3</span></td><td class="key"><span>1</span></td><td class="bx key"><span>4</span></td><td class="key"><span>6</span></td><td class="dim"><span>2</span></td><td class="key"><span>8</span></td></tr><tr><td class="key"><span>6</span></td><td class="dim"><span>1</span></td><td class="bx key"><span>8</span></td><td class="key"><span>9</span></td><td class="dim"><span>7</span></td><td class="bx key"><span>2</span></td><td class="key"><span>5</span></td><td class="key"><span>4</span></td><td class="dim"><span>3</span></td></tr>
+    </tbody>
+  </table></div>
+    <div class="pk-foot">
+      <span class="pk-url">ellaz.fun/he/print/sudoku/</span>
+      <span></span>
+    </div>
+  </li></ul>
+      <!--/sheets-->
+    </section>
+  </main>
+    <footer>
+      <div class="in">
+        <span>Ellaz - משחקים חינם בעברית, אנגלית, ספרדית וצרפתית. אין פרסומות, אין הרשמה, ואין איסוף מידע על ילדים.</span>
+        
+      </div>
+    </footer>
+  
+        <div id="consent" class="consent" role="dialog" aria-live="polite" lang="he" dir="rtl"><p>אנחנו סופרים כניסות בעזרת עוגייה קטנה של גוגל. אין פרסומות ואין מעקב אישי.</p><button type="button" data-yes>אישור</button><button type="button" data-no>לא תודה</button></div>
+    <style>
+      .consent{display:none;position:fixed;inset-inline:0;bottom:0;z-index:60;padding:12px;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;background:#1d1b2e;color:#fff;font-size:14px}[data-consent] .consent{display:flex}.consent p{margin:0;max-width:48ch}.consent button{font:inherit;font-weight:600;padding:8px 18px;min-height:40px;border:0;border-radius:8px;background:#fff;color:#1d1b2e}
+    </style>
+    <script>
+      (function(){try{var d=document.documentElement,b=document.getElementById("consent");if(!b||!window.gtag)return;var v=null;try{v=localStorage.getItem("ellaz:consent:v1")}catch(e){}if(v==="granted"){gtag("consent","update",{analytics_storage:"granted"});return}if(v==="denied")return;d.setAttribute("data-consent","1");function done(a){try{localStorage.setItem("ellaz:consent:v1",a)}catch(e){}if(a==="granted")gtag("consent","update",{analytics_storage:"granted"});d.removeAttribute("data-consent")}var y=b.querySelector("[data-yes]"),n=b.querySelector("[data-no]");if(y)y.addEventListener("click",function(){done("granted")});if(n)n.addEventListener("click",function(){done("denied")});}catch(e){}})()
+    </script>
+      </body>
+    </html>

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" class="ellaz-art" viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect width="200" height="150" fill="#0E9F94"/><path d="M0 104 200 56v94H0z" fill="#35C7BC"/>
+    <g stroke="#241C3B" stroke-width="3.5">
+      <rect x="14" y="34" width="56" height="56" rx="13" fill="#FFF7EC"/>
+      <rect x="82" y="40" width="34" height="34" rx="9" fill="#17B98A"/>
+      <rect x="120" y="40" width="34" height="34" rx="9" fill="#17B98A"/>
+      <rect x="158" y="40" width="34" height="34" rx="9" fill="#FFF7EC" stroke-dasharray="7 6"/>
+      <rect x="158" y="98" width="34" height="34" rx="9" fill="#FFC730"/>
+    </g>
+    <circle cx="42" cy="64" r="17" fill="#FF4D8D"/>
+    <path d="M42 45c-2-7 5-12 11-10-1 7-5 10-11 10z" fill="#6FD44E"/>
+    <path d="M93 51v12M105 51v12M131 51v12M143 51v12"
+          stroke="#FFF7EC" stroke-width="4" stroke-linecap="round"/>
+    <path d="M175 109v12" stroke="#241C3B" stroke-width="4" stroke-linecap="round"/>
+    <path d="M175 92v-8M169 88l6-6 6 6" stroke="#241C3B" stroke-width="3.5"
+          stroke-linecap="round" stroke-linejoin="round" fill="none"/><rect width="200" height="150" style="fill:transparent"/></svg>

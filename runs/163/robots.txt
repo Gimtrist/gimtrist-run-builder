@@ -1,0 +1,36 @@
+# https://ellaz.fun - free browser games for kids and grown-ups.
+# Everything here is public. There is no account, no user data and nothing to gate.
+
+User-agent: *
+Allow: /
+
+# Answer engines that cite their sources. Explicitly welcome.
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+# Training crawlers. A separate decision from the citation bots above.
+User-agent: GPTBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+Sitemap: https://ellaz.fun/sitemap.xml

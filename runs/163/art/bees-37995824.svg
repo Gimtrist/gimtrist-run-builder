@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" class="ellaz-art" viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect width="200" height="150" fill="#FFC730"/><path d="M0 104 200 56v94H0z" fill="#FFDA7A"/>
+    <g fill="#FFF7EC" opacity=".85">
+      <path d="M40 44l16 9v18l-16 9-16-9V53z"/><path d="M40 88l16 9v18l-16 9-16-9V97z"/>
+      <path d="M74 66l16 9v18l-16 9-16-9V75z"/></g>
+    <g transform="rotate(-12 146 80)">
+      <ellipse cx="146" cy="80" rx="30" ry="21" fill="#FFC730"/>
+      <path d="M132 60h11v40h-11zM154 60h11v40h-11z" fill="#241C3B"/>
+      <ellipse cx="146" cy="80" rx="30" ry="21" fill="none" stroke="#241C3B" stroke-width="3.5"/>
+      <ellipse cx="136" cy="56" rx="18" ry="11" fill="#FFF7EC" opacity=".92"/>
+      <ellipse cx="160" cy="56" rx="16" ry="10" fill="#FFF7EC" opacity=".92"/>
+      <circle cx="172" cy="74" r="3.6" fill="#241C3B"/></g><rect width="200" height="150" style="fill:transparent"/></svg>

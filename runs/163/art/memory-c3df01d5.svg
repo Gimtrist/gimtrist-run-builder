@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" class="ellaz-art" viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect width="200" height="150" fill="#FF4D8D"/><circle cx="168" cy="24" r="62" fill="#FF7FAC"/>
+    <g transform="rotate(-9 74 84)"><rect x="42" y="46" width="64" height="82" rx="9" fill="#FFF7EC"/>
+      <rect x="50" y="54" width="48" height="66" rx="6" fill="#4F5BD5"/>
+      <circle cx="74" cy="87" r="13" fill="#FFF7EC"/><circle cx="74" cy="87" r="6" fill="#4F5BD5"/></g>
+    <g transform="rotate(8 130 82)"><rect x="98" y="42" width="64" height="82" rx="9" fill="#FFF7EC"/>
+      <path d="M130 58l7.4 15 16.6 2.4-12 11.7 2.8 16.5-14.8-7.8-14.8 7.8 2.8-16.5-12-11.7 16.6-2.4z" fill="#FFC730"/></g><rect width="200" height="150" style="fill:transparent"/></svg>

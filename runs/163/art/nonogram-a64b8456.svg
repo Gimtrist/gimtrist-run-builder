@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" class="ellaz-art" viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect width="200" height="150" fill="#4F5BD5"/><path d="M0 104 200 56v94H0z" fill="#8B94E8"/>
+    <rect x="52" y="30" width="112" height="98" rx="8" fill="#FFF7EC" stroke="#241C3B" stroke-width="3.5"/>
+    <g stroke="#4A4066" stroke-width="1.4" opacity=".28">
+      <path d="M74 30v98M96 30v98M118 30v98M140 30v98M52 50h112M52 70h112M52 90h112M52 110h112"/></g>
+    <g fill="#FF4D8D">
+      <rect x="74" y="50" width="22" height="20"/><rect x="118" y="50" width="22" height="20"/>
+      <rect x="52" y="70" width="112" height="20"/>
+      <rect x="74" y="90" width="68" height="20"/>
+      <rect x="96" y="110" width="24" height="18"/></g>
+    <rect x="52" y="30" width="112" height="98" rx="8" fill="none" stroke="#241C3B" stroke-width="3.5"/>
+    <g fill="#241C3B" opacity=".8">
+      <rect x="30" y="56" width="16" height="5" rx="2.5"/><rect x="36" y="76" width="10" height="5" rx="2.5"/>
+      <rect x="26" y="96" width="20" height="5" rx="2.5"/><rect x="36" y="116" width="10" height="5" rx="2.5"/>
+      <rect x="59" y="18" width="9" height="5" rx="2.5"/><rect x="81" y="14" width="9" height="5" rx="2.5"/>
+      <rect x="81" y="22" width="9" height="5" rx="2.5"/><rect x="103" y="18" width="9" height="5" rx="2.5"/>
+      <rect x="125" y="14" width="9" height="5" rx="2.5"/><rect x="125" y="22" width="9" height="5" rx="2.5"/>
+      <rect x="147" y="18" width="9" height="5" rx="2.5"/></g><rect width="200" height="150" style="fill:transparent"/></svg>

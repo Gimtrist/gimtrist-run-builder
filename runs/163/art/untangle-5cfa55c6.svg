@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" class="ellaz-art" viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect width="200" height="150" fill="#A855C9"/><circle cx="168" cy="24" r="62" fill="#CB92E0"/>
+    <g stroke="#FFF7EC" stroke-width="7" fill="none" stroke-linecap="round" opacity=".55">
+      <path d="M46 40L150 112M150 40L46 112M46 40L46 112M150 40L150 112M98 22L46 40M98 22L150 40M98 130L46 112M98 130L150 112"/></g>
+    <g stroke="#241C3B" stroke-width="4" fill="none" stroke-linecap="round">
+      <path d="M46 40L150 112M150 40L46 112M46 40L46 112M150 40L150 112M98 22L46 40M98 22L150 40M98 130L46 112M98 130L150 112"/></g>
+    <circle cx="98" cy="76" r="11" fill="none" stroke="#E4572E" stroke-width="4"/>
+    <g fill="#FFC730" stroke="#241C3B" stroke-width="3.5">
+      <circle cx="46" cy="40" r="10"/><circle cx="150" cy="40" r="10"/>
+      <circle cx="46" cy="112" r="10"/><circle cx="150" cy="112" r="10"/>
+      <circle cx="98" cy="22" r="10"/></g>
+    <circle cx="98" cy="130" r="14" fill="#26B0E6" stroke="#241C3B" stroke-width="3.5"/><rect width="200" height="150" style="fill:transparent"/></svg>

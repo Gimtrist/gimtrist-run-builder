@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" class="ellaz-art" viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect width="200" height="150" fill="#A855C9"/><path d="M0 150C0 74 45 30 100 30s100 44 100 120z" fill="#C077DE"/>
+    <g stroke="#241C3B" stroke-width="3">
+      <rect x="19" y="38" width="36" height="36" rx="8" fill="#17B98A"/>
+      <rect x="61" y="38" width="36" height="36" rx="8" fill="#A855C9"/>
+      <rect x="103" y="38" width="36" height="36" rx="8" fill="#FFF7EC"/>
+      <rect x="145" y="38" width="36" height="36" rx="8" fill="#17B98A"/>
+      <rect x="19" y="84" width="36" height="36" rx="8" fill="#FFF7EC"/>
+      <rect x="61" y="84" width="36" height="36" rx="8" fill="#FFF7EC"/>
+      <rect x="103" y="84" width="36" height="36" rx="8" fill="#FFF7EC"/>
+      <rect x="145" y="84" width="36" height="36" rx="8" fill="#FFF7EC"/>
+    </g>
+    <path d="M29 50v12M45 50v12M71 50v12M87 56v6M155 56v6M171 50v12"
+          stroke="#FFF7EC" stroke-width="4" stroke-linecap="round"/><rect width="200" height="150" style="fill:transparent"/></svg>

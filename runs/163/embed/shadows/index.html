@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <!-- FIRST, and synchronous. data-theme is deliberately never baked into
+             these documents - they are cached and it would be wrong for whoever
+             chose the other theme - so this is what sets it before the first
+             paint. A module import runs far too late and the page visibly
+             flashes the other theme. Generated from themes.ts, never written
+             out here, so adding a theme cannot leave it behind. -->
+        <script>
+          (function(){try{var t=localStorage.getItem("ellaz:theme");if(t&&["market","night"].indexOf(t)>-1&&t!=="market")document.documentElement.setAttribute("data-theme",t)}catch(e){}})()
+        </script>
+        <meta name="theme-color" content="#ff4d8d" />
+        <title>Shadow Match in a frame on your site - Ellaz</title>
+        <meta name="description" content="Shadow Match from ellaz.fun, playable inside another site. The full game, and every other free game, is at ellaz.fun." />
+        <link rel="canonical" href="https://ellaz.fun/games/shadows/" />
+        
+        
+        <meta name="robots" content="noindex, follow" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Ellaz" />
+        <meta property="og:locale" content="en_US" />
+        
+        <meta property="og:title" content="Shadow Match in a frame on your site - Ellaz" />
+        <meta property="og:description" content="Shadow Match from ellaz.fun, playable inside another site. The full game, and every other free game, is at ellaz.fun." />
+        <meta property="og:url" content="https://ellaz.fun/games/shadows/" />
+        <meta property="og:image" content="https://ellaz.fun/og/game-shadows-en-02eea65f.png" />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+          <meta property="og:image:alt" content="Shadow Match in a frame on your site - Ellaz" />
+          <meta name="twitter:image" content="https://ellaz.fun/og/game-shadows-en-02eea65f.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <!-- Measurement, on EVERY emitted document and not only the app shell.
+             Search Console says the arrivals land on GAME pages from Hebrew
+             queries, so a shell-only tag would have measured almost none of
+             them. Empty on any non-primary base, so the noindex mirror never
+             reports. Config and its deliberate limits: src/build/analytics.ts. -->
+        
+
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;800&amp;family=Fredoka:wght@500;600&amp;display=swap" />
+        
+        
+        <script type="module" crossorigin src="/assets/index-BoKUdFQW.js"></script><link rel="modulepreload" crossorigin href="/assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="/assets/shell-Bfq-Y9RE.js"><link rel="stylesheet" crossorigin href="/assets/shell-DkfkxXv9.css"><link rel="manifest" href="/manifest.webmanifest">
+        <link rel="modulepreload" crossorigin href="/assets/page-DgoEHUQu.js"><link rel="modulepreload" crossorigin href="/assets/game-shadows-Cs27GQlw.js">
+      </head>
+      <body class="app-shell" data-page="embed" data-game="shadows" data-locale="en">
+        
+    <style>body.app-shell{display:flex;flex-direction:column}.stage{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:auto}.stage .box{position:relative;flex:1 1 auto;min-height:0;display:flex;flex-direction:column;justify-content:flex-start;overflow:hidden}#game-frame{flex:0 0 auto;display:flex;flex-direction:column}#game-poster{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding:24px}#game-poster[hidden]{display:none}#game-poster .em{font-size:64px;line-height:1}#game-poster .msg{font-size:.95rem;opacity:.75;max-width:22ch}.play{min-height:56px;padding:0 28px;border:0;border-radius:999px;font:inherit;font-weight:700;font-size:1.1rem;background:var(--brand,#ff4d8d);color:var(--on-brand,#fff)}.embed-home{flex:0 0 46px;box-sizing:border-box;margin:0;padding:0 12px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:.85rem}.embed-home a{color:inherit;text-decoration:underline}</style>
+    <div class="stage">
+    <div class="box">
+      <div id="game-frame"></div>
+      <div
+        id="game-poster"
+        data-loading="The game loads by itself. Nothing to tap."
+        data-saver="Data saver is on, so we wait for your tap instead of downloading on our own."
+      >
+        <span class="em" aria-hidden="true">🌓</span>
+        <button class="play" id="game-play" type="button">Play</button>
+        <span class="msg" id="game-msg">The game needs JavaScript. The rest of this page does not.</span>
+      </div>
+    </div>
+  </div>
+    <p class="embed-home"><a
+    id="embed-home"
+    href="/games/shadows/"
+    target="_top"
+    rel="noopener"
+     data-say-en="Play more at ellaz.fun" data-to-en="/games/shadows/" data-say-he="עוד משחקים ב-ellaz.fun" data-to-he="/he/games/shadows/" data-say-es="Más juegos en ellaz.fun" data-to-es="/es/games/shadows/" data-say-fr="Plus de jeux sur ellaz.fun" data-to-fr="/fr/games/shadows/"
+  >Play more at ellaz.fun</a></p>
+  
+        
+      </body>
+    </html>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" class="ellaz-art" viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect width="200" height="150" fill="#0F7FD4"/><path d="M0 150C0 74 45 30 100 30s100 44 100 120z" fill="#5AB0EE"/>
+    <rect x="20" y="16" width="140" height="118" rx="10" fill="#FFF7EC" stroke="#241C3B" stroke-width="3.5"/>
+    <g stroke="#4A4066" stroke-width="1.5" opacity=".2">
+      <path d="M55 16v118M90 16v118M125 16v118M20 45h140M20 75h140M20 105h140"/></g>
+    <g stroke="#241C3B" stroke-width="3">
+      <rect x="26" y="22" width="46" height="46" rx="9" fill="#FFC730"/>
+      <rect x="94" y="22" width="46" height="46" rx="9" fill="#26B0E6"/>
+      <rect x="26" y="82" width="46" height="46" rx="9" fill="#6FD44E"/>
+      <rect x="94" y="82" width="46" height="46" rx="9" fill="#FF4D8D"/></g>
+    <g stroke="#241C3B" stroke-width="4.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M39 45h20m-7-7 7 7-7 7"/>
+      <g transform="rotate(90 117 45)"><path d="M107 45h20m-7-7 7 7-7 7"/></g>
+      <g transform="rotate(-90 49 105)"><path d="M39 105h20m-7-7 7 7-7 7"/></g>
+      <path d="M107 105h20m-7-7 7 7-7 7"/></g>
+    <g opacity=".55" stroke="#241C3B" stroke-width="4.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M168 45h18m-6-6 6 6-6 6"/></g>
+    <g stroke="#FFF7EC" stroke-width="3" opacity=".7" stroke-linecap="round">
+      <path d="M150 38h8M150 52h8"/></g><rect width="200" height="150" style="fill:transparent"/></svg>

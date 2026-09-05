@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" class="ellaz-art" viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect width="200" height="150" fill="#B33A3A"/><path d="M0 104 200 56v94H0z" fill="#D97070"/>
+    <rect x="22" y="18" width="156" height="116" rx="9" fill="#FFF7EC"/>
+    <g stroke="#E4572E" stroke-width="2" opacity=".35">
+      <path d="M61 18v116M100 18v116M139 18v116M22 47h156M22 76h156M22 105h156"/></g>
+    <g fill="#FFC730" opacity=".55">
+      <rect x="22" y="18" width="39" height="29"/><rect x="139" y="105" width="39" height="29"/></g>
+    <g fill="#26B0E6" opacity=".4">
+      <rect x="139" y="18" width="39" height="29"/><rect x="22" y="105" width="39" height="29"/></g>
+    <g font-family="Rubik,system-ui,sans-serif" font-weight="800" text-anchor="middle">
+      <g fill="#241C3B" font-size="23">
+        <rect x="64" y="50" width="33" height="26" rx="5" fill="#FFF7EC" stroke="#241C3B" stroke-width="2.4"/>
+        <text x="80" y="71">W</text>
+        <rect x="103" y="50" width="33" height="26" rx="5" fill="#FFF7EC" stroke="#241C3B" stroke-width="2.4"/>
+        <text x="119" y="71">O</text>
+        <rect x="103" y="79" width="33" height="26" rx="5" fill="#FFF7EC" stroke="#241C3B" stroke-width="2.4"/>
+        <text x="119" y="100">R</text>
+      </g>
+      <rect x="142" y="79" width="33" height="26" rx="5" fill="#FF4D8D" stroke="#241C3B" stroke-width="2.4"/>
+      <text x="158" y="100" fill="#FFF7EC" font-size="21">★</text>
+    </g>
+    <g fill="#FFF7EC" opacity=".8"><circle cx="14" cy="30" r="3"/><circle cx="190" cy="118" r="2.6"/></g><rect width="200" height="150" style="fill:transparent"/></svg>

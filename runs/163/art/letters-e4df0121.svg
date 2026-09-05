@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" class="ellaz-art" viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect width="200" height="150" fill="#6355E0"/><path d="M0 104 200 56v94H0z" fill="#8B84FF"/>
+    <rect x="16" y="24" width="84" height="84" rx="15" fill="#FFF7EC" stroke="#241C3B" stroke-width="3.5"/>
+    <circle cx="58" cy="70" r="27" fill="#FF4D8D"/>
+    <path d="M58 45c-2-9 6-15 14-13-1 8-6 13-14 13z" fill="#6FD44E"/>
+    <path d="M58 47v-8" stroke="#4A4066" stroke-width="4" stroke-linecap="round"/>
+    <g stroke="#241C3B" stroke-width="3.5">
+      <rect x="118" y="30" width="64" height="64" rx="14" fill="#FFC730"/>
+      <rect x="118" y="104" width="28" height="28" rx="8" fill="#FFF7EC"/>
+      <rect x="154" y="104" width="28" height="28" rx="8" fill="#FFF7EC"/></g>
+    <text x="150" y="76" font-family="Fredoka,system-ui,sans-serif" font-size="46" font-weight="800" text-anchor="middle" fill="#241C3B">A</text><rect width="200" height="150" style="fill:transparent"/></svg>

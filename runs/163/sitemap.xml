@@ -1,0 +1,2123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://ellaz.fun/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/memory/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/memory/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/memory/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/memory/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/memory/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/memory/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/memory-c3df01d5.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/evolve/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/evolve/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/evolve/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/evolve/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/evolve/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/evolve/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/evolve-a779e07a.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/coloring/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/coloring/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/coloring/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/coloring/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/coloring/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/coloring/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/coloring-2fff8950.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/finddiff/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/finddiff/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/finddiff/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/finddiff/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/finddiff/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/finddiff/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/finddiff-0b8eb6a6.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/hidden/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/hidden/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/hidden/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/hidden/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/hidden/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/hidden/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/hidden-144030cb.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/math/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/math/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/math/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/math/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/math/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/math/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/math-af0fbce3.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/2048/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/2048/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/2048/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/2048/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/2048/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/2048/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/2048-ee340377.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/tictactoe/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/tictactoe/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/tictactoe/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/tictactoe/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/tictactoe/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/tictactoe/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/tictactoe-f5e3d419.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/minesweeper/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/minesweeper/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/minesweeper/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/minesweeper/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/minesweeper/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/minesweeper/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/minesweeper-55ee913a.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/sudoku/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/sudoku/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/sudoku/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/sudoku/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/sudoku/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/sudoku/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/sudoku-fe27a309.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/snake/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/snake/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/snake/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/snake/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/snake/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/snake/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/snake-7e0540be.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/blocks/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/blocks/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/blocks/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/blocks/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/blocks/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/blocks/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/blocks-fc531f2c.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/wordguess/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/wordguess/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/wordguess/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/wordguess/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/wordguess/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/wordguess/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/wordguess-86d8f5d1.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/sequence/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/sequence/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/sequence/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/sequence/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/sequence/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/sequence/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/sequence-f039d83e.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/vanish/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/vanish/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/vanish/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/vanish/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/vanish/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/vanish/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/vanish-bd751025.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/shadows/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/shadows/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/shadows/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/shadows/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/shadows/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/shadows/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/shadows-d4797c28.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/echo/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/echo/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/echo/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/echo/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/echo/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/echo/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/echo-a53851af.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/balloons/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/balloons/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/balloons/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/balloons/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/balloons/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/balloons/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/balloons-10fd217d.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/bubbles/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/bubbles/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/bubbles/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/bubbles/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/bubbles/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/bubbles/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/bubbles-2b45dd16.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/bees/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/bees/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/bees/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/bees/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/bees/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/bees/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/bees-37995824.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/frog/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/frog/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/frog/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/frog/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/frog/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/frog/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/frog-3c4bca75.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/reaction/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/reaction/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/reaction/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/reaction/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/reaction/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/reaction/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/reaction-bf705068.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/sort/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/sort/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/sort/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/sort/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/sort/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/sort/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/sort-53e2fb71.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/merge/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/merge/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/merge/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/merge/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/merge/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/merge/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/merge-b7a87b14.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/pet/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/pet/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/pet/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/pet/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/pet/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/pet/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/pet-45d187f0.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/fit/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/fit/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/fit/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/fit/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/fit/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/fit/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/fit-2935f365.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/music/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/music/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/music/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/music/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/music/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/music/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/music-a2a9b5ad.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/maze/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/maze/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/maze/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/maze/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/maze/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/maze/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/maze-3c217cf8.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/letters/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/letters/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/letters/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/letters/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/letters/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/letters/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/letters-e4df0121.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/spell/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/spell/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/spell/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/spell/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/spell/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/spell/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/spell-a24ece1a.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/bubbleshooter/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/bubbleshooter/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/bubbleshooter/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/bubbleshooter/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/bubbleshooter/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/bubbleshooter/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/bubbleshooter-6f04834c.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/match3/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/match3/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/match3/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/match3/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/match3/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/match3/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/match3-ecce1135.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/jigsaw/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/jigsaw/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/jigsaw/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/jigsaw/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/jigsaw/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/jigsaw/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/jigsaw-4d150ac0.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/lettercross/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/lettercross/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/lettercross/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/lettercross/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/lettercross/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/lettercross/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/lettercross-3cb1e662.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/flow/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/flow/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/flow/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/flow/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/flow/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/flow/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/flow-b46aae3c.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/arrowtap/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/arrowtap/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/arrowtap/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/arrowtap/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/arrowtap/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/arrowtap/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/arrowtap-87d8d761.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/fruit/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/fruit/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/fruit/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/fruit/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/fruit/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/fruit/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/fruit-6b6e17c1.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/parking/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/parking/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/parking/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/parking/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/parking/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/parking/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/parking-a9b67287.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/nonogram/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/nonogram/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/nonogram/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/nonogram/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/nonogram/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/nonogram/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/nonogram-a64b8456.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/onestroke/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/onestroke/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/onestroke/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/onestroke/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/onestroke/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/onestroke/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/onestroke-cd5a660a.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/wordsearch/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/wordsearch/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/wordsearch/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/wordsearch/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/wordsearch/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/wordsearch/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/wordsearch-6157e485.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/untangle/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/untangle/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/untangle/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/untangle/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/untangle/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/untangle/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/untangle-5cfa55c6.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/memory/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/memory/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/memory/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/memory/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/memory/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/memory/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/memory-c3df01d5.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/evolve/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/evolve/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/evolve/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/evolve/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/evolve/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/evolve/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/evolve-a779e07a.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/coloring/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/coloring/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/coloring/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/coloring/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/coloring/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/coloring/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/coloring-2fff8950.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/finddiff/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/finddiff/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/finddiff/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/finddiff/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/finddiff/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/finddiff/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/finddiff-0b8eb6a6.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/hidden/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/hidden/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/hidden/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/hidden/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/hidden/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/hidden/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/hidden-144030cb.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/math/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/math/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/math/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/math/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/math/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/math/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/math-af0fbce3.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/2048/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/2048/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/2048/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/2048/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/2048/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/2048/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/2048-ee340377.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/tictactoe/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/tictactoe/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/tictactoe/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/tictactoe/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/tictactoe/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/tictactoe/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/tictactoe-f5e3d419.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/minesweeper/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/minesweeper/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/minesweeper/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/minesweeper/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/minesweeper/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/minesweeper/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/minesweeper-55ee913a.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/sudoku/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/sudoku/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/sudoku/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/sudoku/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/sudoku/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/sudoku/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/sudoku-fe27a309.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/snake/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/snake/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/snake/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/snake/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/snake/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/snake/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/snake-7e0540be.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/blocks/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/blocks/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/blocks/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/blocks/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/blocks/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/blocks/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/blocks-fc531f2c.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/wordguess/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/wordguess/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/wordguess/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/wordguess/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/wordguess/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/wordguess/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/wordguess-86d8f5d1.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/sequence/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/sequence/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/sequence/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/sequence/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/sequence/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/sequence/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/sequence-f039d83e.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/vanish/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/vanish/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/vanish/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/vanish/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/vanish/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/vanish/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/vanish-bd751025.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/shadows/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/shadows/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/shadows/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/shadows/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/shadows/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/shadows/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/shadows-d4797c28.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/echo/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/echo/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/echo/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/echo/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/echo/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/echo/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/echo-a53851af.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/balloons/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/balloons/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/balloons/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/balloons/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/balloons/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/balloons/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/balloons-10fd217d.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/bubbles/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/bubbles/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/bubbles/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/bubbles/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/bubbles/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/bubbles/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/bubbles-2b45dd16.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/bees/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/bees/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/bees/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/bees/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/bees/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/bees/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/bees-37995824.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/frog/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/frog/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/frog/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/frog/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/frog/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/frog/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/frog-3c4bca75.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/reaction/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/reaction/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/reaction/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/reaction/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/reaction/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/reaction/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/reaction-bf705068.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/sort/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/sort/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/sort/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/sort/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/sort/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/sort/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/sort-53e2fb71.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/merge/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/merge/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/merge/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/merge/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/merge/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/merge/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/merge-b7a87b14.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/pet/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/pet/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/pet/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/pet/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/pet/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/pet/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/pet-45d187f0.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/fit/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/fit/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/fit/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/fit/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/fit/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/fit/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/fit-2935f365.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/music/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/music/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/music/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/music/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/music/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/music/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/music-a2a9b5ad.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/maze/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/maze/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/maze/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/maze/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/maze/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/maze/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/maze-3c217cf8.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/letters/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/letters/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/letters/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/letters/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/letters/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/letters/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/letters-e4df0121.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/spell/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/spell/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/spell/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/spell/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/spell/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/spell/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/spell-a24ece1a.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/bubbleshooter/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/bubbleshooter/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/bubbleshooter/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/bubbleshooter/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/bubbleshooter/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/bubbleshooter/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/bubbleshooter-6f04834c.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/match3/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/match3/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/match3/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/match3/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/match3/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/match3/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/match3-ecce1135.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/jigsaw/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/jigsaw/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/jigsaw/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/jigsaw/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/jigsaw/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/jigsaw/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/jigsaw-4d150ac0.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/lettercross/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/lettercross/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/lettercross/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/lettercross/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/lettercross/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/lettercross/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/lettercross-3cb1e662.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/flow/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/flow/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/flow/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/flow/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/flow/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/flow/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/flow-b46aae3c.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/arrowtap/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/arrowtap/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/arrowtap/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/arrowtap/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/arrowtap/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/arrowtap/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/arrowtap-87d8d761.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/fruit/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/fruit/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/fruit/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/fruit/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/fruit/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/fruit/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/fruit-6b6e17c1.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/parking/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/parking/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/parking/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/parking/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/parking/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/parking/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/parking-a9b67287.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/nonogram/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/nonogram/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/nonogram/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/nonogram/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/nonogram/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/nonogram/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/nonogram-a64b8456.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/onestroke/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/onestroke/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/onestroke/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/onestroke/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/onestroke/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/onestroke/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/onestroke-cd5a660a.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/wordsearch/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/wordsearch/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/wordsearch/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/wordsearch/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/wordsearch/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/wordsearch/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/wordsearch-6157e485.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/untangle/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/untangle/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/untangle/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/untangle/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/untangle/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/untangle/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/untangle-5cfa55c6.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/memory/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/memory/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/memory/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/memory/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/memory/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/memory/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/memory-c3df01d5.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/evolve/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/evolve/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/evolve/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/evolve/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/evolve/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/evolve/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/evolve-a779e07a.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/coloring/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/coloring/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/coloring/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/coloring/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/coloring/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/coloring/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/coloring-2fff8950.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/finddiff/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/finddiff/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/finddiff/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/finddiff/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/finddiff/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/finddiff/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/finddiff-0b8eb6a6.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/hidden/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/hidden/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/hidden/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/hidden/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/hidden/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/hidden/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/hidden-144030cb.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/math/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/math/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/math/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/math/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/math/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/math/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/math-af0fbce3.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/2048/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/2048/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/2048/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/2048/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/2048/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/2048/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/2048-ee340377.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/tictactoe/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/tictactoe/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/tictactoe/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/tictactoe/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/tictactoe/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/tictactoe/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/tictactoe-f5e3d419.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/minesweeper/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/minesweeper/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/minesweeper/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/minesweeper/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/minesweeper/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/minesweeper/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/minesweeper-55ee913a.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/sudoku/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/sudoku/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/sudoku/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/sudoku/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/sudoku/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/sudoku/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/sudoku-fe27a309.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/snake/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/snake/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/snake/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/snake/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/snake/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/snake/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/snake-7e0540be.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/blocks/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/blocks/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/blocks/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/blocks/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/blocks/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/blocks/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/blocks-fc531f2c.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/wordguess/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/wordguess/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/wordguess/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/wordguess/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/wordguess/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/wordguess/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/wordguess-86d8f5d1.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/sequence/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/sequence/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/sequence/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/sequence/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/sequence/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/sequence/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/sequence-f039d83e.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/vanish/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/vanish/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/vanish/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/vanish/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/vanish/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/vanish/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/vanish-bd751025.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/shadows/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/shadows/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/shadows/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/shadows/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/shadows/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/shadows/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/shadows-d4797c28.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/echo/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/echo/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/echo/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/echo/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/echo/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/echo/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/echo-a53851af.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/balloons/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/balloons/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/balloons/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/balloons/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/balloons/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/balloons/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/balloons-10fd217d.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/bubbles/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/bubbles/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/bubbles/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/bubbles/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/bubbles/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/bubbles/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/bubbles-2b45dd16.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/bees/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/bees/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/bees/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/bees/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/bees/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/bees/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/bees-37995824.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/frog/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/frog/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/frog/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/frog/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/frog/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/frog/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/frog-3c4bca75.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/reaction/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/reaction/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/reaction/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/reaction/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/reaction/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/reaction/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/reaction-bf705068.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/sort/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/sort/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/sort/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/sort/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/sort/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/sort/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/sort-53e2fb71.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/merge/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/merge/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/merge/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/merge/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/merge/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/merge/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/merge-b7a87b14.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/pet/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/pet/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/pet/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/pet/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/pet/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/pet/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/pet-45d187f0.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/fit/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/fit/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/fit/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/fit/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/fit/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/fit/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/fit-2935f365.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/music/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/music/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/music/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/music/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/music/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/music/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/music-a2a9b5ad.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/maze/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/maze/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/maze/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/maze/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/maze/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/maze/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/maze-3c217cf8.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/letters/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/letters/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/letters/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/letters/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/letters/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/letters/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/letters-e4df0121.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/spell/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/spell/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/spell/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/spell/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/spell/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/spell/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/spell-a24ece1a.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/bubbleshooter/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/bubbleshooter/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/bubbleshooter/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/bubbleshooter/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/bubbleshooter/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/bubbleshooter/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/bubbleshooter-6f04834c.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/match3/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/match3/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/match3/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/match3/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/match3/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/match3/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/match3-ecce1135.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/jigsaw/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/jigsaw/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/jigsaw/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/jigsaw/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/jigsaw/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/jigsaw/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/jigsaw-4d150ac0.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/lettercross/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/lettercross/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/lettercross/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/lettercross/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/lettercross/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/lettercross/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/lettercross-3cb1e662.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/flow/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/flow/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/flow/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/flow/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/flow/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/flow/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/flow-b46aae3c.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/arrowtap/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/arrowtap/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/arrowtap/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/arrowtap/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/arrowtap/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/arrowtap/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/arrowtap-87d8d761.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/fruit/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/fruit/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/fruit/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/fruit/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/fruit/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/fruit/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/fruit-6b6e17c1.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/parking/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/parking/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/parking/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/parking/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/parking/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/parking/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/parking-a9b67287.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/nonogram/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/nonogram/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/nonogram/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/nonogram/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/nonogram/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/nonogram/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/nonogram-a64b8456.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/onestroke/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/onestroke/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/onestroke/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/onestroke/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/onestroke/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/onestroke/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/onestroke-cd5a660a.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/wordsearch/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/wordsearch/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/wordsearch/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/wordsearch/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/wordsearch/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/wordsearch/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/wordsearch-6157e485.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/untangle/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/untangle/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/untangle/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/untangle/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/untangle/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/untangle/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/untangle-5cfa55c6.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/memory/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/memory/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/memory/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/memory/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/memory/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/memory/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/memory-c3df01d5.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/evolve/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/evolve/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/evolve/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/evolve/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/evolve/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/evolve/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/evolve-a779e07a.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/coloring/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/coloring/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/coloring/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/coloring/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/coloring/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/coloring/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/coloring-2fff8950.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/finddiff/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/finddiff/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/finddiff/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/finddiff/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/finddiff/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/finddiff/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/finddiff-0b8eb6a6.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/hidden/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/hidden/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/hidden/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/hidden/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/hidden/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/hidden/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/hidden-144030cb.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/math/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/math/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/math/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/math/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/math/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/math/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/math-af0fbce3.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/2048/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/2048/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/2048/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/2048/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/2048/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/2048/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/2048-ee340377.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/tictactoe/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/tictactoe/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/tictactoe/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/tictactoe/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/tictactoe/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/tictactoe/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/tictactoe-f5e3d419.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/minesweeper/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/minesweeper/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/minesweeper/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/minesweeper/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/minesweeper/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/minesweeper/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/minesweeper-55ee913a.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/sudoku/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/sudoku/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/sudoku/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/sudoku/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/sudoku/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/sudoku/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/sudoku-fe27a309.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/snake/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/snake/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/snake/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/snake/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/snake/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/snake/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/snake-7e0540be.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/blocks/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/blocks/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/blocks/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/blocks/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/blocks/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/blocks/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/blocks-fc531f2c.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/wordguess/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/wordguess/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/wordguess/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/wordguess/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/wordguess/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/wordguess/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/wordguess-86d8f5d1.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/sequence/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/sequence/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/sequence/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/sequence/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/sequence/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/sequence/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/sequence-f039d83e.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/vanish/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/vanish/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/vanish/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/vanish/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/vanish/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/vanish/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/vanish-bd751025.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/shadows/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/shadows/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/shadows/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/shadows/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/shadows/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/shadows/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/shadows-d4797c28.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/echo/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/echo/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/echo/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/echo/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/echo/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/echo/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/echo-a53851af.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/balloons/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/balloons/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/balloons/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/balloons/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/balloons/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/balloons/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/balloons-10fd217d.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/bubbles/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/bubbles/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/bubbles/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/bubbles/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/bubbles/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/bubbles/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/bubbles-2b45dd16.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/bees/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/bees/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/bees/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/bees/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/bees/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/bees/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/bees-37995824.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/frog/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/frog/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/frog/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/frog/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/frog/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/frog/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/frog-3c4bca75.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/reaction/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/reaction/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/reaction/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/reaction/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/reaction/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/reaction/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/reaction-bf705068.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/sort/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/sort/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/sort/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/sort/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/sort/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/sort/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/sort-53e2fb71.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/merge/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/merge/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/merge/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/merge/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/merge/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/merge/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/merge-b7a87b14.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/pet/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/pet/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/pet/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/pet/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/pet/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/pet/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/pet-45d187f0.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/fit/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/fit/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/fit/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/fit/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/fit/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/fit/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/fit-2935f365.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/music/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/music/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/music/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/music/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/music/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/music/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/music-a2a9b5ad.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/maze/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/maze/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/maze/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/maze/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/maze/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/maze/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/maze-3c217cf8.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/letters/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/letters/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/letters/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/letters/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/letters/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/letters/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/letters-e4df0121.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/spell/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/spell/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/spell/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/spell/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/spell/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/spell/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/spell-a24ece1a.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/bubbleshooter/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/bubbleshooter/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/bubbleshooter/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/bubbleshooter/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/bubbleshooter/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/bubbleshooter/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/bubbleshooter-6f04834c.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/match3/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/match3/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/match3/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/match3/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/match3/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/match3/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/match3-ecce1135.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/jigsaw/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/jigsaw/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/jigsaw/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/jigsaw/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/jigsaw/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/jigsaw/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/jigsaw-4d150ac0.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/lettercross/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/lettercross/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/lettercross/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/lettercross/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/lettercross/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/lettercross/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/lettercross-3cb1e662.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/flow/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/flow/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/flow/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/flow/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/flow/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/flow/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/flow-b46aae3c.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/arrowtap/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/arrowtap/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/arrowtap/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/arrowtap/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/arrowtap/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/arrowtap/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/arrowtap-87d8d761.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/fruit/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/fruit/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/fruit/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/fruit/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/fruit/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/fruit/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/fruit-6b6e17c1.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/parking/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/parking/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/parking/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/parking/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/parking/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/parking/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/parking-a9b67287.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/nonogram/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/nonogram/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/nonogram/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/nonogram/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/nonogram/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/nonogram/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/nonogram-a64b8456.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/onestroke/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/onestroke/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/onestroke/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/onestroke/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/onestroke/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/onestroke/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/onestroke-cd5a660a.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/wordsearch/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/wordsearch/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/wordsearch/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/wordsearch/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/wordsearch/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/wordsearch/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/wordsearch-6157e485.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/untangle/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/untangle/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/untangle/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/untangle/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/untangle/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/untangle/"/>
+    <image:image>
+      <image:loc>https://ellaz.fun/art/untangle-5cfa55c6.svg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/kids/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/kids/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/kids/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/kids/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/kids/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/kids/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/learn/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/learn/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/learn/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/learn/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/learn/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/learn/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/think/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/think/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/think/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/think/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/think/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/think/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/speed/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/speed/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/speed/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/speed/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/speed/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/speed/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/games/classics/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/classics/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/classics/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/classics/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/classics/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/classics/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/kids/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/kids/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/kids/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/kids/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/kids/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/kids/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/learn/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/learn/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/learn/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/learn/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/learn/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/learn/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/think/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/think/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/think/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/think/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/think/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/think/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/speed/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/speed/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/speed/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/speed/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/speed/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/speed/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/games/classics/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/classics/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/classics/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/classics/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/classics/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/classics/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/kids/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/kids/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/kids/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/kids/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/kids/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/kids/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/learn/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/learn/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/learn/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/learn/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/learn/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/learn/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/think/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/think/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/think/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/think/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/think/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/think/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/speed/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/speed/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/speed/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/speed/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/speed/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/speed/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/games/classics/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/classics/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/classics/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/classics/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/classics/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/classics/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/kids/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/kids/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/kids/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/kids/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/kids/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/kids/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/learn/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/learn/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/learn/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/learn/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/learn/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/learn/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/think/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/think/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/think/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/think/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/think/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/think/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/speed/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/speed/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/speed/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/speed/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/speed/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/speed/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/games/classics/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/games/classics/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/classics/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/classics/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/classics/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/classics/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/world/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/world/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/world/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/world/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/world/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/world/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/world/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/world/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/world/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/world/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/world/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/world/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/world/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/world/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/world/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/world/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/world/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/world/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/world/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/world/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/world/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/world/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/world/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/world/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/boards/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/boards/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/boards/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/boards/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/boards/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/boards/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/boards/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/boards/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/boards/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/boards/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/boards/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/boards/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/es/boards/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/boards/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/boards/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/boards/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/boards/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/boards/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/fr/boards/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ellaz.fun/boards/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/boards/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ellaz.fun/es/boards/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/boards/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ellaz.fun/boards/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/print/sudoku/</loc>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/print/sudoku/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/print/maze/</loc>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/print/maze/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/print/wordsearch/</loc>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/print/wordsearch/"/>
+  </url>
+  <url>
+    <loc>https://ellaz.fun/he/print/coloring/</loc>
+    <xhtml:link rel="alternate" hreflang="he" href="https://ellaz.fun/he/print/coloring/"/>
+  </url>
+</urlset>

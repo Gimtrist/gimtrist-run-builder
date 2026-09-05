@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" class="ellaz-art" viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect width="200" height="150" fill="#26B0E6"/><path d="M0 104 200 56v94H0z" fill="#5BC7F0"/>
+    <rect x="14" y="34" width="76" height="82" rx="9" fill="#FFF7EC"/>
+    <rect x="110" y="34" width="76" height="82" rx="9" fill="#FFF7EC"/>
+    <g fill="#17B98A"><circle cx="40" cy="62" r="12"/><circle cx="136" cy="62" r="12"/></g>
+    <g fill="#FF8A3D"><rect x="56" y="82" width="24" height="22" rx="4"/><rect x="152" y="82" width="24" height="22" rx="4"/></g>
+    <circle cx="68" cy="58" r="7" fill="#FF4D8D"/>
+    <circle cx="164" cy="58" r="12" fill="none" stroke="#FF4D8D" stroke-width="4" stroke-dasharray="5 4"/><rect width="200" height="150" style="fill:transparent"/></svg>

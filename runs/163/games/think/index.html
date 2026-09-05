@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <!-- FIRST, and synchronous. data-theme is deliberately never baked into
+             these documents - they are cached and it would be wrong for whoever
+             chose the other theme - so this is what sets it before the first
+             paint. A module import runs far too late and the page visibly
+             flashes the other theme. Generated from themes.ts, never written
+             out here, so adding a theme cannot leave it behind. -->
+        <script>
+          (function(){try{var t=localStorage.getItem("ellaz:theme");if(t&&["market","night"].indexOf(t)>-1&&t!=="market")document.documentElement.setAttribute("data-theme",t)}catch(e){}})()
+        </script>
+        <meta name="theme-color" content="#ff4d8d" />
+        <title>Puzzle and Thinking Games - Free Online - Ellaz</title>
+        <meta name="description" content="Memory, matching, sorting and pattern games that run in the browser. Free, no account, and every one of them works offline once the page has loaded." />
+        <link rel="canonical" href="https://ellaz.fun/games/think/" />
+        <link rel="alternate" hreflang="en" href="https://ellaz.fun/games/think/" /><link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/think/" /><link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/think/" /><link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/think/" />
+        <link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/think/" />
+        
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Ellaz" />
+        <meta property="og:locale" content="en_US" />
+        <meta property="og:locale:alternate" content="he_IL" /><meta property="og:locale:alternate" content="es_ES" /><meta property="og:locale:alternate" content="fr_FR" />
+        <meta property="og:title" content="Puzzle and Thinking Games - Free Online - Ellaz" />
+        <meta property="og:description" content="Memory, matching, sorting and pattern games that run in the browser. Free, no account, and every one of them works offline once the page has loaded." />
+        <meta property="og:url" content="https://ellaz.fun/games/think/" />
+        <meta property="og:image" content="https://ellaz.fun/og/category-think-en-63bc03d2.png" />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+          <meta property="og:image:alt" content="Puzzle and Thinking Games - Free Online - Ellaz" />
+          <meta name="twitter:image" content="https://ellaz.fun/og/category-think-en-63bc03d2.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <!-- Measurement, on EVERY emitted document and not only the app shell.
+             Search Console says the arrivals land on GAME pages from Hebrew
+             queries, so a shell-only tag would have measured almost none of
+             them. Empty on any non-primary base, so the noindex mirror never
+             reports. Config and its deliberate limits: src/build/analytics.ts. -->
+        
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E25QBB8420"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied'});gtag('set','ads_data_redaction',true);gtag('js',new Date());gtag('config','G-E25QBB8420',{client_storage:'none',allow_google_signals:false,allow_ad_personalization_signals:false});</script>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;800&amp;family=Fredoka:wght@500;600&amp;display=swap" />
+        <style>
+          *,*::before,*::after{box-sizing:border-box}
+:root{
+  --doc-ink:var(--text,#1b1b2b);
+  --doc-soft:var(--text-dim,#5a5a72);
+  --doc-line:var(--line,#e4e2ef);
+  --doc-bg:var(--bg,#fdfcff);
+  --doc-card:var(--surface,#ffffff);
+  --doc-brand:var(--brand-ink,#6c5ce7);
+  --doc-sun:var(--yellow,#ffc730);
+  --doc-stage:var(--stage-bg,#12142b);
+}
+:root[data-theme="night"]{
+  --doc-ink:var(--text,#f5f6ff);
+  --doc-soft:var(--text-dim,#b3b8e0);
+  --doc-line:var(--line,#2a2f55);
+  --doc-bg:var(--bg,#0f1226);
+  --doc-card:var(--surface,#1e2240);
+  --doc-brand:var(--brand-ink,#a29bfe);
+  --doc-sun:var(--yellow,#fdcb6e);
+  --doc-stage:var(--stage-bg,#12142b);
+}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--doc-bg);color:var(--doc-ink);
+  font:400 17px/1.7 Heebo,Assistant,Rubik,system-ui,-apple-system,sans-serif}
+main{max-width:44rem;margin-inline:auto;padding:0 20px 72px}
+h1,h2,h3{font-family:Fredoka,Heebo,system-ui,sans-serif;line-height:1.25;margin:0;
+  color:var(--doc-ink)}
+h1{font-size:2rem;font-weight:600;margin-block:8px 12px}
+h2{font-size:1.35rem;font-weight:600;margin-block:44px 12px}
+h3{font-size:1.05rem;font-weight:600;margin-block:22px 4px}
+p{margin-block:0 14px}
+a{color:var(--doc-brand)}
+.top{border-block-end:1px solid var(--doc-line);background:var(--doc-card)}
+.top .in{max-width:44rem;margin-inline:auto;padding:12px 20px;display:flex;
+  align-items:center;gap:12px}
+.brand{font-family:Fredoka,system-ui,sans-serif;font-size:1.15rem;font-weight:600;
+  color:var(--doc-ink);text-decoration:none}
+.tagline{color:var(--doc-soft);font-size:.82rem;flex:1}
+#wallet-slot{flex:0 0 auto}
+.bc{font-size:.82rem;font-weight:600;color:var(--doc-soft);margin-block:18px 0}
+.bc a{text-decoration:none}
+.vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;
+  clip-path:inset(50%);white-space:nowrap;border:0}
+.beta{font-size:.68rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
+  padding:3px 8px;border-radius:var(--radius-pill,999px);
+  background:#F2B93F;color:#241C17;white-space:nowrap;flex:0 0 auto;align-self:center}
+body.screen .urow:has(.beta) .bc{margin-inline-end:0}
+body.screen .urow .beta{margin-inline-end:auto}
+.lede{font-size:1.12rem;color:var(--doc-ink)}
+img.art{display:block;width:100%;max-width:520px;aspect-ratio:4/3;height:auto;margin:18px 0 0;border-radius:14px;border:1px solid var(--doc-line);background:var(--doc-card)}
+.facts{list-style:none;display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:18px 0 0}
+.facts li{border:1px solid var(--doc-line);background:var(--doc-card);border-radius:999px;
+  padding:5px 13px;font-size:.82rem;font-weight:600;color:var(--doc-soft)}
+.cta{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin:26px 0 8px}
+.play{display:inline-flex;align-items:center;justify-content:center;min-height:76px;
+  padding:0 40px;border:none;border-radius:22px;background:var(--doc-sun);
+  color:var(--doc-ink);text-decoration:none;font-family:Fredoka,system-ui,sans-serif;
+  font-size:1.3rem;font-weight:600;box-shadow:0 4px 0 var(--doc-line);cursor:pointer}
+.cta .note{color:var(--doc-soft);font-size:.86rem;flex:1 1 12rem}
+ol,ul.steps{padding-inline-start:1.3em}
+ol li,ul.steps li{margin-block-end:8px}
+table{border-collapse:collapse;width:100%;margin-block:14px;font-size:.95rem}
+th,td{border:1px solid var(--doc-line);padding:8px 12px;text-align:start}
+th{background:var(--doc-card);font-weight:600}
+.grid{list-style:none;padding:0;margin:20px 0 0;display:grid;gap:12px;
+  grid-template-columns:repeat(auto-fill,minmax(9.5rem,1fr))}
+.grid a{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--doc-card);
+  border:1px solid var(--doc-line);border-radius:16px;text-decoration:none;
+  color:var(--doc-ink);font-weight:600}
+.grid .em{font-size:1.5rem;line-height:1}
+.grid .cat{display:block;font-size:.75rem;font-weight:400;color:var(--doc-soft)}
+footer{border-block-start:1px solid var(--doc-line);margin-block-start:56px;
+  padding:22px 20px 40px;color:var(--doc-soft);font-size:.85rem}
+footer .in{max-width:44rem;margin-inline:auto;display:flex;flex-wrap:wrap;gap:14px}
+.stage{position:relative;margin-block:14px 6px;margin-inline:-20px}
+@media (min-width:720px){.stage{margin-inline:0}}
+.stage .box{position:relative;border-radius:22px;overflow:hidden;
+  background:var(--doc-stage);box-shadow:0 5px 0 var(--doc-line);
+  min-height:clamp(420px,calc(100dvh - 145px),860px);display:flex;flex-direction:column}
+.stage.room .box{min-height:clamp(460px,calc(100dvh - 120px),880px)}
+.stage.boards .box{min-height:clamp(300px,46dvh,560px)}
+#game-frame{flex:1;min-height:0;display:flex;flex-direction:column}
+#game-poster{position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:18px;text-align:center;padding:24px;
+  color:var(--doc-ink);transition:opacity .25s ease}
+#game-poster[hidden]{display:none}
+#game-poster .em{font-size:64px;line-height:1}
+#game-poster .msg{font-size:.95rem;opacity:.75;max-width:22ch}
+.stage .noscript{position:absolute;inset-inline:0;bottom:0;padding:12px;
+  background:var(--badge-fill,rgba(0,0,0,.55));color:var(--on-brand,#fff);font-size:.85rem;text-align:center}
+@media (max-width:719px){.stage .box{border-radius:0;box-shadow:none;
+  border-block:1px solid var(--doc-line)}}
+body[data-page="game"] main,body[data-page="world"] main{max-width:none;padding-inline:0}
+body[data-page="game"] main>:not(.stage),
+body[data-page="world"] main>:not(.stage){max-width:44rem;margin-inline:auto;
+  padding-inline:20px}
+body[data-page="game"] .stage,body[data-page="world"] .stage{margin-block:0;
+  margin-inline:0}
+body[data-page="game"] .stage .box,body[data-page="world"] .stage .box{
+  height:calc(100dvh - var(--hh) - var(--uh) - var(--oh));min-height:0;border-radius:0;
+  box-shadow:none;border:0;justify-content:center}
+body[data-page="game"] .stage .box{justify-content:flex-start}
+body[data-page="world"] #game-frame:empty{min-height:100%}
+body[data-page="game"] #game-frame,body[data-page="world"] #game-frame{flex:0 0 auto}
+body.screen .urow{display:flex;align-items:center;gap:10px;height:var(--uh);
+  padding-inline:var(--hpad);background:var(--doc-bg)}
+body.screen .urow .bc{margin:0;flex:0 1 auto;margin-inline-end:auto;min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+body.screen .urow .bc a{color:inherit;text-decoration:underline;
+  text-underline-offset:3px;text-decoration-thickness:1px;
+  display:inline-block;padding-block:12px;margin-block:-12px;
+  text-decoration-color:color-mix(in srgb,currentColor 55%,transparent)}
+body.screen .urow .tools{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.ubtn{display:inline-flex;align-items:center;justify-content:center;
+  width:var(--tap);height:var(--tap);flex:0 0 auto;border:0;padding:0;
+  cursor:pointer;border-radius:var(--urad);background:var(--doc-card);
+  color:var(--doc-ink);box-shadow:0 2px 0 var(--doc-line)}
+.ubtn[hidden]{display:none}
+.ubtn .gl{display:flex}
+.ubtn svg{display:block;width:var(--hicon);height:var(--hicon);fill:none;
+  stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+body.screen{--hh:60px;--uh:60px;--oh:0px;--tap:44px;--hgap:12px;--hpad:20px;
+  --hbrand:22px;--hfont:14.5px;--hicon:22px;--hrad:99px;--urad:14px;
+  --hdr-ink:#FFF6E9}
+@media (max-width:719px){body.screen{--hh:58px;--uh:56px;--hbrand:20px;--hgap:8px;--hpad:12px}}
+body.screen{--gc-cell-bg:var(--surface)}
+@supports (background:color-mix(in oklab,red 10%,blue)){
+body.screen{--gc-cell-bg:color-mix(in oklab,var(--g,var(--brand)) 16%,var(--surface))}}
+body.screen .top{position:relative;z-index:6;height:var(--hh);
+  display:flex;align-items:center;padding:0;border-block-end:0;
+  color:var(--hdr-ink);
+  background:color-mix(in oklch, var(--g,#4F5BD5) 46%, #0C0812);
+  background:oklch(from var(--g,#4F5BD5) .30 calc(c * 1.05) h)}
+body.screen .top .in{max-width:none;margin:0;width:100%;
+  padding:0 var(--hpad);gap:var(--hgap);justify-content:space-between}
+body.screen .tagline{display:none}
+body.screen .gname{flex:1 1 0;min-width:0;
+  font:600 16px/1 Fredoka,system-ui,sans-serif;color:var(--hdr-ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-inline:2px}
+@media (max-width:719px){body.screen .gname{display:none}}
+.hbtn.home{gap:7px;padding:0 15px}
+.hbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  height:var(--tap);
+  border:0;margin:0;cursor:pointer;text-decoration:none;flex:0 0 auto;
+  border-radius:var(--hrad);padding:0 calc(var(--tap) * .39);white-space:nowrap;
+  font:600 var(--hfont)/1 inherit;
+  background:rgba(255,255,255,.12);color:var(--hdr-ink)}
+.hbtn.ico{width:var(--tap);padding:0}
+body.screen .top .lang{margin-inline-start:auto}
+body.screen .top .lang + [data-sound]{margin-inline-start:0}
+body.screen .top [data-sound]{margin-inline-start:auto}
+body.screen .top .lang{position:relative;flex:0 0 auto}
+body.screen .top .lang>summary{list-style:none}
+body.screen .top .lang>summary::-webkit-details-marker{display:none}
+body.screen .top .lang>summary::marker{content:""}
+.langsheet{position:absolute;inset-inline-end:0;top:calc(var(--tap) + 6px);
+  z-index:7;min-width:152px;max-width:min(84vw,300px);padding:6px;
+  display:flex;flex-direction:column;gap:2px;
+  border-radius:var(--urad);background:var(--doc-card);
+  border:1px solid var(--doc-line);box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.langsheet>a,.langsheet>b{display:flex;align-items:center;gap:8px;
+  min-height:var(--tap);padding:0 10px;border-radius:10px;
+  font:600 15px/1 inherit;color:var(--doc-ink);text-decoration:none}
+.langsheet>a:hover{background:color-mix(in oklab,var(--doc-ink) 8%,transparent)}
+.langsheet>b{font-weight:800;
+  background:color-mix(in oklab,var(--doc-ink) 8%,transparent)}
+.langsheet>a>span,.langsheet>b>span{width:14px;flex:0 0 14px;text-align:center}
+.hbtn:hover{background:rgba(255,255,255,.2)}
+.hbtn.pri{background:#FFF6E9;color:#241C2B}
+.hbtn.pri:hover{background:#fff}
+.hbtn[hidden]{display:none}
+.hbtn .gl{display:flex;flex:0 0 auto}
+.hbtn svg{width:var(--hicon);height:var(--hicon);
+  display:block;fill:none;stroke:currentColor;stroke-width:2.2;
+  stroke-linecap:round;stroke-linejoin:round}
+#wallet-slot svg{width:var(--hicon);height:var(--hicon);stroke-width:2.2}
+[dir="rtl"] .hbtn .gl .arw{transform:scaleX(-1);transform-origin:center}
+.wallet-wrap{display:inline-flex;align-items:center;height:var(--tap);
+  border-radius:99px;padding:0 calc(var(--tap) * .34);
+  background:rgba(255,255,255,.12)}
+body.screen #wallet-slot>*{background:none;box-shadow:none;border:0;
+  padding:0;color:var(--hdr-ink);height:var(--tap);gap:10px}
+@media (max-width:719px){
+  .hbtn .tx{display:none}
+  .wallet-wrap{padding:0 10px}
+}
+@media (max-width:480px){body{font-size:16px}h1{font-size:1.6rem}.play{width:100%}
+  .stage .box{min-height:clamp(420px,calc(100dvh - 120px),860px)}
+  .tagline{display:none}}
+.lang-offer{display:none}
+html[data-offer] .lang-offer{position:relative;z-index:8;display:flex;
+  justify-content:center;height:46px;box-sizing:border-box;
+  background:var(--doc-card);border-bottom:1px solid var(--doc-line)}
+.lang-offer .in{flex:1 1 auto;max-width:700px;display:none;align-items:center;
+  gap:10px;padding:0 12px;box-sizing:border-box}
+html[data-offer="en"] .lang-offer .in[data-for="en"]{display:flex}
+html[data-offer="he"] .lang-offer .in[data-for="he"]{display:flex}
+html[data-offer="es"] .lang-offer .in[data-for="es"]{display:flex}
+html[data-offer="fr"] .lang-offer .in[data-for="fr"]{display:flex}
+.lang-offer .txt{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;font-weight:500;font-size:14px;color:var(--doc-soft)}
+.lang-offer a{flex:0 0 auto;display:inline-flex;align-items:center;height:32px;
+  padding:0 14px;border-radius:999px;text-decoration:none;font-weight:700;
+  font-size:14px;background:var(--doc-ink);color:var(--doc-card)}
+.lang-offer button{flex:0 0 auto;width:32px;height:32px;display:grid;
+  place-items:center;border:0;border-radius:999px;background:none;cursor:pointer;
+  color:var(--doc-soft);font-size:17px;line-height:1}
+html[data-offer] body.screen{--oh:46px}
+        </style>
+        <script type="application/ld+json">
+          {"@context":"https://schema.org","@graph":[{"@type":"CollectionPage","@id":"https://ellaz.fun/games/think/#page","url":"https://ellaz.fun/games/think/","name":"Puzzle and Thinking Games - Free Online - Ellaz","description":"Memory, matching, sorting and pattern games that run in the browser. Free, no account, and every one of them works offline once the page has loaded.","inLanguage":"en","isPartOf":{"@id":"https://ellaz.fun/#website"},"publisher":{"@id":"https://ellaz.fun/#org"}},{"@type":"ItemList","name":"Thinking games","numberOfItems":13,"itemListElement":[{"@type":"ListItem","position":1,"name":"What Comes Next","url":"https://ellaz.fun/games/sequence/"},{"@type":"ListItem","position":2,"name":"What Disappeared","url":"https://ellaz.fun/games/vanish/"},{"@type":"ListItem","position":3,"name":"Shadow Match","url":"https://ellaz.fun/games/shadows/"},{"@type":"ListItem","position":4,"name":"Follow Me","url":"https://ellaz.fun/games/echo/"},{"@type":"ListItem","position":5,"name":"Color Sort","url":"https://ellaz.fun/games/sort/"},{"@type":"ListItem","position":6,"name":"Two Make One","url":"https://ellaz.fun/games/merge/"},{"@type":"ListItem","position":7,"name":"Shape Fit","url":"https://ellaz.fun/games/fit/"},{"@type":"ListItem","position":8,"name":"Match Three","url":"https://ellaz.fun/games/match3/"},{"@type":"ListItem","position":9,"name":"Pipe Flow","url":"https://ellaz.fun/games/flow/"},{"@type":"ListItem","position":10,"name":"Arrows Out","url":"https://ellaz.fun/games/arrowtap/"},{"@type":"ListItem","position":11,"name":"Picture Logic","url":"https://ellaz.fun/games/nonogram/"},{"@type":"ListItem","position":12,"name":"One Stroke","url":"https://ellaz.fun/games/onestroke/"},{"@type":"ListItem","position":13,"name":"Untangle","url":"https://ellaz.fun/games/untangle/"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://ellaz.fun/"},{"@type":"ListItem","position":2,"name":"Thinking games","item":"https://ellaz.fun/games/think/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Are these good for adults?","acceptedAnswer":{"@type":"Answer","text":"Some of them. The shape-fitting and matching games go hard enough to be worth an adult's time; the picture-matching ones are aimed lower and will feel gentle."}},{"@type":"Question","name":"Do they work offline?","acceptedAnswer":{"@type":"Answer","text":"Yes. Once a game has loaded once it stays on the device, and the whole site is installable as an app from the browser menu."}},{"@type":"Question","name":"Is progress saved?","acceptedAnswer":{"@type":"Answer","text":"Your best score for each difficulty is, and so is the board you were part-way through in the games where returning to one makes sense. All of it lives on the device, not on a server."}}]},{"@type":"Organization","@id":"https://ellaz.fun/#org","name":"Ellaz","url":"https://ellaz.fun/","logo":"https://ellaz.fun/icon.svg","description":"Free browser games, no download and no account","sameAs":["https://github.com/Sigmafier/ellaz"]}]}
+        </script>
+        
+        
+      </head>
+      <body >
+        
+    <div id="lang-offer" class="lang-offer">
+      <div class="in" data-for="he" lang="he" dir="rtl"><span class="txt">העמוד הזה קיים גם בעברית</span><a href="/he/games/think/" hreflang="he">עברית</a><button type="button" aria-label="סגירה">✕</button></div><div class="in" data-for="es" lang="es" dir="ltr"><span class="txt">Esta página también está en español</span><a href="/es/games/think/" hreflang="es">Español</a><button type="button" aria-label="Cerrar">✕</button></div><div class="in" data-for="fr" lang="fr" dir="ltr"><span class="txt">Cette page existe aussi en français</span><a href="/fr/games/think/" hreflang="fr">Français</a><button type="button" aria-label="Fermer">✕</button></div>
+    </div>
+    <script>
+      (function(){try{var d=document.documentElement,b=document.getElementById("lang-offer");if(!b)return;try{if(localStorage.getItem("ellaz:offer:v1"))return}catch(e){}var r=b.querySelectorAll("[data-for]"),h={},i;for(i=0;i<r.length;i++)h[r[i].getAttribute("data-for")]=1;var L=navigator.languages||[navigator.language||""],w="";for(i=0;i<L.length;i++){var t=String(L[i]).toLowerCase().split("-")[0];if(t==="en")return;if(h[t]){w=t;break}}if(!w)return;d.setAttribute("data-offer",w);var x=b.querySelector("button");if(x)x.addEventListener("click",function(){try{localStorage.setItem("ellaz:offer:v1","1")}catch(e){}d.removeAttribute("data-offer")});}catch(e){}})()
+    </script>
+    <header class="top" >
+      <div class="in">
+        <a class="brand" href="/">Ellaz</a>
+              <span class="tagline">Free browser games, no download and no account</span>
+              
+      </div>
+    </header>
+    <main>
+    <div class="urow">
+    <nav class="bc">
+        <a href="/">Home</a> › Thinking games
+      </nav>
+  </div>
+    <h1>Thinking games</h1>
+    <p class="lede">13 puzzles about noticing: what changed, what comes next, what goes where, and what was there a second ago.</p>
+
+    <h2>The games</h2>
+    <ul class="grid">
+    <li>
+        <a href="/games/sequence/">
+          <span class="em" aria-hidden="true">🔗</span>
+          <span>What Comes Next<span class="cat">Thinking</span></span>
+        </a>
+      </li><li>
+        <a href="/games/vanish/">
+          <span class="em" aria-hidden="true">🫥</span>
+          <span>What Disappeared<span class="cat">Thinking</span></span>
+        </a>
+      </li><li>
+        <a href="/games/shadows/">
+          <span class="em" aria-hidden="true">🌓</span>
+          <span>Shadow Match<span class="cat">Thinking</span></span>
+        </a>
+      </li><li>
+        <a href="/games/echo/">
+          <span class="em" aria-hidden="true">💡</span>
+          <span>Follow Me<span class="cat">Thinking</span></span>
+        </a>
+      </li><li>
+        <a href="/games/sort/">
+          <span class="em" aria-hidden="true">🧪</span>
+          <span>Color Sort<span class="cat">Thinking</span></span>
+        </a>
+      </li><li>
+        <a href="/games/merge/">
+          <span class="em" aria-hidden="true">🦋</span>
+          <span>Two Make One<span class="cat">Thinking</span></span>
+        </a>
+      </li><li>
+        <a href="/games/fit/">
+          <span class="em" aria-hidden="true">🔷</span>
+          <span>Shape Fit<span class="cat">Thinking</span></span>
+        </a>
+      </li><li>
+        <a href="/games/match3/">
+          <span class="em" aria-hidden="true">💎</span>
+          <span>Match Three<span class="cat">Thinking</span></span>
+        </a>
+      </li><li>
+        <a href="/games/flow/">
+          <span class="em" aria-hidden="true">🔌</span>
+          <span>Pipe Flow<span class="cat">Thinking</span></span>
+        </a>
+      </li><li>
+        <a href="/games/arrowtap/">
+          <span class="em" aria-hidden="true">➡️</span>
+          <span>Arrows Out<span class="cat">Thinking</span></span>
+        </a>
+      </li><li>
+        <a href="/games/nonogram/">
+          <span class="em" aria-hidden="true">🖼️</span>
+          <span>Picture Logic<span class="cat">Thinking</span></span>
+        </a>
+      </li><li>
+        <a href="/games/onestroke/">
+          <span class="em" aria-hidden="true">✏️</span>
+          <span>One Stroke<span class="cat">Thinking</span></span>
+        </a>
+      </li><li>
+        <a href="/games/untangle/">
+          <span class="em" aria-hidden="true">🕸️</span>
+          <span>Untangle<span class="cat">Thinking</span></span>
+        </a>
+      </li>
+  </ul>
+
+    <p>These are quiet games. Nothing chases you. The whole group can be played one-handed on a phone with the sound off, which is most of how anybody actually plays anything.</p><p>What they have in common is that the difficulty comes from the board rather than from the clock. A harder level in this group means more to hold in your head at once - a longer sequence to echo back, more colours to separate, a shape that only fits one way round. It never means less time. That distinction matters more than it sounds: a game that gets faster excludes anybody whose hands are slower than their thinking, and several of these were built for exactly those players.</p><p>Boards are kept apart. Each game keeps your best result per difficulty, so an easy run is never quietly ranked against an expert one.</p>
+
+    <h2>Common questions</h2>
+    <h3>Are these good for adults?</h3>
+      <p>Some of them. The shape-fitting and matching games go hard enough to be worth an adult&#39;s time; the picture-matching ones are aimed lower and will feel gentle.</p><h3>Do they work offline?</h3>
+      <p>Yes. Once a game has loaded once it stays on the device, and the whole site is installable as an app from the browser menu.</p><h3>Is progress saved?</h3>
+      <p>Your best score for each difficulty is, and so is the board you were part-way through in the games where returning to one makes sense. All of it lives on the device, not on a server.</p>
+
+    <h2>Other groups</h2>
+    <ul>
+      <li>
+            <a href="/games/kids/"
+              >Games for young children</a
+            >
+          </li><li>
+            <a href="/games/learn/"
+              >Learning games</a
+            >
+          </li><li>
+            <a href="/games/speed/"
+              >Reaction games</a
+            >
+          </li><li>
+            <a href="/games/classics/"
+              >Classic games</a
+            >
+          </li>
+    </ul>
+    <p><a href="/">All games</a></p>
+  </main>
+    <footer>
+      <div class="in">
+        <span>Ellaz - free games in Hebrew, English, Spanish and French. No ads, no accounts, and nothing collected about a child.</span>
+        <a href="/he/games/think/" hreflang="he" lang="he">עברית</a><a href="/es/games/think/" hreflang="es" lang="es">Español</a><a href="/fr/games/think/" hreflang="fr" lang="fr">Français</a>
+      </div>
+    </footer>
+  
+        <div id="consent" class="consent" role="dialog" aria-live="polite" lang="en" dir="ltr"><p>We count visits with a small Google cookie. No ads, no personal tracking.</p><button type="button" data-yes>Allow</button><button type="button" data-no>No thanks</button></div>
+    <style>
+      .consent{display:none;position:fixed;inset-inline:0;bottom:0;z-index:60;padding:12px;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;background:#1d1b2e;color:#fff;font-size:14px}[data-consent] .consent{display:flex}.consent p{margin:0;max-width:48ch}.consent button{font:inherit;font-weight:600;padding:8px 18px;min-height:40px;border:0;border-radius:8px;background:#fff;color:#1d1b2e}
+    </style>
+    <script>
+      (function(){try{var d=document.documentElement,b=document.getElementById("consent");if(!b||!window.gtag)return;var v=null;try{v=localStorage.getItem("ellaz:consent:v1")}catch(e){}if(v==="granted"){gtag("consent","update",{analytics_storage:"granted"});return}if(v==="denied")return;d.setAttribute("data-consent","1");function done(a){try{localStorage.setItem("ellaz:consent:v1",a)}catch(e){}if(a==="granted")gtag("consent","update",{analytics_storage:"granted"});d.removeAttribute("data-consent")}var y=b.querySelector("[data-yes]"),n=b.querySelector("[data-no]");if(y)y.addEventListener("click",function(){done("granted")});if(n)n.addEventListener("click",function(){done("denied")});}catch(e){}})()
+    </script>
+      </body>
+    </html>

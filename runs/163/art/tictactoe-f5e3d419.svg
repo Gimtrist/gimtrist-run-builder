@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" class="ellaz-art" viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect width="200" height="150" fill="#26B0E6"/><path d="M-10 150c30-46 62-62 110-62s72 22 110 62z" fill="#63C9F0"/>
+    <g stroke="#FFF7EC" stroke-width="4" stroke-linecap="round" opacity=".75">
+      <path d="M76 24v104M124 24v104M48 50h104M48 102h104"/></g>
+    <g stroke="#FF4D8D" stroke-width="9" stroke-linecap="round">
+      <path d="M92 30l16 16M108 30l-16 16"/><path d="M56 108l16 16M72 108l-16 16"/></g>
+    <!-- strike UNDER the winning marks, and in ink at low weight: drawn on top
+         at 8px it swallowed the three Os it was supposed to be celebrating. -->
+    <path d="M54 30l92 92" stroke="#241C3B" stroke-width="5" stroke-linecap="round" opacity=".38"/>
+    <g stroke="#FFC730" stroke-width="11" stroke-linecap="round" fill="none">
+      <circle cx="62" cy="38" r="14"/><circle cx="100" cy="76" r="14"/><circle cx="138" cy="114" r="14"/></g><rect width="200" height="150" style="fill:transparent"/></svg>

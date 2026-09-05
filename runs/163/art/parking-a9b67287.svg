@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" class="ellaz-art" viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect width="200" height="150" fill="#E8930C"/><path d="M0 104 200 56v94H0z" fill="#FBC15A"/>
+    <rect x="18" y="16" width="164" height="118" rx="9" fill="#FFF7EC" stroke="#241C3B" stroke-width="3.5"/>
+    <g stroke="#4A4066" stroke-width="1.5" opacity=".2">
+      <path d="M51 16v118M84 16v118M116 16v118M149 16v118M18 45h164M18 75h164M18 105h164"/></g>
+    <rect x="176" y="52" width="12" height="26" fill="#FFF7EC"/>
+    <g stroke="#241C3B" stroke-width="3">
+      <rect x="88" y="53" width="58" height="24" rx="7" fill="#E4572E"/>
+      <rect x="24" y="22" width="56" height="22" rx="7" fill="#26B0E6"/>
+      <rect x="122" y="84" width="24" height="46" rx="7" fill="#4F5BD5"/>
+      <rect x="26" y="60" width="24" height="46" rx="7" fill="#A855C9"/>
+      <rect x="152" y="18" width="24" height="30" rx="7" fill="#17B98A"/></g>
+    <g fill="#FFF7EC"><circle cx="100" cy="65" r="5"/><circle cx="134" cy="65" r="5"/></g>
+    <g stroke="#FFF7EC" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M162 65h16m-6-6 6 6-6 6" stroke="#241C3B"/></g><rect width="200" height="150" style="fill:transparent"/></svg>

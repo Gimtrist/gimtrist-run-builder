@@ -1,0 +1,3747 @@
+{
+  "base": "/",
+  "count": 246,
+  "locales": {
+    "app": [
+      "en",
+      "he",
+      "es",
+      "pt",
+      "fr",
+      "de",
+      "ar",
+      "it",
+      "ru",
+      "tr",
+      "id"
+    ],
+    "page": [
+      "en",
+      "he",
+      "es",
+      "fr"
+    ],
+    "canonical": "en",
+    "xDefault": "en",
+    "dir": {
+      "en": "ltr",
+      "he": "rtl",
+      "es": "ltr",
+      "pt": "ltr",
+      "fr": "ltr",
+      "de": "ltr",
+      "ar": "rtl",
+      "it": "ltr",
+      "ru": "ltr",
+      "tr": "ltr",
+      "id": "ltr"
+    },
+    "script": {
+      "he": "hebrew",
+      "ar": "arabic",
+      "ru": "cyrillic",
+      "en": "latin",
+      "es": "latin",
+      "pt": "latin",
+      "fr": "latin",
+      "de": "latin",
+      "it": "latin",
+      "tr": "latin",
+      "id": "latin"
+    }
+  },
+  "pages": [
+    {
+      "path": "/",
+      "file": "index.html",
+      "locale": "en",
+      "kind": "home",
+      "emitted": false,
+      "canonical": "https://ellaz.fun/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/",
+      "file": "he/index.html",
+      "locale": "he",
+      "kind": "home",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/",
+      "file": "es/index.html",
+      "locale": "es",
+      "kind": "home",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/",
+      "file": "fr/index.html",
+      "locale": "fr",
+      "kind": "home",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/memory/",
+      "file": "games/memory/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "memory",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/memory/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/evolve/",
+      "file": "games/evolve/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "evolve",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/evolve/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/coloring/",
+      "file": "games/coloring/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "coloring",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/coloring/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/finddiff/",
+      "file": "games/finddiff/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "finddiff",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/finddiff/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/hidden/",
+      "file": "games/hidden/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "hidden",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/hidden/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/math/",
+      "file": "games/math/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "math",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/math/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/2048/",
+      "file": "games/2048/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "2048",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/2048/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/tictactoe/",
+      "file": "games/tictactoe/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "tictactoe",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/tictactoe/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/minesweeper/",
+      "file": "games/minesweeper/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "minesweeper",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/minesweeper/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/sudoku/",
+      "file": "games/sudoku/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "sudoku",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/sudoku/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/snake/",
+      "file": "games/snake/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "snake",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/snake/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/blocks/",
+      "file": "games/blocks/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "blocks",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/blocks/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/wordguess/",
+      "file": "games/wordguess/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "wordguess",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/wordguess/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/sequence/",
+      "file": "games/sequence/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "sequence",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/sequence/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/vanish/",
+      "file": "games/vanish/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "vanish",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/vanish/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/shadows/",
+      "file": "games/shadows/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "shadows",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/shadows/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/echo/",
+      "file": "games/echo/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "echo",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/echo/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/balloons/",
+      "file": "games/balloons/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "balloons",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/balloons/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/bubbles/",
+      "file": "games/bubbles/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "bubbles",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/bubbles/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/bees/",
+      "file": "games/bees/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "bees",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/bees/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/frog/",
+      "file": "games/frog/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "frog",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/frog/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/reaction/",
+      "file": "games/reaction/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "reaction",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/reaction/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/sort/",
+      "file": "games/sort/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "sort",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/sort/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/merge/",
+      "file": "games/merge/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "merge",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/merge/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/pet/",
+      "file": "games/pet/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "pet",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/pet/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/fit/",
+      "file": "games/fit/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "fit",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/fit/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/music/",
+      "file": "games/music/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "music",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/music/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/maze/",
+      "file": "games/maze/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "maze",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/maze/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/letters/",
+      "file": "games/letters/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "letters",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/letters/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/spell/",
+      "file": "games/spell/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "spell",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/spell/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/bubbleshooter/",
+      "file": "games/bubbleshooter/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "bubbleshooter",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/bubbleshooter/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/match3/",
+      "file": "games/match3/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "match3",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/match3/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/jigsaw/",
+      "file": "games/jigsaw/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "jigsaw",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/jigsaw/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/lettercross/",
+      "file": "games/lettercross/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "lettercross",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/lettercross/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/flow/",
+      "file": "games/flow/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "flow",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/flow/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/arrowtap/",
+      "file": "games/arrowtap/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "arrowtap",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/arrowtap/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/fruit/",
+      "file": "games/fruit/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "fruit",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/fruit/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/parking/",
+      "file": "games/parking/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "parking",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/parking/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/nonogram/",
+      "file": "games/nonogram/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "nonogram",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/nonogram/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/onestroke/",
+      "file": "games/onestroke/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "onestroke",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/onestroke/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/wordsearch/",
+      "file": "games/wordsearch/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "wordsearch",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/wordsearch/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/untangle/",
+      "file": "games/untangle/index.html",
+      "locale": "en",
+      "kind": "game",
+      "id": "untangle",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/untangle/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/memory/",
+      "file": "he/games/memory/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "memory",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/memory/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/evolve/",
+      "file": "he/games/evolve/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "evolve",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/evolve/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/coloring/",
+      "file": "he/games/coloring/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "coloring",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/coloring/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/finddiff/",
+      "file": "he/games/finddiff/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "finddiff",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/finddiff/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/hidden/",
+      "file": "he/games/hidden/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "hidden",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/hidden/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/math/",
+      "file": "he/games/math/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "math",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/math/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/2048/",
+      "file": "he/games/2048/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "2048",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/2048/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/tictactoe/",
+      "file": "he/games/tictactoe/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "tictactoe",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/tictactoe/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/minesweeper/",
+      "file": "he/games/minesweeper/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "minesweeper",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/minesweeper/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/sudoku/",
+      "file": "he/games/sudoku/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "sudoku",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/sudoku/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/snake/",
+      "file": "he/games/snake/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "snake",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/snake/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/blocks/",
+      "file": "he/games/blocks/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "blocks",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/blocks/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/wordguess/",
+      "file": "he/games/wordguess/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "wordguess",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/wordguess/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/sequence/",
+      "file": "he/games/sequence/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "sequence",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/sequence/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/vanish/",
+      "file": "he/games/vanish/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "vanish",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/vanish/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/shadows/",
+      "file": "he/games/shadows/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "shadows",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/shadows/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/echo/",
+      "file": "he/games/echo/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "echo",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/echo/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/balloons/",
+      "file": "he/games/balloons/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "balloons",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/balloons/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/bubbles/",
+      "file": "he/games/bubbles/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "bubbles",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/bubbles/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/bees/",
+      "file": "he/games/bees/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "bees",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/bees/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/frog/",
+      "file": "he/games/frog/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "frog",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/frog/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/reaction/",
+      "file": "he/games/reaction/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "reaction",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/reaction/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/sort/",
+      "file": "he/games/sort/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "sort",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/sort/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/merge/",
+      "file": "he/games/merge/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "merge",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/merge/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/pet/",
+      "file": "he/games/pet/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "pet",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/pet/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/fit/",
+      "file": "he/games/fit/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "fit",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/fit/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/music/",
+      "file": "he/games/music/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "music",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/music/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/maze/",
+      "file": "he/games/maze/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "maze",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/maze/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/letters/",
+      "file": "he/games/letters/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "letters",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/letters/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/spell/",
+      "file": "he/games/spell/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "spell",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/spell/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/bubbleshooter/",
+      "file": "he/games/bubbleshooter/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "bubbleshooter",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/bubbleshooter/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/match3/",
+      "file": "he/games/match3/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "match3",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/match3/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/jigsaw/",
+      "file": "he/games/jigsaw/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "jigsaw",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/jigsaw/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/lettercross/",
+      "file": "he/games/lettercross/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "lettercross",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/lettercross/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/flow/",
+      "file": "he/games/flow/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "flow",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/flow/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/arrowtap/",
+      "file": "he/games/arrowtap/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "arrowtap",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/arrowtap/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/fruit/",
+      "file": "he/games/fruit/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "fruit",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/fruit/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/parking/",
+      "file": "he/games/parking/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "parking",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/parking/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/nonogram/",
+      "file": "he/games/nonogram/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "nonogram",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/nonogram/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/onestroke/",
+      "file": "he/games/onestroke/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "onestroke",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/onestroke/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/wordsearch/",
+      "file": "he/games/wordsearch/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "wordsearch",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/wordsearch/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/untangle/",
+      "file": "he/games/untangle/index.html",
+      "locale": "he",
+      "kind": "game",
+      "id": "untangle",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/untangle/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/memory/",
+      "file": "es/games/memory/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "memory",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/memory/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/evolve/",
+      "file": "es/games/evolve/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "evolve",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/evolve/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/coloring/",
+      "file": "es/games/coloring/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "coloring",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/coloring/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/finddiff/",
+      "file": "es/games/finddiff/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "finddiff",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/finddiff/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/hidden/",
+      "file": "es/games/hidden/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "hidden",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/hidden/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/math/",
+      "file": "es/games/math/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "math",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/math/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/2048/",
+      "file": "es/games/2048/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "2048",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/2048/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/tictactoe/",
+      "file": "es/games/tictactoe/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "tictactoe",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/tictactoe/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/minesweeper/",
+      "file": "es/games/minesweeper/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "minesweeper",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/minesweeper/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/sudoku/",
+      "file": "es/games/sudoku/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "sudoku",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/sudoku/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/snake/",
+      "file": "es/games/snake/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "snake",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/snake/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/blocks/",
+      "file": "es/games/blocks/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "blocks",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/blocks/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/wordguess/",
+      "file": "es/games/wordguess/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "wordguess",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/wordguess/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/sequence/",
+      "file": "es/games/sequence/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "sequence",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/sequence/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/vanish/",
+      "file": "es/games/vanish/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "vanish",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/vanish/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/shadows/",
+      "file": "es/games/shadows/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "shadows",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/shadows/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/echo/",
+      "file": "es/games/echo/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "echo",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/echo/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/balloons/",
+      "file": "es/games/balloons/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "balloons",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/balloons/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/bubbles/",
+      "file": "es/games/bubbles/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "bubbles",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/bubbles/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/bees/",
+      "file": "es/games/bees/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "bees",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/bees/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/frog/",
+      "file": "es/games/frog/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "frog",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/frog/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/reaction/",
+      "file": "es/games/reaction/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "reaction",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/reaction/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/sort/",
+      "file": "es/games/sort/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "sort",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/sort/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/merge/",
+      "file": "es/games/merge/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "merge",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/merge/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/pet/",
+      "file": "es/games/pet/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "pet",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/pet/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/fit/",
+      "file": "es/games/fit/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "fit",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/fit/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/music/",
+      "file": "es/games/music/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "music",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/music/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/maze/",
+      "file": "es/games/maze/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "maze",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/maze/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/letters/",
+      "file": "es/games/letters/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "letters",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/letters/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/spell/",
+      "file": "es/games/spell/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "spell",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/spell/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/bubbleshooter/",
+      "file": "es/games/bubbleshooter/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "bubbleshooter",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/bubbleshooter/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/match3/",
+      "file": "es/games/match3/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "match3",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/match3/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/jigsaw/",
+      "file": "es/games/jigsaw/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "jigsaw",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/jigsaw/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/lettercross/",
+      "file": "es/games/lettercross/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "lettercross",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/lettercross/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/flow/",
+      "file": "es/games/flow/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "flow",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/flow/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/arrowtap/",
+      "file": "es/games/arrowtap/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "arrowtap",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/arrowtap/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/fruit/",
+      "file": "es/games/fruit/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "fruit",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/fruit/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/parking/",
+      "file": "es/games/parking/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "parking",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/parking/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/nonogram/",
+      "file": "es/games/nonogram/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "nonogram",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/nonogram/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/onestroke/",
+      "file": "es/games/onestroke/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "onestroke",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/onestroke/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/wordsearch/",
+      "file": "es/games/wordsearch/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "wordsearch",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/wordsearch/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/untangle/",
+      "file": "es/games/untangle/index.html",
+      "locale": "es",
+      "kind": "game",
+      "id": "untangle",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/untangle/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/memory/",
+      "file": "fr/games/memory/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "memory",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/memory/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/evolve/",
+      "file": "fr/games/evolve/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "evolve",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/evolve/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/coloring/",
+      "file": "fr/games/coloring/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "coloring",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/coloring/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/finddiff/",
+      "file": "fr/games/finddiff/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "finddiff",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/finddiff/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/hidden/",
+      "file": "fr/games/hidden/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "hidden",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/hidden/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/math/",
+      "file": "fr/games/math/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "math",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/math/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/2048/",
+      "file": "fr/games/2048/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "2048",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/2048/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/tictactoe/",
+      "file": "fr/games/tictactoe/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "tictactoe",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/tictactoe/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/minesweeper/",
+      "file": "fr/games/minesweeper/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "minesweeper",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/minesweeper/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/sudoku/",
+      "file": "fr/games/sudoku/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "sudoku",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/sudoku/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/snake/",
+      "file": "fr/games/snake/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "snake",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/snake/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/blocks/",
+      "file": "fr/games/blocks/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "blocks",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/blocks/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/wordguess/",
+      "file": "fr/games/wordguess/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "wordguess",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/wordguess/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/sequence/",
+      "file": "fr/games/sequence/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "sequence",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/sequence/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/vanish/",
+      "file": "fr/games/vanish/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "vanish",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/vanish/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/shadows/",
+      "file": "fr/games/shadows/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "shadows",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/shadows/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/echo/",
+      "file": "fr/games/echo/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "echo",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/echo/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/balloons/",
+      "file": "fr/games/balloons/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "balloons",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/balloons/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/bubbles/",
+      "file": "fr/games/bubbles/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "bubbles",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/bubbles/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/bees/",
+      "file": "fr/games/bees/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "bees",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/bees/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/frog/",
+      "file": "fr/games/frog/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "frog",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/frog/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/reaction/",
+      "file": "fr/games/reaction/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "reaction",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/reaction/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/sort/",
+      "file": "fr/games/sort/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "sort",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/sort/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/merge/",
+      "file": "fr/games/merge/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "merge",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/merge/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/pet/",
+      "file": "fr/games/pet/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "pet",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/pet/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/fit/",
+      "file": "fr/games/fit/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "fit",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/fit/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/music/",
+      "file": "fr/games/music/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "music",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/music/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/maze/",
+      "file": "fr/games/maze/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "maze",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/maze/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/letters/",
+      "file": "fr/games/letters/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "letters",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/letters/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/spell/",
+      "file": "fr/games/spell/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "spell",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/spell/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/bubbleshooter/",
+      "file": "fr/games/bubbleshooter/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "bubbleshooter",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/bubbleshooter/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/match3/",
+      "file": "fr/games/match3/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "match3",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/match3/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/jigsaw/",
+      "file": "fr/games/jigsaw/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "jigsaw",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/jigsaw/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/lettercross/",
+      "file": "fr/games/lettercross/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "lettercross",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/lettercross/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/flow/",
+      "file": "fr/games/flow/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "flow",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/flow/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/arrowtap/",
+      "file": "fr/games/arrowtap/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "arrowtap",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/arrowtap/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/fruit/",
+      "file": "fr/games/fruit/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "fruit",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/fruit/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/parking/",
+      "file": "fr/games/parking/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "parking",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/parking/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/nonogram/",
+      "file": "fr/games/nonogram/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "nonogram",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/nonogram/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/onestroke/",
+      "file": "fr/games/onestroke/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "onestroke",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/onestroke/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/wordsearch/",
+      "file": "fr/games/wordsearch/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "wordsearch",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/wordsearch/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/untangle/",
+      "file": "fr/games/untangle/index.html",
+      "locale": "fr",
+      "kind": "game",
+      "id": "untangle",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/untangle/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/kids/",
+      "file": "games/kids/index.html",
+      "locale": "en",
+      "kind": "category",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/kids/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/learn/",
+      "file": "games/learn/index.html",
+      "locale": "en",
+      "kind": "category",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/learn/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/think/",
+      "file": "games/think/index.html",
+      "locale": "en",
+      "kind": "category",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/think/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/speed/",
+      "file": "games/speed/index.html",
+      "locale": "en",
+      "kind": "category",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/speed/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/games/classics/",
+      "file": "games/classics/index.html",
+      "locale": "en",
+      "kind": "category",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/classics/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/kids/",
+      "file": "he/games/kids/index.html",
+      "locale": "he",
+      "kind": "category",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/kids/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/learn/",
+      "file": "he/games/learn/index.html",
+      "locale": "he",
+      "kind": "category",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/learn/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/think/",
+      "file": "he/games/think/index.html",
+      "locale": "he",
+      "kind": "category",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/think/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/speed/",
+      "file": "he/games/speed/index.html",
+      "locale": "he",
+      "kind": "category",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/speed/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/games/classics/",
+      "file": "he/games/classics/index.html",
+      "locale": "he",
+      "kind": "category",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/games/classics/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/kids/",
+      "file": "es/games/kids/index.html",
+      "locale": "es",
+      "kind": "category",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/kids/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/learn/",
+      "file": "es/games/learn/index.html",
+      "locale": "es",
+      "kind": "category",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/learn/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/think/",
+      "file": "es/games/think/index.html",
+      "locale": "es",
+      "kind": "category",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/think/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/speed/",
+      "file": "es/games/speed/index.html",
+      "locale": "es",
+      "kind": "category",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/speed/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/games/classics/",
+      "file": "es/games/classics/index.html",
+      "locale": "es",
+      "kind": "category",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/games/classics/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/kids/",
+      "file": "fr/games/kids/index.html",
+      "locale": "fr",
+      "kind": "category",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/kids/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/learn/",
+      "file": "fr/games/learn/index.html",
+      "locale": "fr",
+      "kind": "category",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/learn/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/think/",
+      "file": "fr/games/think/index.html",
+      "locale": "fr",
+      "kind": "category",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/think/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/speed/",
+      "file": "fr/games/speed/index.html",
+      "locale": "fr",
+      "kind": "category",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/speed/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/games/classics/",
+      "file": "fr/games/classics/index.html",
+      "locale": "fr",
+      "kind": "category",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/games/classics/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/world/",
+      "file": "world/index.html",
+      "locale": "en",
+      "kind": "world",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/world/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/world/",
+      "file": "he/world/index.html",
+      "locale": "he",
+      "kind": "world",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/world/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/world/",
+      "file": "es/world/index.html",
+      "locale": "es",
+      "kind": "world",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/world/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/world/",
+      "file": "fr/world/index.html",
+      "locale": "fr",
+      "kind": "world",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/world/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/boards/",
+      "file": "boards/index.html",
+      "locale": "en",
+      "kind": "boards",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/boards/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/boards/",
+      "file": "he/boards/index.html",
+      "locale": "he",
+      "kind": "boards",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/boards/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/es/boards/",
+      "file": "es/boards/index.html",
+      "locale": "es",
+      "kind": "boards",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/es/boards/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/fr/boards/",
+      "file": "fr/boards/index.html",
+      "locale": "fr",
+      "kind": "boards",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/fr/boards/",
+      "locales": [
+        "en",
+        "he",
+        "es",
+        "fr"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/embed/memory/",
+      "file": "embed/memory/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "memory",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/memory/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/evolve/",
+      "file": "embed/evolve/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "evolve",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/evolve/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/coloring/",
+      "file": "embed/coloring/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "coloring",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/coloring/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/finddiff/",
+      "file": "embed/finddiff/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "finddiff",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/finddiff/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/hidden/",
+      "file": "embed/hidden/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "hidden",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/hidden/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/math/",
+      "file": "embed/math/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "math",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/math/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/2048/",
+      "file": "embed/2048/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "2048",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/2048/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/tictactoe/",
+      "file": "embed/tictactoe/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "tictactoe",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/tictactoe/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/minesweeper/",
+      "file": "embed/minesweeper/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "minesweeper",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/minesweeper/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/sudoku/",
+      "file": "embed/sudoku/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "sudoku",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/sudoku/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/snake/",
+      "file": "embed/snake/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "snake",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/snake/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/blocks/",
+      "file": "embed/blocks/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "blocks",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/blocks/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/wordguess/",
+      "file": "embed/wordguess/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "wordguess",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/wordguess/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/sequence/",
+      "file": "embed/sequence/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "sequence",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/sequence/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/vanish/",
+      "file": "embed/vanish/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "vanish",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/vanish/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/shadows/",
+      "file": "embed/shadows/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "shadows",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/shadows/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/echo/",
+      "file": "embed/echo/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "echo",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/echo/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/balloons/",
+      "file": "embed/balloons/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "balloons",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/balloons/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/bubbles/",
+      "file": "embed/bubbles/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "bubbles",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/bubbles/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/bees/",
+      "file": "embed/bees/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "bees",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/bees/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/frog/",
+      "file": "embed/frog/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "frog",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/frog/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/reaction/",
+      "file": "embed/reaction/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "reaction",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/reaction/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/sort/",
+      "file": "embed/sort/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "sort",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/sort/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/merge/",
+      "file": "embed/merge/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "merge",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/merge/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/pet/",
+      "file": "embed/pet/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "pet",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/pet/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/fit/",
+      "file": "embed/fit/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "fit",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/fit/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/music/",
+      "file": "embed/music/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "music",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/music/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/maze/",
+      "file": "embed/maze/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "maze",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/maze/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/letters/",
+      "file": "embed/letters/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "letters",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/letters/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/spell/",
+      "file": "embed/spell/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "spell",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/spell/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/bubbleshooter/",
+      "file": "embed/bubbleshooter/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "bubbleshooter",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/bubbleshooter/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/match3/",
+      "file": "embed/match3/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "match3",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/match3/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/jigsaw/",
+      "file": "embed/jigsaw/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "jigsaw",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/jigsaw/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/lettercross/",
+      "file": "embed/lettercross/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "lettercross",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/lettercross/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/flow/",
+      "file": "embed/flow/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "flow",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/flow/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/arrowtap/",
+      "file": "embed/arrowtap/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "arrowtap",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/arrowtap/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/fruit/",
+      "file": "embed/fruit/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "fruit",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/fruit/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/parking/",
+      "file": "embed/parking/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "parking",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/parking/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/nonogram/",
+      "file": "embed/nonogram/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "nonogram",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/nonogram/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/onestroke/",
+      "file": "embed/onestroke/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "onestroke",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/onestroke/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/wordsearch/",
+      "file": "embed/wordsearch/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "wordsearch",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/wordsearch/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/embed/untangle/",
+      "file": "embed/untangle/index.html",
+      "locale": "en",
+      "kind": "embed",
+      "id": "untangle",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/games/untangle/",
+      "locales": [],
+      "indexable": false
+    },
+    {
+      "path": "/he/print/sudoku/",
+      "file": "he/print/sudoku/index.html",
+      "locale": "he",
+      "kind": "print",
+      "id": "sudoku",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/print/sudoku/",
+      "locales": [
+        "he"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/print/maze/",
+      "file": "he/print/maze/index.html",
+      "locale": "he",
+      "kind": "print",
+      "id": "maze",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/print/maze/",
+      "locales": [
+        "he"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/print/wordsearch/",
+      "file": "he/print/wordsearch/index.html",
+      "locale": "he",
+      "kind": "print",
+      "id": "wordsearch",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/print/wordsearch/",
+      "locales": [
+        "he"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/he/print/coloring/",
+      "file": "he/print/coloring/index.html",
+      "locale": "he",
+      "kind": "print",
+      "id": "coloring",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/he/print/coloring/",
+      "locales": [
+        "he"
+      ],
+      "indexable": true
+    },
+    {
+      "path": "/404.html",
+      "file": "404.html",
+      "locale": "en",
+      "kind": "notFound",
+      "emitted": true,
+      "canonical": "https://ellaz.fun/404.html",
+      "locales": [],
+      "indexable": false
+    }
+  ]
+}

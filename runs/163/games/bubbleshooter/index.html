@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <!-- FIRST, and synchronous. data-theme is deliberately never baked into
+             these documents - they are cached and it would be wrong for whoever
+             chose the other theme - so this is what sets it before the first
+             paint. A module import runs far too late and the page visibly
+             flashes the other theme. Generated from themes.ts, never written
+             out here, so adding a theme cannot leave it behind. -->
+        <script>
+          (function(){try{var t=localStorage.getItem("ellaz:theme");if(t&&["market","night"].indexOf(t)>-1&&t!=="market")document.documentElement.setAttribute("data-theme",t)}catch(e){}})()
+        </script>
+        <meta name="theme-color" content="#ff4d8d" />
+        <title>Bubble Shooter - free, in your browser | Ellaz</title>
+        <meta name="description" content="Aim, bounce off a wall, and pop three bubbles of a colour. A free bubble shooter in the browser, three levels, no account, and it works offline." />
+        <link rel="canonical" href="https://ellaz.fun/games/bubbleshooter/" />
+        <link rel="alternate" hreflang="en" href="https://ellaz.fun/games/bubbleshooter/" /><link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/bubbleshooter/" /><link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/bubbleshooter/" /><link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/bubbleshooter/" />
+        <link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/bubbleshooter/" />
+        
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Ellaz" />
+        <meta property="og:locale" content="en_US" />
+        <meta property="og:locale:alternate" content="he_IL" /><meta property="og:locale:alternate" content="es_ES" /><meta property="og:locale:alternate" content="fr_FR" />
+        <meta property="og:title" content="Bubble Shooter - free, in your browser | Ellaz" />
+        <meta property="og:description" content="Aim, bounce off a wall, and pop three bubbles of a colour. A free bubble shooter in the browser, three levels, no account, and it works offline." />
+        <meta property="og:url" content="https://ellaz.fun/games/bubbleshooter/" />
+        <meta property="og:image" content="https://ellaz.fun/og/game-bubbleshooter-en-f5ceaf65.png" />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+          <meta property="og:image:alt" content="Bubble Shooter - free, in your browser | Ellaz" />
+          <meta name="twitter:image" content="https://ellaz.fun/og/game-bubbleshooter-en-f5ceaf65.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <!-- Measurement, on EVERY emitted document and not only the app shell.
+             Search Console says the arrivals land on GAME pages from Hebrew
+             queries, so a shell-only tag would have measured almost none of
+             them. Empty on any non-primary base, so the noindex mirror never
+             reports. Config and its deliberate limits: src/build/analytics.ts. -->
+        
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E25QBB8420"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied'});gtag('set','ads_data_redaction',true);gtag('js',new Date());gtag('config','G-E25QBB8420',{client_storage:'none',allow_google_signals:false,allow_ad_personalization_signals:false});</script>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;800&amp;family=Fredoka:wght@500;600&amp;display=swap" />
+        <style>
+          *,*::before,*::after{box-sizing:border-box}
+:root{
+  --doc-ink:var(--text,#1b1b2b);
+  --doc-soft:var(--text-dim,#5a5a72);
+  --doc-line:var(--line,#e4e2ef);
+  --doc-bg:var(--bg,#fdfcff);
+  --doc-card:var(--surface,#ffffff);
+  --doc-brand:var(--brand-ink,#6c5ce7);
+  --doc-sun:var(--yellow,#ffc730);
+  --doc-stage:var(--stage-bg,#12142b);
+}
+:root[data-theme="night"]{
+  --doc-ink:var(--text,#f5f6ff);
+  --doc-soft:var(--text-dim,#b3b8e0);
+  --doc-line:var(--line,#2a2f55);
+  --doc-bg:var(--bg,#0f1226);
+  --doc-card:var(--surface,#1e2240);
+  --doc-brand:var(--brand-ink,#a29bfe);
+  --doc-sun:var(--yellow,#fdcb6e);
+  --doc-stage:var(--stage-bg,#12142b);
+}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--doc-bg);color:var(--doc-ink);
+  font:400 17px/1.7 Heebo,Assistant,Rubik,system-ui,-apple-system,sans-serif}
+main{max-width:44rem;margin-inline:auto;padding:0 20px 72px}
+h1,h2,h3{font-family:Fredoka,Heebo,system-ui,sans-serif;line-height:1.25;margin:0;
+  color:var(--doc-ink)}
+h1{font-size:2rem;font-weight:600;margin-block:8px 12px}
+h2{font-size:1.35rem;font-weight:600;margin-block:44px 12px}
+h3{font-size:1.05rem;font-weight:600;margin-block:22px 4px}
+p{margin-block:0 14px}
+a{color:var(--doc-brand)}
+.top{border-block-end:1px solid var(--doc-line);background:var(--doc-card)}
+.top .in{max-width:44rem;margin-inline:auto;padding:12px 20px;display:flex;
+  align-items:center;gap:12px}
+.brand{font-family:Fredoka,system-ui,sans-serif;font-size:1.15rem;font-weight:600;
+  color:var(--doc-ink);text-decoration:none}
+.tagline{color:var(--doc-soft);font-size:.82rem;flex:1}
+#wallet-slot{flex:0 0 auto}
+.bc{font-size:.82rem;font-weight:600;color:var(--doc-soft);margin-block:18px 0}
+.bc a{text-decoration:none}
+.vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;
+  clip-path:inset(50%);white-space:nowrap;border:0}
+.beta{font-size:.68rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
+  padding:3px 8px;border-radius:var(--radius-pill,999px);
+  background:#F2B93F;color:#241C17;white-space:nowrap;flex:0 0 auto;align-self:center}
+body.screen .urow:has(.beta) .bc{margin-inline-end:0}
+body.screen .urow .beta{margin-inline-end:auto}
+.lede{font-size:1.12rem;color:var(--doc-ink)}
+img.art{display:block;width:100%;max-width:520px;aspect-ratio:4/3;height:auto;margin:18px 0 0;border-radius:14px;border:1px solid var(--doc-line);background:var(--doc-card)}
+.facts{list-style:none;display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:18px 0 0}
+.facts li{border:1px solid var(--doc-line);background:var(--doc-card);border-radius:999px;
+  padding:5px 13px;font-size:.82rem;font-weight:600;color:var(--doc-soft)}
+.cta{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin:26px 0 8px}
+.play{display:inline-flex;align-items:center;justify-content:center;min-height:76px;
+  padding:0 40px;border:none;border-radius:22px;background:var(--doc-sun);
+  color:var(--doc-ink);text-decoration:none;font-family:Fredoka,system-ui,sans-serif;
+  font-size:1.3rem;font-weight:600;box-shadow:0 4px 0 var(--doc-line);cursor:pointer}
+.cta .note{color:var(--doc-soft);font-size:.86rem;flex:1 1 12rem}
+ol,ul.steps{padding-inline-start:1.3em}
+ol li,ul.steps li{margin-block-end:8px}
+table{border-collapse:collapse;width:100%;margin-block:14px;font-size:.95rem}
+th,td{border:1px solid var(--doc-line);padding:8px 12px;text-align:start}
+th{background:var(--doc-card);font-weight:600}
+.grid{list-style:none;padding:0;margin:20px 0 0;display:grid;gap:12px;
+  grid-template-columns:repeat(auto-fill,minmax(9.5rem,1fr))}
+.grid a{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--doc-card);
+  border:1px solid var(--doc-line);border-radius:16px;text-decoration:none;
+  color:var(--doc-ink);font-weight:600}
+.grid .em{font-size:1.5rem;line-height:1}
+.grid .cat{display:block;font-size:.75rem;font-weight:400;color:var(--doc-soft)}
+footer{border-block-start:1px solid var(--doc-line);margin-block-start:56px;
+  padding:22px 20px 40px;color:var(--doc-soft);font-size:.85rem}
+footer .in{max-width:44rem;margin-inline:auto;display:flex;flex-wrap:wrap;gap:14px}
+.stage{position:relative;margin-block:14px 6px;margin-inline:-20px}
+@media (min-width:720px){.stage{margin-inline:0}}
+.stage .box{position:relative;border-radius:22px;overflow:hidden;
+  background:var(--doc-stage);box-shadow:0 5px 0 var(--doc-line);
+  min-height:clamp(420px,calc(100dvh - 145px),860px);display:flex;flex-direction:column}
+.stage.room .box{min-height:clamp(460px,calc(100dvh - 120px),880px)}
+.stage.boards .box{min-height:clamp(300px,46dvh,560px)}
+#game-frame{flex:1;min-height:0;display:flex;flex-direction:column}
+#game-poster{position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:18px;text-align:center;padding:24px;
+  color:var(--doc-ink);transition:opacity .25s ease}
+#game-poster[hidden]{display:none}
+#game-poster .em{font-size:64px;line-height:1}
+#game-poster .msg{font-size:.95rem;opacity:.75;max-width:22ch}
+.stage .noscript{position:absolute;inset-inline:0;bottom:0;padding:12px;
+  background:var(--badge-fill,rgba(0,0,0,.55));color:var(--on-brand,#fff);font-size:.85rem;text-align:center}
+@media (max-width:719px){.stage .box{border-radius:0;box-shadow:none;
+  border-block:1px solid var(--doc-line)}}
+body[data-page="game"] main,body[data-page="world"] main{max-width:none;padding-inline:0}
+body[data-page="game"] main>:not(.stage),
+body[data-page="world"] main>:not(.stage){max-width:44rem;margin-inline:auto;
+  padding-inline:20px}
+body[data-page="game"] .stage,body[data-page="world"] .stage{margin-block:0;
+  margin-inline:0}
+body[data-page="game"] .stage .box,body[data-page="world"] .stage .box{
+  height:calc(100dvh - var(--hh) - var(--uh) - var(--oh));min-height:0;border-radius:0;
+  box-shadow:none;border:0;justify-content:center}
+body[data-page="game"] .stage .box{justify-content:flex-start}
+body[data-page="world"] #game-frame:empty{min-height:100%}
+body[data-page="game"] #game-frame,body[data-page="world"] #game-frame{flex:0 0 auto}
+body.screen .urow{display:flex;align-items:center;gap:10px;height:var(--uh);
+  padding-inline:var(--hpad);background:var(--doc-bg)}
+body.screen .urow .bc{margin:0;flex:0 1 auto;margin-inline-end:auto;min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+body.screen .urow .bc a{color:inherit;text-decoration:underline;
+  text-underline-offset:3px;text-decoration-thickness:1px;
+  display:inline-block;padding-block:12px;margin-block:-12px;
+  text-decoration-color:color-mix(in srgb,currentColor 55%,transparent)}
+body.screen .urow .tools{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.ubtn{display:inline-flex;align-items:center;justify-content:center;
+  width:var(--tap);height:var(--tap);flex:0 0 auto;border:0;padding:0;
+  cursor:pointer;border-radius:var(--urad);background:var(--doc-card);
+  color:var(--doc-ink);box-shadow:0 2px 0 var(--doc-line)}
+.ubtn[hidden]{display:none}
+.ubtn .gl{display:flex}
+.ubtn svg{display:block;width:var(--hicon);height:var(--hicon);fill:none;
+  stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+body.screen{--hh:60px;--uh:60px;--oh:0px;--tap:44px;--hgap:12px;--hpad:20px;
+  --hbrand:22px;--hfont:14.5px;--hicon:22px;--hrad:99px;--urad:14px;
+  --hdr-ink:#FFF6E9}
+@media (max-width:719px){body.screen{--hh:58px;--uh:56px;--hbrand:20px;--hgap:8px;--hpad:12px}}
+body.screen{--gc-cell-bg:var(--surface)}
+@supports (background:color-mix(in oklab,red 10%,blue)){
+body.screen{--gc-cell-bg:color-mix(in oklab,var(--g,var(--brand)) 16%,var(--surface))}}
+body.screen .top{position:relative;z-index:6;height:var(--hh);
+  display:flex;align-items:center;padding:0;border-block-end:0;
+  color:var(--hdr-ink);
+  background:color-mix(in oklch, var(--g,#4F5BD5) 46%, #0C0812);
+  background:oklch(from var(--g,#4F5BD5) .30 calc(c * 1.05) h)}
+body.screen .top .in{max-width:none;margin:0;width:100%;
+  padding:0 var(--hpad);gap:var(--hgap);justify-content:space-between}
+body.screen .tagline{display:none}
+body.screen .gname{flex:1 1 0;min-width:0;
+  font:600 16px/1 Fredoka,system-ui,sans-serif;color:var(--hdr-ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-inline:2px}
+@media (max-width:719px){body.screen .gname{display:none}}
+.hbtn.home{gap:7px;padding:0 15px}
+.hbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  height:var(--tap);
+  border:0;margin:0;cursor:pointer;text-decoration:none;flex:0 0 auto;
+  border-radius:var(--hrad);padding:0 calc(var(--tap) * .39);white-space:nowrap;
+  font:600 var(--hfont)/1 inherit;
+  background:rgba(255,255,255,.12);color:var(--hdr-ink)}
+.hbtn.ico{width:var(--tap);padding:0}
+body.screen .top .lang{margin-inline-start:auto}
+body.screen .top .lang + [data-sound]{margin-inline-start:0}
+body.screen .top [data-sound]{margin-inline-start:auto}
+body.screen .top .lang{position:relative;flex:0 0 auto}
+body.screen .top .lang>summary{list-style:none}
+body.screen .top .lang>summary::-webkit-details-marker{display:none}
+body.screen .top .lang>summary::marker{content:""}
+.langsheet{position:absolute;inset-inline-end:0;top:calc(var(--tap) + 6px);
+  z-index:7;min-width:152px;max-width:min(84vw,300px);padding:6px;
+  display:flex;flex-direction:column;gap:2px;
+  border-radius:var(--urad);background:var(--doc-card);
+  border:1px solid var(--doc-line);box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.langsheet>a,.langsheet>b{display:flex;align-items:center;gap:8px;
+  min-height:var(--tap);padding:0 10px;border-radius:10px;
+  font:600 15px/1 inherit;color:var(--doc-ink);text-decoration:none}
+.langsheet>a:hover{background:color-mix(in oklab,var(--doc-ink) 8%,transparent)}
+.langsheet>b{font-weight:800;
+  background:color-mix(in oklab,var(--doc-ink) 8%,transparent)}
+.langsheet>a>span,.langsheet>b>span{width:14px;flex:0 0 14px;text-align:center}
+.hbtn:hover{background:rgba(255,255,255,.2)}
+.hbtn.pri{background:#FFF6E9;color:#241C2B}
+.hbtn.pri:hover{background:#fff}
+.hbtn[hidden]{display:none}
+.hbtn .gl{display:flex;flex:0 0 auto}
+.hbtn svg{width:var(--hicon);height:var(--hicon);
+  display:block;fill:none;stroke:currentColor;stroke-width:2.2;
+  stroke-linecap:round;stroke-linejoin:round}
+#wallet-slot svg{width:var(--hicon);height:var(--hicon);stroke-width:2.2}
+[dir="rtl"] .hbtn .gl .arw{transform:scaleX(-1);transform-origin:center}
+.wallet-wrap{display:inline-flex;align-items:center;height:var(--tap);
+  border-radius:99px;padding:0 calc(var(--tap) * .34);
+  background:rgba(255,255,255,.12)}
+body.screen #wallet-slot>*{background:none;box-shadow:none;border:0;
+  padding:0;color:var(--hdr-ink);height:var(--tap);gap:10px}
+@media (max-width:719px){
+  .hbtn .tx{display:none}
+  .wallet-wrap{padding:0 10px}
+}
+@media (max-width:480px){body{font-size:16px}h1{font-size:1.6rem}.play{width:100%}
+  .stage .box{min-height:clamp(420px,calc(100dvh - 120px),860px)}
+  .tagline{display:none}}
+.lang-offer{display:none}
+html[data-offer] .lang-offer{position:relative;z-index:8;display:flex;
+  justify-content:center;height:46px;box-sizing:border-box;
+  background:var(--doc-card);border-bottom:1px solid var(--doc-line)}
+.lang-offer .in{flex:1 1 auto;max-width:700px;display:none;align-items:center;
+  gap:10px;padding:0 12px;box-sizing:border-box}
+html[data-offer="en"] .lang-offer .in[data-for="en"]{display:flex}
+html[data-offer="he"] .lang-offer .in[data-for="he"]{display:flex}
+html[data-offer="es"] .lang-offer .in[data-for="es"]{display:flex}
+html[data-offer="fr"] .lang-offer .in[data-for="fr"]{display:flex}
+.lang-offer .txt{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;font-weight:500;font-size:14px;color:var(--doc-soft)}
+.lang-offer a{flex:0 0 auto;display:inline-flex;align-items:center;height:32px;
+  padding:0 14px;border-radius:999px;text-decoration:none;font-weight:700;
+  font-size:14px;background:var(--doc-ink);color:var(--doc-card)}
+.lang-offer button{flex:0 0 auto;width:32px;height:32px;display:grid;
+  place-items:center;border:0;border-radius:999px;background:none;cursor:pointer;
+  color:var(--doc-soft);font-size:17px;line-height:1}
+html[data-offer] body.screen{--oh:46px}
+        </style>
+        <script type="application/ld+json">
+          {"@context":"https://schema.org","@graph":[{"@type":["VideoGame","SoftwareApplication"],"@id":"https://ellaz.fun/games/bubbleshooter/#game","name":"Bubble Shooter","url":"https://ellaz.fun/games/bubbleshooter/","image":["https://ellaz.fun/art/bubbleshooter-6f04834c.svg","https://ellaz.fun/og/game-bubbleshooter-en-f5ceaf65.png"],"description":"A free bubble shooter that runs in your browser. Aim the launcher, fire, and three bubbles of one colour burst. Whatever was hanging from them falls, and a bubble that falls is worth double one that pops.","inLanguage":"en","gamePlatform":["Web Browser","Mobile","Tablet","Desktop"],"playMode":"SinglePlayer","applicationCategory":"GameApplication","operatingSystem":"Any","isAccessibleForFree":true,"isFamilyFriendly":true,"typicalAgeRange":"5-99","genre":["Puzzle","Board Game"],"offers":{"@type":"Offer","price":"0","priceCurrency":"ILS","availability":"https://schema.org/InStock"},"publisher":{"@id":"https://ellaz.fun/#org"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://ellaz.fun/"},{"@type":"ListItem","position":2,"name":"Classics","item":"https://ellaz.fun/games/classics/"},{"@type":"ListItem","position":3,"name":"Bubble Shooter","item":"https://ellaz.fun/games/bubbleshooter/"}]},{"@type":"HowTo","name":"How do you play?","inLanguage":"en","step":[{"@type":"HowToStep","position":1,"name":"Aim","text":"Touch the board and hold, or move the mouse. A dashed line shows the flight, walls included, and a ring shows the exact cell the bubble will end in."},{"@type":"HowToStep","position":2,"name":"Shoot","text":"Lift your finger. On a keyboard the arrow keys sweep the aim and the space bar fires; the two buttons under the board do the same thing."},{"@type":"HowToStep","position":3,"name":"Make three","text":"Three touching bubbles of one colour burst. Two do not, so the second one you park is an investment."},{"@type":"HowToStep","position":4,"name":"Cut the supports","text":"Every bubble hangs from the ceiling through its neighbours. Break the chain and everything under it drops, at 20 points a bubble against 10 for a pop."},{"@type":"HowToStep","position":5,"name":"Watch the line","text":"The dashed red line near the bottom is the end of the run. A bubble that settles on it or past it finishes the game."}]},{"@type":"FAQPage","inLanguage":"en","mainEntity":[{"@type":"Question","name":"Is this bubble shooter free?","acceptedAnswer":{"@type":"Answer","text":"Yes, and there is nothing to buy inside it. No account, no download, and no advertising."}},{"@type":"Question","name":"Do I need to install anything?","acceptedAnswer":{"@type":"Answer","text":"No. It runs in the browser on a phone, a tablet or a computer. Adding the site to your home screen also makes it work with no connection."}},{"@type":"Question","name":"How do you win?","acceptedAnswer":{"@type":"Answer","text":"By clearing every bubble off the board. You then get a fresh board and keep your score, so a long run is a stack of cleared boards rather than one ending."}},{"@type":"Question","name":"How many colours are there?","acceptedAnswer":{"@type":"Answer","text":"Four on easy, five on medium and six on hard. The launcher only ever gives you a colour that is still on the board."}},{"@type":"Question","name":"Why did those bubbles fall without popping?","acceptedAnswer":{"@type":"Answer","text":"They were hanging from the ones you popped. Anything no longer connected to the ceiling drops, and each of those is worth 20 points against 10 for a popped one."}},{"@type":"Question","name":"Can I bounce a shot off the wall?","acceptedAnswer":{"@type":"Answer","text":"Yes, and on a board with holes in it some places can be reached no other way. The aiming line draws the bounce for you."}},{"@type":"Question","name":"Does it save my game?","acceptedAnswer":{"@type":"Answer","text":"Yes. Leave in the middle of a board and it is waiting where you left it, on that device, with the score and the shot count intact."}},{"@type":"Question","name":"Is it suitable for a four-year-old?","acceptedAnswer":{"@type":"Answer","text":"On easy, yes. There is no reading, the touch targets are large, and the shapes on the bubbles mean colour vision is not required."}}]},{"@type":"Organization","@id":"https://ellaz.fun/#org","name":"Ellaz","url":"https://ellaz.fun/","logo":"https://ellaz.fun/icon.svg","description":"Free browser games, no download and no account","sameAs":["https://github.com/Sigmafier/ellaz"]}]}
+        </script>
+        <script type="module" crossorigin src="/assets/index-BoKUdFQW.js"></script><link rel="modulepreload" crossorigin href="/assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="/assets/shell-Bfq-Y9RE.js"><link rel="stylesheet" crossorigin href="/assets/shell-DkfkxXv9.css"><link rel="manifest" href="/manifest.webmanifest">
+        <link rel="modulepreload" crossorigin href="/assets/page-DgoEHUQu.js"><link rel="modulepreload" crossorigin href="/assets/game-bubbleshooter-BAeJv2TG.js">
+      </head>
+      <body class="screen" style="--g:#2BA8F0" data-page="game" data-game="bubbleshooter" data-locale="en">
+        
+    <div id="lang-offer" class="lang-offer">
+      <div class="in" data-for="he" lang="he" dir="rtl"><span class="txt">העמוד הזה קיים גם בעברית</span><a href="/he/games/bubbleshooter/" hreflang="he">עברית</a><button type="button" aria-label="סגירה">✕</button></div><div class="in" data-for="es" lang="es" dir="ltr"><span class="txt">Esta página también está en español</span><a href="/es/games/bubbleshooter/" hreflang="es">Español</a><button type="button" aria-label="Cerrar">✕</button></div><div class="in" data-for="fr" lang="fr" dir="ltr"><span class="txt">Cette page existe aussi en français</span><a href="/fr/games/bubbleshooter/" hreflang="fr">Français</a><button type="button" aria-label="Fermer">✕</button></div>
+    </div>
+    <script>
+      (function(){try{var d=document.documentElement,b=document.getElementById("lang-offer");if(!b)return;try{if(localStorage.getItem("ellaz:offer:v1"))return}catch(e){}var r=b.querySelectorAll("[data-for]"),h={},i;for(i=0;i<r.length;i++)h[r[i].getAttribute("data-for")]=1;var L=navigator.languages||[navigator.language||""],w="";for(i=0;i<L.length;i++){var t=String(L[i]).toLowerCase().split("-")[0];if(t==="en")return;if(h[t]){w=t;break}}if(!w)return;d.setAttribute("data-offer",w);var x=b.querySelector("button");if(x)x.addEventListener("click",function(){try{localStorage.setItem("ellaz:offer:v1","1")}catch(e){}d.removeAttribute("data-offer")});}catch(e){}})()
+    </script>
+    <header class="top"  style="--g:#2BA8F0">
+      <div class="in">
+        
+    <a class="hbtn home" href="/" aria-label="All games">
+      <span class="gl"><svg class="arw" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19.4 12H5.6"/><path d="M11.4 6.2 5.6 12l5.8 5.8"/></svg></span><span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3.8 10.6 12 4.2l8.2 6.4"/><path d="M5.9 12.2v6.6a1.4 1.4 0 0 0 1.4 1.4h9.4a1.4 1.4 0 0 0 1.4-1.4v-6.6"/><path d="M9.9 20.2v-4.6h4.2v4.6"/></svg></span>
+    </a>
+    <b class="gname">Bubble Shooter</b>
+    <details class="lang">
+    <summary class="hbtn ico" aria-label="Language: English">
+      <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0"/><path d="M16 12a4 9 0 1 1-8 0 4 9 0 0 1 8 0"/><path d="M3.4 9h17.2"/><path d="M3.4 15h17.2"/></svg></span>
+    </summary>
+    <div class="langsheet" role="group" aria-label="Language">
+      <b lang="en" dir="ltr" class="on"
+              ><span aria-hidden="true">&#10003;</span>English</b
+            ><a
+              href="/he/games/bubbleshooter/"
+              hreflang="he"
+              lang="he"
+              dir="rtl"
+              ><span aria-hidden="true"></span>עברית</a
+            ><a
+              href="/es/games/bubbleshooter/"
+              hreflang="es"
+              lang="es"
+              dir="ltr"
+              ><span aria-hidden="true"></span>Español</a
+            ><a
+              href="/fr/games/bubbleshooter/"
+              hreflang="fr"
+              lang="fr"
+              dir="ltr"
+              ><span aria-hidden="true"></span>Français</a
+            >
+    </div>
+  </details>
+    <button type="button" class="hbtn ico" data-sound aria-label="Sound" hidden>
+      <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4.4 9.6h2.9L11.6 6v12L7.3 14.4H4.4z"/><path d="M15.1 9.5a4.4 4.4 0 0 1 0 5"/><path d="M17.9 6.9a8.4 8.4 0 0 1 0 10.2"/></svg></span>
+    </button>
+    <div class="wallet-wrap"><span id="wallet-slot"></span></div>
+  
+      </div>
+    </header>
+    <main>
+    <div class="urow">
+    <nav class="bc">
+        <a href="/">Home</a> ›
+        <a href="/games/classics/">Classics</a> › Bubble Shooter
+      </nav><div class="tools"><button
+            type="button"
+            class="ubtn"
+            data-pause
+            data-label-pause="Pause"
+            data-label-resume="Resume"
+            aria-label="Pause"
+            hidden
+          >
+            <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M9.4 5.6v12.8"/><path d="M14.6 5.6v12.8"/></svg></span>
+          </button>
+          <button type="button" class="ubtn" data-restart aria-label="Restart" hidden>
+            <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20.4 4.2v4.4h-4.4"/></svg></span>
+          </button>
+          <button
+            type="button"
+            class="ubtn"
+            data-share
+            data-share-title="Bubble Shooter"
+            data-share-emoji="🎯"
+            aria-label="Share"
+            hidden
+          >
+            <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M15.2 5.6a2.6 2.6 0 1 0 5.2 0 2.6 2.6 0 1 0-5.2 0"/><path d="M3.6 12a2.6 2.6 0 1 0 5.2 0 2.6 2.6 0 1 0-5.2 0"/><path d="M15.2 18.4a2.6 2.6 0 1 0 5.2 0 2.6 2.6 0 1 0-5.2 0"/><path d="M8.5 10.7 15.5 7"/><path d="M8.5 13.3 15.5 17"/></svg></span>
+          </button><button type="button" class="ubtn" data-fullscreen aria-label="Full screen" hidden>
+        <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4.6 9.4V4.6h4.8"/><path d="M19.4 9.4V4.6h-4.8"/><path d="M4.6 14.6v4.8h4.8"/><path d="M19.4 14.6v4.8h-4.8"/></svg></span>
+      </button><button type="button" class="ubtn" data-report aria-label="Tell us" hidden>
+        <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M6.4 20.4V4.4"/><path d="M6.4 5.4h11.4l-2.5 3.6 2.5 3.6H6.4"/></svg></span>
+      </button></div>
+  </div>
+    <div class="stage">
+    <div class="box">
+      <div id="game-frame"></div>
+      <div
+        id="game-poster"
+        data-loading="The game loads by itself. Nothing to tap."
+        data-saver="Data saver is on, so we wait for your tap instead of downloading on our own."
+      >
+        <span class="em" aria-hidden="true">🎯</span>
+        <button class="play" id="game-play" type="button">Play</button>
+        <span class="msg" id="game-msg">The game needs JavaScript. The rest of this page does not.</span>
+      </div>
+    </div>
+  </div>
+
+    <h1>Bubble Shooter</h1>
+    <p class="lede">A free bubble shooter that runs in your browser. Aim the launcher, fire, and three bubbles of one colour burst. Whatever was hanging from them falls, and a bubble that falls is worth double one that pops.</p>
+
+    <!--
+      The page's own picture, and the first image in the article body.
+
+      Google chooses the thumbnail beside a text result from images embedded on
+      the page. Until 2026-08-22 there were none: the stage above draws the
+      emoji as TEXT and the art everywhere else is inline <svg>, which has no
+      URL and cannot be indexed as an image. So the result was permanently
+      pictureless with nothing failing anywhere.
+
+      width/height are the SVG's own declared box, so the browser reserves
+      the space from the attributes and this adds nothing to the layout shift.
+      loading is EAGER on purpose - it is the main image, above most of the
+      prose, and a lazy main image is one Google may not see.
+
+      The alt is one template per language with the game's name filled in.
+      It was the page's own H1 for an hour, which reads as "Snake" and "2048"
+      in three of the four languages - a name, not a description of a picture.
+    -->
+    <img
+      class="art"
+      src="/art/bubbleshooter-6f04834c.svg"
+      alt="Bubble Shooter - the game&#39;s own artwork"
+      width="1200"
+      height="900"
+      decoding="async"
+    />
+    <ul class="facts">
+      <li>Free</li><li>No ads</li><li>No account</li><li>No download</li><li>Works offline</li><li>Single player</li>
+    </ul>
+
+    <h2>How do you play?</h2>
+    <ol>
+    <li><b>Aim</b> - Touch the board and hold, or move the mouse. A dashed line shows the flight, walls included, and a ring shows the exact cell the bubble will end in.</li><li><b>Shoot</b> - Lift your finger. On a keyboard the arrow keys sweep the aim and the space bar fires; the two buttons under the board do the same thing.</li><li><b>Make three</b> - Three touching bubbles of one colour burst. Two do not, so the second one you park is an investment.</li><li><b>Cut the supports</b> - Every bubble hangs from the ceiling through its neighbours. Break the chain and everything under it drops, at 20 points a bubble against 10 for a pop.</li><li><b>Watch the line</b> - The dashed red line near the bottom is the end of the run. A bubble that settles on it or past it finishes the game.</li>
+  </ol>
+
+    <h2>About this game</h2>
+    <p>Point at a gap, shoot, and three of a colour go. You already know this game. What you probably do not know is how much of the board is behind a wall.</p><p>An easy board opens with 38 bubbles: 4 rows, 4 colours. Medium is 48 bubbles over 5 rows and 5 colours, hard is 57 over 6 rows and 6 colours, and every colour added makes a group of three that much rarer. The ceiling is the clock. It pushes a new row down every 12 shots on easy, every 9 on medium and every 6 on hard, so if you popped nothing whatsoever you would get 96 shots on easy and 36 on hard before the bubbles arrive at the line across the bottom. Popping is the only thing that buys that room back.</p><p>We measured the walls, and the first answer was zero. Firing 121 angles at 40 opening boards per level, every resting place a bounced shot could reach was reachable by a straight shot as well, on every board, at every level. A full board has no shadows in it. Forty shots later that changes: on a played board, between one and four of the roughly fifteen places you can still reach are behind a wall and nowhere else.</p><p>Then we built a bot to find out how long a run lasts. It pops when anything pops and otherwise parks the bubble against one of its own colour, which is roughly what a person does after ten minutes. On easy and medium it never lost a run: 300 shots, twenty runs each, still going at the cut-off, clearing board after board. Hard is a different game. There the median run died after 58 shots, and only 5 runs in 20 ever cleared a board at all. If hard feels unreasonable, that is the level and not you.</p><p>Clear every bubble and you get a fresh board with your score intact. That is the only happy ending here.</p>
+
+    <h2>What does it teach?</h2>
+    <h3>Angles</h3>
+    <p>The bounce is a reflection, and a few hundred shots teach it better than a diagram does. Aim high on the wall and the shot lands short.</p><h3>Consequences</h3>
+    <p>A bubble placed now decides what is possible three shots later. This is the game&#39;s real subject and children pick it up without being told.</p><h3>Counting to three</h3>
+    <p>The threshold is three, always, at every level. A four-year-old can hold that rule in their head while doing something else.</p><h3>Patience under a clock</h3>
+    <p>The ceiling advances whatever you do, so a rushed shot and a considered one cost exactly the same. That is a useful thing to find out.</p>
+
+    <h2>Tips</h2>
+    <h3>Shoot at the wall on purpose</h3>
+    <p>The gap tucked under an overhang has no straight line to it, and a shot that grazes the wall arrives at an angle no direct shot can. This is the one skill this game has that a grid puzzle does not.</p><h3>Take the ceiling row seriously</h3>
+    <p>Bubbles hanging off the top row are the supports for everything below. One well-placed pop up there can drop a dozen bubbles that you never touched.</p><h3>Park, then pop</h3>
+    <p>With nothing to pop, do not dump the bubble in the nearest hole. Put it beside its own colour. The bot that started doing exactly that went from dying in 17 shots on hard to surviving 58.</p><h3>Keep the sides short</h3>
+    <p>The board reaches the line at its lowest point, and that is usually a column at the edge. Clearing the edges buys more time than clearing the middle.</p><h3>The launcher is fair</h3>
+    <p>It only ever hands you a colour still on the board, so there is no shot that could not have been useful. Being handed a colour you cannot use is not a thing that happens here.</p>
+
+    <h2>What age is it for?</h2>
+    <h3>4 to 5</h3>
+    <p>Easy, and no talk of scores. Four colours and a new row only every 12 shots gives a small child room to miss a lot and still see bubbles burst.</p><h3>6 to 8</h3>
+    <p>Easy to medium. This is where the wall bounce clicks, usually by accident first.</p><h3>9 and up</h3>
+    <p>Medium, then hard when medium stops ending. Our bot cleared 79 boards across 20 medium runs and only 5 across 20 hard ones.</p><h3>Grown-ups</h3>
+    <p>Hard. Six colours over 57 bubbles with a row arriving every 6 shots is a genuine fight, and the score is the point rather than survival.</p>
+
+    <h2>Accessibility</h2>
+    <p>Every bubble carries a shape as well as a colour: a dot, a ring, a triangle, a star, a diamond or a cross. That is deliberate, because roughly one boy in twelve cannot separate the red from the green here, and a matching game played on hue alone would not be difficult for them, it would be impossible. The whole game can be played from a keyboard, with the arrow keys sweeping the aim and the space bar firing, and the two buttons under the board do the same job for anyone who cannot hold a steady finger on a moving target. Nothing is timed against a stopwatch, and the aiming line shows exactly where a shot will land before it costs anything.</p>
+
+    <h2>Playing together</h2>
+    <h3>Call the shot</h3>
+    <p>One person names the gap, the other aims for it. Missing is funnier when somebody else picked the target.</p><h3>One shot each</h3>
+    <p>Alternate. It turns a quiet game into an argument about which support to cut, which is the good kind of argument.</p><h3>Bank shots only</h3>
+    <p>Agree that every shot has to touch a wall first. Scores collapse, and the geometry gets learned properly.</p><h3>Guess the drop</h3>
+    <p>Before a shot that cuts a support, both of you guess how many bubbles fall. The score tells you who was right.</p>
+
+    <h2>Common questions</h2>
+    <h3>Is this bubble shooter free?</h3>
+      <p>Yes, and there is nothing to buy inside it. No account, no download, and no advertising.</p><h3>Do I need to install anything?</h3>
+      <p>No. It runs in the browser on a phone, a tablet or a computer. Adding the site to your home screen also makes it work with no connection.</p><h3>How do you win?</h3>
+      <p>By clearing every bubble off the board. You then get a fresh board and keep your score, so a long run is a stack of cleared boards rather than one ending.</p><h3>How many colours are there?</h3>
+      <p>Four on easy, five on medium and six on hard. The launcher only ever gives you a colour that is still on the board.</p><h3>Why did those bubbles fall without popping?</h3>
+      <p>They were hanging from the ones you popped. Anything no longer connected to the ceiling drops, and each of those is worth 20 points against 10 for a popped one.</p><h3>Can I bounce a shot off the wall?</h3>
+      <p>Yes, and on a board with holes in it some places can be reached no other way. The aiming line draws the bounce for you.</p><h3>Does it save my game?</h3>
+      <p>Yes. Leave in the middle of a board and it is waiting where you left it, on that device, with the score and the shot count intact.</p><h3>Is it suitable for a four-year-old?</h3>
+      <p>On easy, yes. There is no reading, the touch targets are large, and the shapes on the bubbles mean colour vision is not required.</p>
+
+    <h2>More games</h2>
+    <ul class="grid">
+    <li>
+        <a href="/games/2048/">
+          <span class="em" aria-hidden="true">🔢</span>
+          <span>2048<span class="cat">Classics</span></span>
+        </a>
+      </li><li>
+        <a href="/games/tictactoe/">
+          <span class="em" aria-hidden="true">⭕</span>
+          <span>Tic-Tac-Toe<span class="cat">Classics</span></span>
+        </a>
+      </li><li>
+        <a href="/games/minesweeper/">
+          <span class="em" aria-hidden="true">💣</span>
+          <span>Minesweeper<span class="cat">Classics</span></span>
+        </a>
+      </li><li>
+        <a href="/games/sudoku/">
+          <span class="em" aria-hidden="true">🔡</span>
+          <span>Sudoku<span class="cat">Classics</span></span>
+        </a>
+      </li><li>
+        <a href="/games/snake/">
+          <span class="em" aria-hidden="true">🐍</span>
+          <span>Snake<span class="cat">Classics</span></span>
+        </a>
+      </li><li>
+        <a href="/games/blocks/">
+          <span class="em" aria-hidden="true">🧱</span>
+          <span>Falling Blocks<span class="cat">Classics</span></span>
+        </a>
+      </li>
+  </ul>
+
+    <section class="embed" id="embed">
+    <h2>Put this game on your site</h2>
+    <p>Copy the code and paste it into your page. The line under the frame is the part that counts: a link inside the frame stays on ellaz.fun, and only the one you paste is yours.</p>
+    <iframe
+      src="/embed/bubbleshooter/?lang=en"
+      width="100%"
+      height="940"
+      style="border:0;border-radius:12px;background:var(--doc-stage)"
+      allow="fullscreen"
+      loading="lazy"
+      title="Bubble Shooter - ellaz.fun"
+    ></iframe>
+    <p class="embed-credit"><p>Play <a href="https://ellaz.fun/games/bubbleshooter/">Bubble Shooter</a> and more free games at <a href="https://ellaz.fun/">ellaz.fun</a></p></p>
+    <pre
+      class="embed-code"
+      data-embed-code
+      dir="ltr"
+      style="white-space:pre-wrap;word-break:break-all;padding:14px;border-radius:12px;background:var(--doc-card);border:1px solid var(--doc-line);font-size:.85rem"
+    >&lt;iframe src=&quot;https://ellaz.fun/embed/bubbleshooter/?lang=en&quot; width=&quot;100%&quot; height=&quot;940&quot; style=&quot;border:0;border-radius:12px&quot; allow=&quot;fullscreen&quot; title=&quot;Bubble Shooter - ellaz.fun&quot;&gt;&lt;/iframe&gt;
+&lt;p&gt;Play &lt;a href=&quot;https://ellaz.fun/games/bubbleshooter/&quot;&gt;Bubble Shooter&lt;/a&gt; and more free games at &lt;a href=&quot;https://ellaz.fun/&quot;&gt;ellaz.fun&lt;/a&gt;&lt;/p&gt;</pre>
+    <button
+      type="button"
+      class="play"
+      data-embed-copy
+      data-label-copied="Copied"
+      data-label-select="The code is selected - copy it"
+      hidden
+    >Copy the code</button>
+  </section>
+  </main>
+    <footer>
+      <div class="in">
+        <span>Ellaz - free games in Hebrew, English, Spanish and French. No ads, no accounts, and nothing collected about a child.</span>
+        <a href="/he/games/bubbleshooter/" hreflang="he" lang="he">עברית</a><a href="/es/games/bubbleshooter/" hreflang="es" lang="es">Español</a><a href="/fr/games/bubbleshooter/" hreflang="fr" lang="fr">Français</a>
+      </div>
+    </footer>
+  
+        <div id="consent" class="consent" role="dialog" aria-live="polite" lang="en" dir="ltr"><p>We count visits with a small Google cookie. No ads, no personal tracking.</p><button type="button" data-yes>Allow</button><button type="button" data-no>No thanks</button></div>
+    <style>
+      .consent{display:none;position:fixed;inset-inline:0;bottom:0;z-index:60;padding:12px;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;background:#1d1b2e;color:#fff;font-size:14px}[data-consent] .consent{display:flex}.consent p{margin:0;max-width:48ch}.consent button{font:inherit;font-weight:600;padding:8px 18px;min-height:40px;border:0;border-radius:8px;background:#fff;color:#1d1b2e}
+    </style>
+    <script>
+      (function(){try{var d=document.documentElement,b=document.getElementById("consent");if(!b||!window.gtag)return;var v=null;try{v=localStorage.getItem("ellaz:consent:v1")}catch(e){}if(v==="granted"){gtag("consent","update",{analytics_storage:"granted"});return}if(v==="denied")return;d.setAttribute("data-consent","1");function done(a){try{localStorage.setItem("ellaz:consent:v1",a)}catch(e){}if(a==="granted")gtag("consent","update",{analytics_storage:"granted"});d.removeAttribute("data-consent")}var y=b.querySelector("[data-yes]"),n=b.querySelector("[data-no]");if(y)y.addEventListener("click",function(){done("granted")});if(n)n.addEventListener("click",function(){done("denied")});}catch(e){}})()
+    </script>
+      </body>
+    </html>

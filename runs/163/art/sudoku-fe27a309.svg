@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" class="ellaz-art" viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect width="200" height="150" fill="#A855C9"/><circle cx="168" cy="24" r="62" fill="#C68BDC"/>
+    <rect x="26" y="16" width="148" height="118" rx="8" fill="#FFF7EC"/>
+    <g stroke="#A855C9" stroke-width="2.6" opacity=".5"><path d="M75 16v118M125 16v118M26 55h148M26 94h148"/></g>
+    <g stroke="#241C3B" stroke-width="4"><path d="M75 16v118M125 16v118M26 55h148M26 94h148"/></g>
+    <g font-family="Rubik,system-ui,sans-serif" font-size="24" font-weight="700" text-anchor="middle">
+      <text x="50" y="45" fill="#4F5BD5">5</text><text x="150" y="45" fill="#4F5BD5">9</text>
+      <text x="100" y="84" fill="#FF4D8D">7</text>
+      <text x="50" y="123" fill="#4F5BD5">2</text><text x="150" y="123" fill="#17B98A">4</text></g><rect width="200" height="150" style="fill:transparent"/></svg>

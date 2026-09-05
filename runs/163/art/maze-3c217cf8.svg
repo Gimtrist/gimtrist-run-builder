@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" class="ellaz-art" viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect width="200" height="150" fill="#6FD44E"/><path d="M0 104 200 56v94H0z" fill="#93E378"/>
+    <rect x="18" y="16" width="164" height="118" rx="9" fill="#FFF7EC" stroke="#241C3B" stroke-width="3.5"/>
+    <g stroke="#241C3B" stroke-width="7" stroke-linecap="round" fill="none">
+      <path d="M58 16v46M98 134V90M138 16v58M18 98h38M98 62h58"/></g>
+    <circle cx="122" cy="40" r="7" fill="#FFC730" stroke="#241C3B" stroke-width="3"/>
+    <g><path d="M148 134c0-18 12-30 26-30v30z" fill="#241C3B"/>
+      <path d="M156 134c0-11 7-19 15-19v19z" fill="#4A4066"/></g>
+    <g><path d="M37 68c-9 5-13 12-11 20" stroke="#241C3B" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+      <circle cx="40" cy="46" r="6" fill="#FFF7EC" stroke="#241C3B" stroke-width="3"/>
+      <circle cx="58" cy="46" r="6" fill="#FFF7EC" stroke="#241C3B" stroke-width="3"/>
+      <circle cx="49" cy="58" r="15" fill="#FFF7EC" stroke="#241C3B" stroke-width="3"/>
+      <circle cx="45" cy="55" r="2.6" fill="#241C3B"/><circle cx="55" cy="55" r="2.6" fill="#241C3B"/>
+      <circle cx="50" cy="63" r="2.6" fill="#FF4D8D"/></g><rect width="200" height="150" style="fill:transparent"/></svg>

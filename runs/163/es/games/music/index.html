@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="es" dir="ltr">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <!-- FIRST, and synchronous. data-theme is deliberately never baked into
+             these documents - they are cached and it would be wrong for whoever
+             chose the other theme - so this is what sets it before the first
+             paint. A module import runs far too late and the page visibly
+             flashes the other theme. Generated from themes.ts, never written
+             out here, so adding a theme cannot leave it behind. -->
+        <script>
+          (function(){try{var t=localStorage.getItem("ellaz:theme");if(t&&["market","night"].indexOf(t)>-1&&t!=="market")document.documentElement.setAttribute("data-theme",t)}catch(e){}})()
+        </script>
+        <meta name="theme-color" content="#ff4d8d" />
+        <title>Caja de música - juego de crear gratis | Ellaz</title>
+        <meta name="description" content="Juego de música gratis en el navegador. Enciendes cuadros en una rejilla, pulsas play y tu melodía suena en bucle. Tres sonidos, sin reloj y sin equivocarse." />
+        <link rel="canonical" href="https://ellaz.fun/es/games/music/" />
+        <link rel="alternate" hreflang="en" href="https://ellaz.fun/games/music/" /><link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/music/" /><link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/music/" /><link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/music/" />
+        <link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/music/" />
+        
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Ellaz" />
+        <meta property="og:locale" content="es_ES" />
+        <meta property="og:locale:alternate" content="en_US" /><meta property="og:locale:alternate" content="he_IL" /><meta property="og:locale:alternate" content="fr_FR" />
+        <meta property="og:title" content="Caja de música - juego de crear gratis | Ellaz" />
+        <meta property="og:description" content="Juego de música gratis en el navegador. Enciendes cuadros en una rejilla, pulsas play y tu melodía suena en bucle. Tres sonidos, sin reloj y sin equivocarse." />
+        <meta property="og:url" content="https://ellaz.fun/es/games/music/" />
+        <meta property="og:image" content="https://ellaz.fun/og/game-music-es-119c4582.png" />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+          <meta property="og:image:alt" content="Caja de música - juego de crear gratis | Ellaz" />
+          <meta name="twitter:image" content="https://ellaz.fun/og/game-music-es-119c4582.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <!-- Measurement, on EVERY emitted document and not only the app shell.
+             Search Console says the arrivals land on GAME pages from Hebrew
+             queries, so a shell-only tag would have measured almost none of
+             them. Empty on any non-primary base, so the noindex mirror never
+             reports. Config and its deliberate limits: src/build/analytics.ts. -->
+        
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E25QBB8420"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied'});gtag('set','ads_data_redaction',true);gtag('js',new Date());gtag('config','G-E25QBB8420',{client_storage:'none',allow_google_signals:false,allow_ad_personalization_signals:false});</script>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;800&amp;family=Fredoka:wght@500;600&amp;display=swap" />
+        <style>
+          *,*::before,*::after{box-sizing:border-box}
+:root{
+  --doc-ink:var(--text,#1b1b2b);
+  --doc-soft:var(--text-dim,#5a5a72);
+  --doc-line:var(--line,#e4e2ef);
+  --doc-bg:var(--bg,#fdfcff);
+  --doc-card:var(--surface,#ffffff);
+  --doc-brand:var(--brand-ink,#6c5ce7);
+  --doc-sun:var(--yellow,#ffc730);
+  --doc-stage:var(--stage-bg,#12142b);
+}
+:root[data-theme="night"]{
+  --doc-ink:var(--text,#f5f6ff);
+  --doc-soft:var(--text-dim,#b3b8e0);
+  --doc-line:var(--line,#2a2f55);
+  --doc-bg:var(--bg,#0f1226);
+  --doc-card:var(--surface,#1e2240);
+  --doc-brand:var(--brand-ink,#a29bfe);
+  --doc-sun:var(--yellow,#fdcb6e);
+  --doc-stage:var(--stage-bg,#12142b);
+}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--doc-bg);color:var(--doc-ink);
+  font:400 17px/1.7 Heebo,Assistant,Rubik,system-ui,-apple-system,sans-serif}
+main{max-width:44rem;margin-inline:auto;padding:0 20px 72px}
+h1,h2,h3{font-family:Fredoka,Heebo,system-ui,sans-serif;line-height:1.25;margin:0;
+  color:var(--doc-ink)}
+h1{font-size:2rem;font-weight:600;margin-block:8px 12px}
+h2{font-size:1.35rem;font-weight:600;margin-block:44px 12px}
+h3{font-size:1.05rem;font-weight:600;margin-block:22px 4px}
+p{margin-block:0 14px}
+a{color:var(--doc-brand)}
+.top{border-block-end:1px solid var(--doc-line);background:var(--doc-card)}
+.top .in{max-width:44rem;margin-inline:auto;padding:12px 20px;display:flex;
+  align-items:center;gap:12px}
+.brand{font-family:Fredoka,system-ui,sans-serif;font-size:1.15rem;font-weight:600;
+  color:var(--doc-ink);text-decoration:none}
+.tagline{color:var(--doc-soft);font-size:.82rem;flex:1}
+#wallet-slot{flex:0 0 auto}
+.bc{font-size:.82rem;font-weight:600;color:var(--doc-soft);margin-block:18px 0}
+.bc a{text-decoration:none}
+.vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;
+  clip-path:inset(50%);white-space:nowrap;border:0}
+.beta{font-size:.68rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
+  padding:3px 8px;border-radius:var(--radius-pill,999px);
+  background:#F2B93F;color:#241C17;white-space:nowrap;flex:0 0 auto;align-self:center}
+body.screen .urow:has(.beta) .bc{margin-inline-end:0}
+body.screen .urow .beta{margin-inline-end:auto}
+.lede{font-size:1.12rem;color:var(--doc-ink)}
+img.art{display:block;width:100%;max-width:520px;aspect-ratio:4/3;height:auto;margin:18px 0 0;border-radius:14px;border:1px solid var(--doc-line);background:var(--doc-card)}
+.facts{list-style:none;display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:18px 0 0}
+.facts li{border:1px solid var(--doc-line);background:var(--doc-card);border-radius:999px;
+  padding:5px 13px;font-size:.82rem;font-weight:600;color:var(--doc-soft)}
+.cta{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin:26px 0 8px}
+.play{display:inline-flex;align-items:center;justify-content:center;min-height:76px;
+  padding:0 40px;border:none;border-radius:22px;background:var(--doc-sun);
+  color:var(--doc-ink);text-decoration:none;font-family:Fredoka,system-ui,sans-serif;
+  font-size:1.3rem;font-weight:600;box-shadow:0 4px 0 var(--doc-line);cursor:pointer}
+.cta .note{color:var(--doc-soft);font-size:.86rem;flex:1 1 12rem}
+ol,ul.steps{padding-inline-start:1.3em}
+ol li,ul.steps li{margin-block-end:8px}
+table{border-collapse:collapse;width:100%;margin-block:14px;font-size:.95rem}
+th,td{border:1px solid var(--doc-line);padding:8px 12px;text-align:start}
+th{background:var(--doc-card);font-weight:600}
+.grid{list-style:none;padding:0;margin:20px 0 0;display:grid;gap:12px;
+  grid-template-columns:repeat(auto-fill,minmax(9.5rem,1fr))}
+.grid a{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--doc-card);
+  border:1px solid var(--doc-line);border-radius:16px;text-decoration:none;
+  color:var(--doc-ink);font-weight:600}
+.grid .em{font-size:1.5rem;line-height:1}
+.grid .cat{display:block;font-size:.75rem;font-weight:400;color:var(--doc-soft)}
+footer{border-block-start:1px solid var(--doc-line);margin-block-start:56px;
+  padding:22px 20px 40px;color:var(--doc-soft);font-size:.85rem}
+footer .in{max-width:44rem;margin-inline:auto;display:flex;flex-wrap:wrap;gap:14px}
+.stage{position:relative;margin-block:14px 6px;margin-inline:-20px}
+@media (min-width:720px){.stage{margin-inline:0}}
+.stage .box{position:relative;border-radius:22px;overflow:hidden;
+  background:var(--doc-stage);box-shadow:0 5px 0 var(--doc-line);
+  min-height:clamp(420px,calc(100dvh - 145px),860px);display:flex;flex-direction:column}
+.stage.room .box{min-height:clamp(460px,calc(100dvh - 120px),880px)}
+.stage.boards .box{min-height:clamp(300px,46dvh,560px)}
+#game-frame{flex:1;min-height:0;display:flex;flex-direction:column}
+#game-poster{position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:18px;text-align:center;padding:24px;
+  color:var(--doc-ink);transition:opacity .25s ease}
+#game-poster[hidden]{display:none}
+#game-poster .em{font-size:64px;line-height:1}
+#game-poster .msg{font-size:.95rem;opacity:.75;max-width:22ch}
+.stage .noscript{position:absolute;inset-inline:0;bottom:0;padding:12px;
+  background:var(--badge-fill,rgba(0,0,0,.55));color:var(--on-brand,#fff);font-size:.85rem;text-align:center}
+@media (max-width:719px){.stage .box{border-radius:0;box-shadow:none;
+  border-block:1px solid var(--doc-line)}}
+body[data-page="game"] main,body[data-page="world"] main{max-width:none;padding-inline:0}
+body[data-page="game"] main>:not(.stage),
+body[data-page="world"] main>:not(.stage){max-width:44rem;margin-inline:auto;
+  padding-inline:20px}
+body[data-page="game"] .stage,body[data-page="world"] .stage{margin-block:0;
+  margin-inline:0}
+body[data-page="game"] .stage .box,body[data-page="world"] .stage .box{
+  height:calc(100dvh - var(--hh) - var(--uh) - var(--oh));min-height:0;border-radius:0;
+  box-shadow:none;border:0;justify-content:center}
+body[data-page="game"] .stage .box{justify-content:flex-start}
+body[data-page="world"] #game-frame:empty{min-height:100%}
+body[data-page="game"] #game-frame,body[data-page="world"] #game-frame{flex:0 0 auto}
+body.screen .urow{display:flex;align-items:center;gap:10px;height:var(--uh);
+  padding-inline:var(--hpad);background:var(--doc-bg)}
+body.screen .urow .bc{margin:0;flex:0 1 auto;margin-inline-end:auto;min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+body.screen .urow .bc a{color:inherit;text-decoration:underline;
+  text-underline-offset:3px;text-decoration-thickness:1px;
+  display:inline-block;padding-block:12px;margin-block:-12px;
+  text-decoration-color:color-mix(in srgb,currentColor 55%,transparent)}
+body.screen .urow .tools{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.ubtn{display:inline-flex;align-items:center;justify-content:center;
+  width:var(--tap);height:var(--tap);flex:0 0 auto;border:0;padding:0;
+  cursor:pointer;border-radius:var(--urad);background:var(--doc-card);
+  color:var(--doc-ink);box-shadow:0 2px 0 var(--doc-line)}
+.ubtn[hidden]{display:none}
+.ubtn .gl{display:flex}
+.ubtn svg{display:block;width:var(--hicon);height:var(--hicon);fill:none;
+  stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+body.screen{--hh:60px;--uh:60px;--oh:0px;--tap:44px;--hgap:12px;--hpad:20px;
+  --hbrand:22px;--hfont:14.5px;--hicon:22px;--hrad:99px;--urad:14px;
+  --hdr-ink:#FFF6E9}
+@media (max-width:719px){body.screen{--hh:58px;--uh:56px;--hbrand:20px;--hgap:8px;--hpad:12px}}
+body.screen{--gc-cell-bg:var(--surface)}
+@supports (background:color-mix(in oklab,red 10%,blue)){
+body.screen{--gc-cell-bg:color-mix(in oklab,var(--g,var(--brand)) 16%,var(--surface))}}
+body.screen .top{position:relative;z-index:6;height:var(--hh);
+  display:flex;align-items:center;padding:0;border-block-end:0;
+  color:var(--hdr-ink);
+  background:color-mix(in oklch, var(--g,#4F5BD5) 46%, #0C0812);
+  background:oklch(from var(--g,#4F5BD5) .30 calc(c * 1.05) h)}
+body.screen .top .in{max-width:none;margin:0;width:100%;
+  padding:0 var(--hpad);gap:var(--hgap);justify-content:space-between}
+body.screen .tagline{display:none}
+body.screen .gname{flex:1 1 0;min-width:0;
+  font:600 16px/1 Fredoka,system-ui,sans-serif;color:var(--hdr-ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-inline:2px}
+@media (max-width:719px){body.screen .gname{display:none}}
+.hbtn.home{gap:7px;padding:0 15px}
+.hbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  height:var(--tap);
+  border:0;margin:0;cursor:pointer;text-decoration:none;flex:0 0 auto;
+  border-radius:var(--hrad);padding:0 calc(var(--tap) * .39);white-space:nowrap;
+  font:600 var(--hfont)/1 inherit;
+  background:rgba(255,255,255,.12);color:var(--hdr-ink)}
+.hbtn.ico{width:var(--tap);padding:0}
+body.screen .top .lang{margin-inline-start:auto}
+body.screen .top .lang + [data-sound]{margin-inline-start:0}
+body.screen .top [data-sound]{margin-inline-start:auto}
+body.screen .top .lang{position:relative;flex:0 0 auto}
+body.screen .top .lang>summary{list-style:none}
+body.screen .top .lang>summary::-webkit-details-marker{display:none}
+body.screen .top .lang>summary::marker{content:""}
+.langsheet{position:absolute;inset-inline-end:0;top:calc(var(--tap) + 6px);
+  z-index:7;min-width:152px;max-width:min(84vw,300px);padding:6px;
+  display:flex;flex-direction:column;gap:2px;
+  border-radius:var(--urad);background:var(--doc-card);
+  border:1px solid var(--doc-line);box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.langsheet>a,.langsheet>b{display:flex;align-items:center;gap:8px;
+  min-height:var(--tap);padding:0 10px;border-radius:10px;
+  font:600 15px/1 inherit;color:var(--doc-ink);text-decoration:none}
+.langsheet>a:hover{background:color-mix(in oklab,var(--doc-ink) 8%,transparent)}
+.langsheet>b{font-weight:800;
+  background:color-mix(in oklab,var(--doc-ink) 8%,transparent)}
+.langsheet>a>span,.langsheet>b>span{width:14px;flex:0 0 14px;text-align:center}
+.hbtn:hover{background:rgba(255,255,255,.2)}
+.hbtn.pri{background:#FFF6E9;color:#241C2B}
+.hbtn.pri:hover{background:#fff}
+.hbtn[hidden]{display:none}
+.hbtn .gl{display:flex;flex:0 0 auto}
+.hbtn svg{width:var(--hicon);height:var(--hicon);
+  display:block;fill:none;stroke:currentColor;stroke-width:2.2;
+  stroke-linecap:round;stroke-linejoin:round}
+#wallet-slot svg{width:var(--hicon);height:var(--hicon);stroke-width:2.2}
+[dir="rtl"] .hbtn .gl .arw{transform:scaleX(-1);transform-origin:center}
+.wallet-wrap{display:inline-flex;align-items:center;height:var(--tap);
+  border-radius:99px;padding:0 calc(var(--tap) * .34);
+  background:rgba(255,255,255,.12)}
+body.screen #wallet-slot>*{background:none;box-shadow:none;border:0;
+  padding:0;color:var(--hdr-ink);height:var(--tap);gap:10px}
+@media (max-width:719px){
+  .hbtn .tx{display:none}
+  .wallet-wrap{padding:0 10px}
+}
+@media (max-width:480px){body{font-size:16px}h1{font-size:1.6rem}.play{width:100%}
+  .stage .box{min-height:clamp(420px,calc(100dvh - 120px),860px)}
+  .tagline{display:none}}
+.lang-offer{display:none}
+html[data-offer] .lang-offer{position:relative;z-index:8;display:flex;
+  justify-content:center;height:46px;box-sizing:border-box;
+  background:var(--doc-card);border-bottom:1px solid var(--doc-line)}
+.lang-offer .in{flex:1 1 auto;max-width:700px;display:none;align-items:center;
+  gap:10px;padding:0 12px;box-sizing:border-box}
+html[data-offer="en"] .lang-offer .in[data-for="en"]{display:flex}
+html[data-offer="he"] .lang-offer .in[data-for="he"]{display:flex}
+html[data-offer="es"] .lang-offer .in[data-for="es"]{display:flex}
+html[data-offer="fr"] .lang-offer .in[data-for="fr"]{display:flex}
+.lang-offer .txt{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;font-weight:500;font-size:14px;color:var(--doc-soft)}
+.lang-offer a{flex:0 0 auto;display:inline-flex;align-items:center;height:32px;
+  padding:0 14px;border-radius:999px;text-decoration:none;font-weight:700;
+  font-size:14px;background:var(--doc-ink);color:var(--doc-card)}
+.lang-offer button{flex:0 0 auto;width:32px;height:32px;display:grid;
+  place-items:center;border:0;border-radius:999px;background:none;cursor:pointer;
+  color:var(--doc-soft);font-size:17px;line-height:1}
+html[data-offer] body.screen{--oh:46px}
+        </style>
+        <script type="application/ld+json">
+          {"@context":"https://schema.org","@graph":[{"@type":["VideoGame","SoftwareApplication"],"@id":"https://ellaz.fun/es/games/music/#game","name":"Caja de música","url":"https://ellaz.fun/es/games/music/","image":["https://ellaz.fun/art/music-a2a9b5ad.svg","https://ellaz.fun/og/game-music-es-119c4582.png"],"description":"Un juguete musical gratuito que funciona en el navegador. Una rejilla de cuadros de colores, seis filas de notas y de cuatro a ocho tiempos. Enciendes cuadros, pulsas play y lo que has hecho suena en bucle. El sonido se cambia cuando quieras. En esta pantalla no existe la respuesta equivocada.","inLanguage":"es","gamePlatform":["Web Browser","Mobile","Tablet","Desktop"],"playMode":"SinglePlayer","applicationCategory":"GameApplication","operatingSystem":"Any","isAccessibleForFree":true,"isFamilyFriendly":true,"typicalAgeRange":"3-10","genre":["Casual","Creative"],"offers":{"@type":"Offer","price":"0","priceCurrency":"ILS","availability":"https://schema.org/InStock"},"publisher":{"@id":"https://ellaz.fun/#org"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Inicio","item":"https://ellaz.fun/es/"},{"@type":"ListItem","position":2,"name":"Caja de música","item":"https://ellaz.fun/es/games/music/"}]},{"@type":"HowTo","name":"¿Cómo se juega?","inLanguage":"es","step":[{"@type":"HowToStep","position":1,"name":"Enciende cuadros","text":"Cada fila es una nota distinta. Arriba agudo, abajo grave, y un color por fila."},{"@type":"HowToStep","position":2,"name":"Pulsa play","text":"La melodía va de izquierda a derecha y vuelve a empezar, una y otra vez, hasta que la paras."},{"@type":"HowToStep","position":3,"name":"Cambia el sonido","text":"Tres botones: redondo, suave y brillante. La misma melodía llega sonando a otro juguete."},{"@type":"HowToStep","position":4,"name":"Pide una sorpresa","text":"El botón del destello reparte una melodía hecha, una nota por tiempo, y desde ahí se edita."},{"@type":"HowToStep","position":5,"name":"Alárgala","text":"Cuatro, seis u ocho tiempos. Las notas que caben en la longitud nueva se quedan donde estaban."}]},{"@type":"FAQPage","inLanguage":"es","mainEntity":[{"@type":"Question","name":"¿Se puede tocar algo mal?","acceptedAnswer":{"@type":"Answer","text":"No, y no hay manera. Las seis notas vienen de una escala pentatónica, que no tiene ni semitonos ni tritonos, así que cualquier combinación se entiende consigo misma. También una columna con las seis."}},{"@type":"Question","name":"¿Se guarda mi melodía?","acceptedAnswer":{"@type":"Answer","text":"Sí, en el aparato. Vuelves y está tal cual la dejaste, con el sonido que elegiste. Se guarda una melodía por longitud."}},{"@type":"Question","name":"¿Qué le pasa a la melodía si cambio la longitud?","acceptedAnswer":{"@type":"Answer","text":"Sobrevive. La rejilla crece o encoge y las notas no se mueven, cosa que a propósito no ocurre en ningún otro juego nuestro. De ocho tiempos a cuatro se conserva más o menos la mitad."}},{"@type":"Question","name":"¿Cuántas melodías se pueden hacer?","acceptedAnswer":{"@type":"Answer","text":"281.474.976.710.656 en una rejilla de ocho tiempos, porque son 48 cuadros encendidos o apagados por separado. El botón de la sorpresa por sí solo llega a 1.679.616."}},{"@type":"Question","name":"¿Cómo se ganan monedas?","acceptedAnswer":{"@type":"Answer","text":"Una moneda por cada seis notas que crece la melodía. Borrar no retira una moneda ya dada, y volver a poner esas notas no paga dos veces."}},{"@type":"Question","name":"¿Se puede grabar o descargar la melodía?","acceptedAnswer":{"@type":"Answer","text":"Ahora mismo no. Suena y queda guardada en el aparato, y no hay forma de exportarla como archivo."}},{"@type":"Question","name":"¿Por qué solo tres sonidos?","acceptedAnswer":{"@type":"Answer","text":"Porque tres botones caben abajo en un móvil a un tamaño que un dedo pequeño acierta. Una lista larga pediría desplazamiento, y entonces deja de ser un juguete."}},{"@type":"Question","name":"¿Es gratis?","acceptedAnswer":{"@type":"Answer","text":"Sí. Sin pagos, sin compras dentro del juego y sin una edición de pago más grande."}},{"@type":"Question","name":"¿Tiene anuncios?","acceptedAnswer":{"@type":"Answer","text":"Ninguno. Ni banners ni nada que se reproduzca en medio."}},{"@type":"Question","name":"¿Hay que descargar algo o registrarse?","acceptedAnswer":{"@type":"Answer","text":"No. Funciona en el navegador y, tras una visita, queda guardado en el aparato y va sin cobertura."}},{"@type":"Question","name":"¿Cómo se mide el récord?","acceptedAnswer":{"@type":"Answer","text":"Por cuántas notas tiene la melodía más grande construida, guardado aparte para cada longitud. Mide cuánto se hizo y no lo bueno que es, y eso es una decisión y no un descuido."}}]},{"@type":"Organization","@id":"https://ellaz.fun/#org","name":"Ellaz","url":"https://ellaz.fun/","logo":"https://ellaz.fun/icon.svg","description":"Free browser games, no download and no account","sameAs":["https://github.com/Sigmafier/ellaz"]}]}
+        </script>
+        <script type="module" crossorigin src="/assets/index-BoKUdFQW.js"></script><link rel="modulepreload" crossorigin href="/assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="/assets/shell-Bfq-Y9RE.js"><link rel="stylesheet" crossorigin href="/assets/shell-DkfkxXv9.css"><link rel="manifest" href="/manifest.webmanifest">
+        <link rel="modulepreload" crossorigin href="/assets/page-DgoEHUQu.js"><link rel="modulepreload" crossorigin href="/assets/game-music-1rcaKu_G.js">
+      </head>
+      <body class="screen" style="--g:#A855C9" data-page="game" data-game="music" data-locale="es">
+        
+    <div id="lang-offer" class="lang-offer">
+      <div class="in" data-for="en" lang="en" dir="ltr"><span class="txt">This page is also in English</span><a href="/games/music/" hreflang="en">English</a><button type="button" aria-label="Close">✕</button></div><div class="in" data-for="he" lang="he" dir="rtl"><span class="txt">העמוד הזה קיים גם בעברית</span><a href="/he/games/music/" hreflang="he">עברית</a><button type="button" aria-label="סגירה">✕</button></div><div class="in" data-for="fr" lang="fr" dir="ltr"><span class="txt">Cette page existe aussi en français</span><a href="/fr/games/music/" hreflang="fr">Français</a><button type="button" aria-label="Fermer">✕</button></div>
+    </div>
+    <script>
+      (function(){try{var d=document.documentElement,b=document.getElementById("lang-offer");if(!b)return;try{if(localStorage.getItem("ellaz:offer:v1"))return}catch(e){}var r=b.querySelectorAll("[data-for]"),h={},i;for(i=0;i<r.length;i++)h[r[i].getAttribute("data-for")]=1;var L=navigator.languages||[navigator.language||""],w="";for(i=0;i<L.length;i++){var t=String(L[i]).toLowerCase().split("-")[0];if(t==="es")return;if(h[t]){w=t;break}}if(!w)return;d.setAttribute("data-offer",w);var x=b.querySelector("button");if(x)x.addEventListener("click",function(){try{localStorage.setItem("ellaz:offer:v1","1")}catch(e){}d.removeAttribute("data-offer")});}catch(e){}})()
+    </script>
+    <header class="top"  style="--g:#A855C9">
+      <div class="in">
+        
+    <a class="hbtn home" href="/es/" aria-label="Todos los juegos">
+      <span class="gl"><svg class="arw" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19.4 12H5.6"/><path d="M11.4 6.2 5.6 12l5.8 5.8"/></svg></span><span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3.8 10.6 12 4.2l8.2 6.4"/><path d="M5.9 12.2v6.6a1.4 1.4 0 0 0 1.4 1.4h9.4a1.4 1.4 0 0 0 1.4-1.4v-6.6"/><path d="M9.9 20.2v-4.6h4.2v4.6"/></svg></span>
+    </a>
+    <b class="gname">Caja de música</b>
+    <details class="lang">
+    <summary class="hbtn ico" aria-label="Idioma: Español">
+      <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0"/><path d="M16 12a4 9 0 1 1-8 0 4 9 0 0 1 8 0"/><path d="M3.4 9h17.2"/><path d="M3.4 15h17.2"/></svg></span>
+    </summary>
+    <div class="langsheet" role="group" aria-label="Idioma">
+      <a
+              href="/games/music/"
+              hreflang="en"
+              lang="en"
+              dir="ltr"
+              ><span aria-hidden="true"></span>English</a
+            ><a
+              href="/he/games/music/"
+              hreflang="he"
+              lang="he"
+              dir="rtl"
+              ><span aria-hidden="true"></span>עברית</a
+            ><b lang="es" dir="ltr" class="on"
+              ><span aria-hidden="true">&#10003;</span>Español</b
+            ><a
+              href="/fr/games/music/"
+              hreflang="fr"
+              lang="fr"
+              dir="ltr"
+              ><span aria-hidden="true"></span>Français</a
+            >
+    </div>
+  </details>
+    <button type="button" class="hbtn ico" data-sound aria-label="Sonido" hidden>
+      <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4.4 9.6h2.9L11.6 6v12L7.3 14.4H4.4z"/><path d="M15.1 9.5a4.4 4.4 0 0 1 0 5"/><path d="M17.9 6.9a8.4 8.4 0 0 1 0 10.2"/></svg></span>
+    </button>
+    <div class="wallet-wrap"><span id="wallet-slot"></span></div>
+  
+      </div>
+    </header>
+    <main>
+    <div class="urow">
+    <nav class="bc">
+        <a href="/es/">Inicio</a> ›
+        Crear › Caja de música
+      </nav><div class="tools"><button
+            type="button"
+            class="ubtn"
+            data-pause
+            data-label-pause="Pausa"
+            data-label-resume="Continuar"
+            aria-label="Pausa"
+            hidden
+          >
+            <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M9.4 5.6v12.8"/><path d="M14.6 5.6v12.8"/></svg></span>
+          </button>
+          <button type="button" class="ubtn" data-restart aria-label="Reiniciar" hidden>
+            <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20.4 4.2v4.4h-4.4"/></svg></span>
+          </button>
+          <button
+            type="button"
+            class="ubtn"
+            data-share
+            data-share-title="Caja de música"
+            data-share-emoji="🎵"
+            aria-label="Compartir"
+            hidden
+          >
+            <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M15.2 5.6a2.6 2.6 0 1 0 5.2 0 2.6 2.6 0 1 0-5.2 0"/><path d="M3.6 12a2.6 2.6 0 1 0 5.2 0 2.6 2.6 0 1 0-5.2 0"/><path d="M15.2 18.4a2.6 2.6 0 1 0 5.2 0 2.6 2.6 0 1 0-5.2 0"/><path d="M8.5 10.7 15.5 7"/><path d="M8.5 13.3 15.5 17"/></svg></span>
+          </button><button type="button" class="ubtn" data-fullscreen aria-label="Pantalla completa" hidden>
+        <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4.6 9.4V4.6h4.8"/><path d="M19.4 9.4V4.6h-4.8"/><path d="M4.6 14.6v4.8h4.8"/><path d="M19.4 14.6v4.8h-4.8"/></svg></span>
+      </button><button type="button" class="ubtn" data-report aria-label="Cuéntanos" hidden>
+        <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M6.4 20.4V4.4"/><path d="M6.4 5.4h11.4l-2.5 3.6 2.5 3.6H6.4"/></svg></span>
+      </button></div>
+  </div>
+    <div class="stage">
+    <div class="box">
+      <div id="game-frame"></div>
+      <div
+        id="game-poster"
+        data-loading="El juego se carga solo. No hay que tocar nada."
+        data-saver="Tienes el ahorro de datos activado, así que esperamos a que toques tú."
+      >
+        <span class="em" aria-hidden="true">🎵</span>
+        <button class="play" id="game-play" type="button">Jugar</button>
+        <span class="msg" id="game-msg">El juego necesita JavaScript. El resto de la página, no.</span>
+      </div>
+    </div>
+  </div>
+
+    <h1>Caja de música</h1>
+    <p class="lede">Un juguete musical gratuito que funciona en el navegador. Una rejilla de cuadros de colores, seis filas de notas y de cuatro a ocho tiempos. Enciendes cuadros, pulsas play y lo que has hecho suena en bucle. El sonido se cambia cuando quieras. En esta pantalla no existe la respuesta equivocada.</p>
+
+    <!--
+      The page's own picture, and the first image in the article body.
+
+      Google chooses the thumbnail beside a text result from images embedded on
+      the page. Until 2026-08-22 there were none: the stage above draws the
+      emoji as TEXT and the art everywhere else is inline <svg>, which has no
+      URL and cannot be indexed as an image. So the result was permanently
+      pictureless with nothing failing anywhere.
+
+      width/height are the SVG's own declared box, so the browser reserves
+      the space from the attributes and this adds nothing to the layout shift.
+      loading is EAGER on purpose - it is the main image, above most of the
+      prose, and a lazy main image is one Google may not see.
+
+      The alt is one template per language with the game's name filled in.
+      It was the page's own H1 for an hour, which reads as "Snake" and "2048"
+      in three of the four languages - a name, not a description of a picture.
+    -->
+    <img
+      class="art"
+      src="/art/music-a2a9b5ad.svg"
+      alt="Caja de música - ilustración del juego"
+      width="1200"
+      height="900"
+      decoding="async"
+    />
+    <ul class="facts">
+      <li>Gratis</li><li>Sin anuncios</li><li>Sin cuenta</li><li>Sin descargas</li><li>Funciona sin internet</li><li>Un jugador</li>
+    </ul>
+
+    <h2>¿Cómo se juega?</h2>
+    <ol>
+    <li><b>Enciende cuadros</b> - Cada fila es una nota distinta. Arriba agudo, abajo grave, y un color por fila.</li><li><b>Pulsa play</b> - La melodía va de izquierda a derecha y vuelve a empezar, una y otra vez, hasta que la paras.</li><li><b>Cambia el sonido</b> - Tres botones: redondo, suave y brillante. La misma melodía llega sonando a otro juguete.</li><li><b>Pide una sorpresa</b> - El botón del destello reparte una melodía hecha, una nota por tiempo, y desde ahí se edita.</li><li><b>Alárgala</b> - Cuatro, seis u ocho tiempos. Las notas que caben en la longitud nueva se quedan donde estaban.</li>
+  </ol>
+
+    <h2>Sobre el juego</h2>
+    <p>Tocas un cuadro, se enciende y suena una nota. Enciendes unos cuantos más. Ahora pulsa play.</p><p>Una rejilla de ocho tiempos guarda 281.474.976.710.656 melodías distintas, porque cada uno de sus 48 cuadros está encendido o apagado por separado. Eso es una cuenta exacta y no una estimación. Y todas suenan bien, cosa que también se comprueba en lugar de prometerse: las seis notas de la rejilla forman una escala pentatónica, y entre los 15 pares que se pueden armar con ellas no hay ni un semitono ni un tritono. Las dos notas más próximas están a un tono entero. Por eso aquí no hace falta ninguna regla sobre qué nota puede seguir a cuál, y se puede encender una columna entera de golpe sin que nadie tuerza el gesto.</p><p>El botón de la sorpresa enciende una nota por tiempo. Una melodía, pues. En la rejilla larga alcanza 1.679.616 melodías distintas; en la corta solo 1.296, así que pulsarlo muchas veces seguidas empieza a repetir enseguida.</p><p>Y la parte honesta, que está en el código y no en una opinión: el récord cuenta notas y nunca calidad. El número más alto al que se puede llegar es 48, es decir encender cada cuadro de la rejilla larga, y eso es un muro de sonido antes que una melodía. De modo que ese número premia lo cargado por encima de lo bonito. Lo sabíamos al elegirlo. La única forma de medir la calidad es juzgar lo que un niño acaba de hacer, y esa es exactamente la razón de que nuestro juego de colorear no lleve ningún récord.</p><p>Cambiar de longitud no borra nada. La rejilla se estira o se encoge y las notas siguen donde estaban, porque una melodía es algo que alguien hizo. Pasar de ocho tiempos a cuatro conserva alrededor de la mitad.</p>
+
+    <h2>¿Qué enseña?</h2>
+    <h3>Altura del sonido</h3>
+    <p>Fila más alta, nota más aguda. El vínculo se ve antes de oírse, y un niño lo capta sin que nadie se lo explique.</p><h3>Pulso y repetición</h3>
+    <p>El bucle vuelve siempre a los mismos tiempos. Para muchos niños es el primer patrón musical que deciden ellos.</p><h3>Causa y efecto</h3>
+    <p>Un cuadro encendido, una nota más. No ocurre nada oculto entre el toque y el resultado.</p><h3>Crear sin nota</h3>
+    <p>En esta pantalla no hay respuesta correcta. Es raro, y es lo que hace que un niño pruebe cosas que no probaría donde se cuentan los fallos.</p>
+
+    <h2>Consejos</h2>
+    <h3>Empieza por la sorpresa</h3>
+    <p>Una rejilla vacía no invita a nada. Una melodía hecha a la que cambiar una sola nota es un punto de partida mucho más generoso para alguien pequeño.</p><h3>Una columna es un acorde</h3>
+    <p>Varias notas en el mismo tiempo suenan juntas, y en esta escala eso siempre funciona. Prueba una columna cargada al lado de tres sueltas.</p><h3>Deja huecos</h3>
+    <p>Un tiempo vacío se oye. Una melodía con algo en cada tiempo se aplana hasta volverse ruido, y los silencios son lo que le da forma.</p><h3>La misma melodía, tres veces</h3>
+    <p>Antes de cambiar una nota, cambia la voz y vuelve a escuchar. Esos cuadros idénticos suenan a caja de música, a flauta o a juguete viejo.</p>
+
+    <h2>¿Para qué edad es?</h2>
+    <h3>2 a 3</h3>
+    <p>Los cuadros suenan al tocarlos, y con eso basta. Cuatro tiempos mantienen la rejilla pequeña y cómoda para el dedo.</p><h3>4 a 5</h3>
+    <p>Aquí empieza lo de escuchar y luego cambiar algo. Sorpresa y después mover una nota es justo ese paso.</p><h3>6 en adelante</h3>
+    <p>Ocho tiempos y columnas cargadas. Como reto: una melodía con una parte que se reconozca al volver.</p><h3>Adultos</h3>
+    <p>Cuarenta y ocho cuadros y tres voces dan más de sí de lo que parece, y la escala hace que cualquier prueba caiga de pie.</p>
+
+    <h2>Accesibilidad</h2>
+    <p>Un toque por acción, sin arrastrar y sin mantener pulsado, así que funciona con dispositivos de entrada alternativos y con una mano pequeña que todavía no apunta bien. No hay reloj, ni cuenta atrás, ni un momento que haya que responder deprisa. Cada cuadro lleva en la etiqueta su número de tiempo y si está encendido o apagado, así que un lector de pantalla distingue los cuarenta y ocho en vez de repetir lo mismo cuarenta y ocho veces. Aquí hay que decir una cosa con claridad: este es un juego que hace ruido, de modo que sin oído se pierde una parte. La fila decide el color y la altura del cuadro en la pantalla decide la altura del sonido, así que una melodía se ve además de oírse, pero mirándola no se oye. El bucle también se detiene solo al cambiar de pestaña.</p>
+
+    <h2>Jugar juntos</h2>
+    <h3>Un cuadro cada uno</h3>
+    <p>Por turnos, encended un cuadro sin planear nada y escuchad cada tres. Sale algo que ninguno de los dos habría escrito.</p><h3>Adivina el cambio</h3>
+    <p>Uno mueve una sola nota mientras el otro cierra los ojos y escucha. Quien acierte cuál, cambia de papel.</p><h3>Cantad encima</h3>
+    <p>El bucle lleva un tiempo constante, así que se puede cantar por encima. Ahí la melodía deja de ser un juego y empieza a ser una canción.</p><h3>Ponedle nombre</h3>
+    <p>Cuando una salga bien, dadle nombre. Un niño que ha bautizado su melodía vuelve a ella mañana.</p>
+
+    <h2>Preguntas frecuentes</h2>
+    <h3>¿Se puede tocar algo mal?</h3>
+      <p>No, y no hay manera. Las seis notas vienen de una escala pentatónica, que no tiene ni semitonos ni tritonos, así que cualquier combinación se entiende consigo misma. También una columna con las seis.</p><h3>¿Se guarda mi melodía?</h3>
+      <p>Sí, en el aparato. Vuelves y está tal cual la dejaste, con el sonido que elegiste. Se guarda una melodía por longitud.</p><h3>¿Qué le pasa a la melodía si cambio la longitud?</h3>
+      <p>Sobrevive. La rejilla crece o encoge y las notas no se mueven, cosa que a propósito no ocurre en ningún otro juego nuestro. De ocho tiempos a cuatro se conserva más o menos la mitad.</p><h3>¿Cuántas melodías se pueden hacer?</h3>
+      <p>281.474.976.710.656 en una rejilla de ocho tiempos, porque son 48 cuadros encendidos o apagados por separado. El botón de la sorpresa por sí solo llega a 1.679.616.</p><h3>¿Cómo se ganan monedas?</h3>
+      <p>Una moneda por cada seis notas que crece la melodía. Borrar no retira una moneda ya dada, y volver a poner esas notas no paga dos veces.</p><h3>¿Se puede grabar o descargar la melodía?</h3>
+      <p>Ahora mismo no. Suena y queda guardada en el aparato, y no hay forma de exportarla como archivo.</p><h3>¿Por qué solo tres sonidos?</h3>
+      <p>Porque tres botones caben abajo en un móvil a un tamaño que un dedo pequeño acierta. Una lista larga pediría desplazamiento, y entonces deja de ser un juguete.</p><h3>¿Es gratis?</h3>
+      <p>Sí. Sin pagos, sin compras dentro del juego y sin una edición de pago más grande.</p><h3>¿Tiene anuncios?</h3>
+      <p>Ninguno. Ni banners ni nada que se reproduzca en medio.</p><h3>¿Hay que descargar algo o registrarse?</h3>
+      <p>No. Funciona en el navegador y, tras una visita, queda guardado en el aparato y va sin cobertura.</p><h3>¿Cómo se mide el récord?</h3>
+      <p>Por cuántas notas tiene la melodía más grande construida, guardado aparte para cada longitud. Mide cuánto se hizo y no lo bueno que es, y eso es una decisión y no un descuido.</p>
+
+    <h2>Más juegos</h2>
+    <ul class="grid">
+    <li>
+        <a href="/es/games/memory/">
+          <span class="em" aria-hidden="true">🧠</span>
+          <span>Memoria<span class="cat">Para peques</span></span>
+        </a>
+      </li><li>
+        <a href="/es/games/evolve/">
+          <span class="em" aria-hidden="true">🦖</span>
+          <span>Evolución<span class="cat">Para peques</span></span>
+        </a>
+      </li><li>
+        <a href="/es/games/coloring/">
+          <span class="em" aria-hidden="true">🎨</span>
+          <span>Colorear<span class="cat">Para peques</span></span>
+        </a>
+      </li><li>
+        <a href="/es/games/finddiff/">
+          <span class="em" aria-hidden="true">🔍</span>
+          <span>Busca las diferencias<span class="cat">Para peques</span></span>
+        </a>
+      </li><li>
+        <a href="/es/games/hidden/">
+          <span class="em" aria-hidden="true">👀</span>
+          <span>Encuéntrame<span class="cat">Para peques</span></span>
+        </a>
+      </li><li>
+        <a href="/es/games/math/">
+          <span class="em" aria-hidden="true">➕</span>
+          <span>Cuentas<span class="cat">Aprender</span></span>
+        </a>
+      </li>
+  </ul>
+
+    <section class="embed" id="embed">
+    <h2>Pon este juego en tu web</h2>
+    <p>Copia el código y pégalo en tu página. La línea bajo el marco es la que cuenta: un enlace dentro del marco se queda en ellaz.fun, y solo el que pegas es tuyo.</p>
+    <iframe
+      src="/embed/music/?lang=es"
+      width="100%"
+      height="940"
+      style="border:0;border-radius:12px;background:var(--doc-stage)"
+      allow="fullscreen"
+      loading="lazy"
+      title="Caja de música - ellaz.fun"
+    ></iframe>
+    <p class="embed-credit"><p>Juega a <a href="https://ellaz.fun/es/games/music/">Caja de música</a> y a más juegos gratis en <a href="https://ellaz.fun/">ellaz.fun</a></p></p>
+    <pre
+      class="embed-code"
+      data-embed-code
+      dir="ltr"
+      style="white-space:pre-wrap;word-break:break-all;padding:14px;border-radius:12px;background:var(--doc-card);border:1px solid var(--doc-line);font-size:.85rem"
+    >&lt;iframe src=&quot;https://ellaz.fun/embed/music/?lang=es&quot; width=&quot;100%&quot; height=&quot;940&quot; style=&quot;border:0;border-radius:12px&quot; allow=&quot;fullscreen&quot; title=&quot;Caja de música - ellaz.fun&quot;&gt;&lt;/iframe&gt;
+&lt;p&gt;Juega a &lt;a href=&quot;https://ellaz.fun/es/games/music/&quot;&gt;Caja de música&lt;/a&gt; y a más juegos gratis en &lt;a href=&quot;https://ellaz.fun/&quot;&gt;ellaz.fun&lt;/a&gt;&lt;/p&gt;</pre>
+    <button
+      type="button"
+      class="play"
+      data-embed-copy
+      data-label-copied="Copiado"
+      data-label-select="El código está seleccionado: cópialo"
+      hidden
+    >Copiar el código</button>
+  </section>
+  </main>
+    <footer>
+      <div class="in">
+        <span>Ellaz - juegos gratis en hebreo, inglés, español y francés. Sin anuncios, sin cuentas y sin recoger nada sobre ningún niño.</span>
+        <a href="/games/music/" hreflang="en" lang="en">English</a><a href="/he/games/music/" hreflang="he" lang="he">עברית</a><a href="/fr/games/music/" hreflang="fr" lang="fr">Français</a>
+      </div>
+    </footer>
+  
+        <div id="consent" class="consent" role="dialog" aria-live="polite" lang="es" dir="ltr"><p>Contamos visitas con una cookie pequeña de Google. Sin anuncios ni seguimiento personal.</p><button type="button" data-yes>Aceptar</button><button type="button" data-no>No, gracias</button></div>
+    <style>
+      .consent{display:none;position:fixed;inset-inline:0;bottom:0;z-index:60;padding:12px;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;background:#1d1b2e;color:#fff;font-size:14px}[data-consent] .consent{display:flex}.consent p{margin:0;max-width:48ch}.consent button{font:inherit;font-weight:600;padding:8px 18px;min-height:40px;border:0;border-radius:8px;background:#fff;color:#1d1b2e}
+    </style>
+    <script>
+      (function(){try{var d=document.documentElement,b=document.getElementById("consent");if(!b||!window.gtag)return;var v=null;try{v=localStorage.getItem("ellaz:consent:v1")}catch(e){}if(v==="granted"){gtag("consent","update",{analytics_storage:"granted"});return}if(v==="denied")return;d.setAttribute("data-consent","1");function done(a){try{localStorage.setItem("ellaz:consent:v1",a)}catch(e){}if(a==="granted")gtag("consent","update",{analytics_storage:"granted"});d.removeAttribute("data-consent")}var y=b.querySelector("[data-yes]"),n=b.querySelector("[data-no]");if(y)y.addEventListener("click",function(){done("granted")});if(n)n.addEventListener("click",function(){done("denied")});}catch(e){}})()
+    </script>
+      </body>
+    </html>

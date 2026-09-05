@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="es" dir="ltr">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <!-- FIRST, and synchronous. data-theme is deliberately never baked into
+             these documents - they are cached and it would be wrong for whoever
+             chose the other theme - so this is what sets it before the first
+             paint. A module import runs far too late and the page visibly
+             flashes the other theme. Generated from themes.ts, never written
+             out here, so adding a theme cannot leave it behind. -->
+        <script>
+          (function(){try{var t=localStorage.getItem("ellaz:theme");if(t&&["market","night"].indexOf(t)>-1&&t!=="market")document.documentElement.setAttribute("data-theme",t)}catch(e){}})()
+        </script>
+        <meta name="theme-color" content="#ff4d8d" />
+        <title>Tres en Línea - juego de gemas gratis | Ellaz</title>
+        <meta name="description" content="Juego de tres en línea gratis en el navegador. Intercambia dos gemas vecinas, alinea tres del mismo color y mira caer el resto. Sin reloj y sin cuenta." />
+        <link rel="canonical" href="https://ellaz.fun/es/games/match3/" />
+        <link rel="alternate" hreflang="en" href="https://ellaz.fun/games/match3/" /><link rel="alternate" hreflang="he" href="https://ellaz.fun/he/games/match3/" /><link rel="alternate" hreflang="es" href="https://ellaz.fun/es/games/match3/" /><link rel="alternate" hreflang="fr" href="https://ellaz.fun/fr/games/match3/" />
+        <link rel="alternate" hreflang="x-default" href="https://ellaz.fun/games/match3/" />
+        
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Ellaz" />
+        <meta property="og:locale" content="es_ES" />
+        <meta property="og:locale:alternate" content="en_US" /><meta property="og:locale:alternate" content="he_IL" /><meta property="og:locale:alternate" content="fr_FR" />
+        <meta property="og:title" content="Tres en Línea - juego de gemas gratis | Ellaz" />
+        <meta property="og:description" content="Juego de tres en línea gratis en el navegador. Intercambia dos gemas vecinas, alinea tres del mismo color y mira caer el resto. Sin reloj y sin cuenta." />
+        <meta property="og:url" content="https://ellaz.fun/es/games/match3/" />
+        <meta property="og:image" content="https://ellaz.fun/og/game-match3-es-323c6d0b.png" />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+          <meta property="og:image:alt" content="Tres en Línea - juego de gemas gratis | Ellaz" />
+          <meta name="twitter:image" content="https://ellaz.fun/og/game-match3-es-323c6d0b.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <!-- Measurement, on EVERY emitted document and not only the app shell.
+             Search Console says the arrivals land on GAME pages from Hebrew
+             queries, so a shell-only tag would have measured almost none of
+             them. Empty on any non-primary base, so the noindex mirror never
+             reports. Config and its deliberate limits: src/build/analytics.ts. -->
+        
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E25QBB8420"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied'});gtag('set','ads_data_redaction',true);gtag('js',new Date());gtag('config','G-E25QBB8420',{client_storage:'none',allow_google_signals:false,allow_ad_personalization_signals:false});</script>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;800&amp;family=Fredoka:wght@500;600&amp;display=swap" />
+        <style>
+          *,*::before,*::after{box-sizing:border-box}
+:root{
+  --doc-ink:var(--text,#1b1b2b);
+  --doc-soft:var(--text-dim,#5a5a72);
+  --doc-line:var(--line,#e4e2ef);
+  --doc-bg:var(--bg,#fdfcff);
+  --doc-card:var(--surface,#ffffff);
+  --doc-brand:var(--brand-ink,#6c5ce7);
+  --doc-sun:var(--yellow,#ffc730);
+  --doc-stage:var(--stage-bg,#12142b);
+}
+:root[data-theme="night"]{
+  --doc-ink:var(--text,#f5f6ff);
+  --doc-soft:var(--text-dim,#b3b8e0);
+  --doc-line:var(--line,#2a2f55);
+  --doc-bg:var(--bg,#0f1226);
+  --doc-card:var(--surface,#1e2240);
+  --doc-brand:var(--brand-ink,#a29bfe);
+  --doc-sun:var(--yellow,#fdcb6e);
+  --doc-stage:var(--stage-bg,#12142b);
+}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--doc-bg);color:var(--doc-ink);
+  font:400 17px/1.7 Heebo,Assistant,Rubik,system-ui,-apple-system,sans-serif}
+main{max-width:44rem;margin-inline:auto;padding:0 20px 72px}
+h1,h2,h3{font-family:Fredoka,Heebo,system-ui,sans-serif;line-height:1.25;margin:0;
+  color:var(--doc-ink)}
+h1{font-size:2rem;font-weight:600;margin-block:8px 12px}
+h2{font-size:1.35rem;font-weight:600;margin-block:44px 12px}
+h3{font-size:1.05rem;font-weight:600;margin-block:22px 4px}
+p{margin-block:0 14px}
+a{color:var(--doc-brand)}
+.top{border-block-end:1px solid var(--doc-line);background:var(--doc-card)}
+.top .in{max-width:44rem;margin-inline:auto;padding:12px 20px;display:flex;
+  align-items:center;gap:12px}
+.brand{font-family:Fredoka,system-ui,sans-serif;font-size:1.15rem;font-weight:600;
+  color:var(--doc-ink);text-decoration:none}
+.tagline{color:var(--doc-soft);font-size:.82rem;flex:1}
+#wallet-slot{flex:0 0 auto}
+.bc{font-size:.82rem;font-weight:600;color:var(--doc-soft);margin-block:18px 0}
+.bc a{text-decoration:none}
+.vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;
+  clip-path:inset(50%);white-space:nowrap;border:0}
+.beta{font-size:.68rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
+  padding:3px 8px;border-radius:var(--radius-pill,999px);
+  background:#F2B93F;color:#241C17;white-space:nowrap;flex:0 0 auto;align-self:center}
+body.screen .urow:has(.beta) .bc{margin-inline-end:0}
+body.screen .urow .beta{margin-inline-end:auto}
+.lede{font-size:1.12rem;color:var(--doc-ink)}
+img.art{display:block;width:100%;max-width:520px;aspect-ratio:4/3;height:auto;margin:18px 0 0;border-radius:14px;border:1px solid var(--doc-line);background:var(--doc-card)}
+.facts{list-style:none;display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:18px 0 0}
+.facts li{border:1px solid var(--doc-line);background:var(--doc-card);border-radius:999px;
+  padding:5px 13px;font-size:.82rem;font-weight:600;color:var(--doc-soft)}
+.cta{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin:26px 0 8px}
+.play{display:inline-flex;align-items:center;justify-content:center;min-height:76px;
+  padding:0 40px;border:none;border-radius:22px;background:var(--doc-sun);
+  color:var(--doc-ink);text-decoration:none;font-family:Fredoka,system-ui,sans-serif;
+  font-size:1.3rem;font-weight:600;box-shadow:0 4px 0 var(--doc-line);cursor:pointer}
+.cta .note{color:var(--doc-soft);font-size:.86rem;flex:1 1 12rem}
+ol,ul.steps{padding-inline-start:1.3em}
+ol li,ul.steps li{margin-block-end:8px}
+table{border-collapse:collapse;width:100%;margin-block:14px;font-size:.95rem}
+th,td{border:1px solid var(--doc-line);padding:8px 12px;text-align:start}
+th{background:var(--doc-card);font-weight:600}
+.grid{list-style:none;padding:0;margin:20px 0 0;display:grid;gap:12px;
+  grid-template-columns:repeat(auto-fill,minmax(9.5rem,1fr))}
+.grid a{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--doc-card);
+  border:1px solid var(--doc-line);border-radius:16px;text-decoration:none;
+  color:var(--doc-ink);font-weight:600}
+.grid .em{font-size:1.5rem;line-height:1}
+.grid .cat{display:block;font-size:.75rem;font-weight:400;color:var(--doc-soft)}
+footer{border-block-start:1px solid var(--doc-line);margin-block-start:56px;
+  padding:22px 20px 40px;color:var(--doc-soft);font-size:.85rem}
+footer .in{max-width:44rem;margin-inline:auto;display:flex;flex-wrap:wrap;gap:14px}
+.stage{position:relative;margin-block:14px 6px;margin-inline:-20px}
+@media (min-width:720px){.stage{margin-inline:0}}
+.stage .box{position:relative;border-radius:22px;overflow:hidden;
+  background:var(--doc-stage);box-shadow:0 5px 0 var(--doc-line);
+  min-height:clamp(420px,calc(100dvh - 145px),860px);display:flex;flex-direction:column}
+.stage.room .box{min-height:clamp(460px,calc(100dvh - 120px),880px)}
+.stage.boards .box{min-height:clamp(300px,46dvh,560px)}
+#game-frame{flex:1;min-height:0;display:flex;flex-direction:column}
+#game-poster{position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:18px;text-align:center;padding:24px;
+  color:var(--doc-ink);transition:opacity .25s ease}
+#game-poster[hidden]{display:none}
+#game-poster .em{font-size:64px;line-height:1}
+#game-poster .msg{font-size:.95rem;opacity:.75;max-width:22ch}
+.stage .noscript{position:absolute;inset-inline:0;bottom:0;padding:12px;
+  background:var(--badge-fill,rgba(0,0,0,.55));color:var(--on-brand,#fff);font-size:.85rem;text-align:center}
+@media (max-width:719px){.stage .box{border-radius:0;box-shadow:none;
+  border-block:1px solid var(--doc-line)}}
+body[data-page="game"] main,body[data-page="world"] main{max-width:none;padding-inline:0}
+body[data-page="game"] main>:not(.stage),
+body[data-page="world"] main>:not(.stage){max-width:44rem;margin-inline:auto;
+  padding-inline:20px}
+body[data-page="game"] .stage,body[data-page="world"] .stage{margin-block:0;
+  margin-inline:0}
+body[data-page="game"] .stage .box,body[data-page="world"] .stage .box{
+  height:calc(100dvh - var(--hh) - var(--uh) - var(--oh));min-height:0;border-radius:0;
+  box-shadow:none;border:0;justify-content:center}
+body[data-page="game"] .stage .box{justify-content:flex-start}
+body[data-page="world"] #game-frame:empty{min-height:100%}
+body[data-page="game"] #game-frame,body[data-page="world"] #game-frame{flex:0 0 auto}
+body.screen .urow{display:flex;align-items:center;gap:10px;height:var(--uh);
+  padding-inline:var(--hpad);background:var(--doc-bg)}
+body.screen .urow .bc{margin:0;flex:0 1 auto;margin-inline-end:auto;min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+body.screen .urow .bc a{color:inherit;text-decoration:underline;
+  text-underline-offset:3px;text-decoration-thickness:1px;
+  display:inline-block;padding-block:12px;margin-block:-12px;
+  text-decoration-color:color-mix(in srgb,currentColor 55%,transparent)}
+body.screen .urow .tools{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.ubtn{display:inline-flex;align-items:center;justify-content:center;
+  width:var(--tap);height:var(--tap);flex:0 0 auto;border:0;padding:0;
+  cursor:pointer;border-radius:var(--urad);background:var(--doc-card);
+  color:var(--doc-ink);box-shadow:0 2px 0 var(--doc-line)}
+.ubtn[hidden]{display:none}
+.ubtn .gl{display:flex}
+.ubtn svg{display:block;width:var(--hicon);height:var(--hicon);fill:none;
+  stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+body.screen{--hh:60px;--uh:60px;--oh:0px;--tap:44px;--hgap:12px;--hpad:20px;
+  --hbrand:22px;--hfont:14.5px;--hicon:22px;--hrad:99px;--urad:14px;
+  --hdr-ink:#FFF6E9}
+@media (max-width:719px){body.screen{--hh:58px;--uh:56px;--hbrand:20px;--hgap:8px;--hpad:12px}}
+body.screen{--gc-cell-bg:var(--surface)}
+@supports (background:color-mix(in oklab,red 10%,blue)){
+body.screen{--gc-cell-bg:color-mix(in oklab,var(--g,var(--brand)) 16%,var(--surface))}}
+body.screen .top{position:relative;z-index:6;height:var(--hh);
+  display:flex;align-items:center;padding:0;border-block-end:0;
+  color:var(--hdr-ink);
+  background:color-mix(in oklch, var(--g,#4F5BD5) 46%, #0C0812);
+  background:oklch(from var(--g,#4F5BD5) .30 calc(c * 1.05) h)}
+body.screen .top .in{max-width:none;margin:0;width:100%;
+  padding:0 var(--hpad);gap:var(--hgap);justify-content:space-between}
+body.screen .tagline{display:none}
+body.screen .gname{flex:1 1 0;min-width:0;
+  font:600 16px/1 Fredoka,system-ui,sans-serif;color:var(--hdr-ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-inline:2px}
+@media (max-width:719px){body.screen .gname{display:none}}
+.hbtn.home{gap:7px;padding:0 15px}
+.hbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  height:var(--tap);
+  border:0;margin:0;cursor:pointer;text-decoration:none;flex:0 0 auto;
+  border-radius:var(--hrad);padding:0 calc(var(--tap) * .39);white-space:nowrap;
+  font:600 var(--hfont)/1 inherit;
+  background:rgba(255,255,255,.12);color:var(--hdr-ink)}
+.hbtn.ico{width:var(--tap);padding:0}
+body.screen .top .lang{margin-inline-start:auto}
+body.screen .top .lang + [data-sound]{margin-inline-start:0}
+body.screen .top [data-sound]{margin-inline-start:auto}
+body.screen .top .lang{position:relative;flex:0 0 auto}
+body.screen .top .lang>summary{list-style:none}
+body.screen .top .lang>summary::-webkit-details-marker{display:none}
+body.screen .top .lang>summary::marker{content:""}
+.langsheet{position:absolute;inset-inline-end:0;top:calc(var(--tap) + 6px);
+  z-index:7;min-width:152px;max-width:min(84vw,300px);padding:6px;
+  display:flex;flex-direction:column;gap:2px;
+  border-radius:var(--urad);background:var(--doc-card);
+  border:1px solid var(--doc-line);box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.langsheet>a,.langsheet>b{display:flex;align-items:center;gap:8px;
+  min-height:var(--tap);padding:0 10px;border-radius:10px;
+  font:600 15px/1 inherit;color:var(--doc-ink);text-decoration:none}
+.langsheet>a:hover{background:color-mix(in oklab,var(--doc-ink) 8%,transparent)}
+.langsheet>b{font-weight:800;
+  background:color-mix(in oklab,var(--doc-ink) 8%,transparent)}
+.langsheet>a>span,.langsheet>b>span{width:14px;flex:0 0 14px;text-align:center}
+.hbtn:hover{background:rgba(255,255,255,.2)}
+.hbtn.pri{background:#FFF6E9;color:#241C2B}
+.hbtn.pri:hover{background:#fff}
+.hbtn[hidden]{display:none}
+.hbtn .gl{display:flex;flex:0 0 auto}
+.hbtn svg{width:var(--hicon);height:var(--hicon);
+  display:block;fill:none;stroke:currentColor;stroke-width:2.2;
+  stroke-linecap:round;stroke-linejoin:round}
+#wallet-slot svg{width:var(--hicon);height:var(--hicon);stroke-width:2.2}
+[dir="rtl"] .hbtn .gl .arw{transform:scaleX(-1);transform-origin:center}
+.wallet-wrap{display:inline-flex;align-items:center;height:var(--tap);
+  border-radius:99px;padding:0 calc(var(--tap) * .34);
+  background:rgba(255,255,255,.12)}
+body.screen #wallet-slot>*{background:none;box-shadow:none;border:0;
+  padding:0;color:var(--hdr-ink);height:var(--tap);gap:10px}
+@media (max-width:719px){
+  .hbtn .tx{display:none}
+  .wallet-wrap{padding:0 10px}
+}
+@media (max-width:480px){body{font-size:16px}h1{font-size:1.6rem}.play{width:100%}
+  .stage .box{min-height:clamp(420px,calc(100dvh - 120px),860px)}
+  .tagline{display:none}}
+.lang-offer{display:none}
+html[data-offer] .lang-offer{position:relative;z-index:8;display:flex;
+  justify-content:center;height:46px;box-sizing:border-box;
+  background:var(--doc-card);border-bottom:1px solid var(--doc-line)}
+.lang-offer .in{flex:1 1 auto;max-width:700px;display:none;align-items:center;
+  gap:10px;padding:0 12px;box-sizing:border-box}
+html[data-offer="en"] .lang-offer .in[data-for="en"]{display:flex}
+html[data-offer="he"] .lang-offer .in[data-for="he"]{display:flex}
+html[data-offer="es"] .lang-offer .in[data-for="es"]{display:flex}
+html[data-offer="fr"] .lang-offer .in[data-for="fr"]{display:flex}
+.lang-offer .txt{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;font-weight:500;font-size:14px;color:var(--doc-soft)}
+.lang-offer a{flex:0 0 auto;display:inline-flex;align-items:center;height:32px;
+  padding:0 14px;border-radius:999px;text-decoration:none;font-weight:700;
+  font-size:14px;background:var(--doc-ink);color:var(--doc-card)}
+.lang-offer button{flex:0 0 auto;width:32px;height:32px;display:grid;
+  place-items:center;border:0;border-radius:999px;background:none;cursor:pointer;
+  color:var(--doc-soft);font-size:17px;line-height:1}
+html[data-offer] body.screen{--oh:46px}
+        </style>
+        <script type="application/ld+json">
+          {"@context":"https://schema.org","@graph":[{"@type":["VideoGame","SoftwareApplication"],"@id":"https://ellaz.fun/es/games/match3/#game","name":"Tres en Línea","url":"https://ellaz.fun/es/games/match3/","image":["https://ellaz.fun/art/match3-ecce1135.svg","https://ellaz.fun/og/game-match3-es-323c6d0b.png"],"description":"Un juego de tres en línea gratis, directamente en el navegador. Tocas una gema, tocas otra al lado y cambian de sitio. Tres del mismo color desaparecen y todo lo que había encima cae al hueco. No hay reloj y no se puede perder.","inLanguage":"es","gamePlatform":["Web Browser","Mobile","Tablet","Desktop"],"playMode":"SinglePlayer","applicationCategory":"GameApplication","operatingSystem":"Any","isAccessibleForFree":true,"isFamilyFriendly":true,"typicalAgeRange":"3-10","genre":["Puzzle","Strategy"],"offers":{"@type":"Offer","price":"0","priceCurrency":"ILS","availability":"https://schema.org/InStock"},"publisher":{"@id":"https://ellaz.fun/#org"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Inicio","item":"https://ellaz.fun/es/"},{"@type":"ListItem","position":2,"name":"Pensar","item":"https://ellaz.fun/es/games/think/"},{"@type":"ListItem","position":3,"name":"Tres en Línea","item":"https://ellaz.fun/es/games/match3/"}]},{"@type":"HowTo","name":"¿Cómo se juega?","inLanguage":"es","step":[{"@type":"HowToStep","position":1,"name":"Elige un nivel","text":"Fácil, media o difícil. Lo que cambia es cuántos colores hay y cómo de grande es el tablero."},{"@type":"HowToStep","position":2,"name":"Toca una gema","text":"Se le pone un borde. Si la vuelves a tocar, la sueltas."},{"@type":"HowToStep","position":3,"name":"Toca una vecina","text":"Arriba, abajo, izquierda o derecha. En diagonal no vale. Deslizar una gema hacia su vecina hace el mismo cambio de una vez."},{"@type":"HowToStep","position":4,"name":"Mira la caída","text":"Si al caer se alinean otras tres, también desaparecen y la nota sube un escalón."},{"@type":"HowToStep","position":5,"name":"Cierra la ronda","text":"Cada ronda pide un número de gemas. La barra bajo el tablero dice cuántas faltan."}]},{"@type":"FAQPage","inLanguage":"es","mainEntity":[{"@type":"Question","name":"¿Se puede perder?","acceptedAnswer":{"@type":"Answer","text":"No. No hay reloj, no hay límite de intercambios y el tablero se mezcla solo si alguna vez se queda sin jugadas válidas. Lo único que pasa es que se cierra una ronda y se abre otra un poco mayor."}},{"@type":"Question","name":"¿Por qué no funciona mi intercambio?","acceptedAnswer":{"@type":"Answer","text":"Porque no deja tres del mismo color en línea. Las gemas vuelven a su sitio, aparece un borde naranja y no se quita nada. Puedes probar otra vez enseguida."}},{"@type":"Question","name":"¿Qué cambia entre niveles?","acceptedAnswer":{"@type":"Answer","text":"El número de colores y el tamaño del tablero. Cuatro colores en seis por seis, cinco en siete por siete, seis en ocho por ocho. La velocidad no cambia nunca, porque no hay velocidad."}},{"@type":"Question","name":"¿Recuerda dónde iba?","acceptedAnswer":{"@type":"Answer","text":"Sí. El tablero, la ronda y la puntuación vuelven tal cual los dejaste, en ese aparato, sin preguntarte nada."}},{"@type":"Question","name":"¿Qué mide el récord?","acceptedAnswer":{"@type":"Answer","text":"La ronda más alta a la que has llegado, guardada por separado en cada nivel. Una ronda en un tablero de seis colores no es el mismo logro que una en uno de cuatro."}},{"@type":"Question","name":"¿Por qué sube el sonido?","acceptedAnswer":{"@type":"Answer","text":"Cada paso de una cadena toca una nota más alta, en una escala de cinco notas, para que se oiga hasta dónde llegó la caída sin mirarla. La escala se queda arriba en vez de volver a empezar, porque a un niño que lo está haciendo bien no hay que decirle de golpe que ha vuelto al principio."}}]},{"@type":"Organization","@id":"https://ellaz.fun/#org","name":"Ellaz","url":"https://ellaz.fun/","logo":"https://ellaz.fun/icon.svg","description":"Free browser games, no download and no account","sameAs":["https://github.com/Sigmafier/ellaz"]}]}
+        </script>
+        <script type="module" crossorigin src="/assets/index-BoKUdFQW.js"></script><link rel="modulepreload" crossorigin href="/assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="/assets/shell-Bfq-Y9RE.js"><link rel="stylesheet" crossorigin href="/assets/shell-DkfkxXv9.css"><link rel="manifest" href="/manifest.webmanifest">
+        <link rel="modulepreload" crossorigin href="/assets/page-DgoEHUQu.js"><link rel="modulepreload" crossorigin href="/assets/game-match3-8gRAPDiu.js">
+      </head>
+      <body class="screen" style="--g:#B43594" data-page="game" data-game="match3" data-locale="es">
+        
+    <div id="lang-offer" class="lang-offer">
+      <div class="in" data-for="en" lang="en" dir="ltr"><span class="txt">This page is also in English</span><a href="/games/match3/" hreflang="en">English</a><button type="button" aria-label="Close">✕</button></div><div class="in" data-for="he" lang="he" dir="rtl"><span class="txt">העמוד הזה קיים גם בעברית</span><a href="/he/games/match3/" hreflang="he">עברית</a><button type="button" aria-label="סגירה">✕</button></div><div class="in" data-for="fr" lang="fr" dir="ltr"><span class="txt">Cette page existe aussi en français</span><a href="/fr/games/match3/" hreflang="fr">Français</a><button type="button" aria-label="Fermer">✕</button></div>
+    </div>
+    <script>
+      (function(){try{var d=document.documentElement,b=document.getElementById("lang-offer");if(!b)return;try{if(localStorage.getItem("ellaz:offer:v1"))return}catch(e){}var r=b.querySelectorAll("[data-for]"),h={},i;for(i=0;i<r.length;i++)h[r[i].getAttribute("data-for")]=1;var L=navigator.languages||[navigator.language||""],w="";for(i=0;i<L.length;i++){var t=String(L[i]).toLowerCase().split("-")[0];if(t==="es")return;if(h[t]){w=t;break}}if(!w)return;d.setAttribute("data-offer",w);var x=b.querySelector("button");if(x)x.addEventListener("click",function(){try{localStorage.setItem("ellaz:offer:v1","1")}catch(e){}d.removeAttribute("data-offer")});}catch(e){}})()
+    </script>
+    <header class="top"  style="--g:#B43594">
+      <div class="in">
+        
+    <a class="hbtn home" href="/es/" aria-label="Todos los juegos">
+      <span class="gl"><svg class="arw" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19.4 12H5.6"/><path d="M11.4 6.2 5.6 12l5.8 5.8"/></svg></span><span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3.8 10.6 12 4.2l8.2 6.4"/><path d="M5.9 12.2v6.6a1.4 1.4 0 0 0 1.4 1.4h9.4a1.4 1.4 0 0 0 1.4-1.4v-6.6"/><path d="M9.9 20.2v-4.6h4.2v4.6"/></svg></span>
+    </a>
+    <b class="gname">Tres en Línea</b>
+    <details class="lang">
+    <summary class="hbtn ico" aria-label="Idioma: Español">
+      <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0"/><path d="M16 12a4 9 0 1 1-8 0 4 9 0 0 1 8 0"/><path d="M3.4 9h17.2"/><path d="M3.4 15h17.2"/></svg></span>
+    </summary>
+    <div class="langsheet" role="group" aria-label="Idioma">
+      <a
+              href="/games/match3/"
+              hreflang="en"
+              lang="en"
+              dir="ltr"
+              ><span aria-hidden="true"></span>English</a
+            ><a
+              href="/he/games/match3/"
+              hreflang="he"
+              lang="he"
+              dir="rtl"
+              ><span aria-hidden="true"></span>עברית</a
+            ><b lang="es" dir="ltr" class="on"
+              ><span aria-hidden="true">&#10003;</span>Español</b
+            ><a
+              href="/fr/games/match3/"
+              hreflang="fr"
+              lang="fr"
+              dir="ltr"
+              ><span aria-hidden="true"></span>Français</a
+            >
+    </div>
+  </details>
+    <button type="button" class="hbtn ico" data-sound aria-label="Sonido" hidden>
+      <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4.4 9.6h2.9L11.6 6v12L7.3 14.4H4.4z"/><path d="M15.1 9.5a4.4 4.4 0 0 1 0 5"/><path d="M17.9 6.9a8.4 8.4 0 0 1 0 10.2"/></svg></span>
+    </button>
+    <div class="wallet-wrap"><span id="wallet-slot"></span></div>
+  
+      </div>
+    </header>
+    <main>
+    <div class="urow">
+    <nav class="bc">
+        <a href="/es/">Inicio</a> ›
+        <a href="/es/games/think/">Pensar</a> › Tres en Línea
+      </nav><div class="tools"><button
+            type="button"
+            class="ubtn"
+            data-pause
+            data-label-pause="Pausa"
+            data-label-resume="Continuar"
+            aria-label="Pausa"
+            hidden
+          >
+            <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M9.4 5.6v12.8"/><path d="M14.6 5.6v12.8"/></svg></span>
+          </button>
+          <button type="button" class="ubtn" data-restart aria-label="Reiniciar" hidden>
+            <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20.4 4.2v4.4h-4.4"/></svg></span>
+          </button>
+          <button
+            type="button"
+            class="ubtn"
+            data-share
+            data-share-title="Tres en Línea"
+            data-share-emoji="💎"
+            aria-label="Compartir"
+            hidden
+          >
+            <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M15.2 5.6a2.6 2.6 0 1 0 5.2 0 2.6 2.6 0 1 0-5.2 0"/><path d="M3.6 12a2.6 2.6 0 1 0 5.2 0 2.6 2.6 0 1 0-5.2 0"/><path d="M15.2 18.4a2.6 2.6 0 1 0 5.2 0 2.6 2.6 0 1 0-5.2 0"/><path d="M8.5 10.7 15.5 7"/><path d="M8.5 13.3 15.5 17"/></svg></span>
+          </button><button type="button" class="ubtn" data-fullscreen aria-label="Pantalla completa" hidden>
+        <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4.6 9.4V4.6h4.8"/><path d="M19.4 9.4V4.6h-4.8"/><path d="M4.6 14.6v4.8h4.8"/><path d="M19.4 14.6v4.8h-4.8"/></svg></span>
+      </button><button type="button" class="ubtn" data-report aria-label="Cuéntanos" hidden>
+        <span class="gl"><svg class="" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M6.4 20.4V4.4"/><path d="M6.4 5.4h11.4l-2.5 3.6 2.5 3.6H6.4"/></svg></span>
+      </button></div>
+  </div>
+    <div class="stage">
+    <div class="box">
+      <div id="game-frame"></div>
+      <div
+        id="game-poster"
+        data-loading="El juego se carga solo. No hay que tocar nada."
+        data-saver="Tienes el ahorro de datos activado, así que esperamos a que toques tú."
+      >
+        <span class="em" aria-hidden="true">💎</span>
+        <button class="play" id="game-play" type="button">Jugar</button>
+        <span class="msg" id="game-msg">El juego necesita JavaScript. El resto de la página, no.</span>
+      </div>
+    </div>
+  </div>
+
+    <h1>Tres en Línea</h1>
+    <p class="lede">Un juego de tres en línea gratis, directamente en el navegador. Tocas una gema, tocas otra al lado y cambian de sitio. Tres del mismo color desaparecen y todo lo que había encima cae al hueco. No hay reloj y no se puede perder.</p>
+
+    <!--
+      The page's own picture, and the first image in the article body.
+
+      Google chooses the thumbnail beside a text result from images embedded on
+      the page. Until 2026-08-22 there were none: the stage above draws the
+      emoji as TEXT and the art everywhere else is inline <svg>, which has no
+      URL and cannot be indexed as an image. So the result was permanently
+      pictureless with nothing failing anywhere.
+
+      width/height are the SVG's own declared box, so the browser reserves
+      the space from the attributes and this adds nothing to the layout shift.
+      loading is EAGER on purpose - it is the main image, above most of the
+      prose, and a lazy main image is one Google may not see.
+
+      The alt is one template per language with the game's name filled in.
+      It was the page's own H1 for an hour, which reads as "Snake" and "2048"
+      in three of the four languages - a name, not a description of a picture.
+    -->
+    <img
+      class="art"
+      src="/art/match3-ecce1135.svg"
+      alt="Tres en Línea - ilustración del juego"
+      width="1200"
+      height="900"
+      decoding="async"
+    />
+    <ul class="facts">
+      <li>Gratis</li><li>Sin anuncios</li><li>Sin cuenta</li><li>Sin descargas</li><li>Funciona sin internet</li><li>Un jugador</li>
+    </ul>
+
+    <h2>¿Cómo se juega?</h2>
+    <ol>
+    <li><b>Elige un nivel</b> - Fácil, media o difícil. Lo que cambia es cuántos colores hay y cómo de grande es el tablero.</li><li><b>Toca una gema</b> - Se le pone un borde. Si la vuelves a tocar, la sueltas.</li><li><b>Toca una vecina</b> - Arriba, abajo, izquierda o derecha. En diagonal no vale. Deslizar una gema hacia su vecina hace el mismo cambio de una vez.</li><li><b>Mira la caída</b> - Si al caer se alinean otras tres, también desaparecen y la nota sube un escalón.</li><li><b>Cierra la ronda</b> - Cada ronda pide un número de gemas. La barra bajo el tablero dice cuántas faltan.</li>
+  </ol>
+
+    <h2>Sobre el juego</h2>
+    <p>Tocas una gema. Tocas la de al lado. Cambian, y tres del mismo color desaparecen.</p><p>Lo que pasa después es la parte buena. Las gemas de arriba caen al hueco, y a veces esa caída alinea otras tres que nadie había planeado, y luego otras tres más. Lo medimos en 2.000 rondas por nivel: en fácil, el 59,2% de los intercambios que funcionan siguen en una cadena de al menos dos pasos, y en difícil solo el 36,2%. La cadena más larga que registramos llegó a catorce pasos en un tablero de seis por seis. Cada paso suena una nota más alta que el anterior, así que se oye lo lejos que ha llegado sin mirar.</p><p>Aquí la dificultad son los colores, nunca la velocidad. Cuatro colores en un tablero de seis por seis, cinco en uno de siete por siete, seis en uno de ocho por ocho. Cuantos más colores, menos cosas salen solas, y por eso el nivel fácil parece fuegos artificiales y el difícil parece trabajo tranquilo. El intercambio medio limpia 9,96 gemas en fácil y 5,33 en difícil.</p><p>Y ahora la parte que nos sorprendió. Pusimos a competir un programa que elige cualquier intercambio válido contra otro que revisa el tablero entero y elige el mayor. En fácil, mirar bien vale 1,27 veces más avance por ronda. En difícil vale 1,07. O sea que el nivel que debería premiar el pensar es el que menos lo premia, porque seis colores encogen cada intercambio hasta que la jugada lista y la jugada normal casi coinciden. Preferimos escribirlo a decir que el difícil es el nivel inteligente.</p><p>Un tablero sin ningún intercambio válido se mezcla solo, con las mismas gemas. Casi nunca ocurre. En 2.000 rondas difíciles saltó 0,001 veces por ronda, y en los otros dos niveles no saltó ni una vez.</p>
+
+    <h2>¿Qué enseña?</h2>
+    <h3>Ver patrones</h3>
+    <p>Encontrar tres gemas iguales entre cuarenta y nueve es la misma búsqueda visual que pide aprender a leer.</p><h3>Pensar un paso más</h3>
+    <p>Lo que cae después de un intercambio se puede prever. Un niño que empieza a preverlo juega a otra cosa.</p><h3>Paciencia</h3>
+    <p>Aquí nada corre. Mira el tablero.</p><h3>Aceptar la suerte</h3>
+    <p>Una cadena larga a veces es un plan y a veces una caída afortunada. Las dos valen.</p>
+
+    <h2>Consejos</h2>
+    <h3>Mira la fila de abajo</h3>
+    <p>Limpiar tres gemas cerca del suelo hace caer toda la columna que tienen encima. Las mismas tres arriba del todo casi no mueven nada.</p><h3>Cuatro vale más que tres</h3>
+    <p>Un intercambio que alinea cuatro limpia cuatro y abre un hueco más ancho por el que caen más gemas, que es donde empiezan las cadenas.</p><h3>No cojas el primero que veas</h3>
+    <p>No hay reloj. El intercambio que salta a la vista suele ser un tres normal, y medio minuto mirando encuentra otro que continúa.</p><h3>En difícil, sigue jugando</h3>
+    <p>Ahí mirar bien solo vale un 7%. Una racha de intercambios normales rinde más que uno perfecto que tardó un minuto en aparecer.</p>
+
+    <h2>¿Para qué edad es?</h2>
+    <h3>4 a 5</h3>
+    <p>Solo fácil. Cuatro colores y tablero pequeño, así que casi cualquier intercambio funciona.</p><h3>6 a 7</h3>
+    <p>Media. Cinco colores en siete por siete, y ya hay que buscar.</p><h3>8 en adelante</h3>
+    <p>Difícil. Seis colores, y el intercambio medio limpia 5,33 gemas.</p><h3>Adultos</h3>
+    <p>El mismo juego. El difícil pide cuarenta gemas en la primera ronda y diez más en cada ronda siguiente.</p>
+
+    <h2>Accesibilidad</h2>
+    <p>El juego entero se puede jugar a base de toques, sin mantener pulsado. Deslizar cambia dos gemas de un solo gesto, para quien lo prefiera, pero siempre es un atajo y nunca la única vía, así que el juego funciona con entradas alternativas y con una mano pequeña que todavía no apunta bien. Cada color tiene además su propia forma, un rombo, un círculo, un cuadrado, un triángulo, una estrella y un hexágono, porque aproximadamente uno de cada doce niños no distingue la gema roja de la verde y un tres en línea cuyo único aviso es el tono es un juego que no pueden jugar. No hay reloj ni cuenta atrás, así que se puede parar a mitad y pensar todo lo que haga falta. Un intercambio que no forma línea responde con un borde naranja y no con un sonido de error, y el tablero se queda igual que estaba. Cada casilla lleva su columna y su fila en la etiqueta, para que un lector de pantalla las distinga en vez de leer cuarenta y nueve veces lo mismo. Se puede jugar en silencio absoluto sin perder nada.</p>
+
+    <h2>Jugar juntos</h2>
+    <h3>Quién lo ve antes</h3>
+    <p>Mirad el mismo tablero y señalad al encontrar un intercambio. El niño ganará más veces de las que esperáis.</p><h3>Adivina la caída</h3>
+    <p>Antes de tocar, preguntad si esta va a encadenar. Luego lo veis juntos.</p><h3>Un intercambio cada uno</h3>
+    <p>Por turnos en el mismo aparato, uno cada vez. La ronda se cierra antes de lo que parece.</p><h3>Solo cadenas</h3>
+    <p>Probad una ronda buscando únicamente intercambios que continúen. Tarda mucho más, y esa es la gracia.</p>
+
+    <h2>Preguntas frecuentes</h2>
+    <h3>¿Se puede perder?</h3>
+      <p>No. No hay reloj, no hay límite de intercambios y el tablero se mezcla solo si alguna vez se queda sin jugadas válidas. Lo único que pasa es que se cierra una ronda y se abre otra un poco mayor.</p><h3>¿Por qué no funciona mi intercambio?</h3>
+      <p>Porque no deja tres del mismo color en línea. Las gemas vuelven a su sitio, aparece un borde naranja y no se quita nada. Puedes probar otra vez enseguida.</p><h3>¿Qué cambia entre niveles?</h3>
+      <p>El número de colores y el tamaño del tablero. Cuatro colores en seis por seis, cinco en siete por siete, seis en ocho por ocho. La velocidad no cambia nunca, porque no hay velocidad.</p><h3>¿Recuerda dónde iba?</h3>
+      <p>Sí. El tablero, la ronda y la puntuación vuelven tal cual los dejaste, en ese aparato, sin preguntarte nada.</p><h3>¿Qué mide el récord?</h3>
+      <p>La ronda más alta a la que has llegado, guardada por separado en cada nivel. Una ronda en un tablero de seis colores no es el mismo logro que una en uno de cuatro.</p><h3>¿Por qué sube el sonido?</h3>
+      <p>Cada paso de una cadena toca una nota más alta, en una escala de cinco notas, para que se oiga hasta dónde llegó la caída sin mirarla. La escala se queda arriba en vez de volver a empezar, porque a un niño que lo está haciendo bien no hay que decirle de golpe que ha vuelto al principio.</p>
+
+    <h2>Más juegos</h2>
+    <ul class="grid">
+    <li>
+        <a href="/es/games/sequence/">
+          <span class="em" aria-hidden="true">🔗</span>
+          <span>¿Qué viene ahora?<span class="cat">Pensar</span></span>
+        </a>
+      </li><li>
+        <a href="/es/games/vanish/">
+          <span class="em" aria-hidden="true">🫥</span>
+          <span>¿Qué falta?<span class="cat">Pensar</span></span>
+        </a>
+      </li><li>
+        <a href="/es/games/shadows/">
+          <span class="em" aria-hidden="true">🌓</span>
+          <span>Sombra y foto<span class="cat">Pensar</span></span>
+        </a>
+      </li><li>
+        <a href="/es/games/echo/">
+          <span class="em" aria-hidden="true">💡</span>
+          <span>Repite conmigo<span class="cat">Pensar</span></span>
+        </a>
+      </li><li>
+        <a href="/es/games/sort/">
+          <span class="em" aria-hidden="true">🧪</span>
+          <span>Ordenar Colores<span class="cat">Pensar</span></span>
+        </a>
+      </li><li>
+        <a href="/es/games/merge/">
+          <span class="em" aria-hidden="true">🦋</span>
+          <span>Dos en uno<span class="cat">Pensar</span></span>
+        </a>
+      </li>
+  </ul>
+
+    <section class="embed" id="embed">
+    <h2>Pon este juego en tu web</h2>
+    <p>Copia el código y pégalo en tu página. La línea bajo el marco es la que cuenta: un enlace dentro del marco se queda en ellaz.fun, y solo el que pegas es tuyo.</p>
+    <iframe
+      src="/embed/match3/?lang=es"
+      width="100%"
+      height="940"
+      style="border:0;border-radius:12px;background:var(--doc-stage)"
+      allow="fullscreen"
+      loading="lazy"
+      title="Tres en Línea - ellaz.fun"
+    ></iframe>
+    <p class="embed-credit"><p>Juega a <a href="https://ellaz.fun/es/games/match3/">Tres en Línea</a> y a más juegos gratis en <a href="https://ellaz.fun/">ellaz.fun</a></p></p>
+    <pre
+      class="embed-code"
+      data-embed-code
+      dir="ltr"
+      style="white-space:pre-wrap;word-break:break-all;padding:14px;border-radius:12px;background:var(--doc-card);border:1px solid var(--doc-line);font-size:.85rem"
+    >&lt;iframe src=&quot;https://ellaz.fun/embed/match3/?lang=es&quot; width=&quot;100%&quot; height=&quot;940&quot; style=&quot;border:0;border-radius:12px&quot; allow=&quot;fullscreen&quot; title=&quot;Tres en Línea - ellaz.fun&quot;&gt;&lt;/iframe&gt;
+&lt;p&gt;Juega a &lt;a href=&quot;https://ellaz.fun/es/games/match3/&quot;&gt;Tres en Línea&lt;/a&gt; y a más juegos gratis en &lt;a href=&quot;https://ellaz.fun/&quot;&gt;ellaz.fun&lt;/a&gt;&lt;/p&gt;</pre>
+    <button
+      type="button"
+      class="play"
+      data-embed-copy
+      data-label-copied="Copiado"
+      data-label-select="El código está seleccionado: cópialo"
+      hidden
+    >Copiar el código</button>
+  </section>
+  </main>
+    <footer>
+      <div class="in">
+        <span>Ellaz - juegos gratis en hebreo, inglés, español y francés. Sin anuncios, sin cuentas y sin recoger nada sobre ningún niño.</span>
+        <a href="/games/match3/" hreflang="en" lang="en">English</a><a href="/he/games/match3/" hreflang="he" lang="he">עברית</a><a href="/fr/games/match3/" hreflang="fr" lang="fr">Français</a>
+      </div>
+    </footer>
+  
+        <div id="consent" class="consent" role="dialog" aria-live="polite" lang="es" dir="ltr"><p>Contamos visitas con una cookie pequeña de Google. Sin anuncios ni seguimiento personal.</p><button type="button" data-yes>Aceptar</button><button type="button" data-no>No, gracias</button></div>
+    <style>
+      .consent{display:none;position:fixed;inset-inline:0;bottom:0;z-index:60;padding:12px;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;background:#1d1b2e;color:#fff;font-size:14px}[data-consent] .consent{display:flex}.consent p{margin:0;max-width:48ch}.consent button{font:inherit;font-weight:600;padding:8px 18px;min-height:40px;border:0;border-radius:8px;background:#fff;color:#1d1b2e}
+    </style>
+    <script>
+      (function(){try{var d=document.documentElement,b=document.getElementById("consent");if(!b||!window.gtag)return;var v=null;try{v=localStorage.getItem("ellaz:consent:v1")}catch(e){}if(v==="granted"){gtag("consent","update",{analytics_storage:"granted"});return}if(v==="denied")return;d.setAttribute("data-consent","1");function done(a){try{localStorage.setItem("ellaz:consent:v1",a)}catch(e){}if(a==="granted")gtag("consent","update",{analytics_storage:"granted"});d.removeAttribute("data-consent")}var y=b.querySelector("[data-yes]"),n=b.querySelector("[data-no]");if(y)y.addEventListener("click",function(){done("granted")});if(n)n.addEventListener("click",function(){done("denied")});}catch(e){}})()
+    </script>
+      </body>
+    </html>

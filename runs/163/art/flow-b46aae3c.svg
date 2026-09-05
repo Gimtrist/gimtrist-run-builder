@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" class="ellaz-art" viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect width="200" height="150" fill="#D9522B"/><path d="M0 104 200 56v94H0z" fill="#F0855F"/>
+    <rect x="20" y="16" width="160" height="118" rx="10" fill="#FFF7EC" stroke="#241C3B" stroke-width="3.5"/>
+    <g stroke="#4A4066" stroke-width="1.6" opacity=".22">
+      <path d="M52 16v118M84 16v118M116 16v118M148 16v118M20 45h160M20 75h160M20 105h160"/></g>
+    <g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="11">
+      <path d="M36 30h96v30H68v30h64" stroke="#26B0E6"/>
+      <path d="M36 90v30h32" stroke="#FFC730"/>
+      <path d="M164 30v90" stroke="#FF4D8D"/></g>
+    <g stroke="#241C3B" stroke-width="3">
+      <circle cx="36" cy="30" r="9" fill="#26B0E6"/>
+      <circle cx="132" cy="90" r="9" fill="#26B0E6"/>
+      <circle cx="36" cy="90" r="9" fill="#FFC730"/>
+      <circle cx="68" cy="120" r="9" fill="#FFC730"/>
+      <circle cx="164" cy="30" r="9" fill="#FF4D8D"/>
+      <circle cx="164" cy="120" r="9" fill="#FF4D8D"/></g><rect width="200" height="150" style="fill:transparent"/></svg>
