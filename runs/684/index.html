@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#07070f" />
+    <meta
+      name="description"
+      content="Event Bros, un juego de plataformas sobre producción técnica de eventos."
+    />
+    <title>Event Bros · Súper Técnico de Eventos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+    <script type="module" crossorigin src="./build/index-mOkUd0So.js"></script>
+    <link rel="stylesheet" crossorigin href="./build/index-D6zkSSbJ.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#game-stage">Saltar al juego</a>
+    <header class="site-header">
+      <h1>Event Bros</h1>
+      <p>Súper Técnico de Eventos</p>
+    </header>
+    <main id="game-stage" tabindex="-1">
+      <section
+        class="game-shell"
+        aria-labelledby="game-title"
+        aria-describedby="instructions"
+      >
+        <h2 id="game-title" class="sr-only">Juego de plataformas Event Bros</h2>
+        <div class="canvas-frame" data-testid="canvas-frame">
+          <canvas
+            id="game"
+            width="960"
+            height="576"
+            role="img"
+            aria-label="Escenario de Event Bros"
+            aria-describedby="instructions gameplay-state"
+          ></canvas>
+          <div
+            id="loading"
+            class="loading-panel"
+            role="status"
+            aria-live="polite"
+          >
+            <span class="loading-mark" aria-hidden="true">EB</span>
+            <p id="loading-label">Preparando el escenario… 0%</p>
+            <progress id="loading-progress" max="100" value="0">0%</progress>
+          </div>
+          <div id="load-error" class="error-panel" role="alert" hidden>
+            <h2>No pudimos montar el escenario</h2>
+            <p id="error-message">Falta un recurso necesario.</p>
+            <button id="retry" type="button">Reintentar carga</button>
+          </div>
+        </div>
+        <section
+          class="sr-only"
+          role="region"
+          aria-labelledby="gameplay-state-title"
+        >
+          <h3 id="gameplay-state-title">Estado accesible de la partida</h3>
+          <p id="gameplay-state" data-testid="gameplay-state" aria-live="off">
+            Estado: cargando. Los datos de juego aparecerán cuando el escenario
+            esté listo.
+          </p>
+        </section>
+        <p
+          id="game-status"
+          class="status"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          data-testid="game-status"
+        >
+          Cargando el juego.
+        </p>
+        <details class="instructions" id="instructions">
+          <summary>Cómo jugar</summary>
+          <p>
+            <kbd>←</kbd> <kbd>→</kbd> o <kbd>A</kbd> <kbd>D</kbd> para moverte;
+            <kbd>Espacio</kbd>, <kbd>W</kbd> o <kbd>↑</kbd> para saltar;
+            <kbd>S</kbd> o <kbd>↓</kbd> para agacharte.
+          </p>
+          <p>
+            <kbd>P</kbd> pausa y <kbd>M</kbd> activa o silencia el sonido. Reuní
+            micrófonos, superá al Feedback y llegá a la consola FOH.
+          </p>
+        </details>
+        <div id="touch" class="touch-controls" aria-label="Controles táctiles">
+          <div
+            class="pad pad-move"
+            data-testid="pad-move"
+            aria-label="Movimiento"
+          >
+            <button
+              class="touch-button"
+              id="bl"
+              type="button"
+              aria-label="Mover a la izquierda"
+              aria-pressed="false"
+            >
+              ◀
+            </button>
+            <button
+              class="touch-button"
+              id="br"
+              type="button"
+              aria-label="Mover a la derecha"
+              aria-pressed="false"
+            >
+              ▶
+            </button>
+          </div>
+          <div
+            class="pad pad-utils"
+            data-testid="pad-utils"
+            aria-label="Opciones"
+          >
+            <button
+              class="touch-button utility"
+              id="bp"
+              type="button"
+              aria-label="Pausar juego"
+              aria-pressed="false"
+            >
+              Ⅱ
+            </button>
+            <button
+              class="touch-button utility"
+              id="bm"
+              type="button"
+              aria-label="Silenciar sonido"
+              aria-pressed="false"
+            >
+              ♫
+            </button>
+          </div>
+          <div class="pad pad-act" data-testid="pad-act" aria-label="Acciones">
+            <button
+              class="touch-button"
+              id="bd"
+              type="button"
+              aria-label="Agacharse"
+              aria-pressed="false"
+            >
+              ▼
+            </button>
+            <button
+              class="touch-button primary"
+              id="bj"
+              type="button"
+              aria-label="Saltar"
+              aria-pressed="false"
+            >
+              A
+            </button>
+          </div>
+        </div>
+      </section>
+      <div
+        id="rotate-hint"
+        class="rotate-hint"
+        role="dialog"
+        aria-labelledby="rotate-hint-title"
+      >
+        <div class="rotate-hint-panel">
+          <span class="rotate-phone" aria-hidden="true"></span>
+          <h2 id="rotate-hint-title">Girá el celular</h2>
+          <p>
+            Event Bros se juega a lo ancho. Poné el teléfono de costado para ver
+            todo el escenario y tener los controles bajo los dos pulgares.
+          </p>
+          <button id="rotate-dismiss" type="button">
+            Jugar en vertical igual
+          </button>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
