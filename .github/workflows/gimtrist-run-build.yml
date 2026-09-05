@@ -1,0 +1,246 @@
+name: Gimtrist Run Build
+
+'on':
+  workflow_dispatch:
+    inputs:
+      build_id:
+        description: Gimtrist Run build ID
+        required: true
+        type: string
+      target_id:
+        description: Gimtrist Run target ID
+        required: true
+        type: string
+      source_repo:
+        description: Public repository URL
+        required: true
+        type: string
+      source_repo_full_name:
+        description: Public GitHub owner/repository
+        required: true
+        type: string
+      source_ref:
+        description: Branch, tag, or commit to build
+        required: true
+        default: HEAD
+        type: string
+      runner_profile:
+        description: Gimtrist Run runner profile
+        required: true
+        type: choice
+        options:
+          - static_web
+          - phaser_web
+          - rust_macroquad_web
+          - self_test
+      callback_url:
+        description: Gimtrist Run result callback URL
+        required: true
+        type: string
+      callback_nonce:
+        description: Non-secret build callback nonce
+        required: true
+        type: string
+      pages_base_url:
+        description: Public GitHub Pages base URL
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: gimtrist-run-${{ inputs.target_id }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    outputs:
+      source_commit: ${{ steps.source_commit.outputs.commit }}
+    steps:
+      - name: Checkout builder scripts
+        uses: actions/checkout@v4
+        with:
+          path: builder
+          persist-credentials: false
+
+      - name: Checkout public source repository
+        if: ${{ inputs.runner_profile != 'self_test' }}
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.source_repo_full_name }}
+          ref: ${{ inputs.source_ref }}
+          path: source
+          persist-credentials: false
+          submodules: recursive
+
+      - name: Prepare provisioning self-test source
+        if: ${{ inputs.runner_profile == 'self_test' }}
+        shell: bash
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/source"
+          cp -a "$GITHUB_WORKSPACE/builder/fixtures/static/." "$GITHUB_WORKSPACE/source/"
+
+      - name: Capture source commit
+        id: source_commit
+        shell: bash
+        run: |
+          if [[ "${{ inputs.runner_profile }}" == "self_test" ]]; then
+            echo "commit=$(git -C builder rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          else
+            echo "commit=$(git -C source rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build browser artifact
+        shell: bash
+        run: |
+          profile="${{ inputs.runner_profile }}"
+          if [[ "$profile" == "self_test" ]]; then profile="static_web"; fi
+          bash builder/scripts/build.sh "$profile" "$GITHUB_WORKSPACE/source" "$GITHUB_WORKSPACE/output"
+
+      - name: Preserve source license notices
+        shell: bash
+        run: bash builder/scripts/copy-license.sh "$GITHUB_WORKSPACE/source" "$GITHUB_WORKSPACE/output"
+
+      - name: Enforce Phase One artifact size limit
+        shell: bash
+        run: |
+          bytes="$(du -sb "$GITHUB_WORKSPACE/output" | awk '{print $1}')"
+          max_bytes=$((100 * 1024 * 1024))
+          if [[ "$bytes" -gt "$max_bytes" ]]; then
+            echo "Artifact is ${bytes} bytes; Phase One limit is ${max_bytes} bytes." >&2
+            exit 40
+          fi
+
+      - name: Generate artifact checksum manifest
+        shell: bash
+        run: |
+          cd "$GITHUB_WORKSPACE/output"
+          find . -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS
+
+      - name: Upload browser artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gimtrist-run-${{ inputs.build_id }}
+          path: output/
+          if-no-files-found: error
+          retention-days: 1
+
+  publish:
+    if: ${{ success() }}
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout builder repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          path: publisher
+
+      - name: Download built artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: gimtrist-run-${{ inputs.build_id }}
+          path: artifact
+
+      - name: Publish to gh-pages branch
+        id: publish
+        shell: bash
+        env:
+          TARGET_ID: ${{ inputs.target_id }}
+          BUILD_ID: ${{ inputs.build_id }}
+          PAGES_BASE_URL: ${{ inputs.pages_base_url }}
+        run: |
+          set -euo pipefail
+          cd publisher
+          git config user.name "Gimtrist Run Builder"
+          git config user.email "run-builder@gimtrist.invalid"
+          if git ls-remote --exit-code --heads origin gh-pages >/dev/null 2>&1; then
+            git fetch origin gh-pages
+            git checkout -B gh-pages origin/gh-pages
+          else
+            git checkout --orphan gh-pages
+            git rm -rf . >/dev/null 2>&1 || true
+          fi
+          target_path="runs/${TARGET_ID}"
+          rm -rf "$target_path"
+          mkdir -p "$target_path"
+          cp -a "$GITHUB_WORKSPACE/artifact/." "$target_path/"
+          touch .nojekyll
+          git add -A
+          git commit -m "Publish Gimtrist Run target ${TARGET_ID} build ${BUILD_ID}" || true
+          git push origin gh-pages
+          artifact_url="${PAGES_BASE_URL%/}/${target_path}/"
+          echo "artifact_url=${artifact_url}" >> "$GITHUB_OUTPUT"
+          artifact_hash="$(sha256sum "$target_path/SHA256SUMS" | awk '{print $1}')"
+          echo "artifact_hash=${artifact_hash}" >> "$GITHUB_OUTPUT"
+
+      - name: Report success to Gimtrist
+        shell: bash
+        env:
+          CALLBACK_URL: ${{ inputs.callback_url }}
+          CALLBACK_NONCE: ${{ inputs.callback_nonce }}
+          CALLBACK_SECRET: ${{ secrets.GIMTRIST_RUN_CALLBACK_SECRET }}
+          BUILD_ID: ${{ inputs.build_id }}
+          SOURCE_COMMIT: ${{ needs.build.outputs.source_commit }}
+          ARTIFACT_URL: ${{ steps.publish.outputs.artifact_url }}
+          ARTIFACT_HASH: ${{ steps.publish.outputs.artifact_hash }}
+          RUN_ID: ${{ github.run_id }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          log_url="https://github.com/${REPOSITORY}/actions/runs/${RUN_ID}"
+          payload="$(jq -n \
+            --arg build_id "$BUILD_ID" \
+            --arg callback_nonce "$CALLBACK_NONCE" \
+            --arg status "success" \
+            --arg source_commit "$SOURCE_COMMIT" \
+            --arg artifact_url "$ARTIFACT_URL" \
+            --arg artifact_hash "$ARTIFACT_HASH" \
+            --arg external_job_id "$RUN_ID" \
+            --arg log_url "$log_url" \
+            '{build_id:$build_id,callback_nonce:$callback_nonce,status:$status,source_commit:$source_commit,artifact_url:$artifact_url,artifact_hash:$artifact_hash,external_job_id:$external_job_id,log_url:$log_url}')"
+          signature="$(printf '%s' "$payload" | openssl dgst -sha256 -hmac "$CALLBACK_SECRET" -hex | awk '{print $2}')"
+          curl --fail-with-body --retry 3 --retry-delay 5 \
+            -H 'Content-Type: application/json' \
+            -H "X-Gimtrist-Run-Signature: sha256=${signature}" \
+            --data "$payload" \
+            "$CALLBACK_URL"
+
+  report-failure:
+    if: ${{ always() && (needs.build.result == 'failure' || needs.publish.result == 'failure') }}
+    needs: [build, publish]
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Report failure to Gimtrist
+        shell: bash
+        env:
+          CALLBACK_URL: ${{ inputs.callback_url }}
+          CALLBACK_NONCE: ${{ inputs.callback_nonce }}
+          CALLBACK_SECRET: ${{ secrets.GIMTRIST_RUN_CALLBACK_SECRET }}
+          BUILD_ID: ${{ inputs.build_id }}
+          RUN_ID: ${{ github.run_id }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          log_url="https://github.com/${REPOSITORY}/actions/runs/${RUN_ID}"
+          payload="$(jq -n \
+            --arg build_id "$BUILD_ID" \
+            --arg callback_nonce "$CALLBACK_NONCE" \
+            --arg status "failed" \
+            --arg external_job_id "$RUN_ID" \
+            --arg log_url "$log_url" \
+            --arg error "Gimtrist Run build failed. See the GitHub Actions log." \
+            '{build_id:$build_id,callback_nonce:$callback_nonce,status:$status,external_job_id:$external_job_id,log_url:$log_url,error:$error}')"
+          signature="$(printf '%s' "$payload" | openssl dgst -sha256 -hmac "$CALLBACK_SECRET" -hex | awk '{print $2}')"
+          curl --fail-with-body --retry 3 --retry-delay 5 \
+            -H 'Content-Type: application/json' \
+            -H "X-Gimtrist-Run-Signature: sha256=${signature}" \
+            --data "$payload" \
+            "$CALLBACK_URL"
