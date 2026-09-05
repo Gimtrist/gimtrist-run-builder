@@ -1,0 +1,1006 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>reimagine-it — Content-Derived Design for AI Agents</title>
+<meta name="description" content="Content-Derived Design: existing HTML in, a stronger standalone page out — from the nouns, dates, numbers, and colors already in the file. CLI + agent skill. Offline. No CDN. No Figma.">
+<meta name="keywords" content="claude-code, cursor, codex, copilot, gemini-cli, agent-skills, content-derived design, infographic, webpage, html, svg, threejs, simulation, redesign">
+<link rel="canonical" href="https://kayforkind.github.io/reimagine-it/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="reimagine-it — nine sources, no shared silhouette">
+<meta property="og:description" content="Auto redesigns existing HTML from its own content. A juice bar, a skate deck, and a streetwear drop cannot share a silhouette.">
+<meta property="og:url" content="https://kayforkind.github.io/reimagine-it/">
+<meta property="og:image" content="https://kayforkind.github.io/reimagine-it/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">    <link rel="llms" href="llms.txt" type="text/plain">
+    <meta name="twitter:title" content="reimagine-it — nine sources, no shared silhouette">
+<meta name="twitter:description" content="Content-Derived Design CLI. Paste HTML, get a standalone page. Offline. No Figma.">
+<meta name="twitter:image" content="https://kayforkind.github.io/reimagine-it/og.png">
+<style>
+:root {
+  --void: #0a0f1e; --ink: #f4efe4; --paper: #f4efe4; --dim: #8b93a7;
+  --hot: #e8a63f; --crimson: #b22234; --panel: #121a2e; --line: rgba(244,239,228,.1);
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --sans: ui-sans-serif, system-ui, "Segoe UI", Inter, sans-serif;
+  --mono: ui-monospace, "SF Mono", Consolas, Menlo, monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--void); }
+html, body { background: var(--void); color: var(--ink); font-family: var(--sans); line-height: 1.5; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; overflow-x: hidden; }
+a { color: var(--hot); text-decoration: none; }
+a:hover { color: var(--ink); }
+a:focus-visible, .btn:focus-visible, .card:focus-visible { outline: 2px solid var(--hot); outline-offset: 3px; border-radius: 4px; }
+::selection { background: var(--hot); color: var(--void); }
+code { font-family: var(--mono); background: rgba(244,239,228,.08); padding: 2px 6px; border-radius: 4px; font-size: .88em; color: var(--ink); }
+
+/* craft floor: grain + progress + scrollbar */
+body::before { content: ""; position: fixed; inset: 0; z-index: 9998; pointer-events: none; opacity: .05; mix-blend-mode: overlay; background-image: url("data:image/svg+xml;utf8,<svg xmlns=%27http://www.w3.org/2000/svg%27 width=%27160%27 height=%27160%27><filter id=%27n%27><feTurbulence type=%27fractalNoise%27 baseFrequency=%270.85%27 numOctaves=%272%27 stitchTiles=%27stitch%27/></filter><rect width=%27160%27 height=%27160%27 filter=%27url(%23n)%27 opacity=%270.6%27/></svg>"); }
+body::after { content: ""; position: fixed; left: 0; top: 0; height: 2px; width: 100%; background: linear-gradient(90deg, var(--crimson), var(--hot)); transform-origin: 0 50%; transform: scaleX(0); z-index: 9999; pointer-events: none; animation: progline linear both; animation-timeline: scroll(root); }
+@keyframes progline { to { transform: scaleX(1); } }
+html { scrollbar-color: var(--hot) var(--void); scrollbar-width: thin; }
+
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 28px; position: relative; z-index: 1; }
+
+/* ---- NAV ---- */
+nav { position: sticky; top: 0; z-index: 60; display: flex; justify-content: space-between; align-items: center; padding: 16px 0 14px; font-family: var(--mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--dim); border-bottom: 1px solid var(--line); background: rgba(10,15,30,.82); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+section[id] { scroll-margin-top: 84px; }
+.hero-aurora { top: 0; }
+nav b { color: var(--hot); }
+nav .links { display: flex; gap: 20px; flex-wrap: wrap; }
+nav .links a { color: var(--dim); transition: color .2s ease; }
+nav .links a:hover { color: var(--hot); }
+
+/* ---- HERO ---- */
+.hero { position: relative; display: grid; grid-template-columns: 1.05fr .95fr; gap: 56px; align-items: center; padding: clamp(64px, 9vw, 120px) 0 clamp(56px, 7vw, 96px); min-height: 88vh; }
+.hero-aurora { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+.hero-aurora i { position: absolute; border-radius: 50%; filter: blur(110px); opacity: .5; }
+.hero-aurora i:nth-child(1) { width: 52vmax; height: 52vmax; left: -14vmax; top: -18vmax; background: radial-gradient(circle, rgba(178,34,52,.34), transparent 66%); animation: aurora-a 24s ease-in-out infinite alternate; }
+.hero-aurora i:nth-child(2) { width: 44vmax; height: 44vmax; right: -12vmax; top: 6vmax; background: radial-gradient(circle, rgba(232,166,63,.22), transparent 66%); animation: aurora-b 30s ease-in-out infinite alternate; }
+.hero-aurora i:nth-child(3) { width: 40vmax; height: 40vmax; left: 22vmax; bottom: -16vmax; background: radial-gradient(circle, rgba(37,72,180,.26), transparent 66%); animation: aurora-a 36s ease-in-out infinite alternate-reverse; }
+@keyframes aurora-a { to { transform: translate(9vmax, 5vmax) scale(1.18); } }
+@keyframes aurora-b { to { transform: translate(-8vmax, 7vmax) scale(1.1); } }
+.hero .kicker { font-family: var(--mono); font-size: 10px; letter-spacing: .24em; text-transform: uppercase; color: var(--hot); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+.hero .kicker::before { content: ""; width: 34px; height: 1px; background: var(--hot); }
+h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(44px, 6.4vw, 96px); line-height: .99; letter-spacing: -.03em; }
+h1 em { font-style: italic; }
+h1 .grad { background: linear-gradient(100deg, var(--crimson), var(--hot) 55%, #f4c86b); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hero .sub { margin-top: 26px; max-width: 46ch; font-size: 17px; color: #b9c0d0; line-height: 1.7; }
+.hero .sub strong { color: var(--ink); font-weight: 600; }
+.hero .sub code { color: var(--hot); background: rgba(232,166,63,.12); }
+.cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 34px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; background: var(--ink); color: var(--void); font-family: var(--sans); font-size: 14px; font-weight: 600; padding: 13px 22px; border: 0; border-radius: 999px; cursor: pointer; transition: transform .18s ease-out, box-shadow .18s ease-out, background .18s ease; }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 16px 34px -14px rgba(232,166,63,.45); background: #fff; }
+.btn--ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1px rgba(244,239,228,.28); }
+.btn--ghost:hover { background: rgba(244,239,228,.08); color: var(--ink); }
+.btn--gold { background: var(--hot); color: var(--void); }
+.btn--gold:hover { background: #f2b655; }
+
+/* ---- TRANSFORMATION WINDOW ---- */
+.transform { position: relative; border: 1px solid rgba(244,239,228,.14); border-radius: 22px; background: rgba(18,26,46,.72); backdrop-filter: blur(18px); overflow: hidden; box-shadow: 0 40px 90px -34px rgba(0,0,0,.8); }
+.transform::before { content: ""; position: absolute; inset: -1px; z-index: 0; border-radius: 22px; padding: 1px; background: linear-gradient(135deg, rgba(232,166,63,.5), rgba(178,34,52,.12) 40%, rgba(37,72,180,.35)); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
+.transform-head, .transform-stage, .transform-cap { position: relative; z-index: 1; }
+.transform-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 18px; border-bottom: 1px solid rgba(244,239,228,.1); font-family: var(--mono); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--dim); }
+.transform-head .dots { display: flex; gap: 6px; }
+.transform-head .dots i { width: 9px; height: 9px; border-radius: 50%; background: rgba(244,239,228,.16); }
+.transform-head .dots i:first-child { background: var(--crimson); }
+.transform-head .dots i:nth-child(2) { background: var(--hot); }
+.transform-stage { position: relative; aspect-ratio: 1 / 1; }
+.transform-stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .7s ease; }
+.transform-stage img.show { opacity: 1; }
+.transform-cap { position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 20px 18px; background: linear-gradient(transparent, rgba(10,15,30,.92)); font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink); }
+.transform-cap b { color: var(--hot); font-weight: 600; }
+.transform-nav { display: flex; gap: 8px; }
+.transform-nav button { width: 30px; height: 30px; border-radius: 50%; border: 1px solid rgba(244,239,228,.25); background: transparent; color: var(--ink); cursor: pointer; font-size: 14px; transition: background .18s ease; }
+.transform-nav button:hover { background: rgba(232,166,63,.2); border-color: var(--hot); }
+
+/* ---- TOKEN MARQUEE ---- */
+.marquee { overflow: hidden; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 16px 0; margin: 0 0 8px; }
+.marquee-track { display: flex; gap: 0; width: max-content; animation: marquee 36s linear infinite; }
+.marquee-track span { font-family: var(--mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--dim); padding: 0 18px; white-space: nowrap; }
+.marquee-track span i { color: var(--hot); font-style: normal; margin-right: 36px; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+
+/* ---- STATS ---- */
+.stats { display: flex; gap: 44px; margin-top: 34px; flex-wrap: wrap; }
+.hero-badges { display: flex; gap: 8px; margin-top: 22px; flex-wrap: wrap; align-items: center; }
+.hero-badges img { height: 20px; display: block; border-radius: 3px; }
+.hero-badges a:focus-visible { outline: 2px solid var(--hot); outline-offset: 3px; border-radius: 4px; }
+.stat { font-family: var(--mono); position: relative; padding-left: 14px; }
+.stat::before { content: ""; position: absolute; left: 0; top: 4px; bottom: 4px; width: 2px; background: linear-gradient(var(--crimson), var(--hot)); }
+.stat .val { font-size: 34px; font-weight: 600; color: var(--ink); display: block; letter-spacing: -.02em; }
+.stat .val em { color: var(--hot); font-style: normal; }
+.stat .lab { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--dim); display: block; margin-top: 2px; }
+
+/* ---- SECTION FRAME ---- */
+.method, .case-section, .install-section, .playground-section { padding: 84px 0 76px; border-top: 1px solid var(--line); position: relative; }
+.method h2, .case-section h2, .install-section h2, .playground-section h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(30px, 4.6vw, 52px); letter-spacing: -.02em; margin-bottom: 14px; line-height: 1.05; }
+.method h2 em, .case-section h2 em { font-style: italic; color: var(--hot); }
+.method .sub, .case-section .sub, .install-section .sub, .playground-section .sub { color: #aeb6c8; max-width: 56ch; margin-bottom: 34px; font-size: 16px; line-height: 1.65; }
+.method .sub a, .case-section .sub a { border-bottom: 1px solid rgba(232,166,63,.4); }
+.method-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
+.method-card { position: relative; background: rgba(18,26,46,.6); border: 1px solid rgba(244,239,228,.09); border-radius: 16px; padding: 30px 26px 26px; transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; overflow: hidden; }
+.method-card::before { content: attr(data-no); position: absolute; right: 16px; top: 8px; font-family: var(--serif); font-size: 64px; color: rgba(244,239,228,.05); line-height: 1; }
+.method-card:hover { transform: translateY(-5px); border-color: rgba(232,166,63,.5); box-shadow: 0 24px 50px -24px rgba(0,0,0,.7); }
+.method-card .step { font-family: var(--mono); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--hot); margin-bottom: 12px; display: block; }
+.method-card h3 { font-family: var(--serif); font-weight: 400; font-size: 22px; margin-bottom: 10px; }
+.method-card p { font-size: 14px; color: #9aa3b8; line-height: 1.66; }
+
+/* ---- CASE STUDIES ---- */
+.case-section h3.source-name { font-family: var(--serif); font-weight: 400; font-size: 24px; margin: 44px 0 10px; }
+.case-section h3.source-name::before { content: "✦ "; color: var(--hot); }
+.case-section .source-sub { color: #9aa3b8; margin-bottom: 18px; font-size: 14px; max-width: 52ch; line-height: 1.65; }
+.case-section .source-sub a { border-bottom: 1px solid rgba(232,166,63,.4); }
+.case-section .before-after { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.case-section .before-after img { width: 100%; height: auto; display: block; border-radius: 16px; border: 1px solid rgba(244,239,228,.1); margin-bottom: 0; transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease; }
+.case-section .before-after > div { position: relative; overflow: hidden; border-radius: 16px; }
+.case-section .before-after > div:hover img { transform: scale(1.03); border-color: rgba(232,166,63,.45); box-shadow: 0 26px 54px -26px rgba(0,0,0,.8); }
+.case-section .before-after .label { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; margin: 12px 0 0; text-align: center; color: var(--dim); }
+.case-section .before-after .label::before { content: "→ "; color: var(--hot); }
+.case-table { width: 100%; border-collapse: collapse; margin: 24px 0 8px; }
+.case-table th { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); text-align: left; padding: 12px 14px; border-bottom: 1px solid rgba(244,239,228,.14); }
+.case-table td { font-size: 14px; padding: 12px 14px; border-bottom: 1px solid rgba(244,239,228,.06); vertical-align: top; color: #c6ccda; }
+.case-table td a { border-bottom: 1px solid rgba(232,166,63,.4); }
+.case-table .src { font-weight: 600; color: var(--ink); }
+.results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; margin: 8px 0 32px; }
+.results-grid figure { margin: 0; border: 1px solid rgba(244,239,228,.12); border-radius: 16px; overflow: hidden; background: #0d1322; box-shadow: 0 22px 44px -24px rgba(0,0,0,.75); }
+.results-grid img { display: block; width: 100%; height: 168px; object-fit: cover; object-position: top center; }
+.results-grid figcaption { padding: 12px 14px 14px; border-top: 1px solid rgba(244,239,228,.1); }
+.results-grid figcaption b { display: block; font-family: var(--serif); font-size: 16px; font-weight: 400; color: var(--ink); letter-spacing: 0; text-transform: none; margin-bottom: 4px; }
+.results-grid figcaption span { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+.results-grid figcaption code { color: var(--hot); }
+
+/* ---- TOKENS GALLERY ---- */
+.tokens-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+.token-gallery { margin: 28px 0 8px; }
+.token-gallery-stage { display: grid; grid-template-columns: minmax(0,1fr) 220px; gap: 16px; align-items: stretch; }
+.tg-main { position: relative; border: 1px solid rgba(244,239,228,.12); border-radius: 16px; overflow: hidden; box-shadow: 0 24px 60px -30px rgba(0,0,0,.8); background: #0d1322; }
+.tg-main img { display: block; width: 100%; height: auto; }
+.tg-caption { display: flex; align-items: baseline; gap: 12px; padding: 12px 16px; border-top: 1px solid rgba(244,239,228,.1); }
+.tg-caption code { font: 700 13px ui-monospace,monospace; color: #ceb27e; }
+.tg-caption span { font: 12px/1.4 ui-sans-serif,system-ui,sans-serif; color: #8b93a6; }
+.tg-phone { position: relative; border: 1px solid rgba(244,239,228,.12); border-radius: 16px; overflow: hidden; background: #0d1322; }
+.tg-phone img { display: block; width: 100%; height: auto; }
+.tg-phone span { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); font: 700 10px ui-monospace,monospace; letter-spacing: .14em; text-transform: uppercase; color: #ceb27e; background: rgba(10,15,30,.8); border: 1px solid rgba(244,239,228,.14); border-radius: 999px; padding: 4px 10px; }
+.tg-live-desk { display: none; }
+.tg-live-phone { display: none; }
+.tg-main.live .tg-live-desk { display: block; height: 560px; overflow: auto; background: #fff; }
+.tg-main.live > img { display: none; }
+.tg-phone.live .tg-live-phone { display: block; height: 640px; overflow: auto; background: #fff; }
+.tg-phone.live > img { display: none; }
+.tg-live-desk iframe, .tg-live-phone iframe { width: 100%; height: 100%; border: 0; }
+.tg-bar { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 14px; flex-wrap: wrap; }
+.tg-toggles { display: flex; gap: 8px; flex-wrap: wrap; }
+.tg-toggle { font: 700 11px ui-monospace,monospace; letter-spacing: .08em; text-transform: uppercase; color: #f4efe4; background: rgba(206,178,126,.12); border: 1px solid rgba(206,178,126,.4); border-radius: 999px; padding: 9px 16px; cursor: pointer; transition: all .2s ease; white-space: nowrap; }
+.tg-toggle:hover { border-color: #ceb27e; }
+.tg-toggle.on { color: #0a0f1e; background: #ceb27e; border-color: #ceb27e; }
+.tg-controls { display: flex; align-items: center; gap: 10px; }
+.tg-controls .tg-nav { width: 38px; height: 38px; border-radius: 50%; border: 1px solid rgba(244,239,228,.18); background: transparent; color: #f4efe4; font-size: 15px; cursor: pointer; transition: all .2s ease; }
+.tg-controls .tg-nav:hover { border-color: #ceb27e; color: #ceb27e; }
+.tg-chips { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
+.tg-chip { font: 700 11px ui-monospace,monospace; color: #8b93a6; background: transparent; border: 1px solid rgba(244,239,228,.14); border-radius: 999px; padding: 6px 12px; cursor: pointer; transition: all .2s ease; white-space: nowrap; }
+.tg-chip.active { color: #0a0f1e; background: #ceb27e; border-color: #ceb27e; }
+.tg-note { margin-top: 12px; font: 12px/1.5 ui-sans-serif,system-ui,sans-serif; color: #8b93a6; }
+.info-showcase { display: grid; grid-template-columns: minmax(0,1fr) 300px; gap: 18px; align-items: start; }
+.info-showcase figure { margin: 0; border: 1px solid rgba(244,239,228,.12); border-radius: 16px; overflow: hidden; background: #0d1322; box-shadow: 0 24px 60px -30px rgba(0,0,0,.8); }
+.info-showcase img { display: block; width: 100%; height: auto; }
+.info-showcase figcaption { padding: 10px 14px; font: 700 11px ui-monospace,monospace; letter-spacing: .08em; text-transform: uppercase; color: #8b93a6; border-top: 1px solid rgba(244,239,228,.1); }
+.info-showcase figcaption code { color: #ceb27e; }
+.suite-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 18px; align-items: start; }
+.suite-card { margin: 0; border: 1px solid rgba(244,239,228,.12); border-radius: 16px; overflow: hidden; background: #0d1322; box-shadow: 0 24px 60px -30px rgba(0,0,0,.8); }
+.suite-card img { display: block; width: 100%; height: auto; }
+.suite-card .cap { padding: 10px 14px; font: 700 11px ui-monospace,monospace; letter-spacing: .08em; text-transform: uppercase; color: #8b93a6; border-top: 1px solid rgba(244,239,228,.1); display: flex; justify-content: space-between; gap: 10px; }
+.suite-card .cap code { color: #ceb27e; }
+.suite-card .cap .anim-tag { color: #7fd0a5; }
+.suite-stack { display: flex; flex-direction: column; gap: 18px; }
+.suite-wide figure { margin: 0; border: 1px solid rgba(244,239,228,.12); border-radius: 16px; overflow: hidden; background: #0d1322; box-shadow: 0 24px 60px -30px rgba(0,0,0,.8); }
+.suite-wide img { display: block; width: 100%; height: auto; }
+.suite-wide figcaption { padding: 10px 14px; font: 700 11px ui-monospace,monospace; letter-spacing: .08em; text-transform: uppercase; color: #8b93a6; border-top: 1px solid rgba(244,239,228,.1); }
+@media(max-width:900px){ .suite-grid { grid-template-columns: 1fr; } }
+.suite-cmd { margin: 22px 0 6px; }
+.suite-cmd pre { font-family: var(--mono); font-size: 13px; background: #0a0f1e; color: #f4c86b; padding: 16px 18px; border-radius: 12px; overflow-x: auto; border: 1px solid rgba(244,239,228,.08); display: inline-block; }
+@media(max-width:820px){ .info-showcase { grid-template-columns: 1fr; } }
+@media(max-width:760px){ .token-gallery-stage { grid-template-columns: 1fr; } .tg-phone { display: none; } }
+.token-card { position: relative; background: rgba(18,26,46,.55); border: 1px solid rgba(244,239,228,.09); border-radius: 16px; overflow: hidden; cursor: pointer; transition: transform .2s ease, border-color .2s ease, background .2s ease, box-shadow .2s ease; }
+.token-card:hover { transform: translateY(-4px); border-color: rgba(232,166,63,.55); background: rgba(28,38,66,.75); box-shadow: 0 22px 44px -22px rgba(0,0,0,.75); }
+.token-card .tc-thumb { position: relative; height: 152px; overflow: hidden; border-bottom: 1px solid rgba(244,239,228,.08); background: #0d1322; }
+.token-card .tc-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; transition: transform .35s ease; }
+.token-card:hover .tc-thumb img { transform: scale(1.05); }
+.token-card .tc-no { position: absolute; top: 10px; left: 10px; font-family: var(--mono); font-size: 10px; letter-spacing: .14em; color: var(--hot); background: rgba(10,15,30,.78); border: 1px solid rgba(244,239,228,.16); border-radius: 999px; padding: 3px 9px; }
+.token-card .tc-body { padding: 16px 18px 18px; }
+.token-card code { background: rgba(232,166,63,.12); color: var(--hot); font-size: 11px; letter-spacing: .1em; }
+.token-card h3 { font-family: var(--serif); font-weight: 400; font-size: 18px; margin: 10px 0 6px; }
+.token-card p { font-size: 13px; color: #9aa3b8; line-height: 1.6; }
+
+/* ---- INSTALL ---- */
+.install-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.install-card { background: rgba(18,26,46,.6); border: 1px solid rgba(244,239,228,.09); border-radius: 16px; padding: 26px; transition: transform .2s ease, border-color .2s ease; }
+.install-card:hover { transform: translateY(-3px); border-color: rgba(232,166,63,.4); }
+.install-card .agent { font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--hot); margin-bottom: 8px; display: block; }
+.install-card h3 { font-family: var(--serif); font-weight: 400; font-size: 19px; margin-bottom: 12px; }
+.install-card pre { font-family: var(--mono); font-size: 12px; background: #0a0f1e; color: #f4c86b; padding: 16px 18px; border-radius: 10px; overflow-x: auto; white-space: pre-wrap; line-height: 1.55; border: 1px solid rgba(244,239,228,.06); }
+.install-card .alt { font-size: 12px; color: #8b93a7; margin-top: 12px; }
+.install-card .alt code { font-size: 11px; color: var(--hot); }
+
+/* ---- PLAYGROUND ---- */
+.playground-section { padding: 84px 0 88px; }
+.play-box { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.play-left, .play-right { display: flex; flex-direction: column; gap: 14px; }
+.play-label { font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--hot); }
+.play-left textarea { width: 100%; min-height: 180px; background: #0a0f1e; color: var(--ink); border: 1px solid rgba(244,239,228,.14); border-radius: 12px; padding: 16px; font-family: var(--mono); font-size: 13px; line-height: 1.6; resize: vertical; }
+.play-left textarea:focus { outline: 2px solid var(--hot); outline-offset: 2px; border-color: transparent; }
+.token-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.sample-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.sample-btn { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; padding: 7px 14px; border-radius: 8px; border: 1px dashed rgba(244,239,228,.28); background: transparent; color: var(--dim); cursor: pointer; transition: background-color .15s ease, color .15s ease, border-color .15s ease; }
+.sample-btn:hover, .sample-btn.active { background: rgba(244,239,228,.1); color: var(--ink); border-color: var(--hot); }
+.token-btn { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; padding: 7px 14px; border-radius: 999px; border: 1px solid rgba(244,239,228,.2); background: transparent; color: var(--dim); cursor: pointer; transition: background-color .15s ease, color .15s ease, border-color .15s ease; }
+  .design-strip { margin-top: 14px; }
+  .design-btns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  .design-btn { font-family: var(--mono); font-size: 11px; letter-spacing: .06em; padding: 8px 12px; border-radius: 999px; border: 1px solid rgba(244,239,228,.2); background: transparent; color: var(--dim); cursor: pointer; transition: background-color .15s ease, color .15s ease, border-color .15s ease; }
+  .design-btn:hover, .design-btn.active { background: var(--hot); color: var(--void); border-color: var(--hot); }
+  .fonts-toggle { display: flex; gap: 10px; align-items: center; margin-top: 12px; cursor: pointer; font: 13px var(--mono); color: var(--ink); }
+  .fonts-toggle input { accent-color: var(--hot); cursor: pointer; }
+  .fonts-toggle small { color: var(--dim); font-size: 11px; opacity: .8; }
+.token-btn:hover, .token-btn.active { background: var(--hot); color: var(--void); border-color: var(--hot); }
+.run-btn { font-family: var(--sans); font-size: 14px; font-weight: 600; padding: 12px 24px; border: 0; border-radius: 999px; background: var(--ink); color: var(--void); cursor: pointer; transition: transform .15s ease, box-shadow .15s ease; }
+.run-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 30px -12px rgba(232,166,63,.4); }
+.play-right .iframe-wrap { flex: 1; min-height: 340px; background: #0a0f1e; border-radius: 14px; overflow: hidden; border: 1px solid rgba(244,239,228,.1); }
+.play-right iframe { width: 100%; height: 100%; border: 0; min-height: 340px; }
+.play-notes { font-family: var(--mono); font-size: 11px; color: var(--dim); letter-spacing: .06em; margin-top: 8px; line-height: 1.7; }
+.play-notes span { color: var(--hot); }
+.play-share-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.play-url-row { display: flex; gap: 8px; margin-top: 8px; }
+.play-url-row input { flex: 1; background: #0a0f1e; color: var(--ink); border: 1px solid rgba(244,239,228,.14); border-radius: 8px; padding: 6px 12px; font-family: var(--mono); font-size: 13px; }
+.view-tabs { display: flex; gap: 6px; margin-bottom: 8px; }
+.view-tab { background: transparent; color: var(--dim); border: 1px solid rgba(244,239,228,.14); border-radius: 999px; padding: 4px 14px; font: 12px var(--mono); cursor: pointer; }
+.view-tab.active { color: var(--ink); background: rgba(244,239,228,.08); border-color: rgba(244,239,228,.3); }
+.ver-chip { display: inline-block; margin-left: 10px; padding: 3px 10px; border: 1px solid rgba(232,166,63,.45); border-radius: 999px; color: #e8a63f; font-size: 10px; letter-spacing: .12em; vertical-align: 2px; }
+
+/* ---- FOOTER ---- */
+footer { border-top: 1px solid rgba(244,239,228,.12); padding: 30px 0 48px; font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+footer a { color: var(--hot); }
+
+/* ---- REVEAL ---- */
+.reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.8,.2,1); }
+.reveal.in { opacity: 1; transform: none; }
+
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; padding: 48px 0 56px; gap: 40px; min-height: 0; }
+  h1 { font-size: clamp(38px, 9vw, 58px); }
+  .play-box { grid-template-columns: 1fr; }
+  .play-right .iframe-wrap { min-height: 260px; }
+  .before-after { grid-template-columns: 1fr !important; }
+}
+
+/* playground page styles (kept for engine-generated previews) */
+.pg-page { font-family: system-ui, sans-serif; line-height: 1.5; -webkit-font-smoothing: antialiased; min-height: 100vh; }
+.pg-page * { box-sizing: border-box; margin: 0; padding: 0; }
+.pg-hero { padding: 64px 28px 48px; max-width: 960px; margin: 0 auto; }
+.pg-hero h1 { font-size: clamp(32px,5vw,52px); line-height: 1.08; letter-spacing: -.02em; max-width: 16ch; }
+.pg-hero .pg-sub { margin-top: 16px; font-size: 16px; max-width: 44ch; opacity: .7; }
+.pg-cards { display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: 14px; padding: 0 28px 56px; max-width: 960px; margin: 0 auto; }
+.pg-card { padding: 22px; border-radius: 12px; border: 1px solid rgba(0,0,0,.06); transition: transform .15s ease-out; }
+.pg-card:hover { transform: translateY(-3px); }
+.pg-card h3 { font-size: 19px; margin-bottom: 6px; }
+.pg-card p { font-size: 14px; opacity: .7; line-height: 1.6; }
+.pg-footer { padding: 24px 28px 40px; max-width: 960px; margin: 0 auto; font-size: 12px; opacity: .5; border-top: 1px solid rgba(0,0,0,.06); }
+.pg-dash { padding: 28px 28px 48px; max-width: 960px; margin: 0 auto; }
+.pg-kpi-row { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 28px; }
+.pg-kpi { padding: 18px 22px; border-radius: 10px; flex: 1; min-width: 120px; }
+.pg-kpi .pg-kval { font-size: 28px; font-weight: 700; }
+.pg-kpi .pg-klab { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; opacity: .6; margin-top: 4px; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation-duration: .001ms !important; }
+  .method-card:hover, .install-card:hover, .btn:hover, .token-card:hover, .transform-stage img { transform: none !important; }
+  .marquee-track { animation: none; }
+}
+
+</style>
+</head>
+<body>
+
+  <div class="wrap">
+    <nav>
+      <div>01 <b>Kayforkind</b> / reimagine-it</div>
+      <div class="links">
+        <a href="#method">How</a><a href="#results">Results</a>
+        <a href="#suite">Suite</a><a href="#gaming">Gaming</a><a href="#install">Install</a><a href="#playground">Try</a>
+        <a href="https://github.com/Kayforkind/reimagine-it">GitHub</a>
+      </div>
+    </nav>
+
+    <div class="hero-aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+    <section class="hero" id="hero">
+      <div>
+        <p class="kicker">Content-Derived Design for AI Agents <span class="ver-chip" title="matches package.json and the npm release — kept in sync by CI">v2.9.0</span></p>
+        <h1>Your HTML <em>is</em> the brief.<br>The engine reads it and <span class="grad">redesigns</span> it.</h1>
+        <p class="sub">
+          <strong>Content-Derived Design</strong> — palette, motifs, and motion are extracted from the concrete nouns, dates, and colors already in the source HTML. Not a mood board. A real artifact. <code>npx reimagine-it</code> ships one standalone HTML file — in <strong>17 directions</strong> (including a photoshoot <code>lookbook</code> and a living <code>particles</code> field), each carrying a AAA motion pack: kinetic type, magnetic buttons, glow-follow cards, inertia-orbit 3D with fact billboards. Offline. No Figma. No CDN.
+        </p>
+        <div class="cta">
+          <a class="btn" href="#install">Install →</a>
+          <a class="btn btn--ghost" href="#playground">Try in browser</a>
+          <a class="btn btn--ghost" href="https://github.com/Kayforkind/reimagine-it">GitHub</a>
+        </div>
+        <div class="stats">
+          <div class="stat"><span class="val">17</span><span class="lab">Design tokens</span></div>
+          <div class="stat"><span class="val">19</span><span class="lab">Health rules</span></div>
+          <div class="stat"><span class="val">9</span><span class="lab">Committed journeys</span></div>
+          <div class="stat"><span class="val">0</span><span class="lab">CDN deps</span></div>
+        </div>
+        <div class="hero-badges">
+          <a href="https://github.com/Kayforkind/reimagine-it/actions/workflows/gate.yml"><img src="https://img.shields.io/github/actions/workflow/status/Kayforkind/reimagine-it/gate.yml?branch=main&label=CI%20Gate" alt="CI Gate" loading="lazy"></a>
+          <a href="https://github.com/Kayforkind/reimagine-it/blob/main/.github/SECURITY.md"><img src="https://img.shields.io/badge/main-protected%20%2B%20codeowners-2ea043" alt="main protected + codeowners" loading="lazy"></a>
+          <a href="https://github.com/Kayforkind/reimagine-it/security"><img src="https://img.shields.io/badge/secret%20scanning-push%20protection%20on-2ea043" alt="secret scanning + push protection" loading="lazy"></a>
+          <a href="https://docs.npmjs.com/generating-provenance-statements"><img src="https://img.shields.io/badge/npm%20releases-SLSA%20provenance-2ea043" alt="SLSA provenance" loading="lazy"></a>
+          <a href="https://securityscorecards.dev/viewer/?uri=github.com/Kayforkind/reimagine-it"><img src="https://api.securityscorecards.dev/projects/github.com/Kayforkind/reimagine-it/badge" alt="OpenSSF Scorecard" loading="lazy"></a>
+        </div>
+      </div>
+      <aside class="transform" aria-label="Live examples">
+        <div class="transform-head"><span class="dots"><i></i><i></i><i></i></span><span>Same method · different DNA</span><span id="tfCount">01 / 09</span></div>
+        <div class="transform-stage" id="tfStage">
+          <img src="examples/end-users/venator/auto-desktop.png" alt="Venator Auto — signal-yellow gradient arena" loading="eager">
+          <img src="examples/end-users/crimson-circuit/auto-desktop.png" alt="Crimson Circuit Auto — magenta cinematic chapters" loading="lazy">
+          <img src="examples/end-users/velocita/auto-desktop.png" alt="Velocita Auto — flame-orange artistic poster" loading="lazy">
+          <img src="examples/end-users/maracuya/auto-desktop.png" alt="Maracuyá Auto — coral product landing" loading="lazy">
+          <img src="examples/end-users/flick/auto-desktop.png" alt="Flick Fits Auto — electric-blue photography folio" loading="lazy">
+          <img src="examples/end-users/meridian/auto-desktop.png" alt="Meridian Auto — amber 3D object" loading="lazy">
+          <img src="examples/end-users/horizon/auto-desktop.png" alt="Horizon Auto — navy ops dashboard" loading="lazy">
+          <img src="examples/end-users/hearth-grain/auto-desktop.png" alt="Hearth & Grain Auto — crust-brown bakery folio" loading="lazy">
+          <img src="examples/end-users/millbrook-budget/auto-desktop.png" alt="Millbrook Auto — navy-and-brass budget infographic" loading="lazy">
+        </div>
+        <div class="transform-cap"><span id="tfLabel"><b>Venator</b> → gradient</span><span class="transform-nav"><button id="tfPrev" aria-label="Previous">←</button><button id="tfNext" aria-label="Next">→</button></span></div>
+      </aside>
+    </section>
+  </div>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track" id="marqueeTrack"></div>
+  </div>
+
+  <div class="wrap">
+    <section class="method" id="method">
+      <h2>Content-Derived Design — how it works</h2>
+      <p class="sub">The engine reads the HTML you point at, extracts concrete nouns / dates / colors / proper nouns, and builds a design language from them. Source facts are not invented.</p>
+      <div class="method-steps">
+        <div class="method-card reveal">
+          <span class="step">01 · Extract</span>
+          <h3>Read the source</h3>
+          <p>Find proper nouns, dates, color words, numbers, and anchor phrases in the HTML you point at. These are the raw material.</p>
+        </div>
+        <div class="method-card reveal">
+          <span class="step">02 · Derive</span>
+          <h3>Build the palette</h3>
+          <p>A Texas notebook gets navy / red / gold from the Lone Star flag. A restaurant menu gets clay / saffron from the dish names. ≤ 5 colors, all from content.</p>
+        </div>
+        <div class="method-card reveal">
+          <span class="step">03 · Motif</span>
+          <h3>Pick the repeating mark</h3>
+          <p>Lone Star, beam sweep, smoke tendril, pulse wave — one geometric motif from the source carried through every section.</p>
+        </div>
+        <div class="method-card reveal">
+          <span class="step">04 · Ship</span>
+          <h3>Produce one artifact</h3>
+          <p>Single .html file. Inline CSS. Inline SVG. Inline WebGL. Compositor-only motion. Craft-floor checked. Opens offline. Double-clickable.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-section" id="cases">
+      <h2>Nine sources. No shared <em>silhouette</em>.</h2>
+      <p class="sub">Auto scored each source into a subject lane and forbade the same silhouette twice. A juice bar, a skate deck, and a streetwear drop cannot all become one bar-chart poster. Palettes come from hex colors already written into each source. <a href="https://github.com/Kayforkind/reimagine-it/blob/main/docs/CASE_STUDIES.md">Full case studies →</a></p>
+
+      <h3 class="source-name" id="results">Auto results — nine distinct compositions</h3>
+      <p class="source-sub">These are the committed Auto desktops. Same command, nine silhouettes. Scores and fidelity come from each bundle’s <code>auto.json</code>. <a href="https://github.com/Kayforkind/reimagine-it/tree/main/examples/end-users">Read every source, result, and report →</a> · <a href="https://github.com/Kayforkind/reimagine-it/blob/main/docs/CASE_STUDIES.md">Step-by-step case studies →</a></p>
+      <p class="source-sub"><img src="demo.gif" width="960" height="540" alt="Auto result reel: nine sources cycling through their scored directions" loading="lazy"></p>
+      <div class="results-grid reveal">
+        <figure><img src="examples/end-users/venator/auto-desktop.png" alt="Venator Auto desktop" loading="lazy"><figcaption><b>Venator</b><span><code>gradient</code> · 246 · 100%</span></figcaption></figure>
+        <figure><img src="examples/end-users/crimson-circuit/auto-desktop.png" alt="Crimson Circuit Auto desktop" loading="lazy"><figcaption><b>Crimson Circuit</b><span><code>cinematic</code> · 258 · 100%</span></figcaption></figure>
+        <figure><img src="examples/end-users/velocita/auto-desktop.png" alt="Velocita Auto desktop" loading="lazy"><figcaption><b>Velocita</b><span><code>artistic</code> · 240 · 100%</span></figcaption></figure>
+        <figure><img src="examples/end-users/maracuya/auto-desktop.png" alt="Maracuyá Auto desktop" loading="lazy"><figcaption><b>Maracuyá</b><span><code>landing</code> · 246 · 100%</span></figcaption></figure>
+        <figure><img src="examples/end-users/flick/auto-desktop.png" alt="Flick Fits Auto desktop" loading="lazy"><figcaption><b>Flick Fits</b><span><code>photography</code> · 250 · 100%</span></figcaption></figure>
+        <figure><img src="examples/end-users/meridian/auto-desktop.png" alt="Meridian Auto desktop" loading="lazy"><figcaption><b>Meridian</b><span><code>3js</code> · 260 · 100%</span></figcaption></figure>
+        <figure><img src="examples/end-users/horizon/auto-desktop.png" alt="Horizon Auto desktop" loading="lazy"><figcaption><b>Horizon</b><span><code>dashboard</code> · 330 · 100%</span></figcaption></figure>
+        <figure><img src="examples/end-users/hearth-grain/auto-desktop.png" alt="Hearth & Grain Auto desktop" loading="lazy"><figcaption><b>Hearth &amp; Grain</b><span><code>photography</code> · 226 · 100%</span></figcaption></figure>
+        <figure><img src="examples/end-users/millbrook-budget/auto-desktop.png" alt="Millbrook Auto desktop" loading="lazy"><figcaption><b>Millbrook</b><span><code>infographic</code> · 278 · 100%</span></figcaption></figure>
+      </div>
+      <table class="case-table">
+        <thead><tr><th>Source</th><th>Auto</th><th>Score</th><th>Fidelity</th><th>Alternates</th></tr></thead>
+        <tbody>
+          <tr><td class="src">Venator</td><td><code>gradient</code></td><td>246</td><td>100%</td><td><code>landing</code>, <code>artistic</code></td></tr>
+          <tr><td class="src">Crimson Circuit</td><td><code>cinematic</code></td><td>258</td><td>100%</td><td><code>gradient</code>, <code>landing</code></td></tr>
+          <tr><td class="src">Velocita</td><td><code>artistic</code></td><td>240</td><td>100%</td><td><code>gradient</code>, <code>landing</code></td></tr>
+          <tr><td class="src">Maracuyá</td><td><code>landing</code></td><td>246</td><td>100%</td><td><code>photography</code>, <code>gradient</code></td></tr>
+          <tr><td class="src">Flick Fits</td><td><code>photography</code></td><td>250</td><td>100%</td><td><code>showcase</code>, <code>landing</code></td></tr>
+          <tr><td class="src">Meridian Tower</td><td><code>3js</code></td><td>260</td><td>100%</td><td><code>editorial</code>, <code>svg</code></td></tr>
+          <tr><td class="src">Horizon</td><td><code>dashboard</code></td><td>330</td><td>100%</td><td><code>gradient</code>, <code>landing</code></td></tr>
+          <tr><td class="src">Hearth &amp; Grain</td><td><code>photography</code></td><td>226</td><td>100%</td><td><code>landing</code>, <code>editorial</code></td></tr>
+          <tr><td class="src">Millbrook</td><td><code>infographic</code></td><td>278</td><td>100%</td><td><code>simulation</code>, <code>editorial</code></td></tr>
+        </tbody>
+      </table>
+
+      <h3 class="source-name" id="community-proof">Proof — sources outside the journeys</h3>
+      <p class="source-sub">Two community proofs — jobs none of the journeys cover. A clinic bulletin lands <b>infographic</b> (352 · 100%); a fashion-house <b>photoshoot campaign</b> lands the <code>lookbook</code> editorial spread (188 · 100% · 19/19 facts). Committed stills regenerate byte-identically from the sources in <a href="https://github.com/Kayforkind/reimagine-it/tree/main/examples/community"><code>examples/community/</code></a>.</p>
+      <div class="info-showcase reveal">
+        <figure class="info-wide"><img src="examples/community/riverside-clinic/auto-desktop.png" alt="Riverside Community Clinic walk-in bulletin redesigned as an infographic timeline at desktop width" loading="lazy"><figcaption>clinic bulletin — desktop <code>--auto → infographic</code></figcaption></figure>
+        <figure class="info-tall"><img src="examples/community/riverside-clinic/auto-phone.png" alt="Riverside Community Clinic bulletin at tall phone width" loading="lazy"><figcaption>clinic — mobile</figcaption></figure>
+      </div>
+      <div class="info-showcase reveal">
+        <figure class="info-wide"><img src="examples/community/maison-vesper/auto-desktop.png" alt="Maison Vesper autumn/winter 2026 photoshoot campaign redesigned as a lookbook editorial spread at desktop width" loading="lazy"><figcaption>Maison Vesper campaign — desktop <code>--auto → lookbook</code></figcaption></figure>
+        <figure class="info-tall"><img src="examples/community/maison-vesper/auto-phone.png" alt="Maison Vesper campaign lookbook at tall phone width" loading="lazy"><figcaption>campaign — mobile</figcaption></figure>
+      </div>
+
+      <h3 class="source-name" id="end-user-proof">Source → Auto, on desktop and phone</h3>
+      <p class="source-sub">Each composite is the plain source on the left and the Auto page on the right, with a phone frame. Use it to check facts and reading path, not just color. <a href="https://github.com/Kayforkind/design-health-action">Design Health — CI quality gate →</a></p>
+      <div class="before-after reveal">
+        <div><img src="examples/end-users/venator/before-after.webp" width="720" height="720" alt="Venator crypto battle royale: plain source to signal-yellow gradient arena, landing, and phone screens" loading="lazy"><p class="label">Game → signal-yellow gradient → landing → mobile</p></div>
+        <div><img src="examples/end-users/crimson-circuit/before-after.webp" width="720" height="720" alt="Crimson Circuit music festival: plain source to magenta cinematic chapters, gradient, and phone screens" loading="lazy"><p class="label">Festival → magenta cinematic → gradient → mobile</p></div>
+        <div><img src="examples/end-users/velocita/before-after.webp" width="720" height="720" alt="Velocita skateboards: plain source to flame-orange artistic poster, landing, and phone screens" loading="lazy"><p class="label">Skate brand → orange poster → landing → mobile</p></div>
+        <div><img src="examples/end-users/maracuya/before-after.webp" width="720" height="720" alt="Maracuyá juice bar: plain source to coral product landing, photography, and phone screens" loading="lazy"><p class="label">Juice bar → coral landing → photography → mobile</p></div>
+        <div><img src="examples/end-users/flick/before-after.webp" width="720" height="720" alt="Flick Fits streetwear: plain source to electric-blue photography folio, showcase, and phone screens" loading="lazy"><p class="label">Streetwear → blue folio → showcase → mobile</p></div>
+        <div><img src="examples/end-users/meridian/before-after.webp" width="720" height="720" alt="Meridian Tower building: plain source to amber 3D object, editorial feature, svg diagram, and phone screens" loading="lazy"><p class="label">Building → amber 3D → editorial → svg → mobile</p></div>
+        <div><img src="examples/end-users/horizon/before-after.webp" width="720" height="720" alt="Horizon observability: plain source to navy ops dashboard, gradient, and phone screens" loading="lazy"><p class="label">Dev tools → navy dashboard → gradient → mobile</p></div>
+        <div><img src="examples/end-users/hearth-grain/before-after.webp" width="720" height="720" alt="Hearth & Grain bakery: plain source to crust-brown photography folio of the morning bake, and phone screens" loading="lazy"><p class="label">Bakery → crust-brown folio → landing → mobile</p></div>
+        <div><img src="examples/end-users/millbrook-budget/before-after.webp" width="720" height="720" alt="Millbrook city budget: plain source to navy-and-brass infographic timeline, and phone screens" loading="lazy"><p class="label">Civic budget → brass infographic → simulation → mobile</p></div>
+      </div>
+      <img src="examples/end-users/gallery.webp" width="720" height="400" alt="Nine redesign journeys with phone frames: gaming arena, festival poster, skate deck, juice menu, streetwear drop, building suite, dev-tools dashboard, bakery folio, and civic budget poster" loading="lazy">
+      <p class="source-sub"><strong>How to judge it:</strong> check the facts, the reading path, and whether the composition belongs to the subject—not just whether the colors changed.</p>
+
+    </section>
+
+    <section class="case-section" id="tokens">
+      <h2>Seventeen directions. <em>One</em> honest method.</h2>
+      <p class="sub">Every token is a real generator in the engine — each one reads the same extracted content and builds a structurally different composition. Layouts are generated; source facts are not invented.</p>
+<div class="token-gallery reveal">
+        <div class="token-gallery-stage">
+          <div class="tg-main">
+            <img id="tgDesk" src="tokens/webpage-desktop.png" alt="Token desktop preview">
+            <div class="tg-live-desk"><iframe id="tgDeskFrame" title="Live token output" sandbox="allow-scripts"></iframe></div>
+            <div class="tg-caption"><code id="tgToken">webpage</code><span id="tgBlurb">Measured reading hierarchy</span></div>
+          </div>
+          <div class="tg-phone">
+            <img id="tgPhone" src="tokens/webpage-phone.png" alt="Token phone preview"><span>mobile</span>
+            <div class="tg-live-phone"><iframe id="tgPhoneFrame" title="Live token output on phone" sandbox="allow-scripts"></iframe></div>
+          </div>
+        </div>
+        <div class="tg-bar">
+          <div class="tg-toggles">
+            <button id="tgToggle" class="tg-toggle" title="Flip between the original source and the redesigned output">◐ Before / After</button>
+            <button id="tgLive" class="tg-toggle" title="Render the token output live in the browser — scroll and interact">▶ Live demo</button>
+          </div>
+          <div class="tg-controls">
+            <button class="tg-nav" id="tgPrev" aria-label="Previous token">←</button>
+            <div class="tg-chips" id="tgChips"></div>
+            <button class="tg-nav" id="tgNext" aria-label="Next token">→</button>
+          </div>
+        </div>
+        <p class="tg-note">Same source, 18 ways to compose it — 17 tokens plus <b>auto</b>, which scores three candidates and ships the strongest. Desktop <em>and</em> phone, real CLI output. Flip <b>◐ Before / After</b> to see the untouched source, or <b>▶ Live demo</b> to scroll and interact with the actual generated page.</p>
+      </div>
+      <div class="tokens-grid">
+          <div class="token-card reveal" data-token="webpage" data-idx="1"><div class="tc-thumb"><img src="tokens/webpage-desktop.png" alt="webpage token output" loading="lazy"><span class="tc-no">01</span></div><div class="tc-body"><code>webpage</code><h3>Articles and source documents</h3><p>Measured reading hierarchy</p></div></div>
+          <div class="token-card reveal" data-token="landing" data-idx="2"><div class="tc-thumb"><img src="tokens/landing-desktop.png" alt="landing token output" loading="lazy"><span class="tc-no">02</span></div><div class="tc-body"><code>landing</code><h3>Products and services</h3><p>Hero and action rhythm</p></div></div>
+          <div class="token-card reveal" data-token="dashboard" data-idx="3"><div class="tc-thumb"><img src="tokens/dashboard-desktop.png" alt="dashboard token output" loading="lazy"><span class="tc-no">03</span></div><div class="tc-body"><code>dashboard</code><h3>Metrics and operations</h3><p>Console, KPIs, and status</p></div></div>
+          <div class="token-card reveal" data-token="infographic" data-idx="4"><div class="tc-thumb"><img src="tokens/infographic-desktop.png" alt="infographic token output" loading="lazy"><span class="tc-no">04</span></div><div class="tc-body"><code>infographic</code><h3>Facts and comparisons</h3><p>Shared scales and timelines</p></div></div>
+          <div class="token-card reveal" data-token="cinematic" data-idx="5"><div class="tc-thumb"><img src="tokens/cinematic-desktop.png" alt="cinematic token output" loading="lazy"><span class="tc-no">05</span></div><div class="tc-body"><code>cinematic</code><h3>Narrative moments</h3><p>Depth and paced chapters</p></div></div>
+          <div class="token-card reveal" data-token="artistic" data-idx="6"><div class="tc-thumb"><img src="tokens/artistic-desktop.png" alt="artistic token output" loading="lazy"><span class="tc-no">06</span></div><div class="tc-body"><code>artistic</code><h3>Posters and expressive pages</h3><p>Asymmetric type and layered fields</p></div></div>
+          <div class="token-card reveal" data-token="photography" data-idx="7"><div class="tc-thumb"><img src="tokens/photography-desktop.png" alt="photography token output" loading="lazy"><span class="tc-no">07</span></div><div class="tc-body"><code>photography</code><h3>Portfolios and collections</h3><p>Folio plates and captions</p></div></div>
+          <div class="token-card reveal" data-token="svg" data-idx="8"><div class="tc-thumb"><img src="tokens/svg-desktop.png" alt="svg token output" loading="lazy"><span class="tc-no">08</span></div><div class="tc-body"><code>svg</code><h3>Marks and diagrams</h3><p>Inline geometric illustration</p></div></div>
+          <div class="token-card reveal" data-token="3js" data-idx="9"><div class="tc-thumb"><img src="tokens/3js-desktop.png" alt="3js token output" loading="lazy"><span class="tc-no">09</span></div><div class="tc-body"><code>3js</code><h3>Spatial stories</h3><p>Offline orbitable canvas</p></div></div>
+          <div class="token-card reveal" data-token="simulation" data-idx="10"><div class="tc-thumb"><img src="tokens/simulation-desktop.png" alt="simulation token output" loading="lazy"><span class="tc-no">10</span></div><div class="tc-body"><code>simulation</code><h3>Time and process</h3><p>Playable timeline and scrubber</p></div></div>
+          <div class="token-card reveal" data-token="glass" data-idx="11"><div class="tc-thumb"><img src="tokens/glass-desktop.png" alt="glass token output" loading="lazy"><span class="tc-no">11</span></div><div class="tc-body"><code>glass</code><h3>Modern panels and cards</h3><p>Frosted backdrop depth</p></div></div>
+          <div class="token-card reveal" data-token="editorial" data-idx="12"><div class="tc-thumb"><img src="tokens/editorial-desktop.png" alt="editorial token output" loading="lazy"><span class="tc-no">12</span></div><div class="tc-body"><code>editorial</code><h3>Long-form text and essays</h3><p>Magazine layout with drop caps</p></div></div>
+          <div class="token-card reveal" data-token="motion" data-idx="13"><div class="tc-thumb"><img src="tokens/motion-desktop.png" alt="motion token output" loading="lazy"><span class="tc-no">13</span></div><div class="tc-body"><code>motion</code><h3>Scroll-driven stories</h3><p>Animated reveals and parallax</p></div></div>
+          <div class="token-card reveal" data-token="gradient" data-idx="14"><div class="tc-thumb"><img src="tokens/gradient-desktop.png" alt="gradient token output" loading="lazy"><span class="tc-no">14</span></div><div class="tc-body"><code>gradient</code><h3>Bold brand presentations</h3><p>Gradient mesh cards and text</p></div></div>
+          <div class="token-card reveal" data-token="showcase" data-idx="15"><div class="tc-thumb"><img src="tokens/showcase-desktop.png" alt="showcase token output" loading="lazy"><span class="tc-no">15</span></div><div class="tc-body"><code>showcase</code><h3>Capability demonstrations</h3><p>Motion-forward capability cards and stats</p></div></div>
+          <div class="token-card reveal" data-token="lookbook" data-idx="16"><div class="tc-thumb"><img src="tokens/lookbook-desktop.png" alt="lookbook token output" loading="lazy"><span class="tc-no">16</span></div><div class="tc-body"><code>lookbook</code><h3>Photoshoots and collections</h3><p>Editorial spread with numbered looks</p></div></div>
+          <div class="token-card reveal" data-token="particles" data-idx="17"><div class="tc-thumb"><img src="tokens/particles-desktop.png" alt="particles token output" loading="lazy"><span class="tc-no">17</span></div><div class="tc-body"><code>particles</code><h3>Living networks and signals</h3><p>Interactive constellation of the anchors</p></div></div>
+      </div>
+    </section>
+
+    <section class="case-section" id="infographic">
+      <h2>Infographics — wide <em>and</em> tall.</h2>
+      <p class="sub">A data-heavy source — 14 species, 320 miles, 1,180 volunteer hours, a 42% jump — rendered as a dense infographic at desktop width and phone width. Same command, two aspect ratios.</p>
+      <div class="info-showcase reveal">
+        <figure class="info-wide"><img src="infographic/wide.png" alt="Infographic at wide desktop width"><figcaption>wide — desktop <code>--token infographic</code></figcaption></figure>
+        <figure class="info-tall"><img src="infographic/tall.png" alt="Infographic at tall phone width"><figcaption>tall — mobile</figcaption></figure>
+      </div>
+      <p class="tg-note">Source: <a href="https://github.com/Kayforkind/reimagine-it/blob/main/examples/infographic/source.html">Cedar &amp; Ash — 2026 Season Field Report</a> · command: <code>npx reimagine-it -i source.html -t infographic -o report.html</code> · every number below appears in the source.</p>
+    </section>
+
+    <section class="case-section" id="gaming">
+      <h2>Gaming — loud, yellow, <em>unmissable</em>.</h2>
+      <p class="sub">A crypto battle-royale page — loot boxes, kill-to-earn stakes, a season clock — becomes a signal-yellow gradient arena at desktop width and phone width. The palette comes from the hex colors already in the source, not from a style prompt.</p>
+      <div class="info-showcase reveal">
+        <figure class="info-wide"><img src="examples/end-users/venator/auto-desktop.png" alt="Venator gaming page at wide desktop width"><figcaption>wide — desktop <code>--auto → gradient</code></figcaption></figure>
+        <figure class="info-tall"><img src="examples/end-users/venator/auto-phone.png" alt="Venator gaming page at tall phone width"><figcaption>tall — mobile</figcaption></figure>
+      </div>
+      <p class="tg-note">Source: <a href="https://github.com/Kayforkind/reimagine-it/blob/main/examples/end-users/venator/source.html">Venator — Crypto Battle Royale</a> · command: <code>npx reimagine-it --auto -i source.html</code> · Auto scored <b>gradient</b> first for gaming sources: the arena reads as a brand surface, not an ops console.</p>
+    </section>
+
+    <section class="case-section" id="horizon">
+      <h2>Observability — plain SLO page to <em>mission control</em>.</h2>
+      <p class="sub">A bare uptime/SLO source — 99.99% availability, 2.1B events, 180 ms p50 — becomes a navy ops console at desktop width and phone width. Auto scores <b>dashboard</b> first for operational sources; KPIs come from numbers already in the source.</p>
+      <div class="info-showcase reveal">
+        <figure class="info-wide"><img src="examples/end-users/horizon/auto-desktop.png" alt="Horizon observability dashboard at wide desktop width"><figcaption>wide — desktop <code>--auto → dashboard</code></figcaption></figure>
+        <figure class="info-tall"><img src="examples/end-users/horizon/auto-phone.png" alt="Horizon observability dashboard at tall phone width"><figcaption>tall — mobile</figcaption></figure>
+      </div>
+      <p class="tg-note">Source: <a href="https://github.com/Kayforkind/reimagine-it/blob/main/examples/end-users/horizon/source.html">Horizon — Observability &amp; SLOs</a> · command: <code>npx reimagine-it --auto -i source.html</code> · alternates: <code>gradient</code> (kinetic headline) and <code>landing</code> (glyph hero).</p>
+    </section>
+
+    <section class="case-section" id="suite">
+      <h2>One command. Three <em>furnished</em> designs.</h2>
+      <p class="sub">Point <code>/reimagine-it</code> at a building page and it does the visual heavy lifting: an orbitable 3D object, a magazine feature, and a living SVG diagram — every one derived from the same source, no direction from you needed.</p>
+      <div class="suite-cmd"><pre>npx reimagine-it --auto -i meridian.html   # reads the page, ships 3 designs</pre></div>
+      <div class="suite-grid reveal">
+        <div class="suite-wide">
+          <figure><img src="examples/end-users/meridian/auto-desktop.png" alt="Meridian Tower orbitable 3D object at desktop width"><figcaption>01 · auto — 3D object</figcaption></figure>
+        </div>
+        <div class="suite-stack">
+          <div class="suite-card"><img src="examples/end-users/meridian/editorial-desktop.webp" alt="Meridian Tower magazine feature"><div class="cap"><span>02 · editorial</span></div></div>
+        </div>
+        <div class="suite-stack">
+          <div class="suite-card"><img src="examples/end-users/meridian/svg-desktop.webp" alt="Animated living SVG diagram of Meridian Tower anchors"><div class="cap"><span>03 · svg</span><span class="anim-tag">● live render</span></div></div>
+        </div>
+      </div>
+      <p class="tg-note">Source: <a href="https://github.com/Kayforkind/reimagine-it/blob/main/examples/end-users/meridian/source.html">Meridian Tower — A Living Building</a> · the amber, steel, copper, and sky palette comes from the hex colors in the source · the 3D object orbits (drag or arrow keys) and the diagram spins and breathes — real engine output, not mockups. <a href="#cases">See all nine journeys ↓</a></p>
+    </section>
+
+    <section class="install-section" id="mcp">
+      <h2>For agents — MCP server &amp; one-file skill</h2>
+      <p class="sub">The same engine, exposed to any MCP-compatible host (Claude Code, Codex, Copilot, Gemini CLI, and friends) or used as a single-file agent skill. Deterministic, offline, no API keys — an agent can generate, self-audit its own output with 19 rules, and explain the design decision.</p>
+      <div class="install-grid">
+        <div class="install-card reveal">
+          <span class="agent">MCP · any host</span>
+          <h3>One JSON stanza</h3>
+          <pre>{ "mcpServers": { "reimagine-it": {
+  "command": "npx",
+  "args": ["-y", "--package", "reimagine-it",
+           "reimagine-it-mcp"] } } }</pre>
+          <p class="alt">Node native HTTP/streamable transport; no Python required.</p>
+        </div>
+        <div class="install-card reveal">
+          <span class="agent">8 tools</span>
+          <h3>Generate, rank, verify</h3>
+          <pre>reimagine        one direction from raw HTML
+design_auto      choose · generate · verify · explain
+design_variations  ranked directions + contrast sheet
+design_lock      capture a brand surface as JSON
+extract_content  inspect the source evidence
+list_tokens      discover the 17 directions
+audit_html       19-rule Design Health check
+list_rules       the full rule registry</pre>
+          <p class="alt">An agent can prove its own output before shipping it.</p>
+        </div>
+        <div class="install-card reveal">
+          <span class="agent">Design decision report</span>
+          <h3>Inspectable &quot;why&quot;</h3>
+          <pre>voice      editorial | grotesque | techno | …
+palette    OKLCH, source accent rotated
+art        primitives actually used
+score      136-point design-QA
+fidelity   every source fact present</pre>
+          <p class="alt">Written beside the artifact with <code>--emit</code>; Auto explains its pick from real evidence.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="install-section" id="quality">
+      <h2>Measured quality — every direction benchmarked</h2>
+      <p class="sub">All 17 tokens × 4 representative sources score <strong>100/100 usability and full fidelity</strong>, with 22.7% mean pairwise output diversity (no two directions produce the same page). Benchmarked against the same bar Auto itself applies: standalone HTML, source title and anchors retained, focus-visible, reduced-motion, no placeholder copy, no external fetch.</p>
+      <div class="method-steps">
+        <div class="method-card reveal">
+          <span class="step">CI-enforced</span>
+          <h3>Proof regenerates — or CI fails</h3>
+          <p>Every committed example artifact must regenerate byte-identically from the committed engine. Every screenshot stays in sync. <code>npm pack</code> must match the intentional file list exactly.</p>
+        </div>
+        <div class="method-card reveal">
+          <span class="step">Property-tested</span>
+          <h3>Honesty is fuzzed</h3>
+          <p>The extractor's "no invented facts" contract runs against hostile and malformed input; a 250-seed weekly stress harness holds the fidelity floor across every token × source cell. The audit linter itself is fuzzed too.</p>
+        </div>
+        <div class="method-card reveal">
+          <span class="step">Supply-chain</span>
+          <h3>Hardened end to end</h3>
+          <p>Actions SHA-pinned + Dependabot-bumped; CI installs with <code>--ignore-scripts</code> and hash-verified PyPI pins; releases carry cosign signatures + SLSA provenance; CodeQL and Semgrep scan every push.</p>
+        </div>
+        <div class="method-card reveal">
+          <span class="step">Guarantee</span>
+          <h3>Offline &amp; deterministic</h3>
+          <p>Output is one standalone HTML file — no CDN, no API keys, no telemetry. Same input + seed → byte-identical output: clients can re-derive any published artifact themselves.</p>
+        </div>
+      </div>
+      <p class="tg-note">The audit is deterministic and heuristic — not a claim of full WCAG conformance or visual taste. Review a generated page before shipping it to a client. Full details: <a href="https://github.com/Kayforkind/reimagine-it#audit-posture-for-clients-and-security-review">README audit posture →</a></p>
+    </section>
+
+    <section class="install-section" id="install">
+      <h2>Install — one command</h2>
+      <p class="sub">Works in Claude Code, Cursor, Codex, Copilot, Gemini CLI, Factory Droid, Windsurf, Pi, and any Agent Skills host. One chair: <code>skills/reimagine-it/</code>.</p>
+      <div class="install-grid">
+        <div class="install-card reveal">
+          <span class="agent">CLI · no agent required</span>
+          <h3>npx reimagine-it</h3>
+          <pre>npx reimagine-it --auto -i page.html -o redesign.html
+npx reimagine-it variations -i page.html -n 4
+npx reimagine-it lock -i brand.html -o house.lock.json
+npx reimagine-it audit redesign.html</pre>
+          <p class="alt">Brand-lock with <code>--ref house.lock.json</code>. Reverse-lock from any HTML.</p>
+        </div>
+        <div class="install-card reveal">
+          <span class="agent">Claude Code</span>
+          <h3>Plugin marketplace</h3>
+          <pre>/plugin marketplace add Kayforkind/reimagine-it
+/plugin install reimagine-it@reimagine-it</pre>
+          <p class="alt">Then <code>/plugin → Marketplaces → Enable auto-update</code></p>
+        </div>
+        <div class="install-card reveal">
+          <span class="agent">Cursor · Codex · Copilot · Gemini CLI</span>
+          <h3>npx skills add</h3>
+          <pre>npx skills add Kayforkind/reimagine-it</pre>
+          <p class="alt">Global: <code>npx skills add Kayforkind/reimagine-it -g</code></p>
+        </div>
+        <div class="install-card reveal">
+          <span class="agent">Codex CLI</span>
+          <h3>Plugin marketplace</h3>
+          <pre>codex plugin marketplace add Kayforkind/reimagine-it
+codex plugin add reimagine-it@reimagine-it</pre>
+        </div>
+        <div class="install-card reveal">
+          <span class="agent">Factory Droid</span>
+          <h3>droid plugin install</h3>
+          <pre>droid plugin marketplace add https://github.com/Kayforkind/reimagine-it
+droid plugin install reimagine-it@reimagine-it --scope user</pre>
+        </div>
+        <div class="install-card reveal">
+          <span class="agent">Pi</span>
+          <h3>Single command</h3>
+          <pre>pi install https://github.com/Kayforkind/reimagine-it</pre>
+        </div>
+        <div class="install-card reveal">
+          <span class="agent">Gemini CLI (manual)</span>
+          <h3>Direct install</h3>
+          <pre>gemini skills install https://github.com/Kayforkind/reimagine-it.git --path skills/reimagine-it</pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="playground-section" id="playground">
+      <div class="marquee" style="border-top:0"><div class="marquee-track" style="font:400 13px 'Iowan Old Style',Palatino,Georgia,serif;letter-spacing:.05em;color:var(--dim)"><span>7 typographic voices <i style="color:var(--hot);font-style:normal">✦</i> OKLCH palette system <i style="color:var(--hot);font-style:normal">✦</i> generative art primitives <i style="color:var(--hot);font-style:normal">✦</i> composition bands <i style="color:var(--hot);font-style:normal">✦</i> self-critique design score</span></div></div>
+      <h2>Try it — no install required</h2>
+      <p class="sub">Paste any HTML below. Pick a token — or let Auto draw three directions with a typographic voice, a harmonious palette, and a 136-point design score. The engine runs entirely in your browser. Same method the agent skill uses. New here? <a href="teaser.mp4" target="_blank">▶ Watch the 60-second teaser</a> (captioned) or the <a href="https://github.com/Kayforkind/reimagine-it/raw/main/docs/playground-walkthrough.mp4">39-second full walkthrough</a>.</p>
+      <p class="source-sub"><video src="teaser.mp4" width="960" height="675" controls preload="none" poster="og.png" loading="lazy"></video></p>
+      <div class="play-box reveal">
+        <div class="play-left">
+          <span class="play-label">Paste your HTML</span>
+          <textarea id="playInput" placeholder="<h1>My startup pitch</h1><p>We make widgets for teams that ship fast.</p><h2>Features</h2><ul><li>Fast · 23ms render</li><li>Secure · SOC 2 compliant</li><li>Open source · MIT</li></ul><p>hello@widgets.dev</p>" spellcheck="false"></textarea>
+          <span class="play-label">Try a sample source</span>
+          <div class="sample-row" id="sampleRow">
+            <button class="sample-btn" data-sample="startup">Startup</button>
+            <button class="sample-btn" data-sample="data">Data report</button>
+            <button class="sample-btn" data-sample="restaurant">Restaurant</button>
+            <button class="sample-btn" data-sample="game">Game</button>
+          </div>
+          <div class="play-url-row">
+            <input type="url" id="playUrl" placeholder="…or fetch a URL — try examples/end-users/maracuya/source.html" spellcheck="false">
+            <button class="sample-btn" id="playFetch">Fetch</button>
+          </div>
+          <span class="play-label">Pick a token</span>
+          <div class="token-row" id="tokenRow">
+            <button class="token-btn active" data-token="webpage">webpage</button>
+            <button class="token-btn" data-token="dashboard">dashboard</button>
+            <button class="token-btn" data-token="infographic">infographic</button>
+            <button class="token-btn" data-token="artistic">artistic</button>
+            <button class="token-btn" data-token="cinematic">cinematic</button>
+            <button class="token-btn" data-token="landing">landing</button>
+            <button class="token-btn" data-token="photography">photography</button>
+            <button class="token-btn" data-token="svg">svg</button>
+            <button class="token-btn" data-token="3js">3js</button>
+            <button class="token-btn" data-token="simulation">simulation</button>
+            <button class="token-btn" data-token="glass">glass</button>
+            <button class="token-btn" data-token="editorial">editorial</button>
+            <button class="token-btn" data-token="motion">motion</button>
+            <button class="token-btn" data-token="gradient">gradient</button>
+            <button class="token-btn" data-token="showcase">showcase</button>
+            <button class="token-btn" data-token="lookbook">lookbook</button>
+            <button class="token-btn" data-token="particles">particles</button>
+            <button class="token-btn" data-token="auto">auto</button>
+          </div>
+          <span class="play-label">Seed (optional)</span>
+          <div style="display:flex;gap:10px;align-items:center"><input type="text" id="playSeed" placeholder="leave blank for auto" style="width:180px;background:#0a0f1e;color:var(--ink);border:1px solid rgba(244,239,228,.14);border-radius:8px;padding:6px 12px;font-family:var(--mono);font-size:13px;line-height:1.4" spellcheck="false"><button id="playSeedClear" style="background:transparent;color:var(--m);border:1px solid rgba(244,239,228,.14);border-radius:8px;padding:5px 14px;font:13px var(--mono);cursor:pointer">clear</button></div>
+          <label class="fonts-toggle"><input type="checkbox" id="playFonts"><span>Use web fonts</span><small>upgrade the chosen voice with Google Fonts</small></label>
+          <div class="play-share-row">
+            <button class="run-btn" id="playRun">Reimagine →</button>
+            <button class="run-btn" id="playDownload" style="background:var(--gold);color:var(--ink)">Download HTML ↓</button>
+            <button class="run-btn" id="playShare" style="background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px rgba(26,33,56,.22)">Share this →</button>
+          </div>
+          <div class="play-notes" id="playNotes" aria-live="polite"></div>
+        </div>
+        <div class="play-right">
+          <div class="view-tabs">
+            <button class="view-tab active" id="tabResult">Result</button>
+            <button class="view-tab" id="tabSource">Source</button>
+          </div>
+          <span class="play-label">Preview</span>
+          <div class="iframe-wrap">
+            <iframe id="playFrame" title="Playground output" sandbox="allow-scripts"></iframe>
+          </div>
+          <div class="design-strip" id="designStrip" hidden>
+            <span class="play-label">Auto drew 3 directions — pick one, or recreate</span>
+            <div class="design-btns" id="designBtns"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span>v2.9.0 · <a href="https://github.com/Kayforkind/reimagine-it/blob/main/CHANGELOG.md">Changelog</a> · MIT · Content-Derived Design · <a href="https://github.com/Kayforkind/reimagine-it">GitHub</a> · <a href="https://github.com/Kayforkind/reimagine-it#mcp-server">MCP</a> · <a href="https://github.com/Kayforkind/reimagine-it#audit-posture-for-clients-and-security-review">Audit posture</a> · <a href="https://github.com/Kayforkind/reimagine-it/blob/main/.github/SECURITY.md">Security</a> · <a href="https://github.com/sponsors/Kayforkind">Sponsor</a></span>
+      <a href="https://kayforkind.github.io/reimagine-it/discussions">Feedback &amp; roadmap →</a>
+    </footer>
+  </div>
+
+<script>
+(function(){
+  /* token marquee */
+  var tokens = ['webpage','landing','dashboard','infographic','cinematic','artistic','photography','svg','3js','simulation','glass','editorial','motion','gradient','showcase','lookbook','particles'];
+  var track = document.getElementById('marqueeTrack');
+  if (track) {
+    var half = tokens.map(function(t){ return '<span>'+t+' <i>&#10022;</i></span>'; }).join('');
+    track.innerHTML = half + half;
+  }
+  /* transformation window cycler */
+  var stage = document.getElementById('tfStage');
+  var caps = [['Venator','gradient'],['Crimson Circuit','cinematic'],['Velocita','artistic'],['Maracuyá','landing'],['Flick Fits','photography'],['Meridian','3js + editorial + svg'],['Horizon','dashboard'],['Hearth & Grain','photography'],['Millbrook','infographic']];
+  var label = document.getElementById('tfLabel');
+  var count = document.getElementById('tfCount');
+  var idx = 0, timer = null;
+  function show(i){
+    var imgs = stage.querySelectorAll('img');
+    imgs.forEach(function(im, k){ im.classList.toggle('show', k === i); });
+    label.innerHTML = '<b>'+caps[i][0]+'</b> &rarr; '+caps[i][1];
+    count.textContent = '0' + (i + 1) + ' / 0' + imgs.length;
+    idx = i;
+  }
+  function cycle(){ show((idx + 1) % stage.querySelectorAll('img').length); }
+  var next = document.getElementById('tfNext'), prev = document.getElementById('tfPrev');
+  if (stage && next && prev) {
+    next.addEventListener('click', function(){ cycle(); restart(); });
+    prev.addEventListener('click', function(){ show((idx + stage.querySelectorAll('img').length - 1) % stage.querySelectorAll('img').length); restart(); });
+    function restart(){ if (timer) window.clearInterval(timer); timer = window.setInterval(cycle, 4200); }
+    show(0);
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) timer = window.setInterval(cycle, 4200);
+  }
+  /* scroll reveal */
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  /* method card ghost numerals */
+  document.querySelectorAll('.method-card').forEach(function(card, i){ card.setAttribute('data-no', '0' + (i + 1)); });
+  /* token gallery: auto + 17 tokens, desktop + phone side by side, before/after toggle */
+  var tg = [
+    ['auto','Auto — Venator scored gradient (246)'],['webpage','Measured reading hierarchy'],['landing','Hero and action rhythm'],['dashboard','Console, KPIs, and status'],
+    ['infographic','Shared scales and timelines'],['cinematic','Depth and paced chapters'],['artistic','Asymmetric type and layered fields'],
+    ['photography','Folio plates and captions'],['svg','Inline geometric illustration'],['3js','Offline orbitable canvas',1],
+    ['simulation','Playable timeline and scrubber'],['glass','Frosted backdrop depth'],['editorial','Magazine layout with drop caps'],
+    ['motion','Animated reveals and parallax',1],['gradient','Gradient mesh cards and text'],
+    ['showcase','Capability cards, timeline, and stats']
+  ];
+  var tgDesk = document.getElementById('tgDesk'), tgPhone = document.getElementById('tgPhone');
+  var tgToken = document.getElementById('tgToken'), tgBlurb = document.getElementById('tgBlurb');
+  var tgChips = document.getElementById('tgChips');
+  var tgPrev = document.getElementById('tgPrev'), tgNext = document.getElementById('tgNext');
+  var tgToggle = document.getElementById('tgToggle');
+  var tgLive = document.getElementById('tgLive');
+  var tgDeskFrame = document.getElementById('tgDeskFrame'), tgPhoneFrame = document.getElementById('tgPhoneFrame');
+  var tgMain = document.querySelector('.tg-main'), tgPhoneBox = document.querySelector('.tg-phone');
+  var tgIdx = 0, tgAfter = true, tgLiveOn = false;
+  var TG_SOURCE = '<!doctype html><html lang="en"><head><meta charset="utf-8"><title>A Letter to the Night Tide</title></head><body><h1>A Letter to the Night Tide</h1><p>At the edge of the harbor, the night keeps a different kind of time. The water remembers every light that has crossed it.</p><h2>The first light</h2><p>I came for the lighthouse, but the journey began in the dark between two familiar streets. A small blue lamp made the shore feel briefly possible.</p><h2>A slower story</h2><p>By midnight the tide had turned. The sound was not dramatic; it was a patient sentence, repeated until the body understood it. There was a chapter in the wet sand where the moon had left a silver edge. I followed it past the jetty and found the old signal tower still dreaming above the water.</p><h2>What remains</h2><p>In the morning, the harbor was ordinary again. That is the gift of the night: it lets a small light become a map without asking it to become a sun. I wrote this letter in 2026, after the long walk home. Keep the lamp on for the next traveler.</p><h2>Write back</h2><p>Notes may find me at <a href="mailto:hello@nighttide.example">hello@nighttide.example</a>.</p></body></html>';
+  function tgShow(i){
+    tgIdx = (i + tg.length) % tg.length;
+    var t = tg[tgIdx];
+    tgAfter = true;
+    tgDesk.src = 'tokens/' + t[0] + '-desktop.png';
+    tgPhone.src = 'tokens/' + t[0] + '-phone.png';
+    tgToken.textContent = t[0];
+    tgBlurb.textContent = t[1];
+    tgChips.querySelectorAll('.tg-chip').forEach(function(c, k){ c.classList.toggle('active', k === tgIdx); });
+    tgToggle.classList.remove('on');
+  }
+  function tgFlip(){
+    tgAfter = !tgAfter;
+    var t = tg[tgIdx];
+    tgDesk.src = (tgAfter ? 'tokens/' + t[0] + '-desktop.png' : 'tokens/before-desktop.png');
+    tgPhone.src = (tgAfter ? 'tokens/' + t[0] : 'tokens/before') + '-phone.png';
+    tgToken.textContent = tgAfter ? t[0] : 'source';
+    tgBlurb.textContent = tgAfter ? t[1] : 'the untouched input — no edits';
+    tgToggle.classList.toggle('on', !tgAfter);
+  }
+  function tgSetLive(on){
+    tgLiveOn = on;
+    tgMain.classList.toggle('live', on);
+    tgPhoneBox.classList.toggle('live', on);
+    tgLive.classList.toggle('on', on);
+    if (on && tgDeskFrame && window.ReimagineGenerate && window.ReimagineExtract) {
+      var t = tg[tgIdx];
+      var content = window.ReimagineExtract.extractContent(TG_SOURCE, 'showcase.html');
+      var output = t[0] === 'auto' ? window.ReimagineAuto.autoGenerate(content).output : window.ReimagineGenerate.generate({ content: content, token: t[0] });
+      tgDeskFrame.srcdoc = output;
+      tgPhoneFrame.srcdoc = output;
+    }
+  }
+  if (tgChips && tgDesk && tgPhone) {
+    tg.forEach(function(t, i){
+      var b = document.createElement('button');
+      b.className = 'tg-chip' + (i === 0 ? ' active' : '');
+      b.textContent = t[0];
+      b.addEventListener('click', function(){ if (tgLiveOn) tgSetLive(false); tgShow(i); });
+      tgChips.appendChild(b);
+    });
+    if (tgPrev) tgPrev.addEventListener('click', function(){ if (tgLiveOn) tgSetLive(false); tgShow(tgIdx - 1); });
+    if (tgNext) tgNext.addEventListener('click', function(){ if (tgLiveOn) tgSetLive(false); tgShow(tgIdx + 1); });
+    if (tgToggle) tgToggle.addEventListener('click', tgFlip);
+    if (tgLive) tgLive.addEventListener('click', function(){ tgSetLive(!tgLiveOn); });
+    /* token cards: click a tile to open that token in the gallery above */
+    document.querySelectorAll('.token-card').forEach(function(card){
+      card.addEventListener('click', function(){
+        var i = tg.findIndex(function(x){ return x[0] === card.dataset.token; });
+        if (i >= 0) { if (tgLiveOn) tgSetLive(false); tgShow(i); }
+        var g = document.querySelector('.token-gallery');
+        if (g) g.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    });
+  }
+})();
+</script>
+<script src="engine.js"></script>
+<script>
+(function(){
+  /* Legacy renderer retained for cached pages; current pages use engine.js.
+  var COLOR_MAP = {
+    'red':'#c23a2a','blue':'#2563eb','navy':'#1c2d3d','green':'#16a34a','teal':'#0d9488',
+    'gold':'#e8a63f','amber':'#e8a63f','orange':'#ea580c','purple':'#7c3aed','pink':'#db2777',
+    'cream':'#f4ecd8','white':'#ffffff','black':'#1a1a1a','charcoal':'#2d2d2d','slate':'#475569',
+    'grey':'#6b7280','gray':'#6b7280','brown':'#78350f','copper':'#b45309',
+    'saffron':'#d4882b','clay':'#c67a3d','ocean':'#0e7490','sky':'#38bdf8',
+    'lime':'#84cc16','indigo':'#4f46e5','rose':'#e11d48','violet':'#8b5cf6',
+    'mint':'#059669','olive':'#4d7c0f','maroon':'#7f1d1d','coral':'#f43f5e',
+    'forest':'#166534','sage':'#4ade80','sand':'#d4a373','ink':'#1a2138',
+    'shadow':'#18181b','dusk':'#312e81','sunrise':'#f59e0b','flame':'#dc2626'
+  };
+  var DATE_PATTERN = /\b(1[0-9]{3}|20[0-9]{2})\b/g;
+  var NUM_PATTERN = /\b(\d+[.,]?\d*)\s*(?:ms|s|min|hr|hour|day|week|month|year|seat|user|people|person|dollar|gb|mb|kb|px|em|rem|rpm|acres|miles|km|metres|meters|feet|ft|pounds|kg|g|oz|%)\b/gi;
+  var EMAIL_PATTERN = /\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b/g;
+
+  function extractContent(html) {
+    var div = document.createElement('div'); div.innerHTML = html;
+    var text = (div.textContent || '').replace(/\s+/g, ' ').trim();
+    var lower = text.toLowerCase();
+    var headings = []; div.querySelectorAll('h1,h2,h3').forEach(function(h){ headings.push(h.textContent.trim()); });
+    var title = headings[0] || 'Untitled';
+    var sections = headings.length > 1 ? headings.slice(1) : [];
+    var paras = []; div.querySelectorAll('p').forEach(function(p){ var t = p.textContent.trim(); if(t) paras.push(t); });
+    var items = []; div.querySelectorAll('li').forEach(function(li){ var t = li.textContent.trim(); if(t) items.push(t); });
+    var colors = []; Object.keys(COLOR_MAP).forEach(function(c){ if (lower.indexOf(c) !== -1) colors.push({word: c, hex: COLOR_MAP[c]}); });
+    var dates = []; var dm; while ((dm = DATE_PATTERN.exec(text)) !== null) { if (dates.indexOf(dm[1]) === -1) dates.push(dm[1]); }
+    var nums = []; var nm; while ((nm = NUM_PATTERN.exec(text)) !== null) { nums.push(nm[0]); } nums = nums.filter(function(v,i,a){ return a.indexOf(v) === i; });
+    var emails = []; var em; while ((em = EMAIL_PATTERN.exec(text)) !== null) { if (emails.indexOf(em[1]) === -1) emails.push(em[1]); }
+    var proper = []; var words = text.match(/\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\b/g) || [];
+    var stop = ['The','A','An','In','On','At','To','For','Of','And','Or','But','We','It','Is','Be','Are','This','That','Its','Each','All','Has','Not','Our','Your','With','From','They','You','Can','Will','Get','See','Try','Use','Open','Close','Free','New','Every','Any','Some','Many','More','Most','Less','Few','Only','Just','Also','Here','There','Now','Then','Still','Next','Last','First','Early','Late','Good','Bad','Big','Small','High','Low','Long','Short','Old','No','Yes','One','Two','Three','Four','Five'];
+    words.forEach(function(w){ if (stop.indexOf(w) === -1 && w.length > 2 && proper.indexOf(w) === -1) proper.push(w); });
+    return { title:title, sections:sections, paras:paras, items:items, colors:colors, dates:dates, nums:nums, emails:emails, proper:proper.slice(0,8) };
+  }
+
+  function pickPalette(content) {
+    var p = { ground:'#ffffff', panel:'#f5f5f5', ink:'#1a1a1a', dim:'#6b7280', accent:'#2563eb' };
+    if (content.colors.length >= 2) { p.accent = content.colors[0].hex; p.ink = content.colors[1].hex; }
+    else if (content.colors.length === 1) { p.accent = content.colors[0].hex; }
+    var lower = content.title.toLowerCase() + ' ' + content.paras.join(' ').toLowerCase();
+    if (/night|dark|black|shadow|void|navy/.test(lower)) { p.ground='#0d1624'; p.panel='#152238'; p.ink='#e5e7eb'; p.dim='#6b7280'; }
+    if (/warm|fire|flame|sun|gold|amber|saffron|clay|earth/.test(lower)) { p.ground='#f4ecd8'; p.panel='#ede6d8'; p.ink='#1e1814'; p.dim='#8a7b6a'; if(p.accent==='#2563eb') p.accent='#d4882b'; }
+    if (/garden|green|forest|nature|fresh|mint|herb|leaf/.test(lower)) { p.accent='#059669'; p.dim='#6b8f58'; }
+    if (/ocean|sea|marine|water|wave|river|lake|coast|beach|bay/.test(lower)) { p.accent='#0e7490'; p.dim='#5c8a84'; p.ground='#e8f4f8'; }
+    return p;
+  }
+
+  function chooseGround(token, pal) {
+    var m = { webpage:pal.ground, dashboard:'#0d1624', infographic:'#f4ecd8', artistic:'#f4ecd8', landing:'#0a1626', photography:'#f4ecd8' };
+    return m[token] || pal.ground;
+  }
+
+  function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function pad(n) { var s = '0' + n; return s.slice(-2); }
+
+  function generatePage(content, token) {
+    var pal = pickPalette(content); var ground = chooseGround(token, pal);
+    var page = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+esc(content.title)+'</title></head><body class="pg-page" style="background:'+ground+';color:'+pal.ink+'">';
+    page += '<style>.pg-card:hover{box-shadow:0 18px 40px -18px '+pal.accent+'44}.pg-kpi{background:'+pal.panel+'}a{color:'+pal.accent+'}.pg-accent{color:'+pal.accent+'}::selection{background:'+pal.accent+';color:'+ground+'}</style>';
+
+    if (token === 'webpage') {
+      page += '<div class="pg-hero"><p style="font-size:11px;text-transform:uppercase;letter-spacing:.2em;margin-bottom:14px;opacity:.5">'+esc(content.title.split(' ').slice(0,2).join(' '))+'</p><h1>'+esc(content.title)+'</h1>';
+      if (content.paras[0]) page += '<p class="pg-sub">'+esc(content.paras[0])+'</p>';
+      if (content.emails[0]) page += '<p style="margin-top:16px;font-size:13px;opacity:.6"><a href="mailto:'+esc(content.emails[0])+'">'+esc(content.emails[0])+'</a></p>';
+      page += '</div>';
+      if (content.items.length) {
+        page += '<div class="pg-cards">';
+        content.items.forEach(function(item,i){
+          var parts = item.split(/[·•|–—-]/); var t = parts[0].trim(); var d = parts.length>1?parts.slice(1).join(' — ').trim():'';
+          page += '<div class="pg-card" style="background:'+pal.panel+'"><p style="font-size:10px;text-transform:uppercase;letter-spacing:.16em;margin-bottom:8px;color:'+pal.accent+'">'+pad(i+1)+' · '+esc(content.sections[0]||'Item')+'</p><h3>'+esc(t)+'</h3>'+(d?'<p>'+esc(d)+'</p>':'')+'</div>';
+        });
+        page += '</div>';
+      }
+      if (content.emails[0]) page += '<div class="pg-footer">'+esc(content.emails[0])+'</div>';
+    }
+    else if (token === 'dashboard') {
+      page += '<div class="pg-dash"><h1 style="font-size:28px;margin-bottom:24px">'+esc(content.title)+'</h1>';
+      if (content.nums.length >= 3) { page += '<div class="pg-kpi-row">'; content.nums.slice(0,4).forEach(function(n){ var m=n.match(/(\d+[.,]?\d*)\s*(.+)/); page += '<div class="pg-kpi"><div class="pg-kval pg-accent">'+esc(m?m[1]:n)+'</div><div class="pg-klab">'+esc(m?m[2]:'')+'</div></div>'; }); page+='</div>'; }
+      page += '<div class="pg-cards">';
+      content.items.slice(0,6).forEach(function(item,i){ page += '<div class="pg-card" style="background:'+pal.panel+'"><h3>'+esc(item.split(/[·•|–—]/)[0].trim())+'</h3>'+(content.dates[i]?'<p style="font-weight:600;color:'+pal.accent+'">'+esc(content.dates[i])+'</p>':'')+'</div>'; });
+      page += '</div></div>';
+    }
+    else if (token === 'infographic') {
+      page += '<div style="max-width:900px;margin:0 auto;padding:48px 28px"><p style="font-size:11px;text-transform:uppercase;letter-spacing:.2em;color:'+pal.accent+';margin-bottom:16px">Statistical poster</p><h1 style="font-size:clamp(30px,5vw,46px);margin-bottom:8px">'+esc(content.title)+'</h1>';
+      if (content.paras[0]) page += '<p style="font-size:15px;opacity:.7;max-width:52ch;margin-bottom:40px">'+esc(content.paras[0])+'</p>';
+      if (content.dates.length>=2) { page+='<div style="margin-bottom:36px"><h2 style="font-size:18px;margin-bottom:16px">Timeline</h2><div style="display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap">'; content.dates.forEach(function(d){page+='<div style="text-align:center"><div style="width:8px;height:8px;border-radius:50%;background:'+pal.accent+';margin:0 auto 6px"></div><div style="font-weight:600;font-size:15px">'+esc(d)+'</div></div>'});page+='</div></div>'; }
+      if (content.nums.length) { page+='<div style="margin-bottom:36px"><h2 style="font-size:18px;margin-bottom:16px">By the numbers</h2><div style="display:flex;gap:16px;flex-wrap:wrap">'; content.nums.slice(0,6).forEach(function(n){var s=n.split(/\s/);page+='<div style="padding:14px 18px;border-radius:8px;background:'+pal.panel+'"><span style="font-size:22px;font-weight:700;color:'+pal.accent+'">'+esc(s[0])+'</span><br><span style="font-size:11px;opacity:.5">'+esc(s.slice(1).join(' ')||'units')+'</span></div>'});page+='</div></div>'; }
+      page += '</div>';
+    }
+    else if (token === 'artistic') {
+      page += '<div style="max-width:900px;margin:0 auto;padding:72px 28px 56px;text-align:center"><p style="font-size:11px;text-transform:uppercase;letter-spacing:.24em;color:'+pal.accent+';margin-bottom:20px">'+esc(content.sections[0]||'')+'</p><h1 style="font-size:clamp(40px,7vw,80px);font-style:italic;line-height:1.04;letter-spacing:-.02em">'+esc(content.title)+'</h1>';
+      if (content.paras[0]) page += '<p style="font-size:16px;opacity:.6;max-width:44ch;margin:24px auto 0">'+esc(content.paras[0])+'</p>';
+      if (content.items.length) { page+='<div style="display:flex;justify-content:center;gap:16px;margin-top:48px;flex-wrap:wrap">'; content.items.slice(0,3).forEach(function(item,i){var rot=(i-1)*8;page+='<div class="pg-card" style="background:'+pal.panel+';transform:rotate('+rot+'deg);max-width:220px;box-shadow:12px 24px 40px -16px rgba(0,0,0,.3)"><p style="font-size:10px;text-transform:uppercase;letter-spacing:.16em;color:'+pal.accent+';margin-bottom:8px">Plate '+pad(i+1)+'</p><h3 style="font-size:18px">'+esc(item.split(/[·•|–—]/)[0].trim())+'</h3></div>'});page+='</div>'; }
+      page += '</div>';
+    }
+    else if (token === 'landing') {
+      page += '<div style="max-width:900px;margin:0 auto;padding:80px 28px;text-align:center;position:relative"><div style="position:absolute;top:0;left:0;right:0;height:100%;background:radial-gradient(ellipse at 50% 0%,'+pal.accent+'14,transparent 70%);pointer-events:none;z-index:0"></div><p style="font-size:11px;text-transform:uppercase;letter-spacing:.22em;color:'+pal.accent+';margin-bottom:16px;position:relative">'+esc(content.title)+'</p><h1 style="font-size:clamp(38px,7vw,72px);line-height:1.05;letter-spacing:-.02em;position:relative">Ship the <em class="pg-accent" style="font-style:italic">'+esc(content.title.split(' ').slice(-1)[0]||'thing')+'</em>,<br>not the pitch.</h1>';
+      if (content.paras[0]) page += '<p style="font-size:17px;opacity:.6;max-width:40ch;margin:24px auto 0;position:relative">'+esc(content.paras[0])+'</p>';
+      var actionHref = content.emails && content.emails[0] ? 'mailto:' + content.emails[0] : '#playground';
+      var actionLabel = content.emails && content.emails[0] ? 'Contact source' : 'Try this direction';
+      page += '<div style="margin-top:36px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative"><a href="'+esc(actionHref)+'" style="display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:999px;background:'+pal.accent+';color:'+ground+';font-weight:600;font-size:15px;text-decoration:none">'+esc(actionLabel)+' →</a><a href="#features" style="display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:999px;border:1px solid '+pal.dim+';color:'+pal.ink+';font-weight:600;font-size:15px;text-decoration:none">See how</a></div></div>';
+    }
+    else if (token === 'photography') {
+      page += '<div style="max-width:900px;margin:0 auto;padding:48px 28px"><div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:32px;border-bottom:1px solid '+pal.dim+'33;padding-bottom:16px"><div style="font-size:clamp(28px,5vw,40px);font-weight:400;letter-spacing:-.01em">'+esc(content.title.split(' ').slice(0,2).join(' '))+'<br><span style="font-size:.45em;opacity:.5">'+esc(content.title.split(' ').slice(2).join(' ')||'NOTES')+'</span></div><div style="font-size:11px;text-transform:uppercase;letter-spacing:.14em;opacity:.5">Num 01 · '+esc(content.dates[0]||'')+'</div></div>';
+      content.items.slice(0,4).forEach(function(item,i){page+='<div style="display:grid;grid-template-columns:1fr 2fr;gap:20px;margin-bottom:28px;align-items:start"><div style="width:100%;aspect-ratio:4/3;background:'+pal.panel+';border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:40px;opacity:.5">'+pad(i+1)+'</div><div><p style="font-size:10px;text-transform:uppercase;letter-spacing:.16em;color:'+pal.accent+';margin-bottom:6px">Plate '+pad(i+1)+'</p><h3 style="font-size:22px;font-weight:400">'+esc(item.split(/[·•|–—]/)[0].trim())+'</h3>'+(item.split(/[·•|–—]/).length>1?'<p style="font-size:14px;opacity:.6;margin-top:8px">'+esc(item.split(/[·•|–—]/).slice(1).join(' — ').trim())+'</p>':'')+'</div></div>'});page+='</div>';
+    }
+    else { page += '<div class="pg-hero"><h1>'+esc(content.title)+'</h1><p class="pg-sub">'+esc(content.paras[0]||'')+'</p></div>'; }
+
+    page += '</body></html>'; return page;
+  }
+
+  */
+
+  var input=document.getElementById('playInput'),runBtn=document.getElementById('playRun'),downloadBtn=document.getElementById('playDownload'),frame=document.getElementById('playFrame'),notes=document.getElementById('playNotes'),tokenBtns=document.querySelectorAll('.token-btn'),currentToken='webpage',lastOutput='';
+  tokenBtns.forEach(function(btn){btn.addEventListener('click',function(){tokenBtns.forEach(function(b){b.classList.remove('active')});btn.classList.add('active');currentToken=btn.dataset.token;run()})});
+  var SAMPLES = {
+    startup: '<h1>Atlas Cloud</h1><p>We help teams deploy faster with zero-config infrastructure.</p><h2>Why Atlas</h2><ul><li>Spin up in 90 seconds · 12,000 deploys daily</li><li>Global edge · 34 regions</li><li>SOC 2 Type II · 99.99% uptime</li></ul><h2>Pricing</h2><p>Free for teams under 5. Pro from $49/mo. Enterprise on request.</p><p>Talk to us at hello@atlas.example</p>',
+    data: '<h1>2026 Field Report — Cedar &amp; Ash</h1><p>Season summary for the Cedar &amp; Ash preserve, compiled from volunteer logs.</p><ul><li>320 miles of trails maintained</li><li>1,180 volunteer hours logged</li><li>42% jump in visitor days vs 2025</li><li>14 species added to the watchlist</li></ul><h2>Timeline</h2><p>April 2026 · trail crews opened the north ridge. July 2026 · the bridge rebuild finished. October 2026 · winter prep begins.</p>',
+    restaurant: '<h1>Maracuyá</h1><p>Cold-pressed juices and open-fire plates in the old market district.</p><h2>The menu</h2><ul><li>Mango &amp; chili cooler · 8</li><li>Passion fruit spritz · 9</li><li>Smoked brisket plate · 18</li></ul><h2>Visit</h2><p>Open 7am–9pm daily. Reservations at hello@maracuya.example or 555-0142.</p>',
+    game: '<h1>Venator</h1><p>Online crypto-shooter where you trade, earn, and profit.</p><h2>Game overview</h2><ul><li>336K followers</li><li>184 posts · 230 following</li><li>Kill to earn · season 2026</li></ul><h2>Loot boxes</h2><p>Fill your loot box meter to earn, unlock, and open crates.</p>' };
+  var sampleBtns = document.querySelectorAll('.sample-btn');
+  sampleBtns.forEach(function(btn){btn.addEventListener('click',function(){sampleBtns.forEach(function(b){b.classList.remove('active')});btn.classList.add('active');input.value=SAMPLES[btn.dataset.sample]||'';run()})});
+  function hashSeed(text){var h=2166136261;for(var i=0;i<text.length;i++){h^=text.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+  var seedInput=document.getElementById('playSeed'),currentSeed=null;
+  seedInput.addEventListener('change',function(){var v=seedInput.value.trim();currentSeed=/^-?\d+$/.test(v)?Number(v):null});
+  document.getElementById('playSeedClear').addEventListener('click',function(){seedInput.value='';currentSeed=null});
+  var currentView='result',tabResult=document.getElementById('tabResult'),tabSource=document.getElementById('tabSource');
+  function show(html){frame.srcdoc=currentView==='source'?(input.value.trim()||input.getAttribute('placeholder')||''):html||''}
+  tabResult.addEventListener('click',function(){currentView='result';tabResult.classList.add('active');tabSource.classList.remove('active');show(lastOutput)});
+  tabSource.addEventListener('click',function(){currentView='source';tabSource.classList.add('active');tabResult.classList.remove('active');show(lastOutput)});
+  var urlInput=document.getElementById('playUrl'),fetchBtn=document.getElementById('playFetch');
+  fetchBtn.addEventListener('click',function(){var u=urlInput.value.trim();if(!u){notes.textContent='Enter a URL first. Same-origin paths like examples/end-users/maracuya/source.html always work; other sites need CORS headers.';return}notes.textContent='Fetching '+u+' …';fetch(u).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.text()}).then(function(t){input.value=t;sampleBtns.forEach(function(b){b.classList.remove('active')});run();notes.textContent='Fetched '+u+' ('+t.length.toLocaleString()+' chars) and reimagined.'}).catch(function(e){notes.textContent='Could not fetch ('+e.message+'). Many sites block cross-origin reads — paste the HTML instead.'})});
+  var designStrip=document.getElementById('designStrip'),designBtns=document.getElementById('designBtns');
+  var fontsToggle=document.getElementById('playFonts'),webFonts=!!(fontsToggle&&fontsToggle.checked);
+  if(fontsToggle)fontsToggle.addEventListener('change',function(){webFonts=fontsToggle.checked;run()});
+  function renderStrip(auto){designStrip.hidden=false;designBtns.textContent='';auto.candidates.forEach(function(cand,i){var b=document.createElement('button');b.className='design-btn'+(i===0?' active':'');b.textContent=cand.token+' · '+cand.total;b.title='seed '+cand.seed;b.addEventListener('click',function(){designBtns.querySelectorAll('.design-btn').forEach(function(x){x.classList.remove('active')});b.classList.add('active');var html=input.value.trim()||input.getAttribute('placeholder')||'';var c=window.ReimagineExtract.extractContent(html,'playground.html');lastOutput=window.ReimagineGenerate.generate({content:c,token:cand.token,seed:cand.seed,webFonts:webFonts});var fid=window.ReimagineResult.sourceFidelity(c,lastOutput);show(lastOutput);notes.textContent='Direction: '+cand.token+' · seed '+cand.seed+' · design score '+cand.total+' · fidelity '+fid.percentage+'%'+(webFonts?' · web fonts':'')});designBtns.appendChild(b)});var rec=document.createElement('button');rec.className='design-btn';rec.textContent='↻ Recreate';rec.addEventListener('click',function(){currentSeed=((hashSeed(input.value.trim()||'')+Math.floor(Math.random()*0x7fffffff))|0)>>>0;seedInput.value=String(currentSeed);run()});designBtns.appendChild(rec)}
+  function run(){var html=input.value.trim();if(!html){var ph=input.getAttribute('placeholder');if(ph)html=ph;else{lastOutput='';frame.srcdoc='';notes.textContent='Paste HTML to preview a redesign.';if(designStrip)designStrip.hidden=true;return}}var c=window.ReimagineExtract.extractContent(html,'playground.html');var seed=currentSeed!==null?currentSeed:hashSeed(html);var n=[];n.push('Palette: '+[c.palette.ground,c.palette.accent,c.palette.muted].join(' / '));if(c.dates.length>0)n.push('Dates: '+c.dates.slice(0,4).join(', '));if(c.numbers.length>0)n.push('Numbers: '+c.numbers.slice(0,4).join(', '));if(c.anchors.length>0)n.push('Anchors: '+c.anchors.slice(0,3).join(', '));var tokenLabel=currentToken;if(currentToken==='auto'){var auto=window.ReimagineAuto.autoGenerate(c,{seed:seed,webFonts:webFonts});tokenLabel=auto.token;n.push('Auto chose: '+auto.token+' · voice '+auto.voice);n.push('Design: '+auto.design.quality+'/136');lastOutput=auto.output;renderStrip(auto)}else{lastOutput=window.ReimagineGenerate.generate({content:c,token:currentToken,seed:seed,webFonts:webFonts});if(designStrip)designStrip.hidden=true}var fidelity=window.ReimagineResult.sourceFidelity(c,lastOutput);notes.textContent='Extracted — '+n.join(' · ')+'. Direction: '+tokenLabel+' · Fidelity: '+fidelity.percentage+'% of detected source facts preserved.'+(webFonts?' · web fonts on':'');show(lastOutput)}
+  function currentSeedValue(){return currentSeed!==null?currentSeed:hashSeed(input.value.trim()||input.getAttribute('placeholder')||'')}
+  runBtn.addEventListener('click',run);
+  input.addEventListener('input',function(){if(input.value.trim())run()});
+  input.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.ctrlKey)run()});
+  input.addEventListener('focus',function(){if(!input._r){input._r=true;run()}});   /* share */   var shareBtn=document.getElementById('playShare');shareBtn.addEventListener('click',function(){var html=input.value.trim()||input.getAttribute('placeholder')||'';var d={h:html,t:currentToken};var s=currentSeedValue();if(s!==hashSeed(html))d.s=s;if(webFonts)d.w=1;var enc=btoa(unescape(encodeURIComponent(JSON.stringify(d))));var url=location.origin+location.pathname+'#'+enc;var done=function(){var o=shareBtn.textContent;shareBtn.textContent='Copied!';setTimeout(function(){shareBtn.textContent=o},2000)};if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(done).catch(function(){location.hash=enc;notes.textContent='Share link set in the address bar — copy it from there.'})}else{location.hash=enc;notes.textContent='Share link set in the address bar — copy it from there.'}});   downloadBtn.addEventListener('click',function(){if(!lastOutput)return;var blob=new Blob([lastOutput],{type:'text/html'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='reimagined-'+currentToken+'.html';document.body.appendChild(link);link.click();link.remove();setTimeout(function(){URL.revokeObjectURL(url)},0)});
+  (function(){var h=location.hash.slice(1);if(!h)return;try{var d=JSON.parse(decodeURIComponent(escape(atob(h))));if(d.h)input.value=d.h;if(d.t){tokenBtns.forEach(function(b){b.classList.remove('active');if(b.dataset.token===d.t)b.classList.add('active')});currentToken=d.t}if(d.s!==undefined){seedInput.value=String(d.s);currentSeed=d.s;seedInput.dispatchEvent(new Event('change'))}if(d.w&&fontsToggle){fontsToggle.checked=true;webFonts=true}setTimeout(run,100)}catch(e){}})();
+  run();
+})();
+</script>
+</body>
+</html>
