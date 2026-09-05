@@ -1,0 +1,1 @@
+var e=`/assets/galaxy-Cljq5WPD.png`;export{e as t};

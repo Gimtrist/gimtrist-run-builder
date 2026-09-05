@@ -1,0 +1,1 @@
+var e=`/assets/monster-DtIxJ0HQ.png`;export{e as t};

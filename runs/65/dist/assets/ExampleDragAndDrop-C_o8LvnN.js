@@ -1,0 +1,9 @@
+import{Ot as e,Y as t,d as n,g as r,mt as i,t as a,v as o}from"./build-BD6P-s9Z.js";import{t as s}from"./utils-uvjv54SH.js";var c=class extends r{constructor(e,n,r){super(e,n,r.width,r.height),this.color=`white`,this.font=new t(0,0,{font:`Verdana`,size:15,fillStyle:`black`}),this.font.bold(),this.text=`Drag me`}update(e){return super.update(e),!0}draw(e){e.setColor(this.color),e.fillRect(this.pos.x,this.pos.y,this.width,this.height),this.font.draw(e,this.text,this.pos.x,this.pos.y)}dragStart(e){super.dragStart(e),this.color=`blue`}dragEnd(e){super.dragEnd(e),this.color=`white`}},l=class extends o{constructor(e,n,r){super(e,n,r.width,r.height),this.color=`red`,this.font=new t(0,0,{font:`Verdana`,size:15,fillStyle:`black`}),this.font.bold(),this.text=`Drop on me
+
+And I"ll turn green
+
+checkmethod: overlap`}update(e){return super.update(e),!0}draw(e){e.setColor(this.color),e.fillRect(this.pos.x,this.pos.y,this.width,this.height),this.font.draw(e,this.text,this.pos.x,this.pos.y)}drop(e){super.drop(e),this.color=`green`,window.setTimeout(()=>{this.color=`red`},1e3)}},u=class extends l{constructor(e,n,r){super(e,n,r),this.color=`red`,this.font=new t(0,0,{font:`Verdana`,size:15,fillStyle:`black`}),this.font.bold(),this.text=`Drop on me
+
+And I"ll turn green
+
+checkmethod: contains`,this.setCheckMethod(this.CHECKMETHOD_CONTAINS)}},d=s(async()=>{try{await new a(1024,768,{parent:`screen`,scale:`auto`,renderer:e.AUTO}).init()}catch{alert(`Your browser does not support HTML5 canvas.`);return}i.world.addChild(new n(`background`,`#000000`,0),0),i.world.addChild(new c(200,230,{width:100,height:100}),1),i.world.addChild(new l(400,200,{width:200,height:150}),1),i.world.addChild(new u(400,400,{width:200,height:150}),1)});export{d as ExampleDragAndDrop};
