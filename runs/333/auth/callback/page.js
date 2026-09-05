@@ -1,0 +1,13 @@
+var R=require("../../../chunks/ssr/[turbopack]_runtime.js")("server/app/auth/callback/page.js")
+R.c("server/chunks/ssr/_1wl5ts7._.js")
+R.c("server/chunks/ssr/[root-of-the-server]__0z5ob0b._.js")
+R.c("server/chunks/ssr/[root-of-the-server]__0yu2jwx._.js")
+R.c("server/chunks/ssr/[root-of-the-server]__07-cb6x._.js")
+R.c("server/chunks/ssr/[root-of-the-server]__150o2fc._.js")
+R.c("server/chunks/ssr/app_not-found_tsx_0qqyqrb._.js")
+R.c("server/chunks/ssr/node_modules_next_dist_client_components_0p8s4lh._.js")
+R.c("server/chunks/ssr/node_modules_next_dist_client_components_builtin_unauthorized_0l_sp0x.js")
+R.c("server/chunks/ssr/node_modules_next_dist_client_components_builtin_global-error_0q-w892.js")
+R.c("server/chunks/ssr/_next-internal_server_app_auth_callback_page_actions_16r06w-.js")
+R.m(47860)
+module.exports=R.m(47860).exports
