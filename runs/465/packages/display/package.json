@@ -1,0 +1,36 @@
+{
+  "name": "@next2d/display",
+  "version": "*",
+  "description": "Next2D Display Package",
+  "author": "Toshiyuki Ienaga<ienaga@next2d.app> (https://github.com/ienaga/)",
+  "license": "MIT",
+  "homepage": "https://next2d.app",
+  "bugs": "https://github.com/Next2D/Player/issues",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "require": "./src/index.js"
+    }
+  },
+  "keywords": [
+    "Next2D",
+    "Next2D Display"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Next2D/Player.git"
+  },
+  "peerDependencies": {
+    "@next2d/ui": "file:../ui",
+    "@next2d/text": "file:../text",
+    "@next2d/geom": "file:../geom",
+    "@next2d/media": "file:../media",
+    "@next2d/net": "file:../net",
+    "@next2d/events": "file:../events",
+    "@next2d/filters": "file:../filters",
+    "@next2d/render-queue": "file:../render-queue"
+  }
+}

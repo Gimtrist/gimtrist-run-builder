@@ -1,0 +1,76 @@
+import { STATEMENT_COLOR_TRANSFORM_ON } from "./FragmentShaderLibrary";
+
+export const TEXTURE = (with_color_transform: boolean): string =>
+{
+    const colorTransformUniform = with_color_transform
+        ? "uniform vec4 u_mediump[2];"
+        : "";
+
+    const colorTransformStatement = with_color_transform
+        ? STATEMENT_COLOR_TRANSFORM_ON(0)
+        : "";
+
+    return `#version 300 es
+precision mediump float;
+
+uniform sampler2D u_texture;
+${colorTransformUniform}
+
+in vec2 v_coord;
+out vec4 o_color;
+
+void main() {
+    vec4 src = texture(u_texture, v_coord);
+    ${colorTransformStatement}
+    o_color = src;
+}`;
+};
+
+export const TEXTURE_PREMULTIPLY = (): string =>
+{
+    return `#version 300 es
+precision mediump float;
+
+uniform sampler2D u_texture;
+
+in vec2 v_coord;
+out vec4 o_color;
+
+void main() {
+    vec4 src = texture(u_texture, v_coord);
+    // ストレートアルファのソースをプリマルチプライドアルファへ変換して出力する。
+    // アトラスはプリマルチプライ空間で構築され blendFunc(ONE, ONE_MINUS_SRC_ALPHA) で
+    // 合成されるため、変換しないと透明部の白抜けや縁の白線が発生する。
+    o_color = vec4(src.rgb * src.a, src.a);
+}`;
+};
+
+export const INSTANCE_TEXTURE = (): string =>
+{
+    // アトラスはTEXTURE_2D_ARRAY。v_add.wはカラー加算値ではなく
+    // アトラスのレイヤー番号(旧実装では常に0だったct7のスロットを転用)。
+    // カラー変換ではw成分を0として扱うため出力は旧実装と同一。
+    return `#version 300 es
+precision mediump float;
+
+uniform mediump sampler2DArray u_texture;
+
+in vec4 v_mul;
+in vec4 v_add;
+in vec2 v_coord;
+out vec4 o_color;
+
+void main() {
+    vec4 src = texture(u_texture, vec3(v_coord, v_add.w));
+
+    if (v_mul.x != 1.0 || v_mul.y != 1.0 || v_mul.z != 1.0 || v_mul.w != 1.0
+        || v_add.x != 0.0 || v_add.y != 0.0 || v_add.z != 0.0
+    ) {
+        src.rgb /= max(0.0001, src.a);
+        src = clamp(src * v_mul + vec4(v_add.xyz, 0.0), 0.0, 1.0);
+        src.rgb *= src.a;
+    }
+
+    o_color = src;
+}`;
+};

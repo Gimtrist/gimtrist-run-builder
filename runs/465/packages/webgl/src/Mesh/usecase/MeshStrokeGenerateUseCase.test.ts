@@ -1,0 +1,36 @@
+import { execute } from "./MeshStrokeGenerateUseCase";
+import { describe, expect, it, vi } from "vitest";
+
+vi.mock("../../WebGLUtil.ts", () => ({
+    "$context": {
+        "thickness": 4,
+        "joints": 0,
+        "caps": 0,
+        "$fillStyle": new Float32Array([0, 0, 0, 1]),
+        "$strokeStyle": new Float32Array([0, 0, 0, 1]),
+        "$matrix": new Float32Array([1, 0, 0, 1, 0, 0, 0, 0, 1])
+    },
+    "$viewportWidth": 1024,
+    "$viewportHeight": 1024,
+    "$getArray": () => [],
+    "$poolArray": () => {}
+}));
+
+vi.mock("../../Mesh.ts", () => ({
+    "$getMeshTempBuffer": (size: number) => new Float32Array(size)
+}));
+
+describe("MeshStrokeGenerateUseCase.js method test", () =>
+{
+    it("test case - generate stroke mesh", () =>
+    {
+        const vertices = [
+            [0, 0, false, 100, 0, false]
+        ];
+
+        const result = execute(vertices);
+        expect(result).toBeDefined();
+        expect(result.buffer).toBeDefined();
+        expect(result.indexCount).toBeGreaterThan(0);
+    });
+});

@@ -1,0 +1,63 @@
+import type { IAttachmentObject } from "../../interface/IAttachmentObject";
+import type { IColorBufferObject } from "../../interface/IColorBufferObject";
+import type { IStencilBufferObject } from "../../interface/IStencilBufferObject";
+import type { Context } from "../../Context";
+import { $currentAttachment } from "../../FrameBufferManager";
+import { execute as frameBufferManagerBindAttachmentObjectService } from "../../FrameBufferManager/service/FrameBufferManagerBindAttachmentObjectService";
+import { execute as maskBindUseCase } from "../../Mask/usecase/MaskBindUseCase";
+import {
+    $gl,
+    $setViewportSize
+} from "../../WebGLUtil";
+
+/**
+ * @description アタッチメントオブジェクトのサイズに変更・初期化し、フレームバッファにアタッチメントオブジェクトをバインドする
+ *              Change and initialize to the size of the attachment object and bind the attachment object to the frame buffer
+ *
+ * @param  {Context} context
+ * @param  {IAttachmentObject} attachment_object
+ * @return {void}
+ * @method
+ * @protected
+ */
+export const execute = (context: Context, attachment_object: IAttachmentObject): void =>
+{
+    // fixed logic
+    const currentAttachment = $currentAttachment;
+    if (currentAttachment
+        && attachment_object.id === currentAttachment.id
+    ) {
+        return ;
+    }
+
+    // フレームバッファにアタッチメントオブジェクトをバインドする
+    frameBufferManagerBindAttachmentObjectService(attachment_object);
+
+    if (!currentAttachment
+        || currentAttachment.width !== attachment_object.width
+        || currentAttachment.height !== attachment_object.height)
+    {
+        $setViewportSize(attachment_object.width, attachment_object.height);
+        $gl.viewport(0, 0, attachment_object.width, attachment_object.height);
+    }
+
+    // カラーバッファorステンシルバッファが、未初期化の場合はクリアする
+    const object = attachment_object.msaa
+        ? attachment_object.color as IColorBufferObject
+        : attachment_object.stencil as IStencilBufferObject;
+
+    // 再利用のオブジェクトの場合は、描画情報をクリアする
+    // テクスチャプールから再利用されたテクスチャ(dirty)もステイル内容を含むためクリア対象
+    // clearColorは初期化時に(0,0,0,0)で固定済みのためそのまま使用
+    const texture = attachment_object.texture;
+    if (object.dirty || texture && texture.dirty) {
+        object.dirty = false;
+        if (texture) {
+            texture.dirty = false;
+        }
+        context.clearRect(0, 0, attachment_object.width, attachment_object.height);
+    }
+
+    // mask bind
+    maskBindUseCase(attachment_object.mask);
+};

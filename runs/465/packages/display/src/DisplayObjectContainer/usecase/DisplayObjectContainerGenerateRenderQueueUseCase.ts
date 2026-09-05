@@ -1,0 +1,751 @@
+import type { DisplayObject } from "../../DisplayObject";
+import type { DisplayObjectContainer } from "../../DisplayObjectContainer";
+import type { Shape } from "../../Shape";
+import type { TextField } from "@next2d/text";
+import type { Video } from "@next2d/media";
+import { execute as displayObjectGetRawColorTransformUseCase } from "../../DisplayObject/usecase/DisplayObjectGetRawColorTransformUseCase";
+import { execute as displayObjectGetRawMatrixUseCase } from "../../DisplayObject/usecase/DisplayObjectGetRawMatrixUseCase";
+import { execute as shapeGenerateRenderQueueUseCase } from "../../Shape/usecase/ShapeGenerateRenderQueueUseCase";
+import { execute as shapeGenerateClipQueueUseCase } from "../../Shape/usecase/ShapeGenerateClipQueueUseCase";
+import { execute as textFieldGenerateRenderQueueUseCase } from "../../TextField/usecase/TextFieldGenerateRenderQueueUseCase";
+import { execute as videoGenerateRenderQueueUseCase } from "../../Video/usecase/VideoGenerateRenderQueueUseCase";
+import { execute as displayObjectIsMaskReflectedInDisplayUseCase } from "../../DisplayObject/usecase/DisplayObjectIsMaskReflectedInDisplayUseCase";
+import { execute as displayObjectContainerGenerateClipQueueUseCase } from "../../DisplayObjectContainer/usecase/DisplayObjectContainerGenerateClipQueueUseCase";
+import { execute as displayObjectBlendToNumberService } from "../../DisplayObject/service/DisplayObjectBlendToNumberService";
+import { execute as displayObjectContainerGetLayerBoundsUseCase } from "./DisplayObjectContainerGetLayerBoundsUseCase";
+import { execute as displayObjectContainerGetLayerScaleUseCase } from "./DisplayObjectContainerGetLayerScaleUseCase";
+import { execute as displayObjectContainerCalcBoundsMatrixUseCase } from "../../DisplayObjectContainer/usecase/DisplayObjectContainerCalcBoundsMatrixUseCase";
+import { stage } from "../../Stage";
+import { renderQueue } from "@next2d/render-queue";
+import { $cacheStore } from "@next2d/cache";
+import {
+    $clamp,
+    $getBoundsArray,
+    $poolBoundsArray,
+    $RENDERER_CONTAINER_TYPE,
+    $getFloat32Array8,
+    $getFloat32Array6,
+    $poolFloat32Array6,
+    $prepareFilterBuffers,
+    $pushFilterBuffers,
+    $getFilterUpdated
+} from "../../DisplayObjectUtil";
+
+import {
+    ColorTransform,
+    Matrix
+} from "@next2d/geom";
+
+/**
+ * @description filterレイヤーのスケール取得用の再利用バッファ
+ *              Reusable buffer for filter layer scale retrieval
+ *
+ * @type {Float32Array}
+ * @private
+ */
+const $layerScale: Float32Array = new Float32Array(2);
+
+/**
+ * @description renderer workerに渡すコンテナの描画データを生成
+ *              Generate rendering data of the container to be passed to the renderer worker
+ *
+ * @param  {DisplayObjectContainer} display_object_container
+ * @param  {ImageBitmap[]} image_bitmaps
+ * @param  {Float32Array} matrix
+ * @param  {Float32Array} color_transform
+ * @param  {number} renderer_width
+ * @param  {number} renderer_height
+ * @return {void}
+ * @method
+ * @private
+ */
+export const execute = <P extends DisplayObjectContainer>(
+    display_object_container: P,
+    image_bitmaps: ImageBitmap[],
+    matrix: Float32Array,
+    color_transform: Float32Array,
+    renderer_width: number,
+    renderer_height: number,
+    in_filter_layer: boolean = false
+): void => {
+
+    if (!display_object_container.visible) {
+        renderQueue.push1(0);
+        return ;
+    }
+
+    // transformed ColorTransform(tColorTransform)
+    const rawColor = displayObjectGetRawColorTransformUseCase(display_object_container);
+    let tColorTransform = rawColor
+        && (rawColor[0] !== 1 || rawColor[1] !== 1
+        || rawColor[2] !== 1 || rawColor[3] !== 1
+        || rawColor[4] !== 0 || rawColor[5] !== 0
+        || rawColor[6] !== 0 || rawColor[7] !== 0)
+        ? ColorTransform.multiply(color_transform, rawColor)
+        : color_transform;
+
+    const alpha = $clamp(tColorTransform[3] + tColorTransform[7] / 255, 0, 1, 0);
+    if (!alpha) {
+        if (tColorTransform !== color_transform) {
+            ColorTransform.release(tColorTransform);
+        }
+        renderQueue.push1(0);
+        return ;
+    }
+
+    const children = display_object_container.children;
+    if (!children.length) {
+        if (tColorTransform !== color_transform) {
+            ColorTransform.release(tColorTransform);
+        }
+        renderQueue.push1(0);
+        return ;
+    }
+
+    // transformed matrix(tMatrix)
+    const rawMatrix = displayObjectGetRawMatrixUseCase(display_object_container);
+    let tMatrix = rawMatrix
+        && (rawMatrix[0] !== 1 || rawMatrix[1] !== 0
+        || rawMatrix[2] !== 0 || rawMatrix[3] !== 1
+        || rawMatrix[4] !== 0 || rawMatrix[5] !== 0)
+        ? Matrix.multiply(matrix, rawMatrix)
+        : matrix;
+
+    // size zero
+    if (!tMatrix[0] && !tMatrix[1]
+        || !tMatrix[2] && !tMatrix[3]
+    ) {
+        if (tColorTransform !== color_transform) {
+            ColorTransform.release(tColorTransform);
+        }
+        if (tMatrix !== matrix) {
+            Matrix.release(tMatrix);
+        }
+        renderQueue.push1(0);
+        return ;
+    }
+
+    renderQueue.push2(1, $RENDERER_CONTAINER_TYPE);
+
+    // blendMode
+    const blendMode = display_object_container.blendMode;
+    renderQueue.push1(displayObjectBlendToNumberService(blendMode));
+
+    // cacheAsBitmap: フィルターキャッシュ形式でコンテナ全体をビットマップキャッシュ
+    // キャッシュテクスチャは親のスケールを含むサイズで描画し、
+    // コンポジットは setTransform(1,0,0,1,x,y) で1:1描画されるため正しい画面サイズになる
+    // 親の移動はキャッシュヒット（位置だけ更新）、スケール変更はキャッシュミス（再描画）
+    // 親がfilter等の中間レイヤー内にいる場合、filter layer 側で layerScale倍の
+    // 解像度を確保してから最終compose時に 1/layerScale で縮小合成する仕組みによって
+    // cacheAsBitmap子のテクスチャが親layerに収まる (issue #274 根本対応)。
+    const cacheMatrix = display_object_container.cacheAsBitmap;
+    if (cacheMatrix) {
+
+        // cacheStoreキー用のinstanceId文字列(遅延メモ化)。uniqueKeyは流用不可
+        const idString = display_object_container.$instanceIdString
+            || (display_object_container.$instanceIdString = `${display_object_container.instanceId}`);
+
+        const m = cacheMatrix.rawData;
+        const cacheScaleX = Math.sqrt(m[0] * m[0] + m[1] * m[1]);
+        const cacheScaleY = Math.sqrt(m[2] * m[2] + m[3] * m[3]);
+
+        const ownScaleX = rawMatrix
+            ? Math.sqrt(rawMatrix[0] * rawMatrix[0] + rawMatrix[1] * rawMatrix[1])
+            : 1;
+        const ownScaleY = rawMatrix
+            ? Math.sqrt(rawMatrix[2] * rawMatrix[2] + rawMatrix[3] * rawMatrix[3])
+            : 1;
+
+        // Shape/TextFieldと同様にstage.rendererScaleを使用
+        // matrixから抽出すると親のアニメーション（スケール変動）でキーが揺れて
+        // 毎フレームcache MISSが発生する原因になる
+        const rendererScale = stage.rendererScale;
+
+        // コンポジットスケール = cacheScale × ownScale × rendererScale
+        const renderScaleX = cacheScaleX * ownScaleX * rendererScale;
+        const renderScaleY = cacheScaleY * ownScaleY * rendererScale;
+        const xRounded = Math.round(renderScaleX * 100) / 100;
+        const yRounded = Math.round(renderScaleY * 100) / 100;
+
+        const bitmapCacheKey = $cacheStore.generateKeys(
+            xRounded, yRounded, tColorTransform[7]
+        );
+
+        // 固定プロパティ名で最新のキーのみ保存（古いキーが蓄積されないようにする）
+        // レンダラーも最新のfKeyのみ保持するため、キーの一致を保証
+        const bitmapCache = $cacheStore.get(
+            idString,
+            "bitmapKey"
+        ) === bitmapCacheKey;
+
+        // コンテナ自身のフィルター境界を収集
+        const cacheFilters = display_object_container.filters;
+        const cacheFilterBounds = $getBoundsArray(0, 0, 0, 0);
+        if (cacheFilters) {
+            for (let idx = 0; idx < cacheFilters.length; idx++) {
+                const filter = cacheFilters[idx];
+                if (!filter || !filter.canApplyFilter()) {
+                    continue;
+                }
+                filter.getBounds(cacheFilterBounds);
+            }
+        }
+
+        if (bitmapCache) {
+
+            // cacheAsBitmap cache hit: 子要素走査をスキップして高速パス
+            // Shapeと同様に親matrixをレンダラーに渡し、描画時にcacheScaleで補正
+            const cachedLocalBounds = $cacheStore.get(
+                idString, "bLocalBounds"
+            ) as Float32Array | null;
+
+            if (cachedLocalBounds) {
+                // ローカルバウンズ原点のスクリーン座標を計算（Shapeと同じ方式）
+                const localOriginX = cachedLocalBounds[0] / (cacheScaleX * rendererScale);
+                const localOriginY = cachedLocalBounds[1] / (cacheScaleY * rendererScale);
+                const screenX = matrix[0] * localOriginX + matrix[2] * localOriginY + matrix[4];
+                const screenY = matrix[1] * localOriginX + matrix[3] * localOriginY + matrix[5];
+
+                // 通常: matrixにcacheScaleを乗算。レンダラで matrix/renderScale → cacheScale成分が反映される。
+                // issue #274: 親がfilter layer を持ち、layer を cacheScale 倍解像度で確保している場合は、
+                // 親のtMatrix に既に layerScale (=cacheScale) が掛かっているため、cacheScale 乗算を省略して
+                // 合成 scale=1 で layer にちょうど収まるようにする。
+                const hitMatrixScaleX = in_filter_layer ? 1 : cacheScaleX;
+                const hitMatrixScaleY = in_filter_layer ? 1 : cacheScaleY;
+                renderQueue.push27(1,
+                    0, 0, // layerWidth/Height: HIT時は未使用
+                    2, 1, display_object_container.instanceId, bitmapCacheKey,
+                    cacheFilterBounds[0], cacheFilterBounds[1], cacheFilterBounds[2], cacheFilterBounds[3],
+                    renderScaleX, renderScaleY,
+                    matrix[0] * hitMatrixScaleX, matrix[1] * hitMatrixScaleX,
+                    matrix[2] * hitMatrixScaleY, matrix[3] * hitMatrixScaleY,
+                    screenX, screenY,
+                    tColorTransform[0], tColorTransform[1], tColorTransform[2], tColorTransform[3],
+                    tColorTransform[4], tColorTransform[5], tColorTransform[6], tColorTransform[7]
+                );
+
+                $poolBoundsArray(cacheFilterBounds);
+
+                if (tColorTransform !== color_transform) {
+                    ColorTransform.release(tColorTransform);
+                }
+                if (tMatrix !== matrix) {
+                    Matrix.release(tMatrix);
+                }
+                return ;
+            }
+            // cachedLocalBoundsがない場合はMISSにフォールスルー
+        }
+
+        // cacheAsBitmap cache miss: 初回描画
+        // 親matrixのスケール成分のみを含むローカル空間でキャッシュを生成する
+        // （親の位置・回転は含まず、スケールのみ反映してテクスチャサイズを画面と一致させる）
+
+        // フィルターパラメータを収集
+        // このパスは $updated を消費しないため、フラグは維持したまま $buffer のみ最新化する
+        let cacheFilterParamsLength = 0;
+        if (cacheFilters) {
+            for (let idx = 0; idx < cacheFilters.length; idx++) {
+                const filter = cacheFilters[idx];
+                if (!filter || !filter.canApplyFilter()) {
+                    continue;
+                }
+                if (filter.$updated || !filter.$buffer) {
+                    filter.$buffer = filter.toNumberArray();
+                }
+                cacheFilterParamsLength += filter.$buffer.length;
+            }
+        }
+
+        // キャッシュ描画用の親matrix: cacheScale × rendererScale（対角行列）
+        const cacheParentMatrix = $getFloat32Array6(
+            cacheScaleX * rendererScale, 0,
+            0, cacheScaleY * rendererScale,
+            0, 0
+        );
+        const localLayerBounds = displayObjectContainerGetLayerBoundsUseCase(
+            display_object_container, cacheParentMatrix
+        );
+
+        const localLayerWidth = Math.ceil(Math.abs(localLayerBounds[2] - localLayerBounds[0]));
+        const localLayerHeight = Math.ceil(Math.abs(localLayerBounds[3] - localLayerBounds[1]));
+
+        // Shapeと同じ方式でスクリーン座標を計算
+        const localOriginX = localLayerBounds[0] / (cacheScaleX * rendererScale);
+        const localOriginY = localLayerBounds[1] / (cacheScaleY * rendererScale);
+        const missScreenX = matrix[0] * localOriginX + matrix[2] * localOriginY + matrix[4];
+        const missScreenY = matrix[1] * localOriginX + matrix[3] * localOriginY + matrix[5];
+
+        // HITパスと同じ規則: filter layer 内では cacheScale 乗算を省略
+        const missMatrixScaleX = in_filter_layer ? 1 : cacheScaleX;
+        const missMatrixScaleY = in_filter_layer ? 1 : cacheScaleY;
+        renderQueue.push28(
+            1,
+            localLayerWidth, localLayerHeight,
+            2, 0, display_object_container.instanceId, bitmapCacheKey,
+            cacheFilterBounds[0], cacheFilterBounds[1], cacheFilterBounds[2], cacheFilterBounds[3],
+            renderScaleX, renderScaleY,
+            matrix[0] * missMatrixScaleX, matrix[1] * missMatrixScaleX,
+            matrix[2] * missMatrixScaleY, matrix[3] * missMatrixScaleY,
+            missScreenX, missScreenY,
+            tColorTransform[0], tColorTransform[1], tColorTransform[2], tColorTransform[3],
+            tColorTransform[4], tColorTransform[5], tColorTransform[6], tColorTransform[7],
+            cacheFilterParamsLength
+        );
+        if (cacheFilterParamsLength > 0 && cacheFilters) {
+            $pushFilterBuffers(cacheFilters);
+        }
+
+        // 子要素の描画マトリクスをローカル空間に切り替え（親matrixの位置・回転を除外）
+        // cacheParentMatrixにrawMatrixを乗算し、layerBoundsオフセットで原点を調整
+        let localMatrix: Float32Array;
+        if (rawMatrix) {
+            localMatrix = Matrix.multiply(cacheParentMatrix, rawMatrix);
+        } else {
+            localMatrix = $getFloat32Array6(
+                cacheParentMatrix[0], 0,
+                0, cacheParentMatrix[3],
+                0, 0
+            );
+        }
+
+        const localTx = localMatrix[4] - localLayerBounds[0];
+        const localTy = localMatrix[5] - localLayerBounds[1];
+
+        if (tMatrix !== matrix) {
+            Matrix.release(tMatrix);
+        }
+        tMatrix = $getFloat32Array6(
+            localMatrix[0], localMatrix[1],
+            localMatrix[2], localMatrix[3],
+            localTx, localTy
+        );
+
+        if (rawMatrix) {
+            Matrix.release(localMatrix);
+        } else {
+            $poolFloat32Array6(localMatrix);
+        }
+        Matrix.release(cacheParentMatrix);
+
+        if (tColorTransform !== color_transform) {
+            ColorTransform.release(tColorTransform);
+        }
+        tColorTransform = $getFloat32Array8(1, 1, 1, 1, 0, 0, 0, 0);
+
+        // HIT時の高速パス用にローカルバウンズをキャッシュ（poolする前に保存）
+        $cacheStore.set(
+            idString,
+            "bLocalBounds",
+            new Float32Array([localLayerBounds[0], localLayerBounds[1], localLayerBounds[2], localLayerBounds[3]])
+        );
+
+        $poolBoundsArray(localLayerBounds);
+        $poolBoundsArray(cacheFilterBounds);
+
+        $cacheStore.set(
+            idString,
+            "bitmapKey", bitmapCacheKey
+        );
+
+    } else {
+
+        // filters
+        const filters = display_object_container.filters;
+        if (filters) {
+
+            // cacheStoreキー用のinstanceId文字列(遅延メモ化)。uniqueKeyは流用不可
+            const idString = display_object_container.$instanceIdString
+                || (display_object_container.$instanceIdString = `${display_object_container.instanceId}`);
+
+            const filterKey = $cacheStore.generateFilterKeys(
+                tMatrix[0], tMatrix[1], tMatrix[2], tMatrix[3]
+            );
+            const cachedFilterKey = $cacheStore.get(
+                idString,
+                "filterKey"
+            );
+            const filterCache = cachedFilterKey === filterKey;
+
+            const bounds = $getBoundsArray(0, 0, 0, 0);
+            const paramsLength = $prepareFilterBuffers(filters, bounds);
+            let updated = $getFilterUpdated();
+
+            const useFilfer = paramsLength > 0;
+            if (useFilfer) {
+
+                // 子の変更があった場合は親のフラグが立っているので更新
+                if (!updated) {
+                    updated = display_object_container.changed;
+                }
+
+                const layerBounds = displayObjectContainerGetLayerBoundsUseCase(
+                    display_object_container, matrix
+                );
+
+                // 子孫にcacheAsBitmapを持つ要素があれば、そのスケールに合わせて
+                // filterレイヤーの解像度を引き上げる。これにより親レイヤー内で
+                // 子のcacheScale倍テクスチャが端まで収まる (issue #274 発展対応)。
+                // サブツリーのscale/構造変化は必ずchangedを立てる(=updatedになる)ため、
+                // 未更新時は前フレームのキャッシュ値を使い全サブツリー再帰をスキップする。
+                let layerScaleX = display_object_container.$layerScaleX;
+                let layerScaleY = display_object_container.$layerScaleY;
+                if (updated || layerScaleX === -1) {
+                    $layerScale[0] = 1;
+                    $layerScale[1] = 1;
+                    displayObjectContainerGetLayerScaleUseCase(
+                        display_object_container, $layerScale
+                    );
+                    layerScaleX = $layerScale[0];
+                    layerScaleY = $layerScale[1];
+                    display_object_container.$layerScaleX = layerScaleX;
+                    display_object_container.$layerScaleY = layerScaleY;
+                }
+
+                const layerWidth  = Math.ceil(Math.abs(layerBounds[2] - layerBounds[0]) * layerScaleX);
+                const layerHeight = Math.ceil(Math.abs(layerBounds[3] - layerBounds[1]) * layerScaleY);
+
+                if (filterCache && !updated) {
+
+                    // キャッシュがあって、変更がなければキャッシュを使用
+                    renderQueue.push27(1,
+                        layerWidth, layerHeight,
+                        1, 1, display_object_container.instanceId, filterKey,
+                        bounds[0], bounds[1], bounds[2], bounds[3],
+                        tMatrix[0], tMatrix[1], tMatrix[2], tMatrix[3], layerBounds[0], layerBounds[1],
+                        layerScaleX, layerScaleY,
+                        tColorTransform[0], tColorTransform[1], tColorTransform[2], tColorTransform[3],
+                        tColorTransform[4], tColorTransform[5], tColorTransform[6], tColorTransform[7]
+                    );
+
+                    $poolBoundsArray(layerBounds);
+                    $poolBoundsArray(bounds);
+
+                    if (tColorTransform !== color_transform) {
+                        ColorTransform.release(tColorTransform);
+                    }
+                    if (tMatrix !== matrix) {
+                        Matrix.release(tMatrix);
+                    }
+                    return ;
+                }
+
+                // filterCache && updated の場合は MISS パスへフォールスルー。
+                // Main は直後の set("filterKey", ...) で上書きされ、Worker 側は
+                // ContextContainerEndLayerUseCase 内で旧 fTexture を解放してから
+                // 新しいテクスチャを保存するため、ここでの removeById/$removeIds.push は
+                // 不要。push してしまうと、Worker が同フレームで作成した新キャッシュを
+                // 次フレーム冒頭で wipe してしまい、その次の HIT で無描画になる。
+
+                renderQueue.push28(
+                    1,
+                    layerWidth, layerHeight,
+                    1, 0, display_object_container.instanceId, filterKey,
+                    bounds[0], bounds[1], bounds[2], bounds[3],
+                    tMatrix[0], tMatrix[1], tMatrix[2], tMatrix[3], layerBounds[0], layerBounds[1],
+                    layerScaleX, layerScaleY,
+                    tColorTransform[0], tColorTransform[1], tColorTransform[2], tColorTransform[3],
+                    tColorTransform[4], tColorTransform[5], tColorTransform[6], tColorTransform[7],
+                    paramsLength
+                );
+                $pushFilterBuffers(filters);
+
+                // 子に渡すtMatrixは layerScale 倍で scale して、layer 内の
+                // 拡張座標系で描画させる。layer自体は compose時に 1/layerScaleで
+                // 縮小合成され最終的に元サイズで表示される。
+                const fa0 = tMatrix[0] * layerScaleX;
+                const fa1 = tMatrix[1] * layerScaleX;
+                const fa2 = tMatrix[2] * layerScaleY;
+                const fa3 = tMatrix[3] * layerScaleY;
+                const faTx = (tMatrix[4] - layerBounds[0]) * layerScaleX;
+                const faTy = (tMatrix[5] - layerBounds[1]) * layerScaleY;
+
+                if (tMatrix !== matrix) {
+                    Matrix.release(tMatrix);
+                }
+                tMatrix = $getFloat32Array6(fa0, fa1, fa2, fa3, faTx, faTy);
+
+                if (tColorTransform !== color_transform) {
+                    ColorTransform.release(tColorTransform);
+                }
+
+                tColorTransform = $getFloat32Array8(1, 1, 1, 1, 0, 0, 0, 0);
+
+                $poolBoundsArray(layerBounds);
+
+                $cacheStore.set(
+                    idString,
+                    "filterKey", filterKey
+                );
+
+            } else {
+                if (blendMode === "normal") {
+                    renderQueue.push1(0);
+                } else {
+
+                    // ブレンドモードのみのLayerモード
+                    const layerBounds = displayObjectContainerCalcBoundsMatrixUseCase(
+                        display_object_container,
+                        matrix
+                    );
+
+                    const layerXMin = layerBounds[0];
+                    const layerYMin = layerBounds[1];
+
+                    renderQueue.push18(
+                        1,
+                        Math.ceil(Math.abs(layerBounds[2] - layerXMin)),
+                        Math.ceil(Math.abs(layerBounds[3] - layerYMin)),
+                        0, // not use filter,
+                        tMatrix[0], tMatrix[1], tMatrix[2], tMatrix[3], layerXMin, layerYMin,
+                        tColorTransform[0], tColorTransform[1], tColorTransform[2], tColorTransform[3],
+                        tColorTransform[4], tColorTransform[5], tColorTransform[6], tColorTransform[7]
+                    );
+
+                    const a0 = tMatrix[0];
+                    const a1 = tMatrix[1];
+                    const a2 = tMatrix[2];
+                    const a3 = tMatrix[3];
+                    const adjustedTx1 = tMatrix[4] - layerXMin;
+                    const adjustedTy1 = tMatrix[5] - layerYMin;
+
+                    if (tMatrix !== matrix) {
+                        Matrix.release(tMatrix);
+                    }
+                    tMatrix = $getFloat32Array6(a0, a1, a2, a3, adjustedTx1, adjustedTy1);
+                    $poolBoundsArray(layerBounds);
+
+                    if (tColorTransform !== color_transform) {
+                        ColorTransform.release(tColorTransform);
+                    }
+                    tColorTransform = $getFloat32Array8(1, 1, 1, 1, 0, 0, 0, 0);
+                }
+            }
+
+            $poolBoundsArray(bounds);
+        } else {
+            if (blendMode === "normal") {
+                renderQueue.push1(0);
+            } else {
+                const layerBounds = displayObjectContainerCalcBoundsMatrixUseCase(
+                    display_object_container,
+                    matrix
+                );
+
+                const layerXMin2 = layerBounds[0];
+                const layerYMin2 = layerBounds[1];
+
+                renderQueue.push18(
+                    1,
+                    Math.ceil(Math.abs(layerBounds[2] - layerXMin2)),
+                    Math.ceil(Math.abs(layerBounds[3] - layerYMin2)),
+                    0, // not use filter,
+                    tMatrix[0], tMatrix[1], tMatrix[2], tMatrix[3], layerXMin2, layerYMin2,
+                    tColorTransform[0], tColorTransform[1], tColorTransform[2], tColorTransform[3],
+                    tColorTransform[4], tColorTransform[5], tColorTransform[6], tColorTransform[7]
+                );
+
+                const b0 = tMatrix[0];
+                const b1 = tMatrix[1];
+                const b2 = tMatrix[2];
+                const b3 = tMatrix[3];
+                const adjustedTx2 = tMatrix[4] - layerXMin2;
+                const adjustedTy2 = tMatrix[5] - layerYMin2;
+
+                if (tMatrix !== matrix) {
+                    Matrix.release(tMatrix);
+                }
+                tMatrix = $getFloat32Array6(b0, b1, b2, b3, adjustedTx2, adjustedTy2);
+                $poolBoundsArray(layerBounds);
+
+                if (tColorTransform !== color_transform) {
+                    ColorTransform.release(tColorTransform);
+                }
+                tColorTransform = $getFloat32Array8(1, 1, 1, 1, 0, 0, 0, 0);
+            }
+        }
+
+    } // end cacheAsBitmap else
+
+    // mask
+    const maskDisplayObject = display_object_container.mask;
+    if (maskDisplayObject) {
+
+        const bounds = displayObjectIsMaskReflectedInDisplayUseCase(
+            maskDisplayObject,
+            tMatrix,
+            renderer_width,
+            renderer_height
+        );
+
+        if (!bounds) {
+            renderQueue.push1(0);
+        } else {
+
+            // マスクの描画範囲
+            renderQueue.push5(1, bounds[0], bounds[1], bounds[2], bounds[3]);
+
+            switch (true) {
+
+                case maskDisplayObject.isContainerEnabled: // 0x00
+                    displayObjectContainerGenerateClipQueueUseCase(
+                        maskDisplayObject as DisplayObjectContainer,
+                        tMatrix
+                    );
+                    break;
+
+                case maskDisplayObject.isShape: // 0x01
+                    shapeGenerateClipQueueUseCase(
+                        maskDisplayObject as Shape,
+                        tMatrix
+                    );
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        maskDisplayObject.changed = false;
+    } else {
+        renderQueue.push1(0);
+    }
+
+    // children
+    renderQueue.push1(children.length);
+
+    let clipDepth = 0;
+    let canRenderMask = true;
+    for (let idx = 0; idx < children.length; ++idx) {
+
+        const child = children[idx] as DisplayObject;
+
+        renderQueue.push2(child.placeId, child.clipDepth);
+
+        // マスクオブジェクトは描画しない（hidden=0）
+        if (child.isMask) {
+            renderQueue.push1(0);
+            child.changed = false;
+            continue;
+        }
+
+        if (clipDepth && child.placeId > clipDepth) {
+            clipDepth = 0;
+            canRenderMask = true;
+        }
+
+        if (!canRenderMask) {
+            renderQueue.push1(0);
+            child.changed = false;
+            continue;
+        }
+
+        if (child.clipDepth) {
+            clipDepth = child.clipDepth;
+
+            // マスクの描画開始判定
+            const bounds = displayObjectIsMaskReflectedInDisplayUseCase(
+                child,
+                tMatrix,
+                renderer_width,
+                renderer_height
+            );
+
+            canRenderMask = bounds ? true : false;
+            renderQueue.push1(+canRenderMask);
+
+            if (!bounds) {
+                child.changed = false;
+                continue;
+            }
+
+            renderQueue.push4(bounds[0], bounds[1], bounds[2], bounds[3]);
+            switch (true) {
+
+                case child.isContainerEnabled: // 0x00
+                    displayObjectContainerGenerateClipQueueUseCase(
+                        child as DisplayObjectContainer,
+                        tMatrix
+                    );
+                    break;
+
+                case child.isShape: // 0x01
+                    shapeGenerateClipQueueUseCase(
+                        child as Shape,
+                        tMatrix
+                    );
+                    break;
+
+                default:
+                    break;
+            }
+
+            child.changed = false;
+            continue;
+        }
+
+        // 自身が filter を発動した、または既に filter layer 内にいる場合は、
+        // 子コンテナに伝播して cacheAsBitmap 合成scaleの二重適用を防ぐ
+        const childInFilterLayer = in_filter_layer
+            || Boolean(display_object_container.filters && display_object_container.filters.length);
+
+        switch (true) {
+
+            case child.isContainerEnabled: // 0x00
+                execute(
+                    child as DisplayObjectContainer,
+                    image_bitmaps,
+                    tMatrix,
+                    tColorTransform,
+                    renderer_width,
+                    renderer_height,
+                    childInFilterLayer
+                );
+                break;
+
+            case child.isShape: // 0x01
+                shapeGenerateRenderQueueUseCase(
+                    child as Shape,
+                    tMatrix,
+                    tColorTransform,
+                    renderer_width,
+                    renderer_height
+                );
+                break;
+
+            case child.isText: // 0x02
+                textFieldGenerateRenderQueueUseCase(
+                    child as TextField,
+                    tMatrix,
+                    tColorTransform,
+                    renderer_width,
+                    renderer_height
+                );
+                break;
+
+            case child.isVideo: // 0x03
+                videoGenerateRenderQueueUseCase(
+                    child as Video,
+                    image_bitmaps,
+                    tMatrix,
+                    tColorTransform,
+                    renderer_width,
+                    renderer_height
+                );
+                break;
+
+            default:
+                break;
+
+        }
+
+        child.changed = false;
+    }
+
+    if (tColorTransform !== color_transform) {
+        ColorTransform.release(tColorTransform);
+    }
+    if (tMatrix !== matrix) {
+        Matrix.release(tMatrix);
+    }
+};

@@ -1,0 +1,410 @@
+import type { Shape } from "../../Shape";
+import type { Rectangle } from"@next2d/geom";
+import type { MovieClip } from "../../MovieClip";
+import { renderQueue } from"@next2d/render-queue";
+import { execute as displayObjectGetRawColorTransformUseCase } from "../../DisplayObject/usecase/DisplayObjectGetRawColorTransformUseCase";
+import { execute as displayObjectGetRawMatrixUseCase } from "../../DisplayObject/usecase/DisplayObjectGetRawMatrixUseCase";
+import { execute as displayObjectCalcBoundsMatrixService } from "../../DisplayObject/service/DisplayObjectCalcBoundsMatrixService";
+import { execute as displayObjectGenerateHashService } from "../../DisplayObject/service/DisplayObjectGenerateHashService";
+import { execute as displayObjectBlendToNumberService } from "../../DisplayObject/service/DisplayObjectBlendToNumberService";
+import { stage } from "../../Stage";
+import { $cacheStore } from "@next2d/cache";
+import {
+    $clamp,
+    $RENDERER_SHAPE_TYPE,
+    $getArray,
+    $poolArray,
+    $poolBoundsArray,
+    $MATRIX_ARRAY_IDENTITY,
+    $getFloat32Array6,
+    $poolFloat32Array6,
+    $getBoundsArray,
+    $prepareFilterBuffers,
+    $pushFilterBuffers,
+    $getFilterUpdated
+} from "../../DisplayObjectUtil";
+import {
+    ColorTransform,
+    Matrix
+} from "@next2d/geom";
+
+/**
+ * @description renderer workerに渡すShapeの描画データを生成
+ *              Generate drawing data of Shape to pass to renderer
+ *
+ * @param  {Shape} shape
+ * @param  {Float32Array} matrix
+ * @param  {Float32Array} color_transform
+ * @param  {number} renderer_width
+ * @param  {number} renderer_height
+ * @return {void}
+ * @method
+ * @protected
+ */
+export const execute = (
+    shape: Shape,
+    matrix: Float32Array,
+    color_transform: Float32Array,
+    renderer_width: number,
+    renderer_height: number
+): void => {
+
+    if (!shape.visible) {
+        renderQueue.push1(0);
+        return ;
+    }
+
+    const graphics   = shape.graphics;
+    const isDrawable = graphics.isDrawable;
+    if (!isDrawable && !shape.isBitmap) {
+        renderQueue.push1(0);
+        return ;
+    }
+
+    // transformed ColorTransform(tColorTransform)
+    const rawColor = displayObjectGetRawColorTransformUseCase(shape);
+    const tColorTransform = rawColor
+        && (rawColor[0] !== 1 || rawColor[1] !== 1
+        || rawColor[2] !== 1 || rawColor[3] !== 1
+        || rawColor[4] !== 0 || rawColor[5] !== 0
+        || rawColor[6] !== 0 || rawColor[7] !== 0)
+        ? ColorTransform.multiply(color_transform, rawColor)
+        : color_transform;
+
+    const alpha = $clamp(tColorTransform[3] + tColorTransform[7] / 255, 0, 1, 0);
+    if (!alpha) {
+        if (tColorTransform !== color_transform) {
+            ColorTransform.release(tColorTransform);
+        }
+        renderQueue.push1(0);
+        return ;
+    }
+
+    // transformed matrix(tMatrix)
+    const rawMatrix = displayObjectGetRawMatrixUseCase(shape);
+    const tMatrix = rawMatrix
+        && (rawMatrix[0] !== 1 || rawMatrix[1] !== 0
+        || rawMatrix[2] !== 0 || rawMatrix[3] !== 1
+        || rawMatrix[4] !== 0 || rawMatrix[5] !== 0)
+        ? Matrix.multiply(matrix, rawMatrix)
+        : matrix;
+
+    const bounds = displayObjectCalcBoundsMatrixService(
+        graphics.xMin, graphics.yMin,
+        graphics.xMax, graphics.yMax,
+        tMatrix
+    );
+
+    let xMin = bounds[0];
+    let yMin = bounds[1];
+    let xMax = bounds[2];
+    let yMax = bounds[3];
+    $poolBoundsArray(bounds);
+
+    const width  = Math.ceil(Math.abs(xMax - xMin));
+    const height = Math.ceil(Math.abs(yMax - yMin));
+    switch (true) {
+
+        case width === 0:
+        case height === 0:
+        case width === -Infinity:
+        case height === -Infinity:
+        case width === Infinity:
+        case height === Infinity:
+            if (tColorTransform !== color_transform) {
+                ColorTransform.release(tColorTransform);
+            }
+            if (tMatrix !== matrix) {
+                Matrix.release(tMatrix);
+            }
+            renderQueue.push1(0);
+            return;
+
+        default:
+            break;
+
+    }
+
+    if (0 > xMin + width
+        || 0 > yMin + height
+        || xMin > renderer_width
+        || yMin > renderer_height
+    ) {
+        if (tColorTransform !== color_transform) {
+            ColorTransform.release(tColorTransform);
+        }
+        if (tMatrix !== matrix) {
+            Matrix.release(tMatrix);
+        }
+        renderQueue.push1(0);
+        return;
+    }
+
+    const isGridEnabled: boolean = rawMatrix && shape.scale9Grid
+        ? Math.abs(rawMatrix[1]) < 0.001 && Math.abs(rawMatrix[2]) < 0.0001
+        : false;
+
+    if (!shape.uniqueKey) {
+        if (shape.characterId && shape.loaderInfo) {
+            const values = $getArray(
+                shape.loaderInfo.id,
+                shape.characterId
+            );
+            shape.uniqueKey = `${displayObjectGenerateHashService(new Float32Array(values))}`;
+            $poolArray(values);
+        } else {
+            shape.uniqueKey = shape.isBitmap
+                ? `${displayObjectGenerateHashService(new Float32Array((shape.$bitmapBuffer as Uint8Array).buffer))}`
+                : `${displayObjectGenerateHashService(graphics.buffer)}`;
+        }
+    }
+
+    // cacheAsBitmap: 指定Matrix × 自身のスケール × stageのrendererScaleでキャッシュ品質を決定
+    // 1.0基準: Matrix(1,0,0,1)はdisplayObjectの等倍スケールを意味する
+    const cacheMatrix = shape.cacheAsBitmap;
+    let renderXScale: number;
+    let renderYScale: number;
+    let cacheScaleX = 1;
+    let cacheScaleY = 1;
+    if (cacheMatrix) {
+        const m = cacheMatrix.rawData;
+        cacheScaleX = Math.sqrt(m[0] * m[0] + m[1] * m[1]);
+        cacheScaleY = Math.sqrt(m[2] * m[2] + m[3] * m[3]);
+
+        const ownScaleX = rawMatrix
+            ? Math.sqrt(rawMatrix[0] * rawMatrix[0] + rawMatrix[1] * rawMatrix[1])
+            : 1;
+        const ownScaleY = rawMatrix
+            ? Math.sqrt(rawMatrix[2] * rawMatrix[2] + rawMatrix[3] * rawMatrix[3])
+            : 1;
+
+        renderXScale = cacheScaleX * ownScaleX * stage.rendererScale;
+        renderYScale = cacheScaleY * ownScaleY * stage.rendererScale;
+
+        // cacheMatrix倍率をスクリーン座標のboundsにも反映
+        if (cacheScaleX !== 1 || cacheScaleY !== 1) {
+            const modMatrix = $getFloat32Array6(
+                tMatrix[0] * cacheScaleX, tMatrix[1] * cacheScaleX,
+                tMatrix[2] * cacheScaleY, tMatrix[3] * cacheScaleY,
+                tMatrix[4], tMatrix[5]
+            );
+            const modBounds = displayObjectCalcBoundsMatrixService(
+                graphics.xMin, graphics.yMin,
+                graphics.xMax, graphics.yMax,
+                modMatrix
+            );
+            xMin = modBounds[0];
+            yMin = modBounds[1];
+            xMax = modBounds[2];
+            yMax = modBounds[3];
+            $poolBoundsArray(modBounds);
+            $poolFloat32Array6(modMatrix);
+        }
+    } else {
+        renderXScale = Math.sqrt(
+            tMatrix[0] * tMatrix[0]
+            + tMatrix[1] * tMatrix[1]
+        );
+        renderYScale = Math.sqrt(
+            tMatrix[2] * tMatrix[2]
+            + tMatrix[3] * tMatrix[3]
+        );
+    }
+
+    const xScaleRounded = Math.round(renderXScale * 100) / 100;
+    const yScaleRounded = Math.round(renderYScale * 100) / 100;
+
+    if (cacheMatrix && shape.cacheKey
+        && shape.cacheParams[0] === xScaleRounded
+        && shape.cacheParams[1] === yScaleRounded
+    ) {
+        // cacheAsBitmap: スケール未変更のためキャッシュキーを維持
+    } else if (!shape.isBitmap
+        && !shape.cacheKey
+        || shape.cacheParams[0] !== xScaleRounded
+        || shape.cacheParams[1] !== yScaleRounded
+        || shape.cacheParams[2] !== tColorTransform[7]
+    ) {
+        shape.cacheKey = $cacheStore.generateKeys(xScaleRounded, yScaleRounded, tColorTransform[7]);
+        shape.cacheParams[0] = xScaleRounded;
+        shape.cacheParams[1] = yScaleRounded;
+        shape.cacheParams[2] = tColorTransform[7];
+    }
+
+    const cacheKey = shape.isBitmap
+        ? 0
+        : shape.cacheKey;
+
+    // rennder on
+    renderQueue.pushShapeBuffer(
+        1, $RENDERER_SHAPE_TYPE,
+        tMatrix[0] * cacheScaleX, tMatrix[1] * cacheScaleX,
+        tMatrix[2] * cacheScaleY, tMatrix[3] * cacheScaleY,
+        tMatrix[4], tMatrix[5],
+        tColorTransform[0], tColorTransform[1], tColorTransform[2], tColorTransform[3],
+        tColorTransform[4], tColorTransform[5], tColorTransform[6], tColorTransform[7],
+        xMin, yMin, xMax, yMax,
+        graphics.xMin, graphics.yMin,
+        graphics.xMax, graphics.yMax,
+        +isGridEnabled, +isDrawable, shape.isBitmap ? 1 : cacheMatrix ? 2 : 0,
+        +shape.uniqueKey, cacheKey,
+        renderXScale, renderYScale,
+        shape.instanceId // フィルターキャッシュ用のユニークキー
+    );
+
+    if (shape.$cache && !shape.$cache.has(shape.uniqueKey)) {
+        shape.$cache = null;
+    }
+
+    const cache = shape.$cache
+        ? shape.$cache.get(`${cacheKey}`)
+        : $cacheStore.get(shape.uniqueKey, `${cacheKey}`);
+
+    if (!cache) {
+
+        renderQueue.push1(0);
+
+        if (isGridEnabled) {
+
+            const scale = stage.rendererScale;
+
+            const stageMatrix = $getFloat32Array6(
+                scale, 0, 0, scale, 0, 0
+            );
+
+            const pMatrix = Matrix.multiply(
+                stageMatrix,
+                rawMatrix ? rawMatrix : $MATRIX_ARRAY_IDENTITY
+            );
+            $poolFloat32Array6(stageMatrix);
+
+            const rawData = (shape.parent as MovieClip).concatenatedMatrix.rawData;
+            const aMatrix = $getFloat32Array6(
+                rawData[0], rawData[1], rawData[2], rawData[3],
+                rawData[4] * scale - xMin,
+                rawData[5] * scale - yMin
+            );
+            Matrix.release(rawData);
+
+            const apMatrix = Matrix.multiply(aMatrix, pMatrix);
+            const aOffsetX = apMatrix[4] - (tMatrix[4] - xMin);
+            const aOffsetY = apMatrix[5] - (tMatrix[5] - yMin);
+            $poolFloat32Array6(apMatrix);
+
+            const parentBounds = displayObjectCalcBoundsMatrixService(
+                graphics.xMin, graphics.yMin,
+                graphics.xMax, graphics.yMax,
+                pMatrix
+            );
+
+            const parentXMin = parentBounds[0];
+            const parentYMin = parentBounds[1];
+            const parentXMax = parentBounds[2];
+            const parentYMax = parentBounds[3];
+            $poolBoundsArray(parentBounds);
+
+            const parentWidth  = Math.ceil(Math.abs(parentXMax - parentXMin));
+            const parentHeight = Math.ceil(Math.abs(parentYMax - parentYMin));
+
+            const scale9Grid = shape.scale9Grid as Rectangle;
+
+            const actualWidth  = Math.abs(graphics.xMax - graphics.xMin);
+            const actualHeight = Math.abs(graphics.yMax - graphics.yMin);
+
+            // 等倍サイズでの正規化
+            const minXST = scale9Grid.width  > 0 ? (scale9Grid.x - graphics.xMin) / actualWidth  : 0.00001;
+            const minYST = scale9Grid.height > 0 ? (scale9Grid.y - graphics.yMin) / actualHeight : 0.00001;
+            const maxXST = scale9Grid.width  > 0 ? (scale9Grid.x + scale9Grid.width  - graphics.xMin) / actualWidth  : 0.99999;
+            const maxYST = scale9Grid.height > 0 ? (scale9Grid.y + scale9Grid.height - graphics.yMin) / actualHeight : 0.99999;
+
+            // 現在サイズでの正規化
+            const sameWidth  = Math.ceil(actualWidth  * scale);
+            const sameHeight = Math.ceil(actualHeight * scale);
+            let minXPQ = sameWidth  * minXST / parentWidth;
+            let minYPQ = sameHeight * minYST / parentHeight;
+            let maxXPQ = (parentWidth  - sameWidth  * (1 - maxXST)) / parentWidth;
+            let maxYPQ = (parentHeight - sameHeight * (1 - maxYST)) / parentHeight;
+
+            if (minXPQ >= maxXPQ) {
+                const m = minXST / (minXST + (1 - maxXST));
+                minXPQ = Math.max(m - 0.00001, 0);
+                maxXPQ = Math.min(m + 0.00001, 1);
+            }
+
+            if (minYPQ >= maxYPQ) {
+                const m = minYST / (minYST + (1 - maxYST));
+                minYPQ = Math.max(m - 0.00001, 0);
+                maxYPQ = Math.min(m + 0.00001, 1);
+            }
+
+            renderQueue.push24(
+                pMatrix[0], pMatrix[1], pMatrix[2], pMatrix[3], pMatrix[4], pMatrix[5],
+                aMatrix[0], aMatrix[1], aMatrix[2], aMatrix[3], aMatrix[4] - aOffsetX, aMatrix[5] - aOffsetY,
+                parentXMin, parentYMin, parentWidth, parentHeight,
+                minXST, minYST, minXPQ, minYPQ,
+                maxXST, maxYST, maxXPQ, maxYPQ
+            );
+
+            $poolFloat32Array6(aMatrix);
+            $poolFloat32Array6(pMatrix);
+        }
+
+        if (isDrawable || isGridEnabled) {
+            const buffer = graphics.buffer;
+            renderQueue.push1(buffer.length);
+            renderQueue.set(buffer);
+        } else {
+            // ビットマップのピクセルは1byte=1floatに展開せず4バイト/floatでパックし、
+            // 転送量とキュー常駐メモリを1/4にする(読み出し側はShapeRenderUseCase)
+            const buffer = shape.$bitmapBuffer as Uint8Array;
+            renderQueue.push1(buffer.length);
+            renderQueue.setUint8(buffer);
+        }
+
+        $cacheStore.set(shape.uniqueKey, `${cacheKey}`, true);
+
+        if (shape.$cache) {
+            shape.$cache = null;
+        }
+
+    } else {
+        if (!shape.$cache) {
+            shape.$cache = $cacheStore.getById(shape.uniqueKey);
+            shape.$cache.set(shape.uniqueKey, true);
+        }
+        renderQueue.push1(1);
+    }
+
+    renderQueue.push1(
+        displayObjectBlendToNumberService(shape.blendMode)
+    );
+
+    const filters = shape.filters;
+    if (filters) {
+
+        const bounds = $getBoundsArray(0, 0, 0, 0);
+        const paramsLength = $prepareFilterBuffers(filters, bounds);
+
+        if (paramsLength > 0) {
+            renderQueue.push7(
+                1, +$getFilterUpdated(),
+                bounds[0], bounds[1], bounds[2], bounds[3],
+                paramsLength
+            );
+            $pushFilterBuffers(filters);
+        } else {
+            renderQueue.push1(0);
+        }
+
+        $poolBoundsArray(bounds);
+    } else {
+        renderQueue.push1(0);
+    }
+
+    if (tColorTransform !== color_transform) {
+        ColorTransform.release(tColorTransform);
+    }
+    if (tMatrix !== matrix) {
+        Matrix.release(tMatrix);
+    }
+};
