@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/oauth/layout,_N_T_/oauth/authorize/layout,_N_T_/oauth/authorize/page,_N_T_/oauth/authorize"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/oauth/authorize/__PAGE__",
+    "/oauth/authorize",
+    "/oauth",
+    "/_index",
+    "/_head"
+  ]
+}
