@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Race with Death — Free Philippine-Inspired Racing Game</title>
+<meta name="description" content="Play Race with Death, a Philippine-inspired road-survival game. Choose Manila, Baguio, or Palawan, avoid swerving traffic violators and road hazards, and survive as long as possible.">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+<meta name="author" content="Joshua Dela Cruz"><meta name="theme-color" content="#071126"><meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none'; worker-src 'self' blob:">
+<link rel="canonical" href="https://roadrush.joshuadelacruz.solutions/">
+<link rel="icon" href="./favicon.svg" type="image/svg+xml"><link rel="manifest" href="./site.webmanifest">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Race with Death"><meta property="og:title" content="Race with Death — Infinite Philippine-Inspired Racing"><meta property="og:description" content="Choose a Philippine-inspired route, avoid swerving traffic violators and road hazards, and survive the run."><meta property="og:url" content="https://roadrush.joshuadelacruz.solutions/"><meta property="og:image" content="https://roadrush.joshuadelacruz.solutions/social-preview.svg"><meta property="og:image:alt" content="Race with Death top-down racing game on a Philippine-inspired highway">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Race with Death"><meta name="twitter:description" content="A Philippine-inspired road-survival game with unpredictable traffic violators."><meta name="twitter:image" content="https://roadrush.joshuadelacruz.solutions/social-preview.svg">
+  <script type="module" crossorigin src="./assets/index-Bkvs4dhk.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-D8b-QmG5.css">
+</head>
+<body><main>
+  <section id="menu" class="panel"><a class="portfolio-return-link" href="https://joshuadelacruz.solutions/">← Main Portfolio</a><p class="eyebrow">AN ORIGINAL ROAD-SURVIVAL GAME</p><h1>Race with<br><span>Death</span></h1><p>Choose a route, avoid swerving traffic violators and road hazards, and survive as long as possible.</p><div class="maps" role="group" aria-label="Choose a map">
+    <button class="map active" data-map="manila"><b>Metro Manila Night</b><small>Neon city · four lanes</small></button>
+    <button class="map" data-map="baguio"><b>Baguio Mountain Road</b><small>Pine ridge · three lanes</small></button>
+    <button class="map" data-map="palawan"><b>Palawan Coastal Highway</b><small>Ocean sunset · three lanes</small></button>
+  </div><button id="start" class="primary">Start engine</button><p class="rules">← → or A/D to steer · Touch controls available · Endless road</p>
+  <section><h2>Local leaderboard</h2><ol id="leaderboard"></ol></section></section>
+  <section id="game-shell" hidden><div id="hud"><span><small>DISTANCE</small><b id="distance">0 m</b></span><span><small>SCORE</small><b id="score">0</b></span><span><small>SPEED</small><b id="speed">20.0</b></span><span><small>LIVES</small><b id="lives" aria-label="3 lives remaining">🚗 🚗 🚗</b></span><button id="pause" aria-label="Pause game">Ⅱ</button></div><div class="playfield"><div id="game"></div><div class="touch" aria-label="Touch steering controls"><button id="left" aria-label="Steer left">←</button><button id="right" aria-label="Steer right">→</button></div></div></section>
+  <dialog id="game-over"><p class="eyebrow">RUN COMPLETE</p><h2>Road hazard!</h2><p>You travelled <b id="final-distance"></b> and scored <b id="final-score"></b>.</p><button id="again" class="primary">Race again</button><button id="change-map">Change map</button></dialog>
+  <dialog id="pause-menu"><p class="eyebrow">GAME PAUSED</p><h2>Take a breather.</h2><button id="resume" class="primary">Resume</button><button id="exit-game" class="map">Exit to map selection</button></dialog>
+</main></body></html>
