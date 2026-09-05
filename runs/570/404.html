@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#070b19" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%232ce6ff' d='M32 3 61 32 32 61 3 32z'/%3E%3Cpath fill='%23ff577f' d='M32 15 49 32 32 49 15 32z'/%3E%3C/svg%3E" />
+    <title>方块节拍：双界回响</title>
+    <script type="module" crossorigin src="./assets/index-ST7iYap3.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-Cx9WczRM.css">
+  </head>
+  <body>
+    <main id="app">
+      <div id="game-canvas" aria-label="节奏游戏画面"></div>
+
+      <section id="hud" class="hud is-hidden" aria-live="polite">
+        <div class="fighter-label fighter-label--left">
+          <span class="fighter-label__eyebrow">BLOCK SIDE</span>
+          <strong>方块硬汉</strong>
+        </div>
+        <div class="health" aria-label="对战生命值">
+          <div class="health__track"><div id="health-fill" class="health__fill"></div></div>
+          <div class="health__icons"><span>◆</span><span>●</span></div>
+        </div>
+        <div class="fighter-label fighter-label--right">
+          <span class="fighter-label__eyebrow">TOY SIDE</span>
+          <strong>萌趣巨匠</strong>
+        </div>
+        <div class="stats">
+          <span id="timer">02:12</span>
+          <span id="score">000000</span>
+          <span id="accuracy">100.00%</span>
+        </div>
+        <div id="autoplay-badge" class="autoplay-badge is-hidden" aria-label="全自动演奏中">
+          <span></span>AUTO · 全自动
+        </div>
+        <button id="pause-button" class="icon-button" type="button" aria-label="暂停">Ⅱ</button>
+      </section>
+
+      <nav id="touch-controls" class="touch-controls is-hidden" aria-label="触屏方向键">
+        <button type="button" data-lane="0" aria-label="左">←</button>
+        <button type="button" data-lane="1" aria-label="下">↓</button>
+        <button type="button" data-lane="2" aria-label="右">→</button>
+      </nav>
+
+      <section id="start-screen" class="overlay overlay--start" data-side="block">
+        <div class="start-card">
+          <p class="kicker">AI RHYTHM BATTLE · 97 BPM</p>
+          <h1>方块节拍<br /><span>双界回响</span></h1>
+          <p class="intro">跟随经典 AI 对唱，在三轨谱面中守住你的世界。短键点击，带光轨的长键持续按住到尾端；使用 <kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 或 <kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd>。</p>
+
+          <fieldset class="choice-group">
+            <legend>选择玩家阵营</legend>
+            <div class="segmented" id="side-choice">
+              <button class="is-selected" type="button" data-side="block">方块硬汉</button>
+              <button type="button" data-side="toy">萌趣巨匠</button>
+            </div>
+          </fieldset>
+
+          <div class="choice-grid">
+            <fieldset class="choice-group">
+              <legend>谱面密度</legend>
+              <div class="segmented" id="difficulty-choice">
+                <button class="is-selected" type="button" data-difficulty="normal">标准</button>
+                <button type="button" data-difficulty="hard">高能</button>
+              </div>
+            </fieldset>
+
+            <fieldset class="choice-group">
+              <legend>演奏方式</legend>
+              <div class="segmented" id="play-mode-choice">
+                <button class="is-selected" type="button" data-autoplay="false">手动</button>
+                <button type="button" data-autoplay="true">全自动</button>
+              </div>
+            </fieldset>
+          </div>
+
+          <button id="start-button" class="primary-button" type="button">
+            <span>开始对战</span><span>ENTER ↗</span>
+          </button>
+          <p class="asset-note">非官方同人原型 · 用户提供音乐与歌词 · 角色为本项目 AI 原创虚拟形象</p>
+        </div>
+      </section>
+
+      <section id="countdown" class="countdown is-hidden" aria-live="assertive">3</section>
+
+      <section id="pause-screen" class="overlay overlay--compact is-hidden">
+        <div class="modal-card">
+          <p class="kicker">BREAK TIME</p>
+          <h2>节拍暂停</h2>
+          <button id="resume-button" class="primary-button" type="button">继续</button>
+          <button id="quit-button" class="secondary-button" type="button">返回选曲</button>
+        </div>
+      </section>
+
+      <section id="result-screen" class="overlay overlay--compact is-hidden">
+        <div class="modal-card result-card">
+          <p class="kicker">BATTLE COMPLETE</p>
+          <h2 id="result-title">节拍守住了</h2>
+          <div class="result-grid">
+            <div><span>得分</span><strong id="result-score">0</strong></div>
+            <div><span>最高连击</span><strong id="result-combo">0</strong></div>
+            <div><span>准确率</span><strong id="result-accuracy">0%</strong></div>
+            <div><span>评价</span><strong id="result-grade">S</strong></div>
+          </div>
+          <button id="retry-button" class="primary-button" type="button">再来一局</button>
+          <button id="result-quit-button" class="secondary-button" type="button">返回选曲</button>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
