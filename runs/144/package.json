@@ -1,0 +1,63 @@
+{
+  "name": "website-version",
+  "version": "1.0.0",
+  "description": "",
+  "main": "sw.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "dev": "vite",
+    "dev:start": "node scripts/dev-server.js start",
+    "dev:stop": "node scripts/dev-server.js stop",
+    "dev:status": "node scripts/dev-server.js status",
+    "test": "node tests/robco-diagnostics.js",
+    "gate": "node scripts/gate.js",
+    "gate:fast": "node scripts/gate.js --fast",
+    "gate:docs": "node scripts/gate.js --docs",
+    "gate:iter": "node scripts/gate.js --iter",
+    "push": "node scripts/robco-push.js",
+    "prepare": "node scripts/install-hooks.js",
+    "rollback": "sh scripts/rollback.sh",
+    "a11y": "node tests/a11y-check.mjs",
+    "cloud-check": "node scripts/cloud-serialization-check.js",
+    "test:emulator": "firebase emulators:exec --project demo-robco-uos-test --only firestore,auth \"node scripts/emulator-round-trip-check.js\"",
+    "release-receipt": "node scripts/release-receipt.js",
+    "queue-view": "node scripts/queue-view.js",
+    "roadmap": "node scripts/roadmap-generate.js",
+    "roadmap:check": "node scripts/roadmap-generate.js --check",
+    "test-catalog": "node scripts/generate-test-catalog.js",
+    "test-catalog:check": "node scripts/generate-test-catalog.js --check",
+    "architecture-toc": "node scripts/generate-architecture-toc.js",
+    "architecture-toc:check": "node scripts/generate-architecture-toc.js --check",
+    "code-map": "node scripts/generate-code-map.js",
+    "code-map:check": "node scripts/generate-code-map.js --check",
+    "dev:autostart": "node scripts/dev-autostart.js install",
+    "dev:autostart:off": "node scripts/dev-autostart.js uninstall",
+    "dev:autostart:status": "node scripts/dev-autostart.js status"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zerckzzyHD/Robco-UOS.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/zerckzzyHD/Robco-UOS/issues"
+  },
+  "homepage": "https://github.com/zerckzzyHD/Robco-UOS#readme",
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.9.1",
+    "firebase": "12.18.0",
+    "firebase-tools": "^15.28.2",
+    "playwright": "^1.61.1",
+    "prettier": "^3.9.6",
+    "vite": "^8.2.2"
+  }
+}

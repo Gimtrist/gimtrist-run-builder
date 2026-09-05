@@ -1,0 +1,84 @@
+{
+  "name": "RobCo U.O.S.",
+  "short_name": "RobCo",
+  "description": "RobCo Industries Unified Operating System — wasteland survival TERMINAL.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#010a07",
+  "theme_color": "#010a07",
+  "categories": ["games", "utilities"],
+  "icons": [
+    {
+      "src": "assets/icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Comm-Link",
+      "short_name": "Comm-Link",
+      "description": "ACCESS COMM-LINK TELEMETRY",
+      "url": "./#go=comm",
+      "icons": [
+        {
+          "src": "assets/comm-link-icon.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "any maskable"
+        }
+      ]
+    },
+    {
+      "name": "Inventory",
+      "short_name": "Inventory",
+      "description": "ACCESS BACKPACK INVENTORY",
+      "url": "./#go=inv",
+      "icons": [
+        {
+          "src": "assets/inventory-icon.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "any maskable"
+        }
+      ]
+    },
+    {
+      "name": "Stats",
+      "short_name": "Stats",
+      "description": "ACCESS S.P.E.C.I.A.L. / BIO-METRICS",
+      "url": "./#go=stat",
+      "icons": [
+        {
+          "src": "assets/stats-icon.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "any maskable"
+        }
+      ]
+    },
+    {
+      "name": "New Campaign",
+      "short_name": "New Campaign",
+      "description": "PURGE TERMINAL — BEGIN NEW CAMPAIGN (CONFIRMATION REQUIRED)",
+      "url": "./#go=new",
+      "icons": [
+        {
+          "src": "assets/new-campaign-icon.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "any maskable"
+        }
+      ]
+    }
+  ]
+}

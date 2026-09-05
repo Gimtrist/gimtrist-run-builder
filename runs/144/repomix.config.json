@@ -1,0 +1,46 @@
+{
+  "output": {
+    "filePath": "repomix-output.md",
+    "style": "markdown",
+    "showLineNumbers": true,
+    "removeComments": false,
+    "topFilesLength": 20,
+    "compress": false,
+    "headerText": "RobCo U.O.S. — full-repo AI context pack. Private agent files (CLAUDE.md, rules/, .claude/) are excluded. Tests are audited by the single canonical Node runner (tests/robco-diagnostics.js); the former PowerShell mirror was deleted in 2.8.5 U-B3. Run: npx repomix"
+  },
+  "include": [
+    "js/**",
+    "css/**",
+    "*.html",
+    "sw.js",
+    "manifest.json",
+    "tests/**",
+    "*.md",
+    ".github/workflows/**",
+    "scripts/**",
+    "firestore.rules",
+    "firebase.json"
+  ],
+  "ignore": {
+    "useGitignore": true,
+    "useDefaultPatterns": true,
+    "customPatterns": [
+      "node_modules/**",
+      "package-lock.json",
+      "repomix-output.*",
+      "*.png",
+      "*.ico",
+      ".git/**",
+      "dist/**",
+      "_site/**",
+      "CLAUDE.md",
+      "rules/**",
+      ".claude/**",
+      "js/vendor/**",
+      "assets/ocr/**"
+    ]
+  },
+  "security": {
+    "enableSecurityCheck": true
+  }
+}
