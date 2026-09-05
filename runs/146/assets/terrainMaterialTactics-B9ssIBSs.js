@@ -1,1 +1,0 @@
-import{f as e}from"./index-DONDq6mY.js";function t(t,n,r){return n===e.ROCK&&t===`DRILLER`?`MISSILE`:n===e.SOFT&&t===`MISSILE`&&r(`DRILLER`)?`DRILLER`:t}export{t};
