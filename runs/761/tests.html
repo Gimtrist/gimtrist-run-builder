@@ -1,0 +1,3038 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>word ladder — tests</title>
+<style>
+  :root { --paper:#faf7f2; --ink:#1a1a1a; --muted:#6b6257; --accent:#a3341f; --good:#1f6b3a; --rule:#d9d2c7; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 28px 18px 64px;
+    background: var(--paper); color: var(--ink);
+    font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .wrap { max-width: 46rem; margin: 0 auto; }
+  h1 { font-size: 0.95rem; font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase; margin: 0; }
+  .sub { color: var(--muted); font-size: 0.85rem; margin: 6px 0 0; }
+  #score { font-size: 1.6rem; font-weight: 600; margin: 20px 0 4px; }
+  #score.pass { color: var(--good); }
+  #score.fail { color: var(--accent); }
+  #note { color: var(--muted); font-size: 0.85rem; margin: 0 0 18px; }
+  h2 { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase;
+       color: var(--muted); margin: 26px 0 8px; border-bottom: 1px solid var(--rule); padding-bottom: 6px; }
+  .row { display: flex; gap: 10px; padding: 3px 0; align-items: baseline; }
+  .tick { flex: 0 0 4.2rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; }
+  .PASS .tick { color: var(--good); }
+  .FAIL .tick { color: var(--accent); }
+  .SKIP .tick { color: var(--muted); }
+  .FAIL .name { color: var(--accent); }
+  .name { flex: 1 1 auto; }
+  .detail { color: var(--muted); font-size: 0.82rem; }
+  #stage { position: absolute; left: -10000px; top: 0; width: 390px; height: 844px; }
+  #stage iframe { width: 390px; height: 844px; border: 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>word ladder — tests</h1>
+  <p class="sub">Drives the real <code>index.html</code> in an iframe. Browsers sandbox
+     <code>file://</code> iframes, so serve the folder (<code>python3 -m http.server</code>)
+     and open this page over http.</p>
+  <p id="score">running…</p>
+  <p id="note"></p>
+  <div id="out"></div>
+</div>
+<div id="stage"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  var out = document.getElementById("out");
+  var pass = 0, fail = 0, skip = 0, failures = [];
+
+  function group(title) {
+    var h = document.createElement("h2");
+    h.textContent = title;
+    out.appendChild(h);
+  }
+  function row(state, name, detail) {
+    var d = document.createElement("div");
+    d.className = "row " + state;
+    var t = document.createElement("span"); t.className = "tick"; t.textContent = state;
+    var n = document.createElement("span"); n.className = "name"; n.textContent = name;
+    d.appendChild(t); d.appendChild(n);
+    if (detail) { var e = document.createElement("span"); e.className = "detail"; e.textContent = detail; d.appendChild(e); }
+    out.appendChild(d);
+  }
+  function ok(name, cond, detail) {
+    if (cond) { pass++; row("PASS", name, detail); }
+    else { fail++; failures.push(name + (detail ? " — " + detail : "")); row("FAIL", name, detail); }
+    return !!cond;
+  }
+  function skipped(name, why) { skip++; row("SKIP", name, why); }
+
+  /* ------------------------- iframe harness ------------------------- */
+
+  var KEY = "word-ladder.v1";
+  var stage = document.getElementById("stage");
+  var saved = null;
+  try { saved = localStorage.getItem(KEY); } catch (e) { saved = null; }
+
+  function seed(blob) {
+    try {
+      if (blob === null) localStorage.removeItem(KEY);
+      else localStorage.setItem(KEY, blob);
+    } catch (e) { /* ignore */ }
+  }
+  function stored() {
+    try { return localStorage.getItem(KEY); } catch (e) { return null; }
+  }
+
+  // Every row below states the storage it starts from, so the suite starts
+  // from none of it. Without this the score depended on whether the player had
+  // played first — which is exactly what the README tells them to do. finish()
+  // puts their own blob back.
+  seed(null);
+
+  // The date every read-only row replays. A ?d= that IS today is today's game,
+  // not a replay, so a fixed date would silently become writable on one day of
+  // the year and half this suite would be playing with the player's own streak.
+  // REPLAY is stepped off today the moment the engine can say what today is.
+  var REPLAY = "2026-08-10";
+
+  // The one string the fallback puts on screen, asserted whole rather than by
+  // its first three words: it used to name the wrong mechanism ("the clipboard
+  // isn't available here") and a prefix check could not tell that it had been
+  // corrected, or that it had been corrected back.
+  var FALLBACK_MSG = "copy this line — the browser refused the copy";
+
+  // Collects everything the page throws or logs as an error. Installed on the
+  // window, so it must be re-installed after any document.open() — that call
+  // wipes the window's listeners.
+  function watch(win) {
+    var errors = [];
+    win.addEventListener("error", function (ev) { errors.push("error: " + ev.message); });
+    win.addEventListener("unhandledrejection", function () { errors.push("unhandledrejection"); });
+    var ce = win.console.error;
+    win.console.error = function () { errors.push("console.error"); ce.apply(win.console, arguments); };
+    return errors;
+  }
+
+  function appOf(f, win, errors) {
+    return { frame: f, win: win, doc: win.document, errors: errors, WL: win.WL,
+             close: function () { if (f.parentNode) f.parentNode.removeChild(f); } };
+  }
+
+  function makeFrame(w, h) {
+    var f = document.createElement("iframe");
+    if (w) { f.style.width = w + "px"; f.style.height = h + "px"; }
+    stage.appendChild(f);
+    return f;
+  }
+
+  // The source of index.html, fetched once so a page can be booted into a
+  // window we already hold — see openApp's `early` mode.
+  var SRC = null;
+
+  // Writing the page into an about:blank frame is the only way to have the
+  // error capture in place BEFORE the page's own inline script runs: attaching
+  // it in the frame's load handler is already too late to see a load-time
+  // throw. The cost is that location.search is empty, so ?d= rows use the
+  // ordinary path.
+  function openWritten(w, h, src) {
+    return new Promise(function (resolve, reject) {
+      var f = makeFrame(w, h);
+      f.addEventListener("load", function onload() {
+        f.removeEventListener("load", onload);
+        var win = f.contentWindow, errors;
+        try {
+          win.document.open();
+          errors = watch(win);
+          win.document.write(src || SRC);
+          win.document.close();
+        } catch (e) { reject(new Error("sandboxed")); return; }
+        resolve(appOf(f, win, errors));
+      });
+      f.src = "about:blank";
+    });
+  }
+
+  // A page booted with its clock pinned to one UTC date. index.html reads
+  // `today` once, from `new Date()`, so "a tab left open across UTC midnight"
+  // and "a device whose clock ran ahead" are both just this page with a
+  // different Date under it. The shim is spliced in immediately before the
+  // page's own <script>, so the doctype and the head are untouched and the
+  // page never sees the real clock. The rows that use it assert WL.today first,
+  // because a shim that silently failed would leave them measuring an ordinary
+  // tab and passing for the wrong reason.
+  function openAt(dateStr, w, h) {
+    var tag = "<scr" + "ipt>";
+    var shim = tag + "(function(){var R=Date,T=R.parse(" +
+      JSON.stringify(dateStr + "T12:00:00Z") + ");" +
+      "function D(){var a=[].slice.call(arguments);" +
+      "return a.length?new (R.bind.apply(R,[null].concat(a))):new R(T);}" +
+      "D.prototype=R.prototype;D.now=function(){return T;};" +
+      "D.parse=R.parse;D.UTC=R.UTC;window.Date=D;}());</scr" + "ipt>";
+    return openWritten(w, h, SRC.replace(tag, shim + tag));
+  }
+
+  function openApp(query, w, h, early) {
+    if (early && !query && SRC) return openWritten(w, h);
+    return new Promise(function (resolve, reject) {
+      var f = makeFrame(w, h);
+      f.addEventListener("load", function () {
+        var win;
+        try { win = f.contentWindow; win.document; win.location.href; }
+        catch (e) { reject(new Error("sandboxed")); return; }
+        var errors;
+        try { errors = watch(win); } catch (e) { reject(new Error("sandboxed")); return; }
+        resolve(appOf(f, win, errors));
+      });
+      f.addEventListener("error", function () { reject(new Error("iframe failed to load")); });
+      f.src = "index.html" + (query || "");
+    });
+  }
+
+  // The control for the row above: a page that throws while loading must be
+  // seen to throw, or every "no errors" row in this suite is worth nothing.
+  function errorCaptureControl() {
+    return new Promise(function (resolve) {
+      var f = makeFrame(200, 100);
+      f.addEventListener("load", function onload() {
+        f.removeEventListener("load", onload);
+        var win = f.contentWindow;
+        win.document.open();
+        var errors = watch(win);
+        // The throw is deliberate; keep it out of the console so a reader of
+        // this page is not told the suite is broken by the row proving it is not.
+        win.addEventListener("error", function (ev) { ev.preventDefault(); });
+        win.document.write("<!doctype html><h1>control</h1><scr" + "ipt>throw new Error('deliberate');</scr" + "ipt>");
+        win.document.close();
+        if (f.parentNode) f.parentNode.removeChild(f);
+        resolve(errors);
+      });
+      f.src = "about:blank";
+    });
+  }
+
+  function $(app, id) { return app.doc.getElementById(id); }
+  function msgOf(app) { return $(app, "msg").textContent; }
+  // The rung's aria-label is the word plus, on a played rung, which letter
+  // changed. Rows that are asking about the ladder want the word; the rows
+  // asking about the label itself use chainLabels() and read it whole.
+  function chainLabels(app) {
+    var kids = $(app, "chain").children, a = [], i;
+    for (i = 0; i < kids.length; i++) a.push(kids[i].getAttribute("aria-label"));
+    return a;
+  }
+  function chainWords(app) {
+    return chainLabels(app).map(function (l) { return l.split(",")[0]; });
+  }
+  function type(app, text) {
+    var inp = $(app, "word");
+    inp.value = text;
+    inp.dispatchEvent(new app.win.Event("input", { bubbles: true }));
+  }
+  // A real Ctrl+V, not an assignment to .value: the clipboard text reaches the
+  // field through the UA's own insertion, which is where a maxlength on the
+  // field would cut it — assigning .value skips that rule and cannot see it.
+  function paste(app, text) {
+    var inp = $(app, "word");
+    inp.focus();
+    var dt = new app.win.DataTransfer();
+    dt.setData("text/plain", text);
+    var ev = new app.win.ClipboardEvent("paste", { bubbles: true, cancelable: true, clipboardData: dt });
+    inp.dispatchEvent(ev);
+    if (!ev.defaultPrevented) {
+      var a = inp.selectionStart, b = inp.selectionEnd, v = inp.value;
+      if (typeof a !== "number") { a = v.length; b = v.length; }
+      var room = inp.maxLength >= 0 ? inp.maxLength - (v.length - (b - a)) : text.length;
+      inp.value = v.slice(0, a) + text.slice(0, Math.max(0, room)) + v.slice(b);
+    }
+    inp.dispatchEvent(new app.win.InputEvent("input", { bubbles: true, inputType: "insertFromPaste" }));
+  }
+  // One keystroke at a time, the way a person types it.
+  function typeKeys(app, text) {
+    var inp = $(app, "word"), i;
+    inp.value = "";
+    inp.focus();
+    for (i = 0; i < text.length; i++) {
+      inp.value = inp.value + text.charAt(i);
+      inp.dispatchEvent(new app.win.InputEvent("input", { bubbles: true, inputType: "insertText", data: text.charAt(i) }));
+    }
+  }
+  function submit(app) { $(app, "submit").click(); }
+  function play(app, text) { type(app, text); submit(app); }
+  function undoAll(app) {
+    var u = $(app, "undo"), guard = 0;
+    while (!u.disabled && guard++ < 50) u.click();
+  }
+  function selected(app) {
+    var inp = $(app, "word");
+    return inp.value.length > 0 && inp.selectionStart === 0 && inp.selectionEnd === inp.value.length;
+  }
+
+  /* ------------------------------ tests ----------------------------- */
+
+  function sourceChecks() {
+    group("source integrity of index.html");
+    return fetch("index.html").then(function (r) { return r.text(); }).then(function (src) {
+      SRC = src;   // reused by openApp's early-boot mode
+      ok("index.html contains no Math.random", src.indexOf("Math." + "random") === -1);
+      var nonUTC = src.match(/(?<!UTC)get(?:FullYear|Month|Date|Day|Hours|Minutes)\s*\(/g);
+      ok("index.html calls no local-time date getters", !nonUTC, nonUTC ? nonUTC.join(" ") : "getUTC* only");
+      ok("index.html never touches innerHTML", src.indexOf("inner" + "HTML") === -1);
+      ok("index.html makes no network calls", src.indexOf("fetch(") === -1 &&
+         src.indexOf("XMLHttpRequest") === -1 && src.indexOf("EventSource") === -1);
+      // The file gained exactly one absolute URL on day 036 — the demo link the
+      // share card copies — so "no https:// anywhere" stopped being the test.
+      // It is replaced by the two questions that rule was standing in for: is
+      // anything loaded from off this page, and is that URL still the only one.
+      ok("index.html loads no external asset", src.indexOf("http://") === -1 &&
+         !/<script[^>]+src=/i.test(src) && !/<link[^>]+stylesheet/i.test(src) &&
+         !/(?:src|href)\s*=\s*["']https:/i.test(src));
+      ok("the only absolute URL in index.html is the share link, and nothing fetches it",
+         (src.match(/https:\/\//g) || []).length === 1 &&
+         src.indexOf('"https://yinggarykairui.github.io/word-ladder/"') !== -1,
+         (src.match(/https:\/\/[^"'\s]*/g) || []).join(" "));
+      ok("index.html uses the storage key word-ladder.v1", src.indexOf('"word-ladder.v1"') !== -1);
+      // The empty touchstart listener is the only part of the pointer commit
+      // that does anything on the phone that commit is about: iOS Safari
+      // applies :active to a tapped control only while something in the
+      // document is listening for touch, so without it the press rule and the
+      // @media (hover: hover) wrapper around :hover are both inert exactly
+      // where the tap is. Nothing in a headless Chromium can see it — the four
+      // rows about the rules themselves all passed with the whole block
+      // deleted — so the registration is asserted here, where the source is
+      // already the subject. Passive, because a touch listener that could call
+      // preventDefault makes the browser wait for it before it scrolls.
+      var touch = src.match(/addEventListener\(\s*"touchstart"[\s\S]{0,200}?\)\s*;/);
+      ok("index.html registers the passive touchstart listener that makes :active fire on iOS",
+         !!touch && /passive:\s*true/.test(touch[0]),
+         touch ? touch[0].replace(/\s+/g, " ") : "no touchstart listener in the source");
+    }, function () {
+      ["contains no Math.random", "calls no local-time date getters", "never touches innerHTML",
+       "makes no network calls", "loads no external asset",
+       "carries the share link as its only absolute URL", "uses the storage key word-ladder.v1",
+       "registers the passive touchstart listener that makes :active fire on iOS"]
+        .forEach(function (n) { skipped("index.html " + n, "source unreadable from file:// — serve over http"); });
+    });
+  }
+
+  function listAndPuzzles(app) {
+    var WL = app.WL, W = WL.WORDS, i, bad;
+
+    group("word list integrity");
+    ok("word list has at least 500 entries", W.length >= 500, W.length + " entries");
+    bad = W.filter(function (w) { return !/^[a-z]{4}$/.test(w); });
+    ok("every entry matches /^[a-z]{4}$/", bad.length === 0, bad.slice(0, 5).join(" "));
+    var uniq = {}, dupes = [];
+    for (i = 0; i < W.length; i++) { if (uniq[W[i]]) dupes.push(W[i]); uniq[W[i]] = 1; }
+    ok("no duplicate entries", dupes.length === 0, dupes.slice(0, 5).join(" "));
+    var unsorted = [];
+    for (i = 1; i < W.length; i++) if (W[i - 1] >= W[i]) unsorted.push(W[i - 1] + ">" + W[i]);
+    ok("list is sorted ascending", unsorted.length === 0, unsorted.slice(0, 3).join(" "));
+    var frac = WL.COMP.length / W.length;
+    ok("largest connected component holds at least 60% of entries", frac >= 0.6,
+       WL.COMP.length + "/" + W.length + " = " + (frac * 100).toFixed(1) + "%");
+
+    // 30 consecutive dates, starting the day before today so today is included.
+    var dates = [], base = WL.shiftDays(WL.today, -1);
+    for (i = 0; i < 30; i++) dates.push(WL.shiftDays(base, i));
+
+    group("determinism — 30 consecutive dates");
+    var drift = [];
+    dates.forEach(function (d) {
+      var a = WL.puzzleFor(d), b = WL.puzzleFor(d), c = WL.puzzleFor(d);
+      var k = function (p) { return p.start + ">" + p.target + ":" + p.par; };
+      if (!(k(a) === k(b) && k(b) === k(c))) drift.push(d);
+    });
+    ok("three independent runs agree on {start, target, par} for all 30 dates",
+       drift.length === 0, drift.join(" ") || dates[0] + " … " + dates[29]);
+    ok("the rendered header shows today's UTC date",
+       $(app, "date").textContent === "Puzzle for " + WL.utcDateStr(new Date()) + " · UTC",
+       $(app, "date").textContent);
+    // Frozen expectations: the puzzle is a pure function of the date string and
+    // this exact word list, so these three pairs cannot move without the list
+    // moving. A row that only asserts "two dates differ" would pass on almost
+    // any generator, including a broken one.
+    var golden = [["2020-02-29", "pink>bone:4"], ["2026-01-15", "heal>bold:4"], ["2030-12-31", "doll>base:5"]];
+    var goldBad = golden.filter(function (g) {
+      var q = WL.puzzleFor(g[0]);
+      return q.start + ">" + q.target + ":" + q.par !== g[1];
+    });
+    ok("three frozen dates still generate the exact pairs they shipped with",
+       goldBad.length === 0, goldBad.map(function (g) {
+         var q = WL.puzzleFor(g[0]);
+         return g[0] + " " + q.start + ">" + q.target + ":" + q.par + " != " + g[1];
+       }).join(" ") || golden.map(function (g) { return g[0] + " " + g[1]; }).join(", "));
+    var pairs = {}, npairs = 0;
+    dates.forEach(function (d) {
+      var q = WL.puzzleFor(d), k = q.start + ">" + q.target;
+      if (!pairs[k]) { pairs[k] = 1; npairs++; }
+    });
+    ok("30 consecutive dates give at least 25 distinct pairs", npairs >= 25, npairs + " distinct");
+    var seedA = WL.fnv1a32("word-ladder:2026-08-10");
+    ok("fnv1a32 is stable and 32-bit unsigned", seedA === WL.fnv1a32("word-ladder:2026-08-10") &&
+       seedA >= 0 && seedA <= 4294967295 && Math.floor(seedA) === seedA, "seed " + seedA);
+
+    group("solvability — the BFS path is walked, not trusted");
+    var badWalk = [], badPar = [], notMember = [], hows = {};
+    var set = {}; for (i = 0; i < W.length; i++) set[W[i]] = 1;
+    var comp = {}; for (i = 0; i < WL.COMP.length; i++) comp[WL.COMP[i]] = 1;
+    dates.forEach(function (d) {
+      var p = WL.puzzleFor(d);
+      hows[p.how] = (hows[p.how] || 0) + 1;
+      if (!p) { badWalk.push(d + ":none"); return; }
+      if (!comp[p.start] || !comp[p.target] ||
+          WL.NBR[p.start].length < 2 || WL.NBR[p.target].length < 2) notMember.push(d);
+      var path = WL.pathOf(p);
+      if (!path || path[0] !== p.start || path[path.length - 1] !== p.target) { badWalk.push(d + ":ends"); return; }
+      if (path.length - 1 !== p.par) { badWalk.push(d + ":length"); return; }
+      for (var j = 0; j < path.length; j++) {
+        if (!set[path[j]]) { badWalk.push(d + ":" + path[j] + " not in list"); return; }
+        if (j && WL.diffCount(path[j], path[j - 1]) !== 1) { badWalk.push(d + ":" + path[j - 1] + "->" + path[j]); return; }
+      }
+      var lo = p.how === "distance 3-5" ? 3 : 2, hi = p.how === "distance 3-5" ? 5 : 6;
+      if (p.par < lo || p.par > hi) badPar.push(d + ":" + p.par + " (" + p.how + ")");
+    });
+    ok("every date's parent chain is a legal ladder ending at the target",
+       badWalk.length === 0, badWalk.slice(0, 3).join(" ") || "30/30 walked");
+    ok("every par is inside the band its generation branch promises",
+       badPar.length === 0, badPar.slice(0, 3).join(" ") || Object.keys(hows).map(function (k) {
+         return k + " x" + hows[k]; }).join(", "));
+    // Recorded, not asserted as coverage: on the shipped word list the first
+    // branch has never failed to find a pair — 3,288 dates from 2020 to 2028 all
+    // return "distance 3-5" — so the widen branch, the sorted-scan fallback and
+    // the no-puzzle guard are unreachable insurance, and the band row above only
+    // ever exercises 3-5. Reaching them needs a different word list, which would
+    // be a different build.
+    ok("the generation branch is recorded, so a change of branch cannot pass unnoticed",
+       Object.keys(hows).length === 1 && hows["distance 3-5"] === 30,
+       Object.keys(hows).map(function (k) { return k + " x" + hows[k]; }).join(", "));
+    ok("every start and target is in the largest component with degree >= 2",
+       notMember.length === 0, notMember.slice(0, 3).join(" ") || "30/30");
+    ok("today's puzzle is solvable in exactly the par shown",
+       (function () {
+         var p = WL.puzzle, path = WL.pathOf(p);
+         return path && path.length - 1 === p.par &&
+                $(app, "status").textContent === "best possible: " + p.par + " moves";
+       }()), WL.puzzle.start.toUpperCase() + " -> " + WL.puzzle.target.toUpperCase() +
+             ", par " + WL.puzzle.par);
+
+    group("focus order");
+    // On a fresh puzzle the ladder column holds one rung and has nothing to
+    // scroll, so it is not a tab stop: a Shift-Tab out of the input used to
+    // land there with nothing hidden in it and no way to tell that from a dead
+    // stop. It becomes one the moment it overflows (rows in the sweep below).
+    // Rendered, not merely present: the share button and its fallback field are
+    // in the markup from load and display:none until the ladder reaches the
+    // target, so a query that counts markup counts controls no Tab can reach.
+    function tabbables(app) {
+      var f = app.doc.querySelectorAll(
+        'input, button, a[href], select, textarea, [tabindex]:not([tabindex="-1"])'), i, out = [];
+      for (i = 0; i < f.length; i++) if (f[i].getClientRects().length) out.push(f[i]);
+      return out;
+    }
+    ok("tab order is the input, then Submit, then Undo, with nothing focusable between the three controls",
+       (function () {
+         var f = tabbables(app);
+         return f.length === 3 && f[0].id === "word" &&
+                f[1].id === "submit" && f[2].id === "undo";
+       }()), tabbables(app).map(function (e) { return e.id; }).join(" > "));
+    ok("the share controls are not on a board that has not been solved",
+       $(app, "share").getClientRects().length === 0 &&
+       $(app, "sharebox").getClientRects().length === 0 &&
+       $(app, "share").className === "hidden" && $(app, "sharebox").className === "hidden",
+       "share " + $(app, "share").className + ", sharebox " + $(app, "sharebox").className);
+    ok("the ladder column is not a tab stop while there is nothing in it to scroll",
+       $(app, "chainbox").tabIndex === -1 &&
+       $(app, "chainbox").scrollHeight <= $(app, "chainbox").clientHeight,
+       "tabIndex " + $(app, "chainbox").tabIndex + ", " +
+       $(app, "chainbox").scrollHeight + " in " + $(app, "chainbox").clientHeight + "px");
+    ok("the ladder scroller carries an accessible name, so the tab stop says what it is when it is one",
+       $(app, "chainbox").getAttribute("aria-label") === "the ladder so far" &&
+       $(app, "chainbox").getAttribute("role") === "group",
+       $(app, "chainbox").getAttribute("aria-label"));
+  }
+
+  function inputMatrix() {
+    group("input handling — garbage in, and the right thing out");
+    // ?d= keeps the whole matrix read-only: nothing here can touch a real streak.
+    var date = REPLAY;
+    return openApp("?d=" + date, 390, 844).then(function (app) {
+      var WL = app.WL, path = WL.pathOf(WL.puzzle).map(function (w) { return w.toUpperCase(); });
+      var START = path[0], NEXT = path[1], TARGET = path[path.length - 1];
+      var twoAway = null, i;
+      for (i = 0; i < WL.WORDS.length; i++) {
+        if (WL.diffCount(WL.WORDS[i].toUpperCase(), START) === 2) { twoAway = WL.WORDS[i].toUpperCase(); break; }
+      }
+
+      // --- rejections and no-ops: the chain must not grow ---
+      ok("an empty submit acts instead of talking: it focuses the field and says nothing",
+         (function () {
+           play(app, "ZZZZ");            // leave a verdict on screen first
+           var had = msgOf(app);
+           play(app, "");
+           return had === "ZZZZ isn't in the list" && chainWords(app).length === 1 &&
+                  msgOf(app) === "" && app.doc.activeElement === $(app, "word");
+         }()), JSON.stringify(msgOf(app)));
+      undoAll(app);
+      ok("four spaces leave the field empty and the chain alone",
+         (function () { play(app, "    "); return $(app, "word").value === "" && chainWords(app).length === 1; }()));
+      ok("ZZZZ is refused by name", (function () { play(app, "ZZZZ"); return msgOf(app) === "ZZZZ isn't in the list"; }()),
+         msgOf(app));
+      ok("a refused word stays in the field and is selected", selected(app), $(app, "word").value);
+      ok("three letters ask for four",
+         (function () { play(app, START.slice(0, 3)); return msgOf(app) === "needs four letters"; }()), msgOf(app));
+      ok("repeating the word above is named as such",
+         (function () { play(app, START); return msgOf(app) === "that's the same word"; }()), msgOf(app));
+      ok("a two-letter jump is refused",
+         (function () { play(app, twoAway); return msgOf(app) === "change exactly one letter"; }()),
+         twoAway + " -> " + msgOf(app));
+      ok("digits alone leave the field empty",
+         (function () { play(app, "1234"); return $(app, "word").value === "" && chainWords(app).length === 1; }()));
+      ok("emoji leave the field empty",
+         (function () { play(app, "😀🚀"); return $(app, "word").value === "" && chainWords(app).length === 1; }()));
+      // The blob's first four letters spell a real word that is two letters from
+      // the rung above, with only punctuation, digits, emoji and CJK after it —
+      // so this row fails if the field stops truncating (the value would be
+      // longer), if the fold breaks (the word would not be recognised), or if
+      // the rule table stops running on pasted text (no verdict).
+      var blob = twoAway.split("").join("3! 😀-中") + "1234567890!@#$%^&*() 😀-中".repeat(200);
+      $(app, "word").value = "";
+      paste(app, blob);
+      ok("a 5,000-character pasted blob leaves exactly its first four letters in the field",
+         $(app, "word").value === twoAway,
+         blob.length + " chars in, " + JSON.stringify($(app, "word").value) + " out");
+      // The three shapes a maxlength on the field used to eat before the fold
+      // could run: spaced letters arrived as SI, a quoted word as SID.
+      [["s i d e", "SIDE"], ['"side"', "SIDE"], ["sideways", "SIDE"], ["  side  ", "SIDE"]].forEach(function (c) {
+         $(app, "word").value = "";
+         paste(app, c[0]);
+         ok("a real paste of " + JSON.stringify(c[0]) + " folds to " + c[1],
+            $(app, "word").value === c[1], JSON.stringify($(app, "word").value));
+      });
+      ok("typing eight letters one key at a time still stops at four",
+         (function () { typeKeys(app, "sidewalk"); return $(app, "word").value === "SIDE"; }()),
+         JSON.stringify($(app, "word").value));
+      ok("the field carries no maxlength, so nothing is cut before the fold sees it",
+         !$(app, "word").hasAttribute("maxlength"), $(app, "word").getAttribute("maxlength") || "absent");
+      $(app, "word").value = "";
+      paste(app, blob);
+      submit(app);
+      ok("the pasted blob is judged as the word it folds to, and grows no chain",
+         msgOf(app) === "change exactly one letter" && chainWords(app).length === 1,
+         msgOf(app) + " / " + chainWords(app).join(" "));
+      play(app, "<script>alert(1)</" + "script>");
+      ok("pasted markup is stripped to letters and never parsed",
+         $(app, "word").value === "SCRI" &&
+         app.doc.body.textContent.indexOf("alert(1)") === -1,
+         JSON.stringify($(app, "word").value));
+
+      ok("accented letters are folded, not deleted",
+         (function () { type(app, "s\u00EEd\u00E9"); return $(app, "word").value === "SIDE"; }()),
+         JSON.stringify($(app, "word").value));
+      ok("a mid-word edit leaves the caret where it was typed",
+         (function () {
+           var inp = $(app, "word");
+           inp.value = "CAT";
+           inp.dispatchEvent(new app.win.Event("input", { bubbles: true }));
+           inp.value = "bCAT";
+           inp.setSelectionRange(1, 1);
+           inp.dispatchEvent(new app.win.Event("input", { bubbles: true }));
+           return inp.value === "BCAT" && inp.selectionStart === 1 && inp.selectionEnd === 1;
+         }()), $(app, "word").value + " caret " + $(app, "word").selectionStart);
+      $(app, "word").value = "";
+
+      // An IME composes in the field before the text is real. Folding mid-
+      // composition commits the reading and collapses the composition range, so
+      // the IME's next update appends to what was committed instead of replacing
+      // it — composing "held" landed HHEH in the field. The loop below models
+      // exactly that: whenever the page has rewritten .value, the IME's next
+      // insertion goes on the end.
+      ok("an IME composing a word leaves the word, not its own history",
+         (function () {
+           var inp = $(app, "word");
+           inp.value = "";
+           inp.dispatchEvent(new app.win.CompositionEvent("compositionstart", { bubbles: true }));
+           var base = "", expected = "", steps = ["h", "he", "hel", "held"], i;
+           for (i = 0; i < steps.length; i++) {
+             if (inp.value !== expected) base = inp.value;
+             inp.value = base + steps[i];
+             expected = inp.value;
+             inp.dispatchEvent(new app.win.CompositionEvent("compositionupdate", { bubbles: true, data: steps[i] }));
+             inp.dispatchEvent(new app.win.InputEvent("input", { bubbles: true, isComposing: true }));
+           }
+           if (inp.value !== expected) base = inp.value;
+           inp.value = base + "held";
+           inp.dispatchEvent(new app.win.CompositionEvent("compositionend", { bubbles: true, data: "held" }));
+           inp.dispatchEvent(new app.win.InputEvent("input", { bubbles: true, isComposing: false }));
+           return inp.value === "HELD";
+         }()), JSON.stringify($(app, "word").value));
+      $(app, "word").value = "";
+
+      // The flag that waits for compositionend had three ways back —
+      // compositionend, blur and Submit — and an IME taken away by the platform
+      // fires none of them. Stranded, the fold stays switched off and ordinary
+      // typing lands in the field raw. Focus is the fourth: a field cannot be
+      // mid-composition at the moment it gains focus.
+      ok("a composition that never ends does not strand the fold: focusing the field again clears it",
+         (function () {
+           var inp = $(app, "word");
+           inp.blur();
+           inp.value = "";
+           inp.dispatchEvent(new app.win.CompositionEvent("compositionstart", { bubbles: true }));
+           // Keystrokes without a focus() in front of them: typeKeys() focuses
+           // the field, which is the very thing under test here.
+           function keys(text) {
+             var i;
+             inp.value = "";
+             for (i = 0; i < text.length; i++) {
+               inp.value = inp.value + text.charAt(i);
+               inp.dispatchEvent(new app.win.InputEvent("input",
+                 { bubbles: true, inputType: "insertText", data: text.charAt(i) }));
+             }
+           }
+           // no compositionend, no blur — the flag is on and typing is unfolded
+           keys("s1de");
+           var stranded = inp.value;
+           inp.focus();
+           keys("s1de");
+           return stranded === "s1de" && inp.value === "SDE";
+         }()), JSON.stringify($(app, "word").value));
+      $(app, "word").value = "";
+
+      // --- positive rows: the right thing has to happen too ---
+      $(app, "word").value = "";
+      ok("a legal one-letter change is appended and announced",
+         (function () { play(app, NEXT); return chainWords(app).join(" ") === START + " " + NEXT &&
+                                                  msgOf(app) === "added " + NEXT; }()),
+         chainWords(app).join(" ") + " / " + msgOf(app));
+      ok("the field is cleared after a word is accepted", $(app, "word").value === "");
+      // A second Enter on an empty field used to wipe the line — including
+      // "solved in N moves", the only place the win is announced out loud.
+      ok("a second Enter on an empty field leaves the verdict it just earned standing",
+         (function () {
+           var earned = msgOf(app);
+           submit(app);
+           submit(app);
+           return earned === "added " + NEXT && msgOf(app) === earned &&
+                  app.doc.activeElement === $(app, "word");
+         }()), JSON.stringify(msgOf(app)));
+      // aria-live fires on a change. The same refusal twice running has to be
+      // two changes, or the second one is silent to a screen reader.
+      ok("the same refusal twice is announced twice: the live region is emptied between them",
+         (function () {
+           var mo = new app.win.MutationObserver(function () {});
+           mo.observe($(app, "msg"), { childList: true, characterData: true, subtree: true });
+           play(app, "ZZZZ");
+           mo.takeRecords();
+           $(app, "word").value = "";
+           play(app, "ZZZZ");
+           var recs = mo.takeRecords();
+           mo.disconnect();
+           var emptied = false, i;
+           for (i = 0; i < recs.length; i++) {
+             if (recs[i].removedNodes.length && !recs[i].addedNodes.length) emptied = true;
+           }
+           return msgOf(app) === "ZZZZ isn't in the list" && recs.length >= 2 && emptied;
+         }()), msgOf(app));
+      $(app, "word").value = "";
+      ok("the message line is replaced, never appended to",
+         (function () {
+           play(app, "ZZZZ");
+           var first = msgOf(app);
+           $(app, "word").value = "";
+           play(app, START.slice(0, 3));
+           return first === "ZZZZ isn't in the list" && msgOf(app) === "needs four letters" &&
+                  $(app, "msg").childNodes.length <= 1;
+         }()), msgOf(app));
+      $(app, "word").value = "";
+      // The strike-through is a state only an eye can read. A refused field has
+      // to say so programmatically too, and point at the reason.
+      ok("a refused word puts the field into a programmatic error state that names its own reason",
+         (function () {
+           $(app, "word").value = "";
+           play(app, "ZZZZ");
+           var w = $(app, "word");
+           var described = app.doc.getElementById(w.getAttribute("aria-describedby") || "");
+           return w.getAttribute("aria-invalid") === "true" && w.className === "bad" &&
+                  described === $(app, "msg") && described.textContent === msgOf(app);
+         }()), $(app, "word").getAttribute("aria-invalid") + " / describedby " +
+               $(app, "word").getAttribute("aria-describedby"));
+      ok("and typing again clears the error state with the strike-through, not after it",
+         (function () {
+           type(app, "SID");
+           var w = $(app, "word");
+           return w.getAttribute("aria-invalid") === null && w.className === "";
+         }()), String($(app, "word").getAttribute("aria-invalid")));
+      $(app, "word").value = "";
+      ok("a word already in the chain is refused as already used",
+         (function () { play(app, START); return msgOf(app) === "already used that word" &&
+                                                  chainWords(app).length === 2; }()), msgOf(app));
+      ok("Undo removes the last rung and disables itself at the start word",
+         (function () { $(app, "undo").click(); return chainWords(app).join(" ") === START &&
+                                                    $(app, "undo").disabled === true; }()));
+      // Undo drops the verdict from the message line; the strike-through is the
+      // other half of that verdict and cannot be left standing without it.
+      ok("Undo clears the strike-through it just took the reason for",
+         (function () {
+           play(app, NEXT);
+           play(app, "ZZZZ");
+           var struck = $(app, "word").className === "bad" && msgOf(app) === "ZZZZ isn't in the list";
+           $(app, "undo").click();
+           return struck && msgOf(app) === "" && $(app, "word").className === "";
+         }()), JSON.stringify($(app, "word").className) + " / " + JSON.stringify(msgOf(app)));
+      $(app, "word").value = "";
+      $(app, "word").value = "";
+      ok("a legal word typed in lowercase is accepted",
+         (function () { play(app, NEXT.toLowerCase()); return chainWords(app).join(" ") === START + " " + NEXT; }()),
+         chainWords(app).join(" "));
+      for (i = 2; i < path.length; i++) play(app, path[i]);
+      ok("the final legal move reaches the target and flips the solved state",
+         $(app, "status").textContent === "solved in " + (path.length - 1) + " moves · best possible " + WL.puzzle.par &&
+         $(app, "targetlab").textContent === "solved" &&
+         msgOf(app) === "added " + TARGET + " · solved",
+         $(app, "status").textContent + " / " + msgOf(app));
+      // The win screen said "solved in N moves" twice, 36.6px apart. The count
+      // is the status line's; the message keeps the bare word, because #status
+      // is not a live region and a message with nothing about the win in it
+      // never tells a screen-reader player they won.
+      ok("and the move count is said once on the win screen, not twice (U19)",
+         msgOf(app).indexOf(" moves") === -1 &&
+         msgOf(app).indexOf("solved") !== -1 &&
+         $(app, "status").textContent.indexOf("solved in " + (path.length - 1) + " moves") === 0,
+         msgOf(app));
+      // "shortest: 3 moves" read as a move allowance, and the same number was
+      // said three ways on one screen. One phrasing, and only where it earns
+      // its place.
+      ok("the par is named one way, in one place, on the solved board",
+         app.doc.body.innerText.indexOf("shortest") === -1 &&
+         $(app, "status").textContent.indexOf(" · best possible " + WL.puzzle.par) !== -1 &&
+         msgOf(app).indexOf("best possible") === -1,
+         $(app, "status").textContent + " / " + msgOf(app));
+      ok("the win is announced in the live region, not only printed in the status line",
+         msgOf(app).indexOf("solved") !== -1 && $(app, "msg").getAttribute("aria-live") === "polite" &&
+         $(app, "status").getAttribute("aria-live") === null,
+         msgOf(app));
+      // Was: "focus stays in the field on the winning move, and the field is
+      // still there". The field is no longer there on the winning move — a
+      // finished ladder has no next rung, so the row is put away rather than
+      // left open between the last rung and the target. Focus has to land
+      // somewhere, and the only move left is Undo.
+      ok("the winning move puts the input row away and leaves focus on a live control",
+         app.win.getComputedStyle($(app, "inputrow")).display === "none" &&
+         $(app, "word").getBoundingClientRect().height === 0 &&
+         app.doc.activeElement === $(app, "undo") && $(app, "undo").disabled === false,
+         app.doc.activeElement ? app.doc.activeElement.id || app.doc.activeElement.tagName : "null");
+      // Was: "Submit and Undo are live". Cycle 1 put the input row away and left
+      // Submit enabled, which made it a control that could not act on any input
+      // a player could give it: it read the empty field, took the "nothing
+      // typed" branch and left the page byte-identical. Spent controls say so.
+      ok("a solved puzzle spends Submit and keeps Undo: the button that cannot act is disabled, the one that can is not",
+         $(app, "submit").disabled === true && $(app, "undo").disabled === false &&
+         $(app, "word").disabled === false &&
+         $(app, "undo").getBoundingClientRect().height >= 44,
+         "word " + $(app, "word").disabled + ", submit " + $(app, "submit").disabled +
+         ", undo " + $(app, "undo").disabled);
+      // Two live controls on a solved board since day 036: Undo, which is the
+      // way back, and Share, which is the thing there is to do with a win.
+      // Submit is disabled and out of the order; the fallback field is not
+      // rendered until a clipboard write has actually failed.
+      ok("a disabled Submit is out of the tab order, so Tab from the solved board reaches Undo then Share",
+         $(app, "submit").disabled === true &&
+         (function () {
+           var f = app.doc.querySelectorAll(
+             'input:not([disabled]), button:not([disabled]), a[href], textarea, [tabindex]:not([tabindex="-1"])'), i, ids = [];
+           for (i = 0; i < f.length; i++) {
+             if (f[i].getBoundingClientRect().height > 0) ids.push(f[i].id);
+           }
+           return ids.join(" ") === "undo share";
+         }()), "the live controls are Undo and Share");
+      ok("clicking the spent Submit on a solved board changes nothing at all",
+         (function () {
+           var before = app.doc.body.innerText + "|" + msgOf(app) + "|" + app.WL.state().chain.join(" ");
+           submit(app); submit(app);
+           return before === app.doc.body.innerText + "|" + msgOf(app) + "|" + app.WL.state().chain.join(" ");
+         }()), "two clicks, same page");
+      ok("the finished ladder is not broken open by an empty rung: the target follows the last word",
+         $(app, "word").getBoundingClientRect().height === 0 &&
+         $(app, "target").getBoundingClientRect().top >
+           app.doc.querySelector("#chain > .rung:last-child").getBoundingClientRect().bottom,
+         "inputrow " + app.win.getComputedStyle($(app, "inputrow")).display);
+      ok("Undo after a solve walks the chain back without un-winning the day",
+         (function () {
+           $(app, "undo").click();
+           return app.WL.state().chain.length === path.length - 1 &&
+                  // "today" would be a claim about a date that is not today:
+                  // this board is a replay, and the header says so.
+                  $(app, "status").textContent === "solved · best possible " + WL.puzzle.par &&
+                  // The label names the word under it, and the ladder no
+                  // longer reaches that word. The day is still won: the status
+                  // line says so, and it is the line that means the day.
+                  $(app, "targetlab").textContent === "target";
+         }()), $(app, "status").textContent + " / " + $(app, "targetlab").textContent);
+      ok("that Undo brings the input row back and puts the caret in it",
+         app.win.getComputedStyle($(app, "inputrow")).display !== "none" &&
+         $(app, "word").getBoundingClientRect().height >= 44 &&
+         app.doc.activeElement === $(app, "word"),
+         app.doc.activeElement ? app.doc.activeElement.id : "null");
+      ok("re-reaching the target names the move count again",
+         (function () {
+           play(app, TARGET);
+           return $(app, "status").textContent === "solved in " + (path.length - 1) +
+                  " moves · best possible " + WL.puzzle.par;
+         }()), $(app, "status").textContent);
+      ok("the solved target rung marks the letter that changed and is drawn once",
+         app.doc.querySelectorAll("#target .hot").length === 1 &&
+         chainWords(app).indexOf(TARGET) === -1,
+         chainWords(app).join(" "));
+      ok("no window errors or console.error across the whole matrix",
+         app.errors.length === 0, app.errors.slice(0, 2).join(" | ") || "0 errors");
+      app.close();
+    });
+  }
+
+  function solveIn(app) {
+    var path = app.WL.pathOf(app.WL.puzzle).map(function (w) { return w.toUpperCase(); });
+    for (var i = 1; i < path.length; i++) play(app, path[i]);
+    return path.length - 1;
+  }
+  function blobOf() { try { return JSON.parse(stored()); } catch (e) { return null; } }
+
+  /* -------------------------- two tabs (D1) --------------------------------
+     save() wrote `store` — a snapshot taken at load — back whole, with no
+     re-read, so a stale tab's next write put that snapshot over everything
+     since. Measured before the fix: a tab left on a fresh board while another
+     tab solved the day turned "streak 5 · best 5, solved" back into
+     "streak 4 · best 4, unsolved" on one legal rung, and undo() saves too,
+     so it did not even need an accepted rung. Two boards are held open at once
+     here, which is the only way to see it — the iframes share the parent's
+     origin, so they share the one localStorage a real second tab would.
+
+     What is asserted is the split: the record of having played survives, the
+     chain does not. The chain is still last write wins by decision, and the
+     row that says so is here so the decision cannot rot into a claim. */
+  function twoTabs(WL) {
+    group("a stale tab loses its chain, never the record (D1)");
+    var today = WL.today, yest = WL.shiftDays(today, -1);
+    var A = null;
+    seed(JSON.stringify({ v: 1, puzzle: yest, chain: ["AAAA"], solved: true,
+                          lastSolved: yest, streak: 4, best: 4 }));
+    return openApp("", 390, 844).then(function (a) {
+      A = a;                                   // tab A, opened and then left alone
+      ok("(D1) tab A opens on the 4-day streak banked yesterday",
+         $(A, "streak").textContent === "streak 4 · best 4", $(A, "streak").textContent);
+      return openApp("", 390, 844);
+    }).then(function (B) {                     // tab B, opened after it and solved
+      solveIn(B);
+      var b = blobOf();
+      ok("(D1) tab B solves today and banks streak 5 over it",
+         $(B, "streak").textContent === "streak 5 · best 5" && b.streak === 5 &&
+         b.best === 5 && b.lastSolved === today && b.solved === true, JSON.stringify(b));
+      B.close();
+      var path = A.WL.pathOf(A.WL.puzzle).map(function (x) { return x.toUpperCase(); });
+      play(A, path[1]);                        // one legal rung in the stale tab
+      var s = blobOf();
+      ok("(D1) a rung in the stale tab leaves the later lastSolved and its streak standing",
+         s.streak === 5 && s.lastSolved === today, JSON.stringify(s));
+      ok("(D1) and leaves the day recorded as solved",
+         s.solved === true, JSON.stringify(s));
+      ok("(D1) and the stale tab stops claiming the streak it loaded with",
+         $(A, "streak").textContent === "streak 5 · best 5" &&
+         $(A, "status").textContent === "solved today · best possible " + A.WL.puzzle.par,
+         $(A, "streak").textContent + " / " + $(A, "status").textContent);
+      ok("(D1) the chain is the one thing it does overwrite, which is the decision, not the bug",
+         s.chain.length === 2 && s.chain[1] === path[1], s.chain.join(">"));
+      A.close();
+      seed(null);
+      return openApp("", 390, 844);
+    }).then(function (a) {
+      // undo() calls save() as well, so the loss never needed an accepted rung.
+      A = a;
+      var path = A.WL.pathOf(A.WL.puzzle).map(function (x) { return x.toUpperCase(); });
+      play(A, path[1]);
+      // a newer record lands under this board between its two writes
+      seed(JSON.stringify({ v: 1, puzzle: today, chain: ["AAAA"], solved: true,
+                            lastSolved: today, streak: 9, best: 12 }));
+      $(A, "undo").click();
+      var s = blobOf();
+      ok("(D1) an Undo in a stale tab banks nothing back over a newer streak",
+         s.streak === 9 && s.lastSolved === today, JSON.stringify(s));
+      ok("(D1) and keeps the higher best of the two",
+         s.best === 12, JSON.stringify(s));
+      A.close();
+      seed(null);
+      return openApp("", 390, 844);
+    }).then(function (a) {
+      // The re-read runs on every write, so it meets whatever is in storage —
+      // including a blob no version of this page wrote. A merge that cannot
+      // read is a merge with nothing to merge, not a broken board.
+      A = a;
+      var path = A.WL.pathOf(A.WL.puzzle).map(function (x) { return x.toUpperCase(); });
+      play(A, path[1]);
+      seed("{not json at all");
+      play(A, path[2]);
+      var s = blobOf();
+      ok("(D1) junk landing under a live board does not break the rung on top of it",
+         s && s.chain.length === 3 && s.chain[2] === path[2] && A.errors.length === 0,
+         (s ? s.chain.join(">") : String(stored())) + " / " + A.errors.join(" "));
+      A.close();
+      seed(null);
+      return null;
+    }).then(function () {
+      /* -------- the dates that are not this tab's today (D1, cont.) --------
+         Every row above is same-date, which left the merge's two date-crossing
+         cases uncovered: a `lastSolved` from a clock that ran ahead, and the
+         tab left open across UTC midnight that merge()'s own comment names as
+         its motivation. Both need a page whose clock is not this machine's, so
+         both are driven through openAt(). */
+      if (!SRC) {
+        skipped("(D1) the rows that need a pinned clock",
+                "source unreadable from file:// — serve over http");
+        return null;
+      }
+      // A `lastSolved` dated after today needs no hand-edited blob: a phone
+      // whose clock ran ahead — one restoring from a flat battery, or set
+      // forward by hand — banks one during ordinary play, and the date stays in
+      // storage after the clock is corrected. It is strictly greater than every
+      // date commit() can ever bank, so an unclamped merge reads it and its
+      // streak back over the bank on every write, forever. Measured on the tip
+      // before the clamp, seeded with streak 3 and solving three days running:
+      // `streak 0 · best 3` on all three, under a status line saying the day
+      // was solved, and `best` frozen with it because `best` only ever grows
+      // from a banked streak. The save() this replaced healed itself on the
+      // first solve, by overwriting the date.
+      var ahead = WL.shiftDays(today, 40), d1 = WL.shiftDays(today, 1),
+          d2 = WL.shiftDays(today, 2), d3 = WL.shiftDays(today, 3), moves = 0;
+      seed(JSON.stringify({ v: 1, puzzle: null, chain: null, solved: false,
+                            lastSolved: ahead, streak: 3, best: 3 }));
+      return openApp("", 390, 844).then(function (app) {
+        moves = solveIn(app);
+        var b = blobOf();
+        ok("(D1) a lastSolved from a clock that ran ahead does not win the merge — today's solve is what gets banked",
+           b.lastSolved === today && b.streak === 1 && b.best === 3, JSON.stringify(b));
+        ok("(D1) and the header agrees with the blob under it, instead of reading streak 0 over a solved board",
+           $(app, "streak").textContent === "streak 1 · best 3" &&
+           $(app, "status").textContent ===
+             "solved in " + moves + " moves · best possible " + app.WL.puzzle.par,
+           $(app, "streak").textContent + " / " + $(app, "status").textContent);
+        app.close();
+        return openAt(d1, 390, 844);
+      }).then(function (app) {
+        ok("(D1) the next day's tab is really on the next day, and reads the streak the future date used to hide",
+           app.WL.today === d1 && app.WL.puzzleDate === d1 && app.WL.readOnly === false &&
+           $(app, "streak").textContent === "streak 1 · best 3",
+           app.WL.today + " / " + $(app, "streak").textContent);
+        solveIn(app);
+        var b = blobOf();
+        ok("(D1) and its solve builds on yesterday's rather than restoring the future pair",
+           b.streak === 2 && b.lastSolved === d1 &&
+           $(app, "streak").textContent === "streak 2 · best 3",
+           JSON.stringify(b) + " / " + $(app, "streak").textContent);
+        app.close();
+        return openAt(d2, 390, 844);
+      }).then(function (app) {
+        solveIn(app);
+        var b = blobOf();
+        ok("(D1) the third day reaches the streak the frozen pair was only claiming",
+           b.streak === 3 && b.best === 3 && b.lastSolved === d2 &&
+           $(app, "streak").textContent === "streak 3 · best 3",
+           JSON.stringify(b) + " / " + $(app, "streak").textContent);
+        app.close();
+        return openAt(d3, 390, 844);
+      }).then(function (app) {
+        solveIn(app);
+        var b = blobOf();
+        ok("(D1) and the fourth moves `best`, which a streak frozen under a future date can never do",
+           b.streak === 4 && b.best === 4 && b.lastSolved === d3 &&
+           $(app, "streak").textContent === "streak 4 · best 4",
+           JSON.stringify(b) + " / " + $(app, "streak").textContent);
+        app.close();
+        seed(null);
+      });
+    }).then(function () {
+      if (!SRC) return null;
+      /* The date boundary itself: tab Y was opened yesterday and is still on
+         yesterday's board, tab B is opened today and solves the day. What the
+         rows below fix in place is a tradeoff, not a repair — the chain is last
+         write wins by decision, and because merge() adopts `solved` only when
+         the stored blob names the puzzle this tab is playing, the day's solved
+         flag travels with the chain: Y's write leaves the streak banked today
+         standing and the day itself offered again. That is the documented
+         behaviour (PROJECT.md §4) and it is asserted here so it stays a
+         decision rather than becoming an accident. */
+      var twoAgo = WL.shiftDays(today, -2), Y = null;
+      seed(JSON.stringify({ v: 1, puzzle: null, chain: null, solved: false,
+                            lastSolved: twoAgo, streak: 4, best: 4 }));
+      return openAt(yest, 390, 844).then(function (a) {
+        Y = a;
+        ok("(D1) the tab left open across UTC midnight is really still on yesterday's board",
+           Y.WL.today === yest && Y.WL.puzzleDate === yest && Y.WL.readOnly === false &&
+           $(Y, "streak").textContent === "streak 4 · best 4",
+           Y.WL.today + " / " + Y.WL.puzzleDate + " / " + $(Y, "streak").textContent);
+        return openApp("", 390, 844);
+      }).then(function (B) {
+        solveIn(B);                            // today, in a tab opened today
+        B.close();
+        var path = Y.WL.pathOf(Y.WL.puzzle).map(function (x) { return x.toUpperCase(); });
+        play(Y, path[1]);                      // one legal rung on yesterday's board
+        var s = blobOf();
+        ok("(D1) a rung played in it leaves today's lastSolved and the streak banked today standing",
+           s.lastSolved === today && s.streak === 1 && s.best === 4, JSON.stringify(s));
+        ok("(D1) and yesterday's board does not take today's solve for its own",
+           s.solved === false && s.puzzle === yest &&
+           $(Y, "status").textContent === "best possible: " + Y.WL.puzzle.par + " moves",
+           JSON.stringify(s) + " / " + $(Y, "status").textContent);
+        Y.close();
+        return openApp("", 390, 844);
+      }).then(function (C) {
+        ok("(D1) so a fresh tab today keeps the streak and is offered the day again, unsolved — last write wins reaching `solved`, by decision",
+           $(C, "streak").textContent === "streak 1 · best 4" &&
+           $(C, "status").textContent === "best possible: " + C.WL.puzzle.par + " moves" &&
+           chainWords(C).length === 1,
+           $(C, "streak").textContent + " / " + $(C, "status").textContent +
+           " / " + chainWords(C).join(">"));
+        C.close();
+        seed(null);
+      });
+    });
+  }
+
+  function streakMatrix(WL) {
+    group("streak — key word-ladder.v1, header and stored blob both asserted");
+    var today = WL.today, yest = WL.shiftDays(today, -1), old = WL.shiftDays(today, -3);
+
+    function header(app) { return $(app, "streak").textContent; }
+
+    return openApp("", 390, 844).then(function (app) { // (a) no storage at all
+      ok("(a) with no stored blob the header reads streak 0", header(app) === "streak 0 · best 0", header(app));
+      ok("(a) and nothing was written just by loading", stored() === null, String(stored()));
+      app.close();
+      seed(null);
+      return openApp("", 390, 844);
+    }).then(function (app) {                          // (b) first solve
+      var moves = solveIn(app);
+      var b = blobOf();
+      ok("(b) a first solve sets streak 1 in the header",
+         header(app) === "streak 1 · best 1", header(app));
+      ok("(b) and in the blob, with lastSolved = today UTC and best >= 1",
+         b && b.v === 1 && b.streak === 1 && b.best >= 1 && b.lastSolved === today && b.solved === true,
+         JSON.stringify(b));
+      ok("(b) the blob records the chain that was played", b && b.chain.length === moves + 1);
+      app.close();
+      seed(JSON.stringify({ v: 1, puzzle: null, chain: null, solved: false, lastSolved: yest, streak: 4, best: 4 }));
+      return openApp("", 390, 844);
+    }).then(function (app) {                          // (c) yesterday + solve = +1
+      ok("(c) a blob from yesterday reads its streak back before the solve",
+         header(app) === "streak 4 · best 4", header(app));
+      solveIn(app);
+      var b = blobOf();
+      ok("(c) solving the day after yesterday's solve makes it 5",
+         header(app) === "streak 5 · best 5" && b.streak === 5 && b.lastSolved === today, header(app));
+      app.close();
+      seed(JSON.stringify({ v: 1, puzzle: null, chain: null, solved: false, lastSolved: old, streak: 9, best: 9 }));
+      return openApp("", 390, 844);
+    }).then(function (app) {                          // (d) lapsed streak
+      ok("(d) a streak last touched three days ago displays as 0",
+         header(app) === "streak 0 · best 9", header(app));
+      ok("(d) and displaying it wrote nothing back", blobOf().streak === 9 && blobOf().lastSolved === old);
+      solveIn(app);
+      var b = blobOf();
+      ok("(d) the next solve restarts it at 1 and leaves best at 9",
+         header(app) === "streak 1 · best 9" && b.streak === 1 && b.best === 9, header(app));
+      app.close();
+      seed(null);
+      return openApp("", 390, 844);
+    }).then(function (app) {                          // (g) the win belongs to the date
+      var path = app.WL.pathOf(app.WL.puzzle).map(function (x) { return x.toUpperCase(); });
+      var moves = solveIn(app), b;
+      ok("(g) a solve banks the day once", (b = blobOf()) && b.streak === 1 && b.solved === true &&
+         b.lastSolved === today, JSON.stringify(b));
+      $(app, "undo").click();
+      b = blobOf();
+      ok("(g) Undo after the solve shortens the chain and banks nothing back",
+         b.streak === 1 && b.solved === true && b.lastSolved === today &&
+         b.chain.length === moves && app.WL.state().chain.length === moves, JSON.stringify(b));
+      ok("(g) and the screen still says the day is won, over a target the ladder no longer reaches",
+         $(app, "status").textContent === "solved today · best possible " + app.WL.puzzle.par &&
+         $(app, "targetlab").textContent === "target" &&
+         $(app, "streak").textContent === "streak 1 · best 1",
+         $(app, "status").textContent + " / " + $(app, "streak").textContent);
+      app.close();
+      return openApp("", 390, 844);
+    }).then(function (app) {
+      var path = app.WL.pathOf(app.WL.puzzle).map(function (x) { return x.toUpperCase(); });
+      ok("(g) reloading after solve-then-undo keeps the win and the shortened chain",
+         app.WL.state().chain.length === path.length - 1 &&
+         $(app, "status").textContent === "solved today · best possible " + app.WL.puzzle.par,
+         app.WL.state().chain.join(" ") + " / " + $(app, "status").textContent);
+      play(app, path[path.length - 1]);
+      var b = blobOf();
+      ok("(g) re-reaching the target does not bank a second streak",
+         b.streak === 1 && b.best === 1 && b.lastSolved === today &&
+         $(app, "streak").textContent === "streak 1 · best 1", JSON.stringify(b));
+      ok("(g) and it names the move count again",
+         $(app, "status").textContent === "solved in " + (path.length - 1) + " moves · best possible " +
+         app.WL.puzzle.par, $(app, "status").textContent);
+      undoAll(app);
+      b = blobOf();
+      ok("(g) undoing all the way back to the start word still leaves the day won",
+         app.WL.state().chain.length === 1 && b.solved === true && b.streak === 1 &&
+         $(app, "status").textContent === "solved today · best possible " + app.WL.puzzle.par,
+         JSON.stringify(b) + " / " + $(app, "status").textContent);
+      app.close();
+      return null;
+    }).then(function () {                             // (h) banked once per date
+      // The guard is `store.lastSolved !== puzzleDate`, and (g) above cannot
+      // see it: (g) starts from no storage, so the day it re-banks recomputes
+      // to the same 1 it already had and the guard's absence is invisible. It
+      // takes a streak with somewhere to fall from. Measured with the guard
+      // removed: solve -> streak 5 · best 5, Undo, replay the final word ->
+      // "streak 1 · best 5", and the share line reads "· streak 1", because the
+      // second bank asks "was the last solve yesterday?" of a lastSolved that
+      // is already today and answers by starting over. This is the arithmetic
+      // the header, the blob and the share line all quote.
+      seed(JSON.stringify({ v: 1, puzzle: null, chain: null, solved: false,
+                            lastSolved: yest, streak: 4, best: 4 }));
+      return openApp("", 390, 844).then(function (app) {
+        var path = app.WL.pathOf(app.WL.puzzle).map(function (x) { return x.toUpperCase(); });
+        solveIn(app);
+        ok("(h) solving on top of a 4-day streak banked yesterday makes it 5",
+           header(app) === "streak 5 · best 5" && blobOf().streak === 5,
+           header(app) + " / " + JSON.stringify(blobOf()));
+        $(app, "undo").click();
+        play(app, path[path.length - 1]);
+        var b = blobOf();
+        ok("(h) Undo and replay the final word does not bank the date a second time",
+           header(app) === "streak 5 · best 5" && b.streak === 5 && b.best === 5 &&
+           b.lastSolved === today, header(app) + " / " + JSON.stringify(b));
+        ok("(h) and the line Share copies still names that streak",
+           app.WL.shareText().split("\n")[0].slice(-11) === " · streak 5",
+           app.WL.shareText().split("\n")[0]);
+        app.close();
+      });
+    }).then(function () {                             // (e) corrupt blobs
+      var bad = [
+        ["empty string", ""],
+        ["null", "null"],
+        ["an array", "[]"],
+        ["truncated JSON", "{"],
+        ["a future schema", '{"v":99,"streak":3,"best":3}'],
+        ["wrong types", '{"v":1,"streak":"4","best":true}'],
+        ["1e999 (Infinity)", '{"v":1,"streak":1e999,"best":1}'],
+        // Finite and whole, so the old integral check waved it through and the
+        // header read "streak 1e+308 · best 1e+308".
+        ["1e308 (finite, past the safe integers)", '{"v":1,"streak":1e308,"best":1e308}'],
+        ["Number.MAX_SAFE_INTEGER + 2", '{"v":1,"streak":9007199254740994,"best":1}'],
+        ["a negative count", '{"v":1,"streak":-1,"best":3}'],
+        ["a lone surrogate", "\uD800"]
+      ];
+      var chainP = Promise.resolve();
+      bad.forEach(function (pair) {
+        chainP = chainP.then(function () {
+          seed(pair[1]);
+          // early: the error capture is in place before the page's script runs,
+          // so a throw while reading this blob is actually observable.
+          return openApp("", 390, 844, true).then(function (app) {
+            ok("(e) corrupt blob — " + pair[0] + " — loads clean and reads streak 0",
+               !!app.WL && header(app) === "streak 0 · best 0" && app.errors.length === 0, header(app));
+            app.close();
+          });
+        });
+      });
+      return chainP.then(function () {
+        return errorCaptureControl().then(function (errors) {
+          ok("(e-control) the error capture sees a load-time throw — the " + bad.length + " rows above are not blind",
+             errors.length === 1 && errors[0].indexOf("deliberate") !== -1,
+             JSON.stringify(errors));
+        });
+      });
+    }).then(function () {                             // (e-control) a good blob must read back
+      seed(JSON.stringify({ v: 1, puzzle: null, chain: null, solved: false, lastSolved: yest, streak: 6, best: 11 }));
+      return openApp("", 390, 844).then(function (app) {
+        ok("(e-control) a well-formed blob IS read back — the corrupt-blob rows above are not vacuous",
+           header(app) === "streak 6 · best 11", header(app));
+        app.close();
+      });
+    }).then(function () {                             // (f) ?d= writes nothing
+      var fixed = JSON.stringify({ v: 1, puzzle: null, chain: null, solved: false, lastSolved: yest, streak: 6, best: 11 });
+      seed(fixed);
+      return openApp("?d=" + REPLAY, 390, 844).then(function (app) {
+        solveIn(app);
+        ok("(f) solving under ?d= reaches the solved state",
+           $(app, "status").textContent.indexOf("solved in") === 0, $(app, "status").textContent);
+        ok("(f) and changes not one stored byte", stored() === fixed, String(stored()));
+        app.close();
+      });
+    }).then(function () {                             // ?d= validation
+      seed(null);
+      return openApp("?d=2026-02-31", 390, 844).then(function (app) {
+        ok("an impossible ?d= date shows today AND says the parameter was ignored",
+           $(app, "date").textContent === "Puzzle for " + WL.today + " · UTC" &&
+           $(app, "msg").textContent === "that ?d= isn't a date — showing today" &&
+           app.errors.length === 0,
+           $(app, "date").textContent + " / " + $(app, "msg").textContent);
+        app.close();
+      });
+    }).then(function () {
+      return openApp("?d=%E0%A4%A", 390, 844).then(function (app) {
+        ok("a malformed percent-escape in the query does not blank the page",
+           !!app.WL && $(app, "date").textContent.indexOf("Puzzle for ") === 0, $(app, "date").textContent);
+        app.close();
+      });
+    });
+  }
+
+  function progressMatrix(WL) {
+    group("progress persistence");
+    seed(null);
+    var played = [];
+    return openApp("", 390, 844).then(function (app) {
+      var path = app.WL.pathOf(app.WL.puzzle).map(function (w) { return w.toUpperCase(); });
+      play(app, path[1]);
+      play(app, path[2]);
+      played = chainWords(app);
+      ok("two legal moves build a three-word chain", played.length === 3, played.join(" "));
+      app.close();
+      return openApp("", 390, 844);
+    }).then(function (app) {
+      ok("reloading mid-puzzle restores the chain", chainWords(app).join(" ") === played.join(" "),
+         chainWords(app).join(" "));
+      app.close();
+      return openApp("?d=" + WL.today, 390, 844);
+    }).then(function (app) {
+      // ?d=<today> names today's puzzle, so it is today's game: a read-only
+      // board here showed an empty ladder while the real chain sat in storage,
+      // beside a streak line that still read the real streak.
+      ok("?d= for today is a plain load, not a replay: the chain is there and the header says nothing about a replay",
+         app.WL.readOnly === false && chainWords(app).join(" ") === played.join(" ") &&
+         $(app, "date").textContent === "Puzzle for " + WL.today + " · UTC",
+         $(app, "date").textContent + " / " + chainWords(app).join(" "));
+      var path = app.WL.pathOf(app.WL.puzzle).map(function (w2) { return w2.toUpperCase(); });
+      play(app, path[3]);
+      ok("and a move played under ?d= for today is stored like any other",
+         (blobOf() || {}).chain.length === played.length + 1,
+         JSON.stringify((blobOf() || {}).chain));
+      $(app, "undo").click();
+      app.close();
+      var b = blobOf();
+      b.puzzle = WL.shiftDays(WL.today, -1);
+      seed(JSON.stringify(b));
+      return openApp("", 390, 844);
+    }).then(function (app) {
+      ok("a chain stored under an older puzzle date does not carry over",
+         chainWords(app).length === 1, chainWords(app).join(" "));
+      app.close();
+      seed(JSON.stringify({ v: 1, puzzle: WL.today, chain: ["ZZZZ", "ZZZY"], solved: false,
+                            lastSolved: null, streak: 0, best: 0 }));
+      return openApp("", 390, 844);
+    }).then(function (app) {
+      ok("a stored chain that is not a legal ladder is discarded",
+         chainWords(app).length === 1 && chainWords(app)[0] === app.WL.puzzle.start.toUpperCase(),
+         chainWords(app).join(" "));
+      app.close();
+      seed(null);
+    });
+  }
+
+
+  /* ------------- layout and hit boxes (done-checklist item 6) -------------- */
+
+  // Everything on the page that is NOT a control. A tap on any of it must
+  // change nothing, and none of it may overlap a control's box
+  // (LESSONS 2026-08-09/10).
+  var PROSE = ["h1", ".tag", "#date", "#streak", "#chainbox .lab", ".ladder > .lab",
+               "#status", "#msg", "#target", "#chain"];
+  var CTRLS = ["word", "submit", "undo"];
+
+  function rectOf(e) {
+    var r = e.getBoundingClientRect();
+    return { l: r.left, t: r.top, r: r.right, b: r.bottom, w: r.width, h: r.height };
+  }
+  function overlaps(a, b) { return a.l < b.r - 0.5 && b.l < a.r - 0.5 && a.t < b.b - 0.5 && b.t < a.b - 0.5; }
+
+  // A legal ladder that wanders instead of solving, so the chain can be grown
+  // past the height of the screen without ending the puzzle.
+  function longWalk(app, n) {
+    var WL = app.WL, seen = {}, out = [], cur = WL.puzzle.start, ns, i, nx;
+    seen[cur] = 1; seen[WL.puzzle.target] = 1;
+    while (out.length < n) {
+      ns = WL.NBR[cur]; nx = null;
+      for (i = 0; i < ns.length; i++) { if (!seen[ns[i]]) { nx = ns[i]; break; } }
+      if (!nx) break;
+      seen[nx] = 1; out.push(nx.toUpperCase()); cur = nx;
+    }
+    return out;
+  }
+
+  function stateOf(app) {
+    return chainWords(app).join(" ") + "|" + $(app, "word").value + "|" + msgOf(app) +
+           "|" + (app.doc.activeElement ? app.doc.activeElement.id : "") +
+           "|" + ($(app, "undo").disabled ? "u-" : "u+");
+  }
+
+  function layoutAndTaps(w, h) {
+    var label = w + "x" + h;
+    // ?d= keeps the whole sweep read-only: nothing here can touch a real streak.
+    return openApp("?d=" + REPLAY, w, h).then(function (app) {
+      group("layout and hit boxes at " + label);
+      var doc = app.doc, de = doc.documentElement, i, off = [], solveOff = [];
+
+      ok("no horizontal scroll at " + label, de.scrollWidth <= de.clientWidth,
+         de.scrollWidth + " <= " + de.clientWidth);
+
+      function checkAt(len, bag) {
+        for (var k = 0; k < CTRLS.length; k++) {
+          var e = $(app, CTRLS[k]);
+          // solved: the field is put away by design, so it has no box to keep
+          // on screen — Submit, Undo and the message line still have to be here.
+          if (CTRLS[k] === "word" && (e.disabled || e.getBoundingClientRect().height === 0)) continue;
+          var r = e.getBoundingClientRect();
+          if (!(r.top >= -0.5 && r.bottom <= app.win.innerHeight + 0.5)) bag.push(CTRLS[k] + "@" + len);
+        }
+        var m = $(app, "msg").getBoundingClientRect();
+        if (!(m.top >= -0.5 && m.bottom <= app.win.innerHeight + 0.5)) bag.push("msg@" + len);
+        if (de.scrollHeight > de.clientHeight + 1) bag.push("page-grew@" + len);
+      }
+
+      // B1: the whole feedback loop stays on screen however long the ladder gets.
+      var walk = longWalk(app, 10);
+      var freshTab = $(app, "chainbox").tabIndex;
+      var freshOverflow = $(app, "chainbox").scrollHeight > $(app, "chainbox").clientHeight;
+      checkAt(0, off);
+      for (i = 0; i < walk.length; i++) { play(app, walk[i]); checkAt(i + 1, off); }
+      ok("input, message, Submit and Undo stay in the viewport across a " + walk.length +
+         "-rung wander at " + label, off.length === 0,
+         off.slice(0, 4).join(" ") || (walk.length + 1) + " chain lengths, none off screen");
+      // The tab stop follows the scrollbar: absent when the column holds
+      // everything, there the moment a rung is hidden above the fold.
+      ok("the ladder column is a tab stop exactly while it has something to scroll at " + label,
+         freshTab === (freshOverflow ? 0 : -1) &&
+         $(app, "chainbox").scrollHeight > $(app, "chainbox").clientHeight &&
+         $(app, "chainbox").tabIndex === 0,
+         "fresh " + freshTab + " (overflow " + freshOverflow + "), after " + walk.length +
+         " rungs " + $(app, "chainbox").tabIndex);
+
+      undoAll(app);
+      var path = app.WL.pathOf(app.WL.puzzle).map(function (x) { return x.toUpperCase(); });
+      checkAt("0", solveOff);
+      for (i = 1; i < path.length; i++) { play(app, path[i]); checkAt(i, solveOff); }
+      ok("and through a full solve at " + label, solveOff.length === 0,
+         solveOff.slice(0, 4).join(" ") || path.length + " chain lengths including the solved state");
+      ok("the solved page still fits the viewport at " + label,
+         de.scrollHeight <= de.clientHeight + 1, de.scrollHeight + " <= " + de.clientHeight);
+      app.close();
+      return openApp("?d=" + REPLAY, w, h);
+    }).then(function (app) {
+      var doc = app.doc, i, j;
+      // One rung played, so Undo is a live control for the sweep.
+      play(app, app.WL.pathOf(app.WL.puzzle)[1].toUpperCase());
+      $(app, "word").value = "";
+
+      var boxes = {}, small = [];
+      CTRLS.forEach(function (id) {
+        boxes[id] = rectOf($(app, id));
+        if (boxes[id].w < 44 || boxes[id].h < 44) small.push(id + " " + Math.round(boxes[id].w) + "x" + Math.round(boxes[id].h));
+      });
+      ok("input, Submit and Undo are all at least 44x44 CSS px at " + label,
+         small.length === 0, small.join(" ") || CTRLS.map(function (id) {
+           return id + " " + Math.round(boxes[id].w) + "x" + Math.round(boxes[id].h); }).join(", "));
+
+      // --- positive: every point across a control's whole box hits that control
+      var miss = [], pts = 0;
+      CTRLS.forEach(function (id) {
+        var e = $(app, id), r = boxes[id];
+        var xs = [r.l + 1, r.l + r.w * 0.25, r.l + r.w / 2, r.l + r.w * 0.75, r.r - 1];
+        var ys = [r.t + 1, r.t + r.h / 2, r.b - 1];
+        for (i = 0; i < xs.length; i++) for (j = 0; j < ys.length; j++) {
+          pts++;
+          var hit = doc.elementFromPoint(xs[i], ys[j]);
+          if (!(hit && (hit === e || e.contains(hit)))) {
+            miss.push(id + "(" + Math.round(xs[i]) + "," + Math.round(ys[j]) + ")->" +
+                      (hit ? (hit.id || hit.tagName) : "null"));
+          }
+        }
+      });
+      ok("every one of " + pts + " points across the three control boxes resolves to that control at " + label,
+         miss.length === 0, miss.slice(0, 3).join(" ") || pts + "/" + pts + " points");
+
+      // --- positive: a tap at the far edges of a button really does activate it
+      var dead = [];
+      var xs5 = [boxes.submit.l + 1, boxes.submit.l + boxes.submit.w * 0.25, boxes.submit.l + boxes.submit.w / 2,
+                 boxes.submit.l + boxes.submit.w * 0.75, boxes.submit.r - 1];
+      for (i = 0; i < xs5.length; i++) {
+        for (j = 0; j < 2; j++) {
+          var y = j ? boxes.submit.b - 1 : boxes.submit.t + 1;
+          say_clear(app);
+          type(app, "ZZZZ");
+          var hitS = doc.elementFromPoint(xs5[i], y);
+          if (hitS) hitS.click();
+          if (msgOf(app) !== "ZZZZ isn't in the list") dead.push("submit(" + Math.round(xs5[i]) + "," + Math.round(y) + ")");
+        }
+      }
+      $(app, "word").value = "";
+      var xs5u = [boxes.undo.l + 1, boxes.undo.l + boxes.undo.w * 0.25, boxes.undo.l + boxes.undo.w / 2,
+                  boxes.undo.l + boxes.undo.w * 0.75, boxes.undo.r - 1];
+      for (i = 0; i < xs5u.length; i++) {
+        for (j = 0; j < 2; j++) {
+          var yu = j ? boxes.undo.b - 1 : boxes.undo.t + 1;
+          play(app, app.WL.pathOf(app.WL.puzzle)[1].toUpperCase());   // rung to take back
+          var before = chainWords(app).length;
+          var hitU = doc.elementFromPoint(xs5u[i], yu);
+          if (hitU) hitU.click();
+          if (chainWords(app).length !== before - 1) dead.push("undo(" + Math.round(xs5u[i]) + "," + Math.round(yu) + ")");
+        }
+      }
+      ok("taps at the edges and quarters of Submit and Undo activate them at " + label,
+         dead.length === 0, dead.slice(0, 3).join(" ") || "20 activations, 20 hits");
+
+      // --- negative: nothing that is not a control does anything when tapped
+      play(app, app.WL.pathOf(app.WL.puzzle)[1].toUpperCase());
+      $(app, "word").value = "";
+      var before2 = stateOf(app), stray = [], npts = 0, missing = [];
+      PROSE.forEach(function (sel) {
+        var e = doc.querySelector(sel);
+        if (!e) { missing.push(sel); return; }
+        var r = rectOf(e);
+        if (r.w < 1 || r.h < 1) return;
+        [0.02, 0.25, 0.5, 0.75, 0.98].forEach(function (fx) {
+          [0.15, 0.5, 0.85].forEach(function (fy) {
+            var x = r.l + r.w * fx, y = r.t + r.h * fy;
+            if (x < 0 || y < 0 || x > app.win.innerWidth || y > app.win.innerHeight) return;
+            npts++;
+            var hit = doc.elementFromPoint(x, y);
+            var onCtrl = false;
+            CTRLS.forEach(function (id) { var c = $(app, id); if (hit && (hit === c || c.contains(hit))) onCtrl = true; });
+            if (hit) hit.click();
+            if (onCtrl || stateOf(app) !== before2) {
+              stray.push(sel + "(" + Math.round(x) + "," + Math.round(y) + ")->" +
+                         (hit ? (hit.id || hit.tagName) : "null"));
+            }
+          });
+        });
+      });
+      ok("all " + PROSE.length + " prose elements were found for the sweep at " + label,
+         missing.length === 0, missing.join(" ") || PROSE.join(" "));
+      ok("none of " + npts + " taps on labels, captions or rungs reaches a control at " + label,
+         stray.length === 0, stray.slice(0, 3).join(" ") || npts + " taps, no state change");
+
+      // --- the clearances that keep a tap off the field in the first place.
+      // Measured: with 10.2px between the field and the hairline below it,
+      // 5 of 5 taps on that hairline were retargeted into the field by
+      // Chromium's touch adjustment at 320x568; at 16px, 0 of 5. The gap
+      // above the field is load-bearing for the same reason.
+      var wr = rectOf($(app, "word"));
+      var hrEl = doc.querySelector(".hr");
+      var lastRung = doc.querySelector("#chain > .rung:last-child");
+      ok("the hairline below the field keeps its 16px clearance at " + label,
+         hrEl && rectOf(hrEl).t - wr.b >= 15.5,
+         hrEl ? (rectOf(hrEl).t - wr.b).toFixed(1) + "px" : "no .hr");
+      ok("the rung above the field keeps its 16px clearance at " + label,
+         lastRung && wr.t - rectOf(lastRung).b >= 15.5,
+         lastRung ? (wr.t - rectOf(lastRung).b).toFixed(1) + "px" : "no rung");
+
+      // --- and no prose box overlaps a control box in the first place
+      var laps = [];
+      PROSE.forEach(function (sel) {
+        var e = doc.querySelector(sel);
+        if (!e) return;
+        var r = rectOf(e);
+        if (r.w < 1 || r.h < 1) return;
+        CTRLS.forEach(function (id) { if (overlaps(r, rectOf($(app, id)))) laps.push(sel + " over " + id); });
+      });
+      ok("no caption, label or rung sits inside a control's box at " + label,
+         laps.length === 0, laps.join(" ") || "no overlaps");
+      ok("no window errors or console.error across the whole sweep at " + label,
+         app.errors.length === 0, app.errors.slice(0, 2).join(" | ") || "0 errors");
+      app.close();
+    });
+  }
+
+  function say_clear(app) { $(app, "word").value = ""; }
+
+
+
+  /* -------- the stored chain always round-trips (R1) --------------------
+     Cycle 2 re-enabled Submit after a solve, which let a rung be played past
+     the target. The loader refuses a chain whose target is not its last rung,
+     so the next reload silently emptied the day's progress while storage still
+     said the day was won — and none of the 147 rows could see it. These rows
+     do not enumerate the paths anyone thought of: they reload after each walk
+     and compare what comes back with what was on the screen, and they check the
+     stored chain's shape directly. */
+
+  function snapOf(app) {
+    return {
+      chain: app.WL.state().chain.join(" "),
+      status: $(app, "status").textContent,
+      lab: $(app, "targetlab").textContent,
+      streak: $(app, "streak").textContent
+    };
+  }
+  function sameSnap(a, b) {
+    return a.chain === b.chain && a.status === b.status && a.lab === b.lab && a.streak === b.streak;
+  }
+  function snapStr(s) { return s.chain + " | " + s.status + " | " + s.lab + " | " + s.streak; }
+
+  // The shape the loader will accept: a ladder from the start word, no repeats,
+  // and the target only ever as the last rung.
+  function storedChainIsLegal(WL, target, start) {
+    var b = blobOf(), i, seen = {}, d, j;
+    if (!b || !b.chain) return "no chain stored";
+    if (b.chain[0] !== start) return "does not start at " + start;
+    for (i = 0; i < b.chain.length; i++) {
+      if (seen[b.chain[i]]) return "repeats " + b.chain[i];
+      seen[b.chain[i]] = 1;
+      if (b.chain[i] === target && i !== b.chain.length - 1) return "buries the target at " + i;
+      if (i) {
+        d = 0;
+        for (j = 0; j < 4; j++) if (b.chain[i].charAt(j) !== b.chain[i - 1].charAt(j)) d++;
+        if (d !== 1) return b.chain[i - 1] + "->" + b.chain[i] + " is not one letter";
+      }
+    }
+    return null;
+  }
+
+  function roundTrip(WL) {
+    group("the stored chain always round-trips (R1)");
+    seed(null);
+    var path, TARGET, START, beyond, before, chainAtSolve;
+    return openApp("", 390, 844).then(function (app) {
+      path = app.WL.pathOf(app.WL.puzzle).map(function (x) { return x.toUpperCase(); });
+      TARGET = path[path.length - 1];
+      START = path[0];
+      solveIn(app);
+      chainAtSolve = app.WL.state().chain.join(" ");
+      // a real word, one letter from the target, not yet used — the repro
+      beyond = (function () {
+        var ns = app.WL.NBR[TARGET.toLowerCase()], cur = app.WL.state().chain, i, u;
+        for (i = 0; i < ns.length; i++) {
+          u = ns[i].toUpperCase();
+          if (cur.indexOf(u) === -1) return u;
+        }
+        return null;
+      }());
+      var wonMsg = msgOf(app);
+      play(app, beyond);
+      // Was: "refused, not appended" — the refusal was the whole defence. Now
+      // there is no control left to refuse: the field is put away and Submit is
+      // spent with it, so a word past the target cannot be submitted at all.
+      // The chain is what matters, and it does not move either way.
+      ok("once the ladder reaches the target there is no control left to append past it",
+         $(app, "submit").disabled === true && msgOf(app) === wonMsg &&
+         app.WL.state().chain.join(" ") === chainAtSolve,
+         beyond + " -> " + msgOf(app) + " / " + app.WL.state().chain.join(" "));
+      // The state rule behind the spent button, driven the only way left: a
+      // submit event on the form itself. A player cannot get here, but a stored
+      // chain with the target buried mid-way is the shape the loader refuses to
+      // restore, so the guard is not allowed to rot.
+      ok("and the guard under it still refuses a word past the target when the form is submitted directly",
+         (function () {
+           $(app, "word").value = beyond;
+           $(app, "play").requestSubmit();
+           return msgOf(app) === "already at the target — Undo to step back" &&
+                  app.WL.state().chain.join(" ") === chainAtSolve;
+         }()), msgOf(app) + " / " + app.WL.state().chain.join(" "));
+      $(app, "word").value = "";
+      ok("and the refusal leaves the target drawn once, as the target line",
+         chainWords(app).indexOf(TARGET) === -1 && $(app, "targetlab").textContent === "solved",
+         chainWords(app).join(" "));
+      ok("the stored chain is still a chain the loader will accept",
+         storedChainIsLegal(WL, TARGET, START) === null, storedChainIsLegal(WL, TARGET, START) || blobOf().chain.join(">"));
+      before = snapOf(app);
+      app.close();
+      return openApp("", 390, 844);
+    }).then(function (app) {
+      ok("(walk 1) solve -> submit past the target -> reload brings back what was on screen",
+         sameSnap(before, snapOf(app)), snapStr(before) + "   vs   " + snapStr(snapOf(app)));
+      // walk 2: solve -> undo -> submit -> reload
+      $(app, "undo").click();
+      var ns = app.WL.NBR[app.WL.state().chain[app.WL.state().chain.length - 1].toLowerCase()];
+      var cur = app.WL.state().chain, i, u, nxt = null;
+      for (i = 0; i < ns.length; i++) {
+        u = ns[i].toUpperCase();
+        if (cur.indexOf(u) === -1 && u !== TARGET) { nxt = u; break; }
+      }
+      if (nxt) play(app, nxt);
+      ok("the stored chain after undo-then-play is still one the loader will accept",
+         storedChainIsLegal(WL, TARGET, START) === null, storedChainIsLegal(WL, TARGET, START) || blobOf().chain.join(">"));
+      before = snapOf(app);
+      app.close();
+      return openApp("", 390, 844);
+    }).then(function (app) {
+      ok("(walk 2) solve -> undo -> play a different rung -> reload brings back what was on screen",
+         sameSnap(before, snapOf(app)), snapStr(before) + "   vs   " + snapStr(snapOf(app)));
+      // walk 3: undo all the way back, replay to the target
+      undoAll(app);
+      ok("(walk 3) undo back to the start word leaves a one-word chain the loader accepts",
+         app.WL.state().chain.length === 1 && storedChainIsLegal(WL, TARGET, START) === null,
+         blobOf().chain.join(">"));
+      solveIn(app);
+      before = snapOf(app);
+      app.close();
+      return openApp("", 390, 844);
+    }).then(function (app) {
+      ok("(walk 3) undo-to-start -> replay to the target -> reload brings back what was on screen",
+         sameSnap(before, snapOf(app)), snapStr(before) + "   vs   " + snapStr(snapOf(app)));
+      ok("(walk 3) and the day is still won exactly once",
+         blobOf().streak === 1 && blobOf().best === 1 && blobOf().solved === true,
+         JSON.stringify(blobOf()));
+      ok("the screen and the blob agree about the win after every walk",
+         (blobOf().solved === true) === ($(app, "status").textContent.indexOf("solved") === 0 &&
+                                          $(app, "targetlab").textContent === "solved"),
+         $(app, "status").textContent + " / " + $(app, "targetlab").textContent);
+      app.close();
+      seed(null);
+    });
+  }
+
+  /* legalChain()'s three restore guards, one row each.
+
+     The invariant above (R1) asks whether the page can ever *write* a chain the
+     loader refuses. These rows ask the other half: does the loader actually
+     refuse one. A stored chain is the only input to this page that nothing else
+     validates — it is hand-writable, it outlives a word-list edit, and load()
+     draws whatever it accepts — and each of the three guards was individually
+     deletable with the suite green, because every walked path was legal and no
+     row ever handed the loader an illegal one. */
+  function restoreGuards(WL) {
+    group("the stored chains the loader refuses to restore");
+    seed(null);
+    var START, TARGET, path, beyond;
+    function loadWith(chain) {
+      seed(JSON.stringify({ v: 1, puzzle: WL.today, chain: chain, solved: false,
+                            lastSolved: null, streak: 0, best: 0 }));
+      return openApp("", 390, 844);
+    }
+    return openApp("", 390, 844).then(function (app) {
+      path = app.WL.pathOf(app.WL.puzzle).map(function (x) { return x.toUpperCase(); });
+      START = path[0];
+      TARGET = path[path.length - 1];
+      // a real word one letter off the target that the path has not used
+      var ns = app.WL.NBR[TARGET.toLowerCase()], i, u;
+      for (i = 0; i < ns.length; i++) {
+        u = ns[i].toUpperCase();
+        if (path.indexOf(u) === -1) { beyond = u; break; }
+      }
+      app.close();
+      return loadWith([START, path[1]]);
+    }).then(function (app) {
+      // Without this the three rows below could all be passing because the blob
+      // never reached legalChain() at all.
+      ok("(control) a legal stored chain IS restored, so the three refusals below are not vacuous",
+         app.WL.state().chain.join(" ") === START + " " + path[1],
+         app.WL.state().chain.join(" "));
+      app.close();
+      // Yesterday's chain under today's date, a list edit that moved the start
+      // word, a hand-written blob: a ladder that does not begin where this
+      // date's ladder begins is not this date's ladder.
+      return loadWith([path[1], path[2]]);
+    }).then(function (app) {
+      ok("a stored chain that does not begin at this date's start word is refused",
+         app.WL.state().chain.join(" ") === START, app.WL.state().chain.join(" "));
+      app.close();
+      // Every rung is a legal one-letter step here; the only thing wrong with
+      // it is that it plays a word twice, which the play loop refuses and the
+      // loader has to refuse for the same reason.
+      return loadWith([START, path[1], START]);
+    }).then(function (app) {
+      ok("a stored chain that plays the same word twice is refused",
+         app.WL.state().chain.join(" ") === START, app.WL.state().chain.join(" "));
+      app.close();
+      // The shape R1 exists to keep the page from ever writing: the target
+      // buried mid-chain leaves a ladder that can never be completed, because
+      // there is nothing left to play that reaches an end already used.
+      return loadWith(path.concat([beyond]));
+    }).then(function (app) {
+      ok("a stored chain that buries the target mid-way is refused",
+         app.WL.state().chain.join(" ") === START &&
+         $(app, "targetlab").textContent === "target",
+         app.WL.state().chain.join(" ") + " / " + $(app, "targetlab").textContent);
+      app.close();
+      seed(null);
+    });
+  }
+
+  /* ---------------- the viewport HEIGHT axis (C1, C2) ---------------------
+     Cycle 1 swept two widths and no heights, and a layout that collapsed the
+     ladder column to 0px on every phone in landscape passed 101 assertions.
+     These rows walk eight viewports — five of them shorter than 430px — at
+     three chain states, and ask three questions at each: does anything overlap
+     anything, can the ladder column ever collapse below one legible rung, and
+     is anything hidden with no way to reach it. */
+
+  var SWEEP_VIEWPORTS = [
+    [320, 400], [390, 420], [640, 360], [844, 390], [812, 375],
+    [320, 568], [390, 844], [1280, 800]
+  ];
+  // The three where the whole page is meant to fit without scrolling at all.
+  var ONE_SCREENFUL = { "320x568": 1, "390x844": 1, "1280x800": 1 };
+
+  function layoutBoxes(app) {
+    var sel = ["h1", ".tag", "#date", "#streak", "#chainbox", "#inputrow", "#word",
+               ".hr", "#target", "#targetlab", "#status", ".controls", "#submit", "#undo", "#msg"];
+    var out = [], i, e, r;
+    for (i = 0; i < sel.length; i++) {
+      e = app.doc.querySelector(sel[i]);
+      if (!e) continue;
+      r = e.getBoundingClientRect();
+      if (r.width < 1 || r.height < 1) continue;
+      out.push([sel[i], e, r]);
+    }
+    return out;
+  }
+
+  function heightSweep(w, h) {
+    var label = w + "x" + h;
+    return openApp("?d=" + REPLAY, w, h).then(function (app) {
+      group("layout at " + label + " — the height axis");
+      var states = ["empty", "midplay", "solved"];
+      var path = app.WL.pathOf(app.WL.puzzle).map(function (x) { return x.toUpperCase(); });
+      var laps = [], collapse = [], unreachable = [], b1 = [], deadCtrl = [];
+      var si, i, j, a, bx;
+
+      for (si = 0; si < states.length; si++) {
+        undoAll(app);
+        var words = states[si] === "empty" ? [] :
+                    states[si] === "solved" ? path.slice(1) : path.slice(1, 3);
+        for (i = 0; i < words.length; i++) play(app, words[i]);
+        $(app, "word").value = "";
+
+        // 1. nothing overlaps anything
+        var boxes = layoutBoxes(app);
+        for (i = 0; i < boxes.length; i++) {
+          for (j = i + 1; j < boxes.length; j++) {
+            if (boxes[i][1].contains(boxes[j][1]) || boxes[j][1].contains(boxes[i][1])) continue;
+            a = boxes[i][2]; bx = boxes[j][2];
+            if (a.left < bx.right - 0.5 && bx.left < a.right - 0.5 &&
+                a.top < bx.bottom - 0.5 && bx.top < a.bottom - 0.5) {
+              laps.push(states[si] + " " + boxes[i][0] + " x " + boxes[j][0]);
+            }
+          }
+        }
+
+        // 2. the ladder column never collapses under one legible rung
+        var cb = $(app, "chainbox");
+        if (cb.clientHeight < 44) collapse.push(states[si] + " chainbox " + cb.clientHeight + "px");
+
+        // 3. nothing is hidden without a way to reach it
+        if (cb.scrollHeight > cb.clientHeight + 1) {
+          var top0 = cb.scrollTop;
+          cb.scrollTop = 0;
+          if (cb.scrollTop !== 0) unreachable.push(states[si] + " chain scroller ignored a scroll");
+          if (cb.tabIndex < 0) unreachable.push(states[si] + " chain scroller is not keyboard-reachable");
+          cb.scrollTop = top0;
+        }
+        var de = app.doc.documentElement;
+        var pageHidden = de.scrollHeight - de.clientHeight;
+        if (pageHidden > 1) {
+          app.win.scrollTo(0, pageHidden);
+          if (app.win.scrollY < Math.min(pageHidden, 1)) unreachable.push(states[si] + " page has " + pageHidden + "px hidden and did not scroll");
+          app.win.scrollTo(0, 0);
+        }
+
+        // 4. B1 still holds where the page is meant to fit
+        if (ONE_SCREENFUL[label]) {
+          if (pageHidden > 1) b1.push(states[si] + " page scrolls " + pageHidden + "px");
+          // The solved state has no input row on the board: a finished ladder
+          // has no next rung. Everything else still has to be in the viewport.
+          var fieldGone = app.win.getComputedStyle($(app, "inputrow")).display === "none";
+          ["word", "msg", "submit", "undo"].forEach(function (id) {
+            if (id === "word" && fieldGone) return;
+            var r = $(app, id).getBoundingClientRect();
+            if (!(r.height > 0 && r.top >= -0.5 && r.bottom <= app.win.innerHeight + 0.5)) {
+              b1.push(states[si] + " " + id + " not in the viewport");
+            }
+          });
+          if (fieldGone !== (states[si] === "solved")) {
+            b1.push(states[si] + " input row visibility is " + (fieldGone ? "hidden" : "shown"));
+          }
+        }
+
+        // 5. every control on the board acts, and any control that cannot act
+        //    is disabled rather than left looking live. On the solved board the
+        //    field is put away and there is nothing for Submit to read, so
+        //    Submit is spent; everywhere else it has to produce a verdict.
+        var atEnd0 = app.WL.state().chain[app.WL.state().chain.length - 1] ===
+                     app.WL.puzzle.target.toUpperCase();
+        if ($(app, "word").disabled) deadCtrl.push(states[si] + " the field is disabled");
+        if ($(app, "submit").disabled !== atEnd0) {
+          deadCtrl.push(states[si] + " Submit is " + ($(app, "submit").disabled ? "disabled" : "live") +
+                        " with the field " + (atEnd0 ? "put away" : "on the board"));
+        }
+        var before = app.WL.state().chain.length;
+        play(app, "ZZZZ");
+        if (!atEnd0 && msgOf(app) !== "ZZZZ isn't in the list") {
+          deadCtrl.push(states[si] + " Submit did not act: " + JSON.stringify(msgOf(app)));
+        }
+        $(app, "word").value = "";
+        if (!$(app, "undo").disabled) {
+          $(app, "undo").click();
+          if (app.WL.state().chain.length !== before - 1) deadCtrl.push(states[si] + " Undo did not act");
+        }
+      }
+
+      ok("no element overlaps another at " + label + ", empty / mid-play / solved",
+         laps.length === 0, laps.slice(0, 3).join(" ; ") || "45 box pairs x 3 states");
+      ok("the ladder column never collapses below one rung at " + label,
+         collapse.length === 0, collapse.join(" ") || "chainbox >= 44px in all three states");
+      ok("nothing is hidden without a scroll path at " + label,
+         unreachable.length === 0, unreachable.slice(0, 2).join(" ; ") || "chain scroller and page both reachable");
+      ok("every control is live and acts at " + label,
+         deadCtrl.length === 0, deadCtrl.slice(0, 2).join(" ; ") || "input, Submit and Undo in all three states");
+      if (ONE_SCREENFUL[label]) {
+        ok("the whole page still fits one screen at " + label + " (B1)",
+           b1.length === 0, b1.slice(0, 3).join(" ; ") || "no page scroll, all four controls in view");
+      }
+      app.close();
+    });
+  }
+
+  /* -------- rotation: the same page, a different viewport (C9) ------------
+     Every row above loads the page at the size it tests it at. A phone that is
+     turned over does not reload: the ladder column keeps whatever tab stop and
+     scroll position it was given by the last render(), and both are answers to
+     a question about the old viewport. */
+
+  function resizeTo(app, w, h) {
+    app.frame.style.width = w + "px";
+    app.frame.style.height = h + "px";
+    // A resize event, then a frame for the layout it causes.
+    return new Promise(function (res) {
+      setTimeout(function () { app.win.requestAnimationFrame(function () { res(app); }); }, 80);
+    });
+  }
+  function pinned(cb) { return cb.scrollHeight - cb.clientHeight - cb.scrollTop <= 1; }
+  function tabRight(cb) { return cb.tabIndex === (cb.scrollHeight > cb.clientHeight ? 0 : -1); }
+  function colStr(cb) {
+    return "tabIndex " + cb.tabIndex + ", " + cb.scrollHeight + " in " + cb.clientHeight +
+           "px, scrollTop " + Math.round(cb.scrollTop);
+  }
+
+  /* ------- the live region across frames, not just across writes (C5) -----
+     The rows in the input matrix read #msg synchronously, which is what a
+     player's eye does. A screen reader does not: it is handed the diff the
+     renderer computes at the end of the task, and two writes inside one task
+     are one diff. These rows watch the line across frames instead. */
+
+  function frames(app, n) {
+    return new Promise(function (res) {
+      (function step(k) {
+        if (!k) { res(); return; }
+        app.win.requestAnimationFrame(function () { step(k - 1); });
+      }(n));
+    });
+  }
+
+  function liveRegion() {
+    group("the live region announces a repeat (C5)");
+    var app0, syncText, blank;
+    return openApp("?d=" + REPLAY, 390, 844).then(function (app) {
+      app0 = app;
+      play(app, "ZZZZ");
+      $(app, "word").value = "";
+      play(app, "ZZZZ");
+      syncText = msgOf(app);
+      return frames(app, 1);      // the frame the line is blank in
+    }).then(function () {
+      blank = msgOf(app0);
+      return frames(app0, 2);
+    }).then(function () {
+      ok("the same refusal twice is written straight out, then blanked for a frame of its own so the repeat is a diff",
+         syncText === "ZZZZ isn't in the list" && blank === "" &&
+         msgOf(app0) === "ZZZZ isn't in the list" &&
+         $(app0, "msg").className === "msg warn",
+         JSON.stringify(syncText) + " -> " + JSON.stringify(blank) + " -> " + JSON.stringify(msgOf(app0)));
+      // The blank frame must never eat a message that arrived during it.
+      play(app0, "ZZZZ");
+      $(app0, "word").value = "";
+      play(app0, "ZZZZ");          // schedules the blank
+      play(app0, "YYYY");          // a different verdict, same frame
+      syncText = msgOf(app0);
+      return frames(app0, 4);
+    }).then(function () {
+      ok("a verdict that lands while a repeat is blinking is not lost and is not written over",
+         syncText === "YYYY isn't in the list" && msgOf(app0) === "YYYY isn't in the list",
+         JSON.stringify(syncText) + " -> " + JSON.stringify(msgOf(app0)));
+      // A different message is a diff already: it is not deferred, and it is
+      // not blanked either, so nothing flickers on the ordinary path.
+      var seen = [];
+      $(app0, "word").value = "";
+      play(app0, "ZZZZ");
+      seen.push(msgOf(app0));
+      return frames(app0, 1).then(function () {
+        seen.push(msgOf(app0));
+        return frames(app0, 1);
+      }).then(function () {
+        seen.push(msgOf(app0));
+        ok("a verdict that differs from the one on the line is never blanked",
+           seen.join("|") === ["ZZZZ isn't in the list", "ZZZZ isn't in the list",
+                               "ZZZZ isn't in the list"].join("|"), seen.join(" | "));
+        // C11: the blank frame is the one piece of async in the file, and the
+        // rung it stands on is a callback firing. Drop the second one — no
+        // real browser lifecycle does, but nothing in the code said so — and
+        // the line the player is reading stayed blank for good. The timer is
+        // the backstop; this is the only way to see it work.
+        $(app0, "word").value = "";
+        play(app0, "ZZZZ");                 // a repeat: let it blink out cleanly
+        return frames(app0, 3).then(function () {
+          var realRAF = app0.win.requestAnimationFrame, calls = 0;
+          app0.win.requestAnimationFrame = function (fn) {
+            calls++;
+            // The first callback (blank the line) runs; the second (put the
+            // words back) is scheduled and never called.
+            return realRAF.call(app0.win, calls === 1 ? fn : function () {});
+          };
+          $(app0, "word").value = "";
+          play(app0, "ZZZZ");               // the repeat whose restore is dropped
+          return new Promise(function (res) { setTimeout(res, 260); }).then(function () {
+            app0.win.requestAnimationFrame = realRAF;
+            ok("a dropped animation frame cannot leave the message line blank (C11)",
+               msgOf(app0) === "ZZZZ isn't in the list" && calls === 2,
+               JSON.stringify(msgOf(app0)) + " after " + calls + " frames asked for");
+            ok("no window errors or console.error across the live-region rows",
+               app0.errors.length === 0, app0.errors.slice(0, 2).join(" | ") || "0 errors");
+            app0.close();
+          });
+        });
+      });
+    });
+  }
+
+  /* --------- the top edge of the ladder column says it is an edge --------- */
+
+  function chainEdge() {
+    group("the ladder column's top edge and its ceiling (U2, U15)");
+    return openApp("?d=" + REPLAY, 320, 568).then(function (app) {
+      var cb = $(app, "chainbox"), i, walk = longWalk(app, 10);
+      ok("a column with nothing hidden above the top edge is not faded",
+         cb.className.indexOf("faded") === -1 && cb.scrollTop === 0, JSON.stringify(cb.className));
+      for (i = 0; i < walk.length; i++) play(app, walk[i]);
+      $(app, "word").value = "";
+      ok("a column scrolled off its own top is faded, so the cut-off rungs read as cut off",
+         cb.scrollTop > 0 && cb.className.indexOf("faded") !== -1 &&
+         app.win.getComputedStyle(cb).maskImage.indexOf("linear-gradient") === 0,
+         Math.round(cb.scrollTop) + "px above, " + JSON.stringify(cb.className));
+      // The fade is a 14px ramp, so switching it on for a 5px overflow put the
+      // ramp over text that was on screen: the START label measured 1.45:1 on
+      // paper against 5.60:1 unfaded. Below the ramp height there is nothing
+      // worth a cue.
+      ok("an overflow shorter than the ramp does not fade the visible text (U16)",
+         (function () {
+           var out = [], t;
+           for (t = 0; t < 14; t += 13) {
+             cb.scrollTop = t;
+             cb.dispatchEvent(new app.win.Event("scroll"));
+             out.push(t + ":" + (cb.className.indexOf("faded") !== -1) + ":" +
+                      (app.win.getComputedStyle(cb).maskImage === "none"));
+           }
+           cb.scrollTop = 14;
+           cb.dispatchEvent(new app.win.Event("scroll"));
+           out.push("14:" + (cb.className.indexOf("faded") !== -1) + ":" +
+                    (app.win.getComputedStyle(cb).maskImage.indexOf("linear-gradient") === 0));
+           return out.join(" ") === "0:false:true 13:false:true 14:true:true";
+         }()), "scrollTop 0 / 13 / 14");
+      // The mask fades whatever is under the top edge, and at 390x844 the
+      // pinned scroll position lands that edge in inter-rung whitespace: the
+      // darkest pixel in the ramp was the rail at 1.40:1, so the fade was
+      // paper on paper. The hairline does not depend on what is under it. It
+      // is the parent's background, so the mask cannot wash it out.
+      ok("a scrolled column also gets a hairline at its top edge, in the boundary colour (U2)",
+         (function () {
+           var lad = app.doc.querySelector(".ladder"), cs;
+           cb.scrollTop = cb.scrollHeight;
+           cb.dispatchEvent(new app.win.Event("scroll"));
+           cs = app.win.getComputedStyle(lad);
+           if (cs.backgroundImage.indexOf("gradient") === -1) return false;
+           if (cs.backgroundImage.indexOf("140, 131, 120") === -1) return false;  // --edge
+           if (cs.backgroundSize !== "92% 1px") return false;
+           if (cs.backgroundOrigin !== "content-box") return false;
+           cb.scrollTop = 0;
+           cb.dispatchEvent(new app.win.Event("scroll"));
+           return app.win.getComputedStyle(lad).backgroundImage === "none";
+         }()),
+         app.win.getComputedStyle(app.doc.querySelector(".ladder")).backgroundImage.slice(0, 40));
+      cb.scrollTop = cb.scrollHeight;
+      cb.dispatchEvent(new app.win.Event("scroll"));
+      // The changed letter measured 2.54:1 against the ink letters beside it —
+      // the comparison a player makes — so colour was carrying it alone.
+      ok("the changed letter is bolder than the letters beside it, and no rung gets wider for it at 320px",
+         (function () {
+           var hot = app.doc.querySelector("#chain .rung .hot");
+           if (!hot) return false;
+           var plain = null, kids = hot.parentNode.children, k;
+           for (k = 0; k < kids.length; k++) if (kids[k] !== hot) { plain = kids[k]; break; }
+           var over = 0, rungs = app.doc.querySelectorAll(".rung");
+           for (k = 0; k < rungs.length; k++) {
+             if (rungs[k].scrollWidth > rungs[k].clientWidth + 0.5) over++;
+           }
+           return parseInt(app.win.getComputedStyle(hot).fontWeight, 10) >= 700 &&
+                  parseInt(app.win.getComputedStyle(hot).fontWeight, 10) >
+                  parseInt(app.win.getComputedStyle(plain).fontWeight, 10) &&
+                  over === 0 &&
+                  app.doc.documentElement.scrollWidth <= app.doc.documentElement.clientWidth;
+         }()),
+         (function () {
+           var hot = app.doc.querySelector("#chain .rung .hot");
+           return hot ? "weight " + app.win.getComputedStyle(hot).fontWeight : "no hot letter";
+         }()));
+      cb.scrollTop = 0;
+      cb.dispatchEvent(new app.win.Event("scroll"));
+      ok("scrolling the column back to the start word takes the fade off again",
+         cb.className.indexOf("faded") === -1 &&
+         app.win.getComputedStyle(cb).maskImage === "none", JSON.stringify(cb.className));
+      // A mask clips everything the element paints, and an outline 2px OUTSIDE
+      // the border box is outside the mask's painting area — which is why the
+      // fade used to stand down under focus, taking the top-edge cue away from
+      // the keyboard player and leaving it for the mouse (U18). Drawn 2px
+      // inside the box the ring is inside the painting area, so both can be on
+      // at once: measured at 390x844 with 289px hidden, the ring paints
+      // 6.40:1 on paper down both sides and along the bottom, and its top
+      // segment reads 3.66:1 over the hairline.
+      cb.scrollTop = cb.scrollHeight;
+      cb.dispatchEvent(new app.win.Event("scroll"));
+      cb.focus();
+      ok("the fade stays on while the column is focused, and the ring is drawn inside it (U18)",
+         cb.className.indexOf("faded") !== -1 &&
+         app.win.getComputedStyle(cb).maskImage.indexOf("linear-gradient") === 0 &&
+         app.win.getComputedStyle(cb).outlineOffset === "-2px",
+         "mask " + app.win.getComputedStyle(cb).maskImage.slice(0, 16) +
+         ", outline-offset " + app.win.getComputedStyle(cb).outlineOffset);
+      // The ceiling: --chrome budgets for an input row that is not on the page
+      // at the target.
+      undoAll(app);
+      var path = app.WL.pathOf(app.WL.puzzle).map(function (x) { return x.toUpperCase(); });
+      // One move short of the target: the column is against its ceiling, with
+      // the input row still on the page.
+      for (i = 1; i < path.length - 1; i++) play(app, path[i]);
+      $(app, "word").value = "";
+      var mid = cb.clientHeight;
+      play(app, path[path.length - 1]);
+      var de = app.doc.documentElement;
+      ok("a finished ladder gets the 64px the input row is no longer using",
+         cb.clientHeight >= mid + 63 && cb.classList.contains("roomier"),
+         mid + "px -> " + cb.clientHeight + "px");
+      ok("and taking it does not push the page into a scrollbar at 320x568",
+         de.scrollHeight <= de.clientHeight + 1, de.scrollHeight + " <= " + de.clientHeight);
+      ok("the room goes back when Undo brings the input row back",
+         (function () {
+           $(app, "undo").click();
+           return !cb.classList.contains("roomier") && cb.clientHeight === mid;
+         }()), cb.clientHeight + "px");
+      ok("no window errors or console.error across the column rows",
+         app.errors.length === 0, app.errors.slice(0, 2).join(" | ") || "0 errors");
+      app.close();
+    });
+  }
+
+  /* ---- the reason a word was refused, where the refused word is (U3) ----- */
+
+  function messagePlacement() {
+    group("the rejection reason sits with the field, not under the buttons (U3, F2, F3)");
+    return openApp("?d=" + REPLAY, 844, 390).then(function (app) {
+      var doc = app.doc, msg = $(app, "msg"), ctrls = doc.querySelector(".controls");
+      // Two hairlines of near-equal length 16px apart, and only one of them is
+      // the line you write on. The rule under the field belongs to the target
+      // block, and is sized to the word it divides off rather than to the field
+      // it was mirroring.
+      ok("the rule below the field is not a second field-width line",
+         (function () {
+           var hr = doc.querySelector(".hr").getBoundingClientRect();
+           var inp = $(app, "word").getBoundingClientRect();
+           var t = doc.createRange();
+           t.selectNodeContents($(app, "target"));
+           var ink = t.getBoundingClientRect().width;
+           return hr.width <= inp.width * 0.6 && Math.abs(hr.width - ink) <= 30;
+         }()),
+         (function () {
+           var hr = doc.querySelector(".hr").getBoundingClientRect();
+           return Math.round(hr.width) + "px rule vs " +
+                  Math.round($(app, "word").getBoundingClientRect().width) + "px field";
+         }()));
+      ok("the message line comes before the buttons in the document",
+         !!(msg.compareDocumentPosition(ctrls) & app.win.Node.DOCUMENT_POSITION_FOLLOWING),
+         [].map.call(doc.querySelectorAll("#play > *, main > p"), function (e) {
+           return e.id || e.className; }).join(" > "));
+      // Measured before the move: 189-234px from the bottom of the field
+      // across the sweep, with both buttons in between. 175 is an upper bound
+      // on the 131-168px it measures now, so the two bands cannot overlap.
+      var gap = msg.getBoundingClientRect().top - $(app, "word").getBoundingClientRect().bottom;
+      ok("and nothing focusable is left between the field and the reason it refused a word",
+         gap < 175 && ctrls.getBoundingClientRect().top >= msg.getBoundingClientRect().bottom - 0.5,
+         Math.round(gap) + "px from the bottom of the field");
+      // The column used to swallow the only gesture that could reach the
+      // message on a short screen: overscroll-behavior: contain stops a swipe
+      // that has run past the end of the column from chaining into the page,
+      // and on these viewports the column is most of the screen.
+      ok("the ladder column no longer contains the scroll that has to reach the page",
+         app.win.getComputedStyle($(app, "chainbox")).overscrollBehaviorY === "auto",
+         app.win.getComputedStyle($(app, "chainbox")).overscrollBehaviorY);
+      play(app, "ZZZZ");
+      // Reachable is not the same as read. At 844x390 the message sat 40.6px
+      // below the fold at scrollY 0 and the player had to guess it was there,
+      // so reject() scrolls it into view itself — `nearest`, which is a no-op
+      // wherever it is already on screen.
+      var rj = msg.getBoundingClientRect();
+      ok("a refusal at 844x390 brings its own reason on screen, without a hand on the page",
+         rj.top >= -0.5 && rj.bottom <= app.win.innerHeight + 0.5,
+         "scrollY " + Math.round(app.win.scrollY) + ", msg bottom " +
+         Math.round(rj.bottom) + " in " + app.win.innerHeight);
+      app.win.scrollTo(0, 0);
+      var de = doc.documentElement, hidden = de.scrollHeight - de.clientHeight;
+      app.win.scrollTo(0, hidden);
+      var r = msg.getBoundingClientRect();
+      ok("a refused word's reason is reachable by scrolling the page at 844x390",
+         msgOf(app) === "ZZZZ isn't in the list" &&
+         r.top >= -0.5 && r.bottom <= app.win.innerHeight + 0.5,
+         "page hides " + hidden + "px, msg at " + Math.round(r.top) + " in " + app.win.innerHeight);
+      app.win.scrollTo(0, 0);
+      $(app, "word").value = "";
+      app.close();
+    }).then(function () {
+      return openApp("?d=" + REPLAY, 390, 460);
+    }).then(function (app) {
+      var r = $(app, "msg").getBoundingClientRect();
+      ok("and it is above the fold on a cold load from 460px of height up",
+         r.top >= -0.5 && r.bottom <= app.win.innerHeight + 0.5,
+         "msg bottom " + Math.round(r.bottom) + " in " + app.win.innerHeight);
+      // The other half of `nearest`: a page that did not need moving is not
+      // moved. A refusal that yanked a board the player could already see
+      // would be a worse bug than the one it fixed.
+      play(app, "ZZZZ");
+      ok("and a refusal on a viewport that already shows it scrolls the page not one pixel",
+         app.win.scrollY === 0 && msgOf(app) === "ZZZZ isn't in the list",
+         "scrollY " + app.win.scrollY);
+      $(app, "word").value = "";
+      app.close();
+    });
+  }
+
+  /* ------------ the game sits on the page rather than above it ------------ */
+
+  function lastInk(app) {
+    var els = app.doc.querySelectorAll("main *"), i, r, b = 0;
+    for (i = 0; i < els.length; i++) {
+      r = els[i].getBoundingClientRect();
+      if (r.height > 0) b = Math.max(b, r.bottom);
+    }
+    return b;
+  }
+
+  function centring() {
+    group("the page is centred on its cross axis, safely (U4)");
+    return openApp("?d=" + REPLAY, 390, 844).then(function (app) {
+      var top = app.doc.querySelector("h1").getBoundingClientRect().top;
+      var below = app.win.innerHeight - lastInk(app);
+      ok("on a screen with room to spare the game is centred, not floated in the top half",
+         Math.abs(top - below) <= 4 && top > 20,
+         Math.round(top) + "px above, " + Math.round(below) + "px below");
+      app.close();
+      // `safe`: on a screen too short for the game, centring would push the
+      // heading above scrollY 0, where no scrollbar can reach it. Safe
+      // alignment falls back to start and lets the overflow go out of the
+      // bottom, which is where the page's own scrollbar is.
+      return openApp("?d=" + REPLAY, 667, 375);
+    }).then(function (app) {
+      var de = app.doc.documentElement;
+      ok("on a screen too short for it nothing is pushed above the top of the document",
+         app.doc.querySelector("h1").getBoundingClientRect().top >= -0.5 &&
+         de.scrollHeight > de.clientHeight,
+         "h1 top " + Math.round(app.doc.querySelector("h1").getBoundingClientRect().top) +
+         ", page hides " + (de.scrollHeight - de.clientHeight) + "px");
+      ok("and the ladder column still has a rung's worth of height there",
+         $(app, "chainbox").clientHeight >= 44, $(app, "chainbox").clientHeight + "px");
+      app.close();
+    });
+  }
+
+  function rotation() {
+    group("rotate and resize without a reload (C9)");
+    var app0;
+    return openApp("?d=" + REPLAY, 390, 844).then(function (app) {
+      app0 = app;
+      var walk = longWalk(app, 8), i;
+      for (i = 0; i < walk.length; i++) play(app, walk[i]);
+      $(app, "word").value = "";
+      var cb = $(app, "chainbox");
+      ok("portrait, eight rungs: the column is pinned to the last rung and is a tab stop iff it overflows",
+         pinned(cb) && tabRight(cb), colStr(cb));
+      return resizeTo(app, 844, 390);
+    }).then(function () {
+      var cb = $(app0, "chainbox");
+      ok("rotating to landscape without a reload re-pins the column to the last rung",
+         pinned(cb), colStr(cb));
+      ok("and recomputes the tab stop, so a column that hides the START label is keyboard-reachable",
+         cb.scrollHeight > cb.clientHeight && cb.tabIndex === 0, colStr(cb));
+      return resizeTo(app0, 1280, 1080);
+    }).then(function () {
+      var cb = $(app0, "chainbox");
+      ok("and a viewport that fits the whole ladder takes the tab stop away again",
+         cb.scrollHeight <= cb.clientHeight && cb.tabIndex === -1, colStr(cb));
+      // reject() never calls render(), so a refusal followed by a rotation is
+      // the path with no render() anywhere in it.
+      play(app0, "ZZZZ");
+      $(app0, "word").value = "";
+      return resizeTo(app0, 390, 500);
+    }).then(function () {
+      var cb = $(app0, "chainbox");
+      ok("a rotation after a refusal — the path render() is never on — still leaves the column pinned and correct",
+         pinned(cb) && tabRight(cb) && cb.tabIndex === 0, colStr(cb));
+      ok("no window errors or console.error across the rotations", app0.errors.length === 0,
+         app0.errors.slice(0, 2).join(" | ") || "0 errors");
+      app0.close();
+    });
+  }
+
+  function heightSweepAll() {
+    var chainP = Promise.resolve();
+    SWEEP_VIEWPORTS.forEach(function (vp) {
+      chainP = chainP.then(function () { return heightSweep(vp[0], vp[1]); });
+    });
+    return chainP;
+  }
+
+  /* ------------------------------ run ------------------------------- */
+
+  /* ------------------------- the share card ------------------------- */
+
+  function solvePath(app) {
+    var path = app.WL.pathOf(app.WL.puzzle).map(function (x) { return x.toUpperCase(); }), i;
+    for (i = 1; i < path.length; i++) play(app, path[i]);
+    return path;
+  }
+
+  // A clipboard that is not there, and a clipboard that says no. Both are
+  // reachable on a real machine — file:// is not a secure context and has no
+  // navigator.clipboard at all, and a permissions policy makes writeText
+  // reject on https — so both are rows here rather than a comment about a
+  // branch nobody runs. navigator.clipboard is a prototype getter, so an own
+  // property is what shadows it.
+  function fakeClipboard(app, mode) {
+    var calls = [];
+    var value = mode === "absent" ? undefined : {
+      writeText: function (t) {
+        calls.push(t);
+        return mode === "reject" ? Promise.reject(new Error("denied")) : Promise.resolve();
+      }
+    };
+    try {
+      Object.defineProperty(app.win.navigator, "clipboard",
+        { configurable: true, get: function () { return value; } });
+    } catch (e) { /* ignore */ }
+    return calls;
+  }
+
+  // Every character of the line is either a literal from this template or a
+  // digit. That is the spoiler rule stated as a shape: there is nowhere in it
+  // for a word to hide, whoever played it and however they got there.
+  var SHARE_RE = /^word ladder \d{4}-\d{2}-\d{2} · solved in \d+ moves · best possible \d+ · streak \d+\nhttps:\/\/yinggarykairui\.github\.io\/word-ladder\/$/;
+  var SHARE_RE_REPLAY = /^word ladder \d{4}-\d{2}-\d{2} · solved in \d+ moves · best possible \d+\nhttps:\/\/yinggarykairui\.github\.io\/word-ladder\/$/;
+
+  // A fixed setTimeout is a bet on the frame budget of an off-screen iframe.
+  // The first version of these rows bet 30ms and lost about one run in five —
+  // see the note on say()'s repeat branch in the share group below.
+  function waitFor(pred, ms) {
+    var t0 = Date.now();
+    return new Promise(function (res) {
+      (function tick() {
+        var done = false;
+        try { done = pred(); } catch (e) { done = false; }
+        if (done || Date.now() - t0 > (ms || 2000)) return res();
+        setTimeout(tick, 10);
+      }());
+    });
+  }
+
+  // localStorage.setItem, counted rather than inferred. Comparing the blob
+  // before and after cannot see a write of identical bytes, so the row that
+  // said "Share writes nothing to storage" passed a mutant that called save().
+  function countWrites(app) {
+    var n = { writes: 0 };
+    var ls = app.win.localStorage, real = ls.setItem;
+    n.stop = function () { try { ls.setItem = real; } catch (e) { /* ignore */ } };
+    try {
+      ls.setItem = function () { n.writes++; return real.apply(ls, arguments); };
+    } catch (e) { n.unavailable = true; }
+    return n;
+  }
+
+  function shareCard() {
+    var app;
+    seed(null);
+    return openApp("", 390, 844).then(function (a) {
+      app = a;
+      group("the share card — the result travels, the puzzle does not");
+
+      var beforeSolve = $(app, "share").getClientRects().length;
+      var path = solvePath(app);
+      var text = app.WL.shareText();
+
+      ok("Share is not on the board until the ladder reaches the target",
+         beforeSolve === 0 && $(app, "share").getClientRects().length > 0,
+         "before " + beforeSolve + " rects, after " + $(app, "share").getClientRects().length);
+
+      ok("the line is the template and digits, and nothing else",
+         SHARE_RE.test(text), JSON.stringify(text));
+
+      ok("no word of the day's ladder appears in it",
+         (function () {
+           var lower = text.toLowerCase(), i;
+           for (i = 0; i < path.length; i++) if (lower.indexOf(path[i].toLowerCase()) !== -1) return false;
+           return lower.indexOf(app.WL.puzzle.target) === -1 && lower.indexOf(app.WL.puzzle.start) === -1;
+         }()), path.join(" ") + " — none of them in " + JSON.stringify(text.split("\n")[0]));
+
+      // README: "the same number is named the same way everywhere it appears".
+      // The share line is a third place it appears, so it owes that promise the
+      // status line's exact words, not a paraphrase of them.
+      ok("the number is named the same way in the share line as on the status line",
+         text.indexOf("solved in " + (path.length - 1) + " moves · best possible " + app.WL.puzzle.par) !== -1 &&
+         $(app, "status").textContent === "solved in " + (path.length - 1) +
+           " moves · best possible " + app.WL.puzzle.par,
+         $(app, "status").textContent + "  ||  " + text.split("\n")[0]);
+
+      // R1's invariant, extended to the control added today: no sequence of UI
+      // actions may produce a stored chain that legalChain rejects. The safest
+      // form of that for a button that is not supposed to touch the game at all
+      // is that it touches neither the chain nor the blob.
+      var counter = countWrites(app), chainBefore = app.WL.state().chain.join(" ");
+      var calls = fakeClipboard(app, "ok");
+      $(app, "share").click();
+      return waitFor(function () { return msgOf(app) === "result copied"; }).then(function () {
+        // Counted, not inferred: comparing the blob before and after cannot see
+        // a write of identical bytes, and a deliberate save() inside the copy
+        // path passed that version of this row.
+        ok("Share appends nothing to the chain and calls setItem not once",
+           app.WL.state().chain.join(" ") === chainBefore && counter.writes === 0,
+           counter.writes + " setItem call(s), chain " + app.WL.state().chain.join(" "));
+        counter.stop();
+        ok("a clipboard that takes it is told exactly what the page says it copied",
+           calls.length === 1 && calls[0] === text, calls.length + " write(s)");
+        ok("a copy the player cannot see is announced in the live region",
+           msgOf(app) === "result copied" && $(app, "sharebox").getClientRects().length === 0,
+           msgOf(app) + " · box " + $(app, "sharebox").className);
+        // A copy changes nothing else on the page, so the control acknowledges
+        // its own press — and gives it back, or the board keeps a stale word on
+        // a button that is live again.
+        ok("the button says it copied, and stops saying it",
+           $(app, "share").textContent === "Copied", $(app, "share").textContent);
+        // A lower bound as well as an upper one: a label that reverts in the
+        // next frame is not an acknowledgement anyone can read, and a row that
+        // only waits for the revert cannot tell 1600ms from 60ms.
+        return waitFor(function () { return false; }, 400).then(function () {
+          ok("and it is still saying it 400ms later, not gone in a frame",
+             $(app, "share").textContent === "Copied", $(app, "share").textContent);
+          return waitFor(function () { return $(app, "share").textContent === "Share"; }, 3000);
+        })
+          .then(function () {
+            ok("the Copied label reverts on its own", $(app, "share").textContent === "Share",
+               $(app, "share").textContent);
+
+            // The fallback, twice: a clipboard that is not there, and one that
+            // says no. Each is entered from a closed box with a different
+            // message on the line — say()'s repeat branch blanks the live region
+            // for a frame when it is handed the string already on it, which is
+            // invisible to a player and was enough to make this row flake about
+            // one run in five when the two cases ran back to back.
+            var calls2 = fakeClipboard(app, "absent");
+            $(app, "share").click();
+            return waitFor(function () { return $(app, "sharetext").getClientRects().length > 0; })
+              .then(function () {
+                var ta = $(app, "sharetext");
+                ok("with no clipboard at all the line is on the page, selected, with somewhere to copy it from",
+                   ta.getClientRects().length > 0 && ta.value === text &&
+                   ta.selectionStart === 0 && ta.selectionEnd === ta.value.length &&
+                   app.doc.activeElement === ta && msgOf(app) === FALLBACK_MSG,
+                   "value " + JSON.stringify(ta.value) + " · msg " + msgOf(app));
+                ok("the fallback field is read-only, so the line cannot be edited into a claim the page did not make",
+                   ta.readOnly === true && ta.tagName === "TEXTAREA", ta.tagName + " readOnly " + ta.readOnly);
+                // The whole point of the fallback is that the player can read
+                // what they are being told to copy. rows="2" could not: the line
+                // wraps to three rendered rows at 390px and four at 320px.
+                ok("every line of it is visible — the field is sized to what it holds",
+                   ta.scrollHeight <= ta.clientHeight && ta.scrollTop === 0,
+                   "scrollHeight " + ta.scrollHeight + " in clientHeight " + ta.clientHeight);
+                // A rotation changes the width the line wraps at without
+                // touching the line. Sized once at 390 and read at 320, the
+                // field hid 19px of it; at 280, 38px. The frame is resized
+                // under the open box, which is the same event a phone turned
+                // over fires.
+                var wasW = app.frame.style.width, wasH = app.frame.style.height;
+                app.frame.style.width = "320px"; app.frame.style.height = "568px";
+                return waitFor(function () { return ta.scrollHeight <= ta.clientHeight; }, 500)
+                  .then(function () {
+                    ok("and it is re-sized when the width it wraps at changes",
+                       ta.scrollHeight <= ta.clientHeight,
+                       "at 320px: scrollHeight " + ta.scrollHeight + " in clientHeight " + ta.clientHeight);
+                    app.frame.style.width = wasW; app.frame.style.height = wasH;
+                    return waitFor(function () { return false; }, 60);
+                  }).then(function () {
+
+                // Back to a closed box and a different message, so the reject
+                // case is entered from the same place the absent case was.
+                $(app, "undo").click();
+                play(app, path[path.length - 1]);
+                var calls3 = fakeClipboard(app, "reject");
+                $(app, "share").click();
+                return waitFor(function () { return $(app, "sharetext").getClientRects().length > 0; })
+                  .then(function () {
+                    ok("a clipboard that rejects lands in the same fallback, not in an unhandled rejection",
+                       calls3.length === 1 && $(app, "sharetext").getClientRects().length > 0 &&
+                       msgOf(app) === FALLBACK_MSG && app.errors.length === 0,
+                       app.errors.join(" ") || "no errors, box open");
+
+                    // Undo is the move back to play, and a result line for a
+                    // ladder that no longer reaches the target is not a result.
+                    $(app, "undo").click();
+                    ok("stepping off the target puts the share card away and the caret back in the field",
+                       $(app, "share").getClientRects().length === 0 &&
+                       $(app, "sharebox").getClientRects().length === 0 &&
+                       app.WL.state().shareOpen === false &&
+                       app.doc.activeElement === $(app, "word"),
+                       "share " + $(app, "share").className + ", box " + $(app, "sharebox").className +
+                       ", focus " + (app.doc.activeElement && app.doc.activeElement.id));
+                    ok("no error was thrown anywhere in the share paths", app.errors.length === 0,
+                       app.errors.join(" ") || "clean");
+                    app.close();
+                  });
+              });
+              });
+          });
+      });
+    }).then(function () {
+      return openApp("?d=" + REPLAY, 390, 844);
+    }).then(function (app) {
+      group("the share card under ?d= — a replay has no streak to claim");
+      solvePath(app);
+      var text = app.WL.shareText(), blobBefore = stored();
+      ok("the streak clause is omitted, not printed as zero",
+         SHARE_RE_REPLAY.test(text) && text.indexOf("streak") === -1, JSON.stringify(text));
+      var counter = countWrites(app);
+      fakeClipboard(app, "absent");
+      $(app, "share").click();
+      return waitFor(function () { return $(app, "sharetext").getClientRects().length > 0; }).then(function () {
+        ok("pressing Share on a replay writes nothing to storage",
+           stored() === blobBefore && counter.writes === 0,
+           counter.writes + " setItem call(s)");
+        counter.stop();
+        ok("the fallback still opens on a replay board", $(app, "sharetext").getClientRects().length > 0,
+           $(app, "sharebox").className);
+        app.close();
+      });
+    });
+  }
+
+  // The share control is subject to the same layout law as every other control
+  // on this page: reachable, big enough for a thumb, and not growing the
+  // document off the bottom of a phone.
+  function shareLayout(w, h) {
+    var label = w + "x" + h;
+    seed(null);
+    return openApp("", w, h).then(function (app) {
+      group("the share card's layout at " + label);
+      var de = app.doc.documentElement;
+      solvePath(app);
+      var sb = $(app, "share").getBoundingClientRect();
+      ok("Share is at least 44x44 at " + label,
+         sb.width >= 44 && sb.height >= 44,
+         Math.round(sb.width * 10) / 10 + "x" + Math.round(sb.height * 10) / 10);
+      ok("Share is inside the viewport at " + label,
+         sb.top >= -0.5 && sb.bottom <= app.win.innerHeight + 0.5,
+         "top " + Math.round(sb.top) + " bottom " + Math.round(sb.bottom) + " of " + app.win.innerHeight);
+      ok("Share does not overlap Undo at " + label,
+         (function () {
+           var u = $(app, "undo").getBoundingClientRect();
+           return sb.left >= u.right - 0.5 || sb.right <= u.left + 0.5;
+         }()), "share " + Math.round(sb.left) + "-" + Math.round(sb.right) +
+               ", undo " + Math.round($(app, "undo").getBoundingClientRect().left) + "-" +
+               Math.round($(app, "undo").getBoundingClientRect().right));
+      var solvedH = de.scrollHeight;
+      fakeClipboard(app, "absent");
+      $(app, "share").click();
+      return waitFor(function () { return $(app, "sharetext").getClientRects().length > 0; }).then(function () {
+        var el = $(app, "sharetext"), ta = el.getBoundingClientRect();
+        // The property that had to hold is not "the page never moves" — the
+        // field is sized to a line whose wrapped height is a function of the
+        // viewport, so at 320 and in landscape the document grows and the page
+        // scrolls, which is this build's stated law rather than a break in it.
+        // It is that the line the player has been told to copy is entirely
+        // rendered and entirely on screen.
+        ok("every line of the result is rendered inside the field at " + label,
+           el.scrollHeight <= el.clientHeight && el.scrollTop === 0,
+           "scrollHeight " + el.scrollHeight + " in clientHeight " + el.clientHeight +
+           ", scrollTop " + el.scrollTop);
+        ok("the fallback field is fully inside the viewport at " + label,
+           ta.top >= -0.5 && ta.bottom <= app.win.innerHeight + 0.5,
+           "top " + Math.round(ta.top) + " bottom " + Math.round(ta.bottom) + " of " +
+           app.win.innerHeight + "; document " + solvedH + " -> " + de.scrollHeight);
+        ok("no horizontal scroll with the fallback open at " + label,
+           de.scrollWidth <= de.clientWidth, de.scrollWidth + " <= " + de.clientWidth);
+        ok("the fallback field is at least 44px tall at " + label, ta.height >= 44,
+           Math.round(ta.height * 10) / 10 + "px");
+        // A focus ring is drawn 2px outside its element at a 2px offset, and the
+        // document grows to exactly the height of what is in it: with no
+        // clearance under the box the ring's bottom edge sat past the last
+        // scrollable pixel, so the field could hold the caret and not show it.
+        ok("there is room under the field for the ring that says it has the caret at " + label,
+           de.scrollHeight - (ta.bottom + app.win.scrollY) >= 4,
+           "slack " + Math.round((de.scrollHeight - (ta.bottom + app.win.scrollY)) * 10) / 10 + "px");
+        // .roomier lends the ladder column 64px — the height --chrome is still
+        // budgeting for the input row that has been put away at the target.
+        // The open fallback box is standing in that same space, so it cannot be
+        // lent twice, and `atTarget && !shareOpen` is the term that says so.
+        // The class is not what is asserted here; what the class costs is.
+        // Measured at 320x568 with the fallback open, when the defect was
+        // found: the document went 568 -> 605 (+37) as shipped, and
+        // 568 -> 669 (+101) with the !shareOpen term dropped, because the
+        // column keeps a loan it is no longer using and the box is added under
+        // it. Both numbers are 20px lower now — the fallback's message stopped
+        // wrapping to a second line at 320px when its wording was corrected —
+        // so the row asserts the bound rather than the reading.
+        var grew = de.scrollHeight - solvedH;
+        ok("opening the fallback costs the page the box and not the box plus the column's 64px loan at " + label,
+           grew <= 64, "document " + solvedH + " -> " + de.scrollHeight + " (+" + grew + ")");
+        if (label === "320x568") {
+          // 64 is not an arbitrary constant in the row above: this is the one
+          // viewport in the sweep where the column is at its ceiling, so it is
+          // the only one where the loan is visible at all. Forcing it back on
+          // under the open box measures exactly what the term is refusing.
+          var open = de.scrollHeight;
+          $(app, "chainbox").classList.add("roomier");
+          var loaned = de.scrollHeight;
+          $(app, "chainbox").classList.remove("roomier");
+          ok("and the loan, forced back on under the open box, is worth the 64px it is named for",
+             loaned - open >= 56 && de.scrollHeight === open,
+             open + " -> " + loaned + " with the loan (+" + (loaned - open) + "), back to " + de.scrollHeight);
+        }
+        // The one line the page asks the player to read carefully enough to copy
+        // is not the smallest text on the page.
+        ok("the line the player is told to copy is set at the status line's size at " + label,
+           app.win.getComputedStyle(el).fontSize === app.win.getComputedStyle($(app, "status")).fontSize,
+           app.win.getComputedStyle(el).fontSize + " vs status " +
+           app.win.getComputedStyle($(app, "status")).fontSize);
+        app.close();
+      });
+    });
+  }
+
+  // A clipboard write outlives the board it was made about, and a permission
+  // prompt makes that gap seconds long. Every row here holds a promise open
+  // across a move, which is the only way to see the bug: without the guard,
+  // "result copied" appeared over a seven-move ladder for a five-move copy, and
+  // "copy this line" appeared on a board with no line and no box on it.
+  function deferredClipboard(app) {
+    var pend = [];
+    try {
+      Object.defineProperty(app.win.navigator, "clipboard", {
+        configurable: true,
+        get: function () {
+          return { writeText: function (t) {
+            return new Promise(function (res, rej) { pend.push({ text: t, res: res, rej: rej }); });
+          } };
+        }
+      });
+    } catch (e) { /* ignore */ }
+    return pend;
+  }
+
+  function shareInFlight() {
+    return openApp("?d=" + REPLAY, 390, 844).then(function (app) {
+      group("a clipboard call that outlives its board says nothing");
+      var path = solvePath(app);
+      var pend = deferredClipboard(app);
+
+      $(app, "share").click();
+      $(app, "undo").click();
+      pend[0].rej(new Error("denied"));
+      return waitFor(function () { return false; }, 120).then(function () {
+        ok("a rejection landing after Undo does not tell the player to copy a line that is not there",
+           msgOf(app) === "" && $(app, "sharebox").getClientRects().length === 0 &&
+           $(app, "share").getClientRects().length === 0,
+           "msg " + JSON.stringify(msgOf(app)) + ", box " + $(app, "sharebox").className);
+        ok("and the caret is in the field, not on <body>",
+           app.doc.activeElement === $(app, "word"),
+           String(app.doc.activeElement && app.doc.activeElement.id));
+
+        // Back at the target, two presses in flight at once.
+        play(app, path[path.length - 1]);
+        var before = msgOf(app);
+        $(app, "share").click();   // press 2
+        $(app, "share").click();   // press 3
+        pend[1].res();
+        return waitFor(function () { return false; }, 120).then(function () {
+          ok("a settle from a press that has been superseded is ignored",
+             msgOf(app) === before && $(app, "share").textContent === "Share",
+             "msg " + JSON.stringify(msgOf(app)) + ", label " + $(app, "share").textContent);
+          pend[2].rej(new Error("denied"));
+          return waitFor(function () { return $(app, "sharetext").getClientRects().length > 0; })
+            .then(function () {
+              ok("the latest press still lands, and lands in the fallback",
+                 msgOf(app) === FALLBACK_MSG &&
+                 app.doc.activeElement === $(app, "sharetext"),
+                 msgOf(app) + " / focus " + (app.doc.activeElement && app.doc.activeElement.id));
+
+              // A copy settling over a box that holds the caret: render() takes
+              // the box away, and focus has to go somewhere that exists.
+              $(app, "share").click();          // press 4, over the open box
+              pend[3].res();
+              return waitFor(function () { return $(app, "sharebox").getClientRects().length === 0; })
+                .then(function () {
+                  ok("a copy that closes the open fallback moves the caret to Share, never to <body>",
+                     app.doc.activeElement === $(app, "share") &&
+                     app.doc.activeElement !== app.doc.body,
+                     String(app.doc.activeElement && (app.doc.activeElement.id || app.doc.activeElement.tagName)));
+                  ok("no error was thrown across any of it", app.errors.length === 0,
+                     app.errors.join(" ") || "clean");
+                  app.close();
+                });
+            });
+        });
+      });
+    });
+  }
+
+  // A route to the target one move longer than the shortest one, so a board can
+  // leave the target and come back to it saying something different. Needs a
+  // word adjacent to both the last rung and the target; not every date has one,
+  // so the date is searched for rather than assumed, and the row says which it
+  // used.
+  function detourDate(WL) {
+    var d, i, p, path, L, T, k, w;
+    for (i = 0; i < 60; i++) {
+      d = WL.shiftDays(WL.today, -(i + 1));
+      p = WL.puzzleFor(d);
+      path = WL.pathOf(p);
+      if (!path || path.length < 3) continue;
+      L = path[path.length - 2];
+      T = p.target;
+      for (k = 0; k < WL.NBR[L].length; k++) {
+        w = WL.NBR[L][k];
+        if (w !== T && path.indexOf(w) === -1 && WL.NBR[w].indexOf(T) !== -1) {
+          return { date: d, path: path.map(function (x) { return x.toUpperCase(); }),
+                   detour: w.toUpperCase() };
+        }
+      }
+    }
+    return null;
+  }
+
+  // settle()'s three guards each close a different way for a clipboard answer to
+  // arrive about a board that is no longer there. Two of them covered for each
+  // other under the rows above — deleting either left the suite green while
+  // re-introducing, word for word, the behaviour the day's first review
+  // rejected. These are the two cases that tell them apart.
+  function shareGuards() {
+    var found;
+    return openApp("", 390, 844).then(function (a) {
+      found = detourDate(a.WL);
+      a.close();
+      ok("a date with a one-move detour back to the target exists to test against",
+         !!found, found ? found.date + ": " + found.path.join(">") + " detour via " + found.detour
+                        : "none in 60 dates");
+      if (!found) return null;
+      return openApp("?d=" + found.date, 390, 844);
+    }).then(function (app) {
+      if (!app) return;
+      var WL = app.WL, path = found.path, i;
+      for (i = 1; i < path.length; i++) play(app, path[i]);
+
+      // A copy that did happen, then a board that moves away from it inside the
+      // 1.6s the label is up for. The label is a claim about a board; nothing
+      // was copied about the board it would come back to.
+      fakeClipboard(app, "ok");
+      $(app, "share").click();
+      return waitFor(function () { return $(app, "share").textContent === "Copied"; })
+        .then(function () {
+          $(app, "undo").click();
+          play(app, path[path.length - 1]);
+          ok("a Copied label does not survive the board it was earned on",
+             $(app, "share").textContent === "Share" &&
+             $(app, "share").getClientRects().length > 0,
+             "label " + $(app, "share").textContent + " after undo and re-solve");
+          return app;
+        }).then(function (app) {
+      var pend = deferredClipboard(app);
+
+      // (A) The board leaves the target while the LINE stays identical: same
+      // move count, same streak, so only the at-target guard can catch it.
+      $(app, "share").click();
+      var sent = pend[0].text;
+      $(app, "undo").click();
+      play(app, found.detour);
+      var sameText = sent === WL.shareText();
+      var offTarget = app.WL.state().chain.slice(-1)[0] !== WL.puzzle.target.toUpperCase();
+      var msgBefore = msgOf(app);
+      pend[0].res();
+      return waitFor(function () { return false; }, 150).then(function () {
+        ok("a copy that comes back to a board of the same length that is no longer at the target says nothing",
+           sameText && offTarget && msgOf(app) === msgBefore &&
+           $(app, "share").getClientRects().length === 0,
+           "line unchanged " + sameText + ", off target " + offTarget +
+           ", msg " + JSON.stringify(msgOf(app)));
+        ok("and the button does not come back wearing a label it did not earn",
+           $(app, "share").textContent === "Share", $(app, "share").textContent);
+
+        // (B) The board returns to the target one move longer, so the at-target
+        // guard passes and only the line itself can catch it.
+        $(app, "undo").click();
+        play(app, path[path.length - 1]);   // back at the target, one move up
+        $(app, "share").click();            // press 2, deferred
+        var sent2 = pend[1].text;
+        $(app, "undo").click();
+        play(app, found.detour);
+        play(app, path[path.length - 1]);   // at the target again, longer still
+        var atTarget = app.WL.state().chain.slice(-1)[0] === WL.puzzle.target.toUpperCase();
+        var differs = sent2 !== WL.shareText();
+        var msgBefore2 = msgOf(app);
+        pend[1].res();
+        return waitFor(function () { return false; }, 150).then(function () {
+          ok("a copy of a five-move result does not announce itself over a six-move board",
+             atTarget && differs && msgOf(app) === msgBefore2 &&
+             $(app, "share").textContent === "Share",
+             "at target " + atTarget + ", line moved on " + differs +
+             ", msg " + JSON.stringify(msgOf(app)) + ", label " + $(app, "share").textContent);
+          ok("no error was thrown by either stale settle", app.errors.length === 0,
+             app.errors.join(" ") || "clean");
+          app.close();
+        });
+      });
+      });
+    });
+  }
+
+  // The label swap has to fit the button it is swapped into, at the width the
+  // must-pass line is judged at. The design argument is that SUBMIT already
+  // proves six letters fit; this row is that argument checked rather than
+  // inherited.
+  function copiedLabelFits() {
+    seed(null);
+    return openApp("", 320, 568).then(function (app) {
+      group("the Copied label fits the button it lands in, at 320px");
+      solvePath(app);
+      var b = $(app, "share"), before = b.getBoundingClientRect().width;
+      fakeClipboard(app, "ok");
+      b.click();
+      return waitFor(function () { return b.textContent === "Copied"; }).then(function () {
+        ok("Copied does not overflow its own border at 320px",
+           b.scrollWidth <= b.clientWidth,
+           "scrollWidth " + b.scrollWidth + " in clientWidth " + b.clientWidth);
+        ok("and swapping the label does not reflow the row",
+           Math.abs(b.getBoundingClientRect().width - before) < 0.5,
+           before + " -> " + b.getBoundingClientRect().width);
+        // Straight into a refused write while Copied is still up. The board has
+        // not left the target, so render() has no reason to take the label
+        // down on its own — and a button reading Copied beside a line saying
+        // the clipboard is unavailable is the page contradicting itself.
+        fakeClipboard(app, "reject");
+        b.click();
+        return waitFor(function () { return $(app, "sharetext").getClientRects().length > 0; })
+          .then(function () {
+            ok("a refused copy takes down the label a successful one put up",
+               b.textContent === "Share" && msgOf(app) === FALLBACK_MSG,
+               b.textContent + " beside " + JSON.stringify(msgOf(app)));
+            app.close();
+          });
+      });
+    });
+  }
+
+  // The restored #word:disabled rule. The branch that sets the property is
+  // unreachable on the shipped list, so the property is set here directly:
+  // the question this row asks is whether the styling exists, not whether the
+  // guard can run.
+  function disabledField() {
+    return openApp("?d=" + REPLAY, 390, 844).then(function (app) {
+      group("a disabled field reads as spent, not as live");
+      var w = $(app, "word"), cs = app.win.getComputedStyle;
+      var liveColour = cs(w).color, liveStyle = cs(w).borderBottomStyle;
+      w.disabled = true;
+      var deadColour = cs(w).color, deadStyle = cs(w).borderBottomStyle;
+      var muted = cs(app.doc.documentElement).getPropertyValue("--muted").trim();
+      ok("a disabled #word is drawn differently from a live one",
+         deadColour !== liveColour && deadStyle !== liveStyle,
+         liveColour + "/" + liveStyle + " -> " + deadColour + "/" + deadStyle);
+      ok("and it is drawn in the muted ink the rest of the page uses for spent controls",
+         deadColour === cs($(app, "submit")).color || muted.length > 0,
+         "muted " + muted + ", field " + deadColour);
+      w.disabled = false;
+      app.close();
+    });
+  }
+
+  // Residual 13: which letter changed was colour and weight and nothing else.
+  function rungLabels() {
+    return openApp("?d=" + REPLAY, 390, 844).then(function (app) {
+      group("a rung says which letter changed, in words as well as in ink");
+      var path = solvePath(app), labels = chainLabels(app), ORD = ["1st", "2nd", "3rd", "4th"], i, bad = [];
+      ok("the start word is announced bare — it has no rung above it to have changed from",
+         labels[0] === path[0], labels[0]);
+      for (i = 1; i < labels.length; i++) {
+        var hot = -1, k;
+        for (k = 0; k < 4; k++) if (path[i].charAt(k) !== path[i - 1].charAt(k)) { hot = k; break; }
+        if (labels[i] !== path[i] + ", " + ORD[hot] + " letter changed") bad.push(labels[i]);
+      }
+      ok("every played rung below the start names the position that changed",
+         bad.length === 0 && labels.length > 1, bad.join(" ; ") || labels.slice(1).join(" ; "));
+      ok("the reached target names its changed letter too",
+         $(app, "target").getAttribute("aria-label") ===
+           path[path.length - 1] + ", " + (function () {
+             var a = path[path.length - 1], b = path[path.length - 2], k;
+             for (k = 0; k < 4; k++) if (a.charAt(k) !== b.charAt(k)) return ORD[k];
+             return "?";
+           }()) + " letter changed",
+         $(app, "target").getAttribute("aria-label"));
+      // A label on its own announces nothing. The rung is a <div> whose text is
+      // split one letter to a span, so its implicit role is `generic` —
+      // naming-prohibited in ARIA — and an aria-label on it is dropped: the
+      // reader falls through to the per-letter StaticText children and spells
+      // the word out. role="img" is what makes the label a name.
+      //
+      // Nothing inside a page can read a computed accessible name: there is no
+      // DOM API for it, and this Chromium exposes neither Element.computedName
+      // nor getComputedAccessibleNode(). So the name was measured out of band
+      // against this same build, over CDP (Accessibility.enable +
+      // Accessibility.getFullAXTree). Shipped, a played rung comes back as
+      //   image "TAME, 1st letter changed"  with four StaticText children;
+      // with both setAttribute("role", "img") calls removed the same node is
+      //   generic  with the same four StaticText children under it.
+      // These two rows are the half of that a browser can see: the role that
+      // permits a name, over the letter-split content that makes one necessary.
+      var rungs = [].slice.call($(app, "chain").children).concat([$(app, "target")]);
+      var noRole = rungs.filter(function (r) { return r.getAttribute("role") !== "img"; });
+      ok("every rung carries the role that lets its label be a name and not be dropped",
+         rungs.length > 1 && noRole.length === 0,
+         noRole.map(function (r) {
+           return String(r.getAttribute("aria-label")) + " role=" + String(r.getAttribute("role"));
+         }).join(" ; ") || rungs.length + " rungs, every one role=img");
+      var notSplit = rungs.filter(function (r) {
+        return r.querySelectorAll("span").length !== 4 || r.textContent.length !== 4;
+      });
+      ok("and every rung is split one letter to a span, which is why it needs that role",
+         notSplit.length === 0,
+         notSplit.map(function (r) {
+           return r.textContent + ":" + r.querySelectorAll("span").length;
+         }).join(" ") || rungs.length + " rungs, four spans each");
+      undoAll(app);
+      ok("an unplayed target keeps the role and is announced bare, because nothing has changed into it yet",
+         $(app, "target").getAttribute("role") === "img" &&
+         $(app, "target").getAttribute("aria-label") === path[path.length - 1].toUpperCase(),
+         $(app, "target").getAttribute("aria-label") + " role=" +
+         String($(app, "target").getAttribute("role")));
+      app.close();
+    });
+  }
+
+  /* Hover, press, and the phone in between (D3).
+
+     :hover was the page's only pointer style, and it was a full ink inversion.
+     On iOS Safari and most Android Chrome :hover sticks after a tap until the
+     next tap elsewhere, so a tapped button stayed a solid black block; and with
+     no :active rule, that stuck state was also the only thing a tap ever showed.
+     A browser will not let a script fake a real press, so what is measured here
+     is the sheet the browser is actually using: which rules are behind a
+     hover-capable guard, which are not, and what the press rule paints. */
+  function pointerStates() {
+    return openApp("?d=" + REPLAY, 390, 844).then(function (app) {
+      group("hover is asked for only where hovering is real, and a press has its own state");
+      var hoverRules = [], activeRules = [];
+      function walk(rules, conds) {
+        for (var i = 0; i < rules.length; i++) {
+          var r = rules[i];
+          if (r.cssRules && typeof r.conditionText === "string") {
+            walk(r.cssRules, conds.concat([r.conditionText]));
+            continue;
+          }
+          if (!r.selectorText) continue;
+          var e = { sel: r.selectorText, conds: conds.join(" && "), style: r.style };
+          if (r.selectorText.indexOf(":hover") !== -1) hoverRules.push(e);
+          if (r.selectorText.indexOf(":active") !== -1) activeRules.push(e);
+        }
+      }
+      var sheets = app.doc.styleSheets, k;
+      for (k = 0; k < sheets.length; k++) walk(sheets[k].cssRules, []);
+
+      var unguarded = hoverRules.filter(function (e) { return e.conds.indexOf("hover") === -1; });
+      ok("every :hover rule in the sheet sits behind a query for a pointer that can really hover",
+         hoverRules.length > 0 && unguarded.length === 0,
+         unguarded.map(function (e) { return e.sel + " @ " + (e.conds || "no query"); }).join(" ; ") ||
+         hoverRules.map(function (e) { return e.sel + " @ " + e.conds; }).join(" ; "));
+
+      var press = activeRules.filter(function (e) { return e.sel.indexOf("button") === 0; });
+      ok("a press has a rule of its own, and it is not behind that guard — a tap is where it is needed most",
+         press.length > 0 && press.filter(function (e) {
+           return e.conds.indexOf("hover") !== -1 || e.conds.indexOf("pointer") !== -1;
+         }).length === 0,
+         press.map(function (e) { return e.sel + " @ " + (e.conds || "no query"); }).join(" ; ") || "none");
+
+      // What the rule paints, not what it says: the declared value is resolved
+      // by the browser against this page's own custom properties and compared
+      // with the colour a resting button is actually drawn in.
+      var probe = app.doc.createElement("div");
+      app.doc.body.appendChild(probe);
+      var declared = press.length ? press[0].style.backgroundColor : "";
+      probe.style.backgroundColor = declared;
+      var pressed = app.win.getComputedStyle(probe).backgroundColor;
+      var resting = app.win.getComputedStyle($(app, "undo")).backgroundColor;
+      probe.parentNode.removeChild(probe);
+      ok("and it repaints the button — the pressed fill resolves to a colour the resting button is not",
+         declared !== "" && pressed !== resting && pressed !== "rgba(0, 0, 0, 0)",
+         declared + " -> " + pressed + ", resting " + resting);
+
+      // The palette is closed: a press may not introduce a colour the page does
+      // not already own.
+      var root = app.win.getComputedStyle(app.doc.documentElement);
+      var palette = ["--paper", "--ink", "--muted", "--accent", "--rule", "--edge"].map(function (n) {
+        probe = app.doc.createElement("div");
+        app.doc.body.appendChild(probe);
+        probe.style.backgroundColor = root.getPropertyValue(n).trim();
+        var v = app.win.getComputedStyle(probe).backgroundColor;
+        probe.parentNode.removeChild(probe);
+        return v;
+      });
+      ok("and it does so in a colour the palette already holds",
+         palette.indexOf(pressed) !== -1, pressed + " in [" + palette.join(", ") + "]");
+      app.close();
+    });
+  }
+
+  /* The no-puzzle guard, driven (D5).
+
+     `if (!PUZ)` cannot be reached on the shipped list — every date from 2020 to
+     2028 comes back "distance 3-5" — so it is the one branch on this page that
+     ships untested by construction. It is reached here by writing a copy of the
+     source with the word list cut to two words that are not neighbours: the
+     largest component is one word, no start has two neighbours, both phases and
+     the sorted-scan fallback come back null, and puzzleFor() returns null.
+
+     Measured on that copy before the fix: the field was correctly dotted and
+     greyed, and beside it Submit and Undo were both live and drawn at full ink
+     — and because everything that wires the page up sits below the guard's
+     `return`, including the form's own submit handler, one press on Submit fell
+     through to the browser's default and performed a native form GET, reloading
+     the page (…?), which threw away the line explaining why there was no board. */
+  function noPuzzle() {
+    group("the branch with no puzzle in it ships no live controls");
+    var crippled = SRC.replace(/var WORDS = \([\s\S]*?\)\.split\(" "\);/,
+                               'var WORDS = "aaaa zzzz".split(" ");');
+    ok("(control) the source really was cut down, so the rows below are about the guard",
+       crippled !== SRC && crippled.indexOf('var WORDS = "aaaa zzzz"') !== -1,
+       crippled === SRC ? "the word list did not match" : "list replaced");
+    return openWritten(390, 844, crippled).then(function (app) {
+      var cs = app.win.getComputedStyle;
+      ok("the guard is the branch that ran — no puzzle, no engine, and the page says so",
+         $(app, "status").textContent === "no puzzle for this date" && !app.win.WL &&
+         app.errors.length === 0,
+         $(app, "status").textContent + " / WL " + typeof app.win.WL + " / " + app.errors.join(" "));
+      ok("the field is put out of service, and so are both buttons beside it",
+         $(app, "word").disabled === true && $(app, "submit").disabled === true &&
+         $(app, "undo").disabled === true,
+         "word " + $(app, "word").disabled + ", submit " + $(app, "submit").disabled +
+         ", undo " + $(app, "undo").disabled);
+      // Disabled is a state; being drawn as spent is what the player sees. Both
+      // read back the muted ink and the edge boundary the rest of the page uses
+      // for a control that has nothing left to do, not the full ink they had.
+      var muted = cs(app.doc.documentElement).getPropertyValue("--muted").trim();
+      var probe = app.doc.createElement("div");
+      app.doc.body.appendChild(probe);
+      probe.style.color = muted;
+      var mutedRGB = cs(probe).color;
+      probe.style.color = cs(app.doc.documentElement).getPropertyValue("--ink").trim();
+      var inkRGB = cs(probe).color;
+      probe.parentNode.removeChild(probe);
+      ok("and both are drawn as spent rather than at full ink",
+         cs($(app, "submit")).color === mutedRGB && cs($(app, "undo")).color === mutedRGB &&
+         mutedRGB !== inkRGB,
+         "submit " + cs($(app, "submit")).color + ", undo " + cs($(app, "undo")).color +
+         ", muted " + mutedRGB + ", ink " + inkRGB);
+      // The button cannot be pressed now, but the form can still be submitted —
+      // and a submit nobody stops is a page load that discards the message. The
+      // probe is registered after the page's own handler, so what it reads is
+      // whether the page already stopped it; it then stops it itself, because a
+      // navigating harness frame proves nothing twice.
+      return new Promise(function (res) {
+        var f = $(app, "play");
+        f.addEventListener("submit", function (e) {
+          var was = e.defaultPrevented;
+          e.preventDefault();
+          res(was);
+        });
+        f.requestSubmit();
+      }).then(function (wasPrevented) {
+        ok("and a submit that reaches the form is stopped, not handed to the browser as a page load",
+           wasPrevented === true, "defaultPrevented at the probe: " + wasPrevented);
+        app.close();
+      });
+    });
+  }
+
+  function finish() {
+    try { if (saved === null) localStorage.removeItem(KEY); else localStorage.setItem(KEY, saved); }
+    catch (e) { /* ignore */ }
+    var total = pass + fail;
+    var s = document.getElementById("score");
+    s.textContent = fail === 0 ? "PASSED " + pass + "/" + total : "FAILED " + fail + " of " + total;
+    s.className = fail === 0 ? "pass" : "fail";
+    document.getElementById("note").textContent =
+      (skip ? skip + " skipped (source checks need http). " : "") +
+      (fail ? "Failures: " + failures.join(" · ") : "No failures.");
+    document.title = (fail === 0 ? "PASS " : "FAIL ") + pass + "/" + total + " — word ladder tests";
+    window.TESTS = { pass: pass, fail: fail, skip: skip, total: total, failures: failures };
+  }
+
+  openApp("", 390, 844).then(function (app) {
+    var WL = app.WL;
+    if (!WL) throw new Error("index.html loaded but exposed no engine");
+    // ?d=<today> is today's game, not a replay: step the replay date off today
+    // so no row below can be handed a writable board it thinks is read-only.
+    if (REPLAY === WL.today) REPLAY = WL.shiftDays(WL.today, -1);
+    return sourceChecks()
+      .then(function () { listAndPuzzles(app); app.close(); })
+      .then(function () { return inputMatrix(); })
+      .then(function () { return twoTabs(WL); })
+      .then(function () { return streakMatrix(WL); })
+      .then(function () { return progressMatrix(WL); })
+      .then(function () { return layoutAndTaps(320, 568); })
+      .then(function () { return layoutAndTaps(390, 844); })
+      .then(function () { return roundTrip(WL); })
+      .then(function () { return restoreGuards(WL); })
+      .then(function () { return liveRegion(); })
+      .then(function () { return chainEdge(); })
+      .then(function () { return messagePlacement(); })
+      .then(function () { return centring(); })
+      .then(function () { return rotation(); })
+      .then(function () { return heightSweepAll(); })
+      .then(function () { return shareCard(); })
+      .then(function () { return shareLayout(320, 568); })
+      // 360x640 is quoted in PROJECT.md's growth entry, which is the reason it
+      // is driven: the entry says the page grows 3px there, and the entry that
+      // deleted that clause was wrong precisely because nothing measured it.
+      .then(function () { return shareLayout(360, 640); })
+      .then(function () { return shareLayout(390, 844); })
+      .then(function () { return shareInFlight(); })
+      .then(function () { group("settle()'s guards, told apart"); return shareGuards(); })
+      .then(function () { return copiedLabelFits(); })
+      .then(function () { return disabledField(); })
+      .then(function () { return rungLabels(); })
+      .then(function () { return pointerStates(); })
+      .then(function () { return noPuzzle(); });
+  }).then(finish, function (err) {
+    group("harness");
+    if (String(err.message) === "sandboxed") {
+      row("FAIL", "cannot reach index.html inside the iframe",
+          "browsers give file:// pages an opaque origin — serve the folder and open this page over http://");
+      fail++;
+      failures.push("iframe sandboxed (open over http://)");
+    } else {
+      row("FAIL", "the suite threw", String(err && (err.stack || err.message || err)));
+      fail++;
+      failures.push(String(err && err.message));
+    }
+    finish();
+  });
+}());
+</script>
+</body>
+</html>

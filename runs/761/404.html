@@ -1,0 +1,1509 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>word ladder</title>
+<meta name="description" content="A daily four-letter word ladder. Change one letter at a time to get from the start word to the target.">
+<!-- An empty inline icon: no favicon.ico request, no 404 in the console. -->
+<link rel="icon" href="data:,">
+<style>
+  :root {
+    --paper:  #faf7f2;
+    --ink:    #1a1a1a;
+    --muted:  #6b6257;
+    --accent: #a3341f;
+    --rule:   #d9d2c7;   /* decorative rails and hairlines only */
+    --edge:   #8c8378;   /* control boundaries: 3.49:1 on paper (WCAG 1.4.11) */
+    --padT: clamp(12px, 2.6vh, 24px);
+    --padB: clamp(12px, 2.2vh, 24px);
+    /* Everything on the page except the played chain — header, input row, rule,
+       target, status, buttons, message, body padding. Measured on the rendered
+       page at thirteen viewports from 320x400 to 1920x1080: 423.7px at the
+       short end, 511.5px at the tall end (it grows because the rhythm is
+       vh-scaled). This expression is a deliberate UPPER bound on that
+       measurement — between 2.6px and 16px above it everywhere — because
+       over-estimating costs a few pixels of ladder and under-estimating puts
+       the buttons back under the fold. tests.html asserts the bound at
+       eight viewports, so an edit to the rhythm cannot drift it silently. */
+    --chrome: clamp(436px, calc(16vh + 364px), 520px);
+    --rung-font: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    --ui-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--ui-font);
+    font-size: 16px;
+    line-height: 1.5;
+    display: flex;
+    justify-content: center;
+    /* `safe`, and it is doing the work: on a viewport too short for the game
+       the overflow goes out of the bottom, where the page's own scrollbar can
+       reach it, instead of being split top and bottom by the centring — which
+       is how a centred flex item puts its own heading above scrollY 0 and out
+       of reach. */
+    align-items: safe center;
+    padding: var(--padT) 16px var(--padB);
+    -webkit-text-size-adjust: 100%;
+  }
+  /* One screenful when there is room for one, an ordinary scrolling page when
+     there is not. `min-height` never freezes the document at the viewport
+     height, so anything that does not fit lands in the page's own scrollbar
+     instead of inside a box that has none. */
+  html, body { min-height: 100vh; }
+  @supports (height: 100dvh) { html, body { min-height: 100dvh; } }
+  main {
+    width: 100%; max-width: 24rem;
+    display: flex; flex-direction: column;
+    max-height: calc(100vh - var(--padT) - var(--padB));
+  }
+  @supports (height: 100dvh) {
+    main { max-height: calc(100dvh - var(--padT) - var(--padB)); }
+    #chainbox { max-height: calc(100dvh - var(--chrome)); }
+  }
+  /* Nothing shrinks by default; the two wrappers and the chain do. (The
+     override selectors are deliberately more specific than the blanket ones.)
+     The wrappers keep their automatic minimum size — min-height:0 here is what
+     let the ladder shrink under its own content and paint the target word over
+     the status line and the buttons on a short screen. */
+  main > *, #play > *, .ladder > * { flex: 0 0 auto; }
+  #play, #play > .ladder { display: flex; flex-direction: column; flex: 0 1 auto; }
+  /* The START label scrolls with the words it labels: pinning it over a
+     scrolled column would put "start" above a rung that is not the start.
+     The floor is one legible rung plus that label — a real length, not a
+     percentage, so the column can never collapse to nothing and take the
+     played ladder with it. Below that the whole page scrolls instead. */
+  #chainbox {
+    flex: 0 1 auto;
+    /* The floor: one legible rung plus its label, in a real length, so the
+       column can never collapse and swallow the ladder. The ceiling: whatever
+       the viewport has left after the furniture — without it the wrappers
+       cannot shrink (a scroll container's min-content size is its content, so
+       the ladder would refuse to give up height and push the message line off
+       a 568px screen). Below the floor the page itself scrolls. */
+    min-height: 4.8rem;
+    max-height: calc(100vh - var(--chrome));
+    overflow-y: auto;
+    /* No `overscroll-behavior: contain`. It was there to stop a swipe over the
+       column from running on into the page, but the page only has anything to
+       scroll on the short viewports where the message line and the buttons are
+       below the fold — and the column fills most of the screen there, so
+       containing the swipe was containing the only gesture that could reach
+       them: 1200px of scroll intent over the column moved the page 0px while
+       the document had 79px to give. Chaining out of a column that has hit its
+       end is the behaviour that gets the player to the reason their word was
+       refused. */
+    scrollbar-width: thin;
+    scrollbar-color: var(--rule) transparent;
+  }
+  /* Inset, not outset. A mask clips everything the element paints, and an
+     outline sitting 2px OUTSIDE the border box is outside the mask's painting
+     area, so the ring vanished wherever the mask was on. The old answer was to
+     switch the mask off under focus, which took the top-edge cue away from the
+     one player who scrolls the column deliberately — the keyboard player — and
+     left it for the mouse. Drawn 2px inside the border box the ring is inside
+     the painting area and survives the mask on all four sides. */
+  #chainbox:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  /* A column scrolled up its own length looked like a column that starts
+     there: the scrollbar is an overlay (offsetWidth == clientWidth, so it
+     reserves no room) and it paints at 1.40:1 when it paints at all, and at
+     320px the clipped tops of the hidden rungs read as a second dashed rule
+     rather than as letters. The fade says "there is more above" in the one
+     way that costs no layout — and it stays on under focus, because the ring
+     is now drawn inside the box it fades. */
+  #chainbox.faded {
+    -webkit-mask-image: linear-gradient(#0000, #000 14px);
+    mask-image: linear-gradient(#0000, #000 14px);
+  }
+  /* The fade on its own is a cue only where there is something for it to fade.
+     It reads at 320px, where the clipped tops of the hidden rungs fall inside
+     the ramp — but fitColumn() pins the column to its own bottom, and at
+     390x844 that alignment lands the top edge in inter-rung whitespace at
+     every chain length from 6 to 11: the darkest pixel in the top 14px was the
+     rail at 1.40:1, so the mask was fading paper into paper while 289px of
+     ladder (five rungs, the START label among them) sat hidden with no cue at
+     all. The hairline does not depend on what happens to be under the edge. It
+     is painted by the parent, so the mask cannot wash out the cue it is paired
+     with, and it is drawn in --edge — the control-boundary colour, 3.49:1 on
+     paper — rather than the 1.40:1 rail, because it is the only thing saying
+     the column is cut. Same inset as the rails, so it spans them. */
+  .ladder:has(> #chainbox.faded) {
+    background-image: linear-gradient(var(--edge), var(--edge));
+    background-repeat: no-repeat;
+    background-origin: content-box;
+    background-size: 92% 1px;
+    background-position: top center;
+  }
+  /* --chrome budgets for the input row at every state, and at the target the
+     row is not on the page: 64px of it (a 16px gap and a 48px field) is spare
+     paper under a ladder that is being clipped for want of exactly that.
+     Measured at 320x568 with the puzzle solved: 91px of finished ladder cut
+     off above, 82px of empty paper below the message line. */
+  #chainbox.roomier { max-height: calc(100vh - var(--chrome) + 64px); }
+  @supports (height: 100dvh) {
+    #chainbox.roomier { max-height: calc(100dvh - var(--chrome) + 64px); }
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.34em;
+    text-indent: 0.34em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+  .tag, .meta, .lab, .status, .msg {
+    margin: 0;
+    text-align: center;
+    color: var(--muted);
+  }
+  .tag { font-size: 0.8rem; margin-top: 6px; }
+  .meta { font-size: 0.78rem; }
+  #date { margin-top: clamp(10px, 2vh, 18px); }
+  #streak { margin-top: 2px; letter-spacing: 0.02em; }
+
+  /* The ladder: two rails, and the words as rungs between them. */
+  .ladder {
+    position: relative;
+    margin: clamp(12px, 2.6vh, 26px) 0 0;
+    padding: clamp(8px, 1.6vh, 14px) 0 clamp(6px, 1.2vh, 10px);
+  }
+  .ladder::before, .ladder::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--rule);
+  }
+  .ladder::before { left: 4%; }
+  .ladder::after  { right: 4%; }
+
+  .lab.won { color: var(--accent); }
+  .lab {
+    font-size: 0.62rem;
+    letter-spacing: 0.24em;
+    text-indent: 0.24em;
+    text-transform: uppercase;
+  }
+  .rung {
+    font-family: var(--rung-font);
+    font-size: clamp(1.55rem, 8.6vw, 2.1rem);
+    font-weight: 500;
+    letter-spacing: 0.34em;
+    text-indent: 0.34em;
+    text-align: center;
+    padding: 3px 0;
+    white-space: nowrap;
+  }
+  /* The changed letter carried its meaning in colour alone: 6.40:1 against
+     the paper, but 2.54:1 against the ink letters either side of it, which is
+     the comparison a player actually makes, and nothing at all in a
+     high-contrast or greyscale rendering (WCAG 1.4.1). Weight is the second
+     channel, and it costs no layout: the rungs are monospace, so a bold glyph
+     occupies the same advance width as the others. */
+  .rung .hot { color: var(--accent); font-weight: 700; }
+  /* The browser default is a blue block — the one shouty pixel on a
+     paper-and-ink page, and it lands on every refused word. */
+  ::selection { background: rgba(163, 52, 31, 0.16); }
+  .rung.new { animation: rung-in 180ms ease-out; }
+  @keyframes rung-in { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .rung.new { animation: none; } }
+
+  /* The gap above the field is not decoration: with less, Chromium's touch
+     adjustment retargets a tap on the rung above straight into the input. */
+  #inputrow { padding: 16px 0 0; }
+  #word {
+    display: block;
+    width: 84%;
+    min-height: 48px;
+    margin: 0 auto;
+    padding: 0 0 6px;
+    border: 0;
+    border-bottom: 2px dashed var(--edge);
+    border-radius: 0;
+    background: transparent;
+    color: var(--ink);
+    caret-color: var(--accent);
+    font-family: var(--rung-font);
+    font-size: clamp(1.55rem, 8.6vw, 2.1rem);
+    font-weight: 500;
+    letter-spacing: 0.34em;
+    text-indent: 0.34em;
+    text-align: center;
+    text-transform: uppercase;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  /* The dashed rule turning accent is the focus indicator; a box outline
+     around a full-width field reads as an error state. */
+  #word:focus { outline: none; border-bottom-color: var(--accent); border-bottom-style: solid; }
+  /* The placeholder is text, so it clears 4.5:1, and the resting rule is a
+     control boundary, so it clears 3:1 — the field has to read as a field
+     before it is focused, because a phone will not autofocus it. */
+  #word::placeholder { color: var(--muted); opacity: 1; }
+  /* A refused word is still in the field; struck through, it cannot be
+     misread as a rung that was accepted. */
+  #word.bad { color: var(--accent); text-decoration: line-through; text-decoration-thickness: 2px; }
+  /* The only branch that still disables the field is the no-puzzle guard, which
+     is unreachable on the shipped word list (PROJECT.md, open threads). Its
+     styling was deleted as dead in a cycle that read the guard as dead too, so
+     that branch would have drawn a field that looks live and takes nothing.
+     Dotted rather than dashed, and the text greyed: a spent field, not a
+     refused one. -webkit-text-fill-color because iOS overrides `color` on a
+     disabled control and would otherwise leave it at full ink. */
+  #word:disabled {
+    border-bottom-style: dotted;
+    color: var(--muted);
+    -webkit-text-fill-color: var(--muted);
+    opacity: 1;
+  }
+  #inputrow.hidden { display: none; }
+
+  /* The share line only ever appears while the ladder ends at the target — the
+     one state where the input row is already put away and .roomier has lent the
+     column the 64px it cost. Opening this takes that 64px back (render() drops
+     .roomier while it is open), which is most of what it needs; the field is
+     then sized to the line at the width it wraps at, so what it needs is not a
+     constant and --chrome cannot be asked to hold it.
+     Measured with the box open, portrait first: 390x844 and 1280x800 take it
+     inside the 64px and the document does not grow by one pixel, 360x640 by
+     3px. At 320x568 the page grows 37px, and at 667x375 and 844x390 — the
+     column already sitting on its 4.8rem floor — 97px. That is this page's stated law
+     working, not failing it: one screenful where there is room for one, an
+     ordinary scrolling page where there is not (PROJECT.md, open threads). The
+     line the player has been told to copy is fully rendered and fully inside
+     the viewport at all six, which is the property that had to hold; a
+     shorter box that hid a third of the line while keeping the page still
+     would have been the wrong trade. */
+  /* 8px under the field, not 0: the document grows to exactly the height of
+     what is in it, and a focus ring is drawn 2px outside its element — at
+     320x568 and in landscape the ring's bottom edge landed 4px past the last
+     scrollable pixel, so the field could hold the caret and not be able to show
+     it. The page's own bottom padding was being eaten the same way. */
+  #sharebox { padding: 16px 0 8px; }
+  #sharetext {
+    display: block;
+    width: 84%;
+    min-height: 48px;
+    margin: 0 auto;
+    padding: 6px 8px;
+    border: 1px dashed var(--edge);
+    border-radius: 2px;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--ui-font);
+    /* 0.82rem, the status line's size. At 0.78 this was the smallest text on
+       the page, and it is the one line the page asks the player to read
+       carefully enough to copy. */
+    font-size: 0.82rem;
+    line-height: 1.5;
+    text-align: center;
+    resize: none;
+    overflow: auto;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  #sharetext:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  #sharebox.hidden, #share.hidden { display: none; }
+
+  /* 16px, not a scaled gap: measured, a tap on this hairline any closer than
+     ~15px to the field is retargeted into the field by Chromium's touch
+     adjustment (5/5 stray taps at 10.2px, 0/5 at 16px). The same threshold as
+     the padding above the input, and for the same reason. */
+  /* Narrow, and deliberately narrower than the field: at 12% inset it was
+     272.1px against a focused input rule of 300.7px, 16.0px apart and 1.40:1
+     against the paper — two near-parallel lines of near-equal length, so on a
+     cold load which one you write on was guesswork. 8rem is the width of the
+     four-letter word under it, which is what it divides off, and about half
+     the width of the field, which is what it must not echo. */
+  .hr { height: 1px; background: var(--rule); width: 8rem; margin: 16px auto clamp(6px, 1.4vh, 12px); }
+  #target { color: var(--ink); }
+  #target.solved .hot { color: var(--accent); }
+
+  .status { font-size: 0.82rem; margin-top: clamp(10px, 2.2vh, 20px); }
+  .status.solved { color: var(--accent); }
+
+  .controls {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: clamp(10px, 2vh, 18px);
+  }
+  button {
+    flex: 1 1 0;
+    min-width: 44px;
+    min-height: 48px;
+    padding: 12px 10px;
+    border: 1px solid var(--ink);
+    border-radius: 2px;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--ui-font);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-indent: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  /* A tap is not a hover. On iOS Safari and most Android Chrome :hover sticks
+     after a tap and stays stuck until the next tap somewhere else, so the only
+     hover style this page had — a full ink inversion — left a tapped Submit
+     sitting as a solid black block in a paper-and-ink composition for as long
+     as the player looked at the board. And it was also the only press feedback
+     there was: with no :active rule, the one thing a phone tap showed was the
+     state that then stayed. The inversion is asked for only where a pointer can
+     really hover; the press has a state of its own, which ends when the finger
+     comes up. */
+  @media (hover: hover) {
+    button:hover:enabled { background: var(--ink); color: var(--paper); }
+  }
+  /* Pressed, on any input, and deliberately not the hover ink: on a mouse the
+     press lands inside the hover state, and a press that repaints the button
+     the colour it already is is not feedback. The accent is the page's own
+     emphasis colour — the changed letter, the caret, the `solved` label, the
+     focus ring — and paper on it is the same 6.40:1 that pairing already
+     measures. No new colour, and nothing here moves. */
+  button:active:enabled { background-color: var(--accent); color: var(--paper); border-color: var(--accent); }
+  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  /* Disabled still has to read as a control: boundary 3.49:1, label 5.59:1. */
+  button:disabled { border-color: var(--edge); color: var(--muted); cursor: default; }
+
+  .msg { font-size: 0.85rem; min-height: 1.5em; margin-top: clamp(10px, 2vh, 18px); color: var(--ink); }
+  .msg.warn { color: var(--accent); }
+
+</style>
+</head>
+<body>
+<main>
+  <h1>word ladder</h1>
+  <p class="tag">change one letter at a time</p>
+  <p class="meta" id="date">&nbsp;</p>
+  <p class="meta" id="streak">&nbsp;</p>
+
+  <form id="play" autocomplete="off" novalidate>
+    <div class="ladder">
+      <div id="chainbox" tabindex="0" role="group" aria-label="the ladder so far">
+        <p class="lab">start</p>
+        <div id="chain"></div>
+      </div>
+      <div id="inputrow">
+        <!-- No maxlength: it truncates a real paste before the fold can see it,
+             so "s i d e" arrived as SI and a quoted "side" as SID. normalise()
+             is the only length rule, and it slices to four letters. -->
+        <input id="word" type="text" autocomplete="off" autocorrect="off"
+               autocapitalize="characters" spellcheck="false" aria-label="your next word"
+               aria-describedby="msg" placeholder="····">
+      </div>
+      <div class="hr"></div>
+      <div class="rung" id="target"></div>
+      <p class="lab" id="targetlab">target</p>
+    </div>
+
+    <p class="status" id="status">&nbsp;</p>
+
+    <!-- Above the buttons, not below them. The reason a word was refused
+         belongs next to the word: with the message under the controls it sat
+         230px from the field at 390x844, with the target block, the status
+         line and both buttons in between, and at 844x390 and 667x375 it was
+         78-93px below the fold at scrollY 0, so the player saw a struck-through
+         word in the accent colour and no reason anywhere on screen. -->
+    <p class="msg" id="msg" role="status" aria-live="polite"></p>
+
+    <div class="controls">
+      <button id="submit" type="submit">Submit</button>
+      <button id="undo" type="button">Undo</button>
+      <!-- Only on the board while the ladder stands in the target, for the same
+           reason the status line only says "solved in N moves" there: N is
+           chain.length - 1, and one Undo later that is a count of a ladder that
+           no longer reaches the target. -->
+      <button id="share" type="button" class="hidden">Share</button>
+    </div>
+
+    <!-- The fallback, not a stretch goal. Opening index.html directly is a way
+         this page is meant to be run (README: "open index.html in any
+         browser"), and on file:// the write does not happen: measured in
+         Chromium, navigator.clipboard is present and writeText rejects
+         NotAllowedError. On https a permissions policy or an unfocused document
+         does the same. A Share that silently does nothing there is worse than
+         no Share at all. -->
+    <div id="sharebox" class="hidden">
+      <textarea id="sharetext" rows="2" readonly spellcheck="false"
+                aria-label="your result, ready to copy"></textarea>
+    </div>
+  </form>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ------------------------------------------------------------------
+     The word list. Written by hand in this repo from the builder's own
+     knowledge: nothing downloaded, scraped or vendored. Lowercase, unique,
+     sorted ascending, /^[a-z]{4}$/. The sort order is load-bearing — the
+     daily puzzle is a function of the date AND of this list's exact
+     contents and order, so editing it reshuffles every past and future
+     puzzle. Frozen at v0.
+     ------------------------------------------------------------------ */
+  var WORDS = (
+    "able baby back bail bake bale ball balm band bane bank bare " +
+    "bark barn base bath bead beam bean bear beat been beep beer " +
+    "beet bell belt bend bent best bike bill bind bird bite blow " +
+    "blue blur boat body boil bold bolt bond bone book boom boot " +
+    "bore born boss both bout bowl brew buck buff bulk bull bump " +
+    "bunk burn bush bust busy buzz cage cake calf call calm came " +
+    "camp cane cape card care cart case cash cask cast cave cell " +
+    "cent chat chef chew chin chip chop cite city clam clap claw " +
+    "clay clip club clue coal coat code coil coin cold colt comb " +
+    "come cone cook cool coop cope copy cord core cork corn cost " +
+    "crew crop crow cube cuff cure curl cute dame damp dare dark " +
+    "darn dart dash data date dawn daze deal dear deck deed deep " +
+    "deer dent desk dial dice diet dime dine dire dirt disc dish " +
+    "disk dive dock doll dome done doom door dorm dose down doze " +
+    "drag draw drew drip drop drug drum dual duck duct dude duke " +
+    "dull dump dunk dust earn east easy edge edit face fact fade " +
+    "fail fair fake fall fame fare farm fast fate fear feat feed " +
+    "feel feet fell felt file fill film find fine fire firm fish " +
+    "fist five flag flat flaw flea fled flew flip flow foam foil " +
+    "fold folk fond food fool foot fork form fort four fowl free " +
+    "frog fuel full fume fund fuse gain gale game gang gate gave " +
+    "gaze gear gene gift girl give glad glow glue goal goat gold " +
+    "golf gone gong good gown grab gray grew grid grim grin grip " +
+    "grow gulf gull gush gust hail hair half hall halt hand hang " +
+    "hard hare harm harp hash haul have hawk haze head heal heap " +
+    "hear heat heed heel held helm help herb herd here hero hide " +
+    "high hike hill hint hire hiss hive hold hole holy home hood " +
+    "hoof hook hoop hoot hope horn hose host hour howl huge hull " +
+    "hung hunt hurl hush icon idea idle inch iron item jade jail " +
+    "jazz jeep join joke jump junk just kale keen keep kelp kept " +
+    "kick kilt kind king kiss kite knee knew knit knob knot know " +
+    "lace lack lady laid lair lake lamb lame lamp land lane lark " +
+    "lash last late lawn lazy lead leaf leak lean leap leek left " +
+    "lend lens lent less lick life lift like limb lime line link " +
+    "lint lion list live load loan lock lone long look loom loop " +
+    "lord lose loss lost loud love luck lull lump lung lure lush " +
+    "made maid mail main make male mall mane many mare mark mash " +
+    "mask mass mast mate math maze meal mean meat meek meet melt " +
+    "mend menu mere mesh mess mice mild mile milk mill mime mind " +
+    "mine mint miss mist moan moat mock mode mold mole mood moon " +
+    "more moss most moth move much mule must mute nail name near " +
+    "neat neck need nest news next nice nick nine node none noon " +
+    "norm nose note noun oath open oven over pace pack page paid " +
+    "pail pain pair pale palm pane pant park part pass past path " +
+    "pave peak pear peek peel peep peer pest pick pier pile pill " +
+    "pine ping pink pint pipe pity plan play plea plot plow plug " +
+    "plum plus poem poet pole poll pond pony pool poor pore pork " +
+    "port pose post pour pout pray prey prop puck puff pull pulp " +
+    "pump punk punt pure push quit quiz race rack raft rage raid " +
+    "rail rain rake ramp rang rank rant rare rash rate rave read " +
+    "real reap rear reed reef reel rent rest rice rich ride rift " +
+    "ring rink riot ripe rise risk road roam roar robe rock rode " +
+    "role roll roof room root rope rose rude ruin rule rung rush " +
+    "rust sack safe sage said sail sake sale salt same sand sane " +
+    "sang sank sash save scan seal seam seat seed seek seem seen " +
+    "self sell send sent shed ship shoe shop shot show shut sick " +
+    "side sift sign silk sing sink site size skin skip slab sled " +
+    "slid slim slip slot slow slug snap snow soak soap soar sock " +
+    "sofa soft soil sold sole solo some song soon sore sort soul " +
+    "soup sour spin spot spun spur stag star stay stem step stew " +
+    "stir stop suit sung sunk sure surf swan swap swim tail take " +
+    "tale talk tall tame tank tape tart task taxi teal team tear " +
+    "teen tell tend tent term test text than that thaw them then " +
+    "they thin this thus tick tide tidy tile till tilt time tint " +
+    "tiny tire toad toil told toll tone took tool tore torn toss " +
+    "tour town trap tray tree trim trip true tube tuck tuna tune " +
+    "turn twig twin type ugly unit urge vain vane vase vast veal " +
+    "vent vest vice view vile vine vote wade wage wail wait wake " +
+    "walk wall wand wane want ward ware warm warn wash wasp wave " +
+    "weak wear weed week weep well went were west what when whip " +
+    "wide wife wild will wind wine wing wink wipe wire wise wish " +
+    "with wolf wood wool word wore work worm worn wrap yank yard " +
+    "yarn year yell your zeal zero zest zinc zone zoom"
+  ).split(" ");
+
+  var KEY = "word-ladder.v1";
+
+  /* ---------------------------- dates (UTC only) ---------------------- */
+
+  function pad2(n) { return n < 10 ? "0" + n : "" + n; }
+
+  // Only getUTC* is used anywhere in this file, so the puzzle cannot differ
+  // between two players in different timezones at the same moment.
+  function utcDateStr(d) {
+    return d.getUTCFullYear() + "-" + pad2(d.getUTCMonth() + 1) + "-" + pad2(d.getUTCDate());
+  }
+
+  var DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+  function toUTCms(s) {
+    return Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10));
+  }
+
+  // Regex plus a round trip, so 2026-02-31 and 2026-13-01 are rejected.
+  function isDateStr(s) {
+    if (typeof s !== "string" || !DATE_RE.test(s)) return false;
+    var ms = toUTCms(s);
+    if (!isFinite(ms)) return false;
+    return utcDateStr(new Date(ms)) === s;
+  }
+
+  function shiftDays(s, n) { return utcDateStr(new Date(toUTCms(s) + n * 86400000)); }
+
+  // URLSearchParams, never decodeURIComponent: a malformed % throws a URIError
+  // there, and a throw at this point would leave a blank page instead of today.
+  function debugParam() {
+    var v = null;
+    try { v = new URLSearchParams(location.search).get("d"); } catch (e) { v = null; }
+    if (v === null) return { day: null, bad: false };
+    return isDateStr(v) ? { day: v, bad: false } : { day: null, bad: true };
+  }
+
+  /* ---------------------------- the graph ----------------------------- */
+
+  // Four wildcard buckets per word (_ATE, C_TE, CA_E, CAT_) gives adjacency in
+  // O(4N) instead of O(N^2). Two distinct four-letter words agree on exactly
+  // one bucket if they are neighbours, so no de-duplication is needed.
+  function buildNeighbours(list) {
+    var buckets = Object.create(null), nbr = Object.create(null), i, j, w, k, b;
+    for (i = 0; i < list.length; i++) {
+      w = list[i];
+      nbr[w] = [];
+      for (j = 0; j < 4; j++) {
+        k = w.slice(0, j) + "_" + w.slice(j + 1);
+        b = buckets[k];
+        if (!b) { b = buckets[k] = []; }
+        b.push(w);
+      }
+    }
+    for (k in buckets) {
+      b = buckets[k];
+      for (i = 0; i < b.length; i++) {
+        for (j = 0; j < b.length; j++) { if (i !== j) nbr[b[i]].push(b[j]); }
+      }
+    }
+    return nbr;
+  }
+
+  function largestComponent(list, nbr) {
+    var seen = Object.create(null), best = [], i, j;
+    for (i = 0; i < list.length; i++) {
+      var w = list[i];
+      if (seen[w]) continue;
+      var queue = [w], head = 0, comp = [];
+      seen[w] = true;
+      while (head < queue.length) {
+        var x = queue[head++];
+        comp.push(x);
+        var ns = nbr[x];
+        for (j = 0; j < ns.length; j++) {
+          if (!seen[ns[j]]) { seen[ns[j]] = true; queue.push(ns[j]); }
+        }
+      }
+      if (comp.length > best.length) best = comp;
+    }
+    best.sort();
+    return best;
+  }
+
+  var NBR = buildNeighbours(WORDS);
+  var COMP = largestComponent(WORDS, NBR);
+  var INCOMP = Object.create(null);
+  var WORDSET = Object.create(null);
+  (function () {
+    var i;
+    for (i = 0; i < WORDS.length; i++) WORDSET[WORDS[i]] = true;
+    for (i = 0; i < COMP.length; i++) INCOMP[COMP[i]] = true;
+  }());
+
+  function bfsFrom(start) {
+    var dist = Object.create(null), parents = Object.create(null);
+    var queue = [start], head = 0;
+    dist[start] = 0;
+    while (head < queue.length) {
+      var x = queue[head++], ns = NBR[x];
+      for (var i = 0; i < ns.length; i++) {
+        var y = ns[i];
+        if (INCOMP[y] && dist[y] === undefined) {
+          dist[y] = dist[x] + 1;
+          parents[y] = x;
+          queue.push(y);
+        }
+      }
+    }
+    return { dist: dist, parents: parents };
+  }
+
+  /* ---------------------------- the seed ------------------------------ */
+
+  function fnv1a32(s) {
+    var h = 2166136261 >>> 0;
+    for (var i = 0; i < s.length; i++) {
+      h ^= s.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return h >>> 0;
+  }
+
+  // Integer ops plus one exact division: the same sequence on every engine.
+  function mulberry32(a) {
+    return function () {
+      a |= 0;
+      a = a + 0x6D2B79F5 | 0;
+      var t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+
+  /* ---------------------------- the puzzle ---------------------------- */
+
+  // Pure function of (dateStr, WORDS). Draws from one rng stream in order.
+  function puzzleFor(dateStr) {
+    var rng = mulberry32(fnv1a32("word-ladder:" + dateStr));
+    function pick(arr) { return arr[Math.floor(rng() * arr.length)]; }
+
+    function phase(lo, hi, how) {
+      for (var n = 0; n < 50; n++) {
+        var start = pick(COMP);
+        if (NBR[start].length < 2) continue;
+        var r = bfsFrom(start), cand = [], i, w, d;
+        for (i = 0; i < COMP.length; i++) {
+          w = COMP[i];
+          d = r.dist[w];
+          if (d >= lo && d <= hi && NBR[w].length >= 2) cand.push(w);
+        }
+        if (!cand.length) continue;
+        var target = pick(cand);
+        return { start: start, target: target, par: r.dist[target], parents: r.parents, how: how };
+      }
+      return null;
+    }
+
+    // Unreachable insurance, stated plainly rather than implied: on the shipped
+    // word list the first phase has never failed. Every date from 2020 to 2028
+    // — 3,288 of them — comes back "distance 3-5", so the widen phase below,
+    // the sorted-scan fallback and the `if (!PUZ)` guard have never executed
+    // outside a test built on a different list. They stay because the list is
+    // editable and a sparser one would need them. The widen phase and the
+    // sorted-scan fallback are still uncovered; the `if (!PUZ)` guard is not,
+    // since day 037 — tests.html reaches it by writing a copy of this file
+    // with the list cut to two words that are not neighbours.
+    var p = phase(3, 5, "distance 3-5") || phase(2, 6, "widened to 2-6");
+    if (p) return p;
+
+    // Deterministic fallback: no randomness, no throw, no blank page.
+    for (var i = 0; i < COMP.length; i++) {
+      var s = COMP[i];
+      if (NBR[s].length < 2) continue;
+      var r = bfsFrom(s);
+      for (var j = 0; j < COMP.length; j++) {
+        var t = COMP[j], d = r.dist[t];
+        if (d >= 2 && d <= 6 && NBR[t].length >= 2) {
+          return { start: s, target: t, par: d, parents: r.parents, how: "sorted-scan fallback" };
+        }
+      }
+    }
+    return null;
+  }
+
+  // Rebuild the BFS path the target was discovered on. Used by tests.html to
+  // walk a real solution rather than take solvability on trust.
+  function pathOf(p) {
+    if (!p) return null;
+    var out = [p.target], w = p.target;
+    while (w !== p.start) {
+      w = p.parents[w];
+      if (w === undefined) return null;
+      out.push(w);
+    }
+    out.reverse();
+    return out;
+  }
+
+  /* ---------------------------- storage ------------------------------- */
+
+  function isCount(n) {
+    // Safe-integer, not just integral: 1e308 is a finite whole number, and a
+    // hand-written blob carrying it rendered "streak 1e+308 · best 1e+308".
+    return typeof n === "number" && n >= 0 && Number.isSafeInteger(n);
+  }
+
+  // Every read is guarded: a corrupt or foreign blob is treated as absent.
+  function readStore() {
+    var raw, o, i;
+    try { raw = localStorage.getItem(KEY); } catch (e) { return null; }
+    if (typeof raw !== "string") return null;
+    try { o = JSON.parse(raw); } catch (e) { return null; }
+    if (!o || typeof o !== "object" || Array.isArray(o)) return null;
+    if (o.v !== 1) return null;
+    if (!isCount(o.streak) || !isCount(o.best)) return null;
+    if (o.lastSolved !== null && o.lastSolved !== undefined && !isDateStr(o.lastSolved)) return null;
+    if (o.puzzle !== null && o.puzzle !== undefined && !isDateStr(o.puzzle)) return null;
+    if (o.solved !== undefined && typeof o.solved !== "boolean") return null;
+    if (o.chain !== null && o.chain !== undefined) {
+      if (!Array.isArray(o.chain)) return null;
+      for (i = 0; i < o.chain.length; i++) {
+        if (typeof o.chain[i] !== "string" || !/^[A-Za-z]{4}$/.test(o.chain[i])) return null;
+      }
+    }
+    return {
+      streak: o.streak,
+      best: o.best,
+      lastSolved: o.lastSolved === undefined ? null : o.lastSolved,
+      puzzle: o.puzzle === undefined ? null : o.puzzle,
+      chain: o.chain === undefined ? null : o.chain,
+      solved: o.solved === true
+    };
+  }
+
+  /* ---------------------------- state --------------------------------- */
+
+  var dparam = debugParam();
+  var debugDay = dparam.day;
+  var today = utcDateStr(new Date());
+  // ?d=<today> is today's puzzle, so it is today's game: a read-only board would
+  // show an empty ladder over the real streak line and hide progress that is
+  // sitting in storage. Only another date is a replay.
+  var readOnly = debugDay !== null && debugDay !== today;
+  var puzzleDate = debugDay || today;
+  var PUZ = puzzleFor(puzzleDate);
+
+  var el = {
+    date: document.getElementById("date"),
+    streak: document.getElementById("streak"),
+    chain: document.getElementById("chain"),
+    chainbox: document.getElementById("chainbox"),
+    inputrow: document.getElementById("inputrow"),
+    word: document.getElementById("word"),
+    target: document.getElementById("target"),
+    targetlab: document.getElementById("targetlab"),
+    status: document.getElementById("status"),
+    form: document.getElementById("play"),
+    submit: document.getElementById("submit"),
+    undo: document.getElementById("undo"),
+    share: document.getElementById("share"),
+    sharebox: document.getElementById("sharebox"),
+    sharetext: document.getElementById("sharetext"),
+    msg: document.getElementById("msg")
+  };
+
+  if (!PUZ) {
+    // Unreachable with the shipped list; never a blank page if it ever is.
+    el.status.textContent = "no puzzle for this date";
+    el.word.disabled = true;
+    // Everything that wires this page up is below this return, including the
+    // form's own submit handler — so a Submit left live here is a button with
+    // nothing behind it that falls through to the browser's default: measured
+    // on a copy of this file with the list cut to two isolated words, one press
+    // performed a native form GET and reloaded the page (…/index.html ->
+    // …/index.html?), throwing away the one line that had just explained why
+    // there is no board. Undo has no chain to shorten either, and both rendered
+    // at full ink beside a field that was correctly dotted and greyed. Both are
+    // spent here, drawn as spent by `button:disabled` and out of the tab order,
+    // and the form is stopped where it stands rather than left to the default.
+    el.submit.disabled = true;
+    el.undo.disabled = true;
+    el.form.addEventListener("submit", function (e) { e.preventDefault(); });
+    return;
+  }
+
+  var START = PUZ.start.toUpperCase();
+  var TARGET = PUZ.target.toUpperCase();
+  var chain = [START];
+  // Two different facts, and cycle 1's mistake was conflating them: `solved` is
+  // "this date has been solved", which is what the streak is banked against and
+  // what survives an Undo; `atTarget` is "the chain in front of me ends at the
+  // target right now", which is what the ladder draws.
+  var solved = false;
+  var justAdded = false;
+  var store = {
+    v: 1, puzzle: puzzleDate, chain: [START], solved: false,
+    lastSolved: null, streak: 0, best: 0
+  };
+
+  function diffCount(a, b) {
+    var n = 0;
+    for (var i = 0; i < 4; i++) { if (a.charAt(i) !== b.charAt(i)) n++; }
+    return n;
+  }
+
+  function firstDiff(a, b) {
+    for (var i = 0; i < 4; i++) { if (a.charAt(i) !== b.charAt(i)) return i; }
+    return -1;
+  }
+
+  // A stored chain is only restored if it is still a legal ladder from this
+  // date's start word — a list edit or a hand-written blob cannot smuggle one in.
+  function legalChain(c) {
+    if (!Array.isArray(c) || !c.length) return false;
+    var seen = Object.create(null), i, w;
+    for (i = 0; i < c.length; i++) {
+      w = String(c[i]).toUpperCase();
+      if (!WORDSET[w.toLowerCase()]) return false;
+      if (seen[w]) return false;
+      seen[w] = true;
+      // The target may only appear as the last rung: a hand-written blob that
+      // buries it mid-chain would leave a puzzle that can never be completed.
+      if (w === TARGET && i !== c.length - 1) return false;
+      if (i === 0) { if (w !== START) return false; }
+      else if (diffCount(w, String(c[i - 1]).toUpperCase()) !== 1) return false;
+    }
+    return true;
+  }
+
+  // `store` is a snapshot taken at load, and save() used to write it whole with
+  // no re-read, so any write put that snapshot back over everything since.
+  // Measured: tab A sitting on a fresh board while tab B solved the day, then
+  // one legal rung in tab A — "streak 5 · best 5, solved" reverted to
+  // "streak 4 · best 4, unsolved". undo() saves too, so it did not even need
+  // an accepted rung. The same hole opens in one tab: `today` is read once at
+  // load, so a tab left open across UTC midnight keeps saving yesterday's board.
+  //
+  // The fields that are facts about the player rather than about the board in
+  // front of this tab are merged instead of overwritten. `best` is the higher of
+  // the two. `lastSolved` and `streak` travel as a pair: the later date wins and
+  // brings its own streak with it, so a save that banked nothing cannot rewrite
+  // a streak it never touched. A solve of *this* date recorded by anyone is this
+  // tab's solve too, because the win belongs to the date and not to the chain.
+  //
+  // The chain itself is still last write wins. Which chain should win is a
+  // design question rather than a bug, and losing one puzzle's rungs is not
+  // losing the record of having played.
+  function merge() {
+    var cur = readStore();          // junk, absent or a throw all come back null
+    if (!cur) return;
+    if (cur.best > store.best) store.best = cur.best;
+    // "" sorts before every date string, and YYYY-MM-DD compares
+    // chronologically as text.
+    var mine = store.lastSolved || "", theirs = cur.lastSolved || "";
+    // A stored date later than this tab's today is one of two things, and from
+    // here they look identical: a genuinely newer write from a tab that has
+    // already crossed UTC midnight — the case this merge exists for — or the
+    // residue of a clock that ran ahead. A phone restoring from a flat battery
+    // or a clock pushed forward by hand banks a future `lastSolved` during
+    // ordinary play, and it survives the clock being corrected. So the tie is
+    // broken by what this tab is holding: a future date may not outrank a date
+    // this tab has itself banked today. Without that line the stored date is
+    // strictly greater than every date commit() can ever bank again, so it wins
+    // this comparison on every write and puts its own stale streak straight
+    // back over the bank, permanently. Measured, seeded at 2099-01-01 with
+    // streak 3: three consecutive solves each read back `streak 0 · best 3`
+    // under a status line saying the day was solved, and `best` froze with the
+    // streak because `best` only ever grows from a banked one. The save() this
+    // replaced healed itself here by overwriting the date on the next solve.
+    if (theirs > today && mine >= today) theirs = "";
+    // Strictly later only. Two writes naming the same date banked the same day
+    // from the same history and agree; taking the larger of the two on a tie
+    // would also quietly repair a double-bank, which is a bug the once-per-date
+    // guard in commit() is there to prevent and a row in tests.html is there to
+    // catch. A merge must not stand in for a guard.
+    if (theirs > mine) { store.lastSolved = cur.lastSolved; store.streak = cur.streak; }
+    if (cur.solved && cur.puzzle === store.puzzle) { solved = true; store.solved = true; }
+  }
+
+  function save() {
+    if (readOnly) return;
+    merge();
+    // setItem throws in private-mode Safari and on a full quota; the game keeps
+    // working unpersisted.
+    try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) { /* ignore */ }
+  }
+
+  (function load() {
+    var saved = readStore();
+    if (saved) {
+      store.streak = saved.streak;
+      store.best = saved.best;
+      store.lastSolved = saved.lastSolved;
+      if (!readOnly && saved.puzzle === puzzleDate && legalChain(saved.chain)) {
+        chain = saved.chain.map(function (w) { return String(w).toUpperCase(); });
+        // The chain is the truth, not the flag beside it: a chain ending at the
+        // target is a solved puzzle however it got into storage. The stored flag
+        // still counts on its own, because a solve that was then undone is still
+        // a solve of this date.
+        solved = saved.solved || chain[chain.length - 1] === TARGET;
+      }
+    }
+    store.puzzle = puzzleDate;
+    store.chain = chain.slice();
+    store.solved = solved;
+  }());
+
+  // Pure read: a lapsed streak shows as 0 without mutating storage.
+  function shownStreak() {
+    var ls = store.lastSolved;
+    if (ls && (ls === today || ls === shiftDays(today, -1))) return store.streak;
+    return 0;
+  }
+
+  /* ---------------------------- render -------------------------------- */
+
+  // Which letter changed was visual only: bold plus accent measures 6.40:1 on
+  // paper, and the rung's label was the bare word, so the emphasis reached
+  // nobody who was not looking at it (WCAG 1.4.1 — colour and weight are not
+  // the only means of conveying information). The label now carries the same
+  // fact in words. The position, not the letter: the letter is already in the
+  // word being announced, and "SIDE, 1st letter changed" reads once; "SIDE, S
+  // changed" invites the reader to hunt for which S.
+  var ORDINAL = ["1st", "2nd", "3rd", "4th"];
+  function rungLabel(word, prev) {
+    // The start word and an unplayed target have no rung above them to have
+    // changed from, so they stay bare.
+    var hot = prev ? firstDiff(word, prev) : -1;
+    return hot < 0 ? word : word + ", " + ORDINAL[hot] + " letter changed";
+  }
+
+  function rungEl(word, prev, cls) {
+    var d = document.createElement("div");
+    d.className = "rung" + (cls ? " " + cls : "");
+    // role=img + aria-label: letter-spaced text with one letter in its own span
+    // gets spelled out otherwise, so the word is announced once, as a word.
+    d.setAttribute("role", "img");
+    d.setAttribute("aria-label", rungLabel(word, prev));
+    var hot = prev ? firstDiff(word, prev) : -1;
+    for (var i = 0; i < word.length; i++) {
+      var s = document.createElement("span");
+      s.textContent = word.charAt(i);
+      if (i === hot) s.className = "hot";
+      d.appendChild(s);
+    }
+    return d;
+  }
+
+  function render() {
+    el.date.textContent = "Puzzle for " + puzzleDate + " · UTC" +
+      (readOnly ? " · replay, nothing saved" : "");
+    el.streak.textContent = "streak " + shownStreak() + " · best " + store.best;
+
+    // When the chain ends at the target, the last rung IS the target line, so it
+    // is not drawn twice.
+    var atTarget = chain[chain.length - 1] === TARGET;
+    var shown = atTarget ? chain.length - 1 : chain.length;
+    el.chain.textContent = "";
+    for (var i = 0; i < shown; i++) {
+      var isNew = justAdded && !atTarget && i === shown - 1 && i > 0;
+      el.chain.appendChild(rungEl(chain[i], i ? chain[i - 1] : null, isNew ? "new" : ""));
+    }
+
+    el.target.textContent = "";
+    var tprev = atTarget ? chain[chain.length - 2] : null;
+    var t = rungEl(TARGET, tprev, atTarget && justAdded ? "new" : "");
+    while (t.firstChild) el.target.appendChild(t.firstChild);
+    el.target.className = "rung" + (atTarget ? " solved" : "");
+    el.target.setAttribute("role", "img");
+    el.target.setAttribute("aria-label", rungLabel(TARGET, tprev));
+
+    // The puzzle never takes its own controls away while there is a move in
+    // them: a solved player can undo and explore, and the win stands regardless.
+    // The exception is the row the field sits in: a ladder that has reached the
+    // target has no next rung, so an empty field between the last rung and the
+    // target is a gap in a finished ladder and an invitation to type a word that
+    // can only be refused. The field is put away, and Submit goes with it —
+    // cycle 1 put the row away but left Submit live, which made it a control
+    // that reads an empty field, takes the "nothing typed" branch and changes
+    // not one byte of the page: a button that does nothing teaches the player
+    // the button is dead. Disabled, it reads as spent and leaves the tab order,
+    // so Undo is the obvious next move. Undo stays live, and the first Undo
+    // brings the row, the caret and Submit straight back.
+    el.word.disabled = false;
+    el.inputrow.className = atTarget ? "hidden" : "";
+    // The row is off the page at the target, so the ladder may have the height
+    // --chrome is still holding for it.
+    // Stepping off the target puts the board back to play, and a share line for
+    // a ladder that no longer reaches the target is not a result any more.
+    if (!atTarget) { shareOpen = false; clearCopied(); }
+    el.share.className = atTarget ? "" : "hidden";
+    el.sharebox.className = shareOpen ? "" : "hidden";
+    // The 64px .roomier lends the column is the input row's; the open share box
+    // is standing in it, so it cannot be lent twice.
+    el.chainbox.classList.toggle("roomier", atTarget && !shareOpen);
+    if (atTarget) el.sharetext.value = shareText();
+    el.undo.disabled = chain.length <= 1;
+    el.submit.disabled = atTarget;
+
+    // The bottom word doubles as the win: its label reads "solved" while the
+    // ladder is standing in it. One word, in the accent, and nothing else
+    // moves. It follows atTarget and not solved, because the label names the
+    // word directly under it: two Undos past a solve leave the target sitting
+    // unplayed behind the rule, and a label reading SOLVED over a word the
+    // ladder does not reach is a claim about the wrong thing. The day is still
+    // won, and the status line two elements down is where that is said.
+    el.targetlab.textContent = atTarget ? "solved" : "target";
+    el.targetlab.className = "lab" + (atTarget ? " won" : "");
+
+    el.status.className = "status" + (solved ? " solved" : "");
+    el.status.textContent = atTarget
+      ? "solved in " + (chain.length - 1) + " moves · best possible " + PUZ.par
+      : solved
+        // "today" is a claim about the date at the top of the page, and in a
+        // replay that date is not today — the header two lines up already says
+        // the run is not being saved anywhere.
+        ? (readOnly ? "solved" : "solved today") + " · best possible " + PUZ.par
+        : "best possible: " + PUZ.par + " moves";
+
+    fitColumn();
+
+    justAdded = false;
+  }
+
+  // The two things about the ladder column that depend on the size of the
+  // window and not on the state of the game:
+  //
+  //   the scroll position — the chain column is the only part of the page that
+  //   scrolls, so the rung nearest the input is the one to keep in view;
+  //
+  //   the tab stop — it is one only while it has something to scroll. On a
+  //   fresh puzzle one Shift-Tab out of the input landed on a column with
+  //   nothing hidden in it and no way to tell that from a dead stop. The order
+  //   the README promises — input, Submit, Undo — is untouched either way.
+  //
+  // Both were written by render() alone, and a rotation does not play a word:
+  // a phone turned from portrait to landscape hid 107px of ladder including the
+  // START label behind a column that was still tabIndex -1, and left the last
+  // rung 268px below the visible area. reject() does not call render() either,
+  // so this is a function of its own rather than a line inside one.
+  function fitColumn() {
+    el.chainbox.scrollTop = el.chainbox.scrollHeight;
+    el.chainbox.tabIndex = el.chainbox.scrollHeight > el.chainbox.clientHeight ? 0 : -1;
+    fade();
+  }
+
+  // The fade at the top edge is on exactly while there is enough above it to
+  // be worth a cue. `> 0` faded the top 14px of the column for a 3px overflow,
+  // which washed out text the player could see: measured at 390x570 solved,
+  // with 5px hidden, the START label rendered #d2cec7 on #faf7f2 — 1.47:1,
+  // against 5.60:1 unfaded, and a WCAG 1.4.3 failure on a visible label. Below
+  // the ramp height there is nothing worth a cue, and the cue costs more than
+  // the hidden pixels are worth.
+  function fade() {
+    el.chainbox.classList.toggle("faded", el.chainbox.scrollTop >= 14);
+  }
+
+  // aria-live announces a change, and the same refusal twice running is not one:
+  // submitting ZZZZ twice left the region byte-identical and the second refusal
+  // silent. Emptying it first is what cycle 1 added, and on its own it is not
+  // enough: both writes land in the same task, Chromium diffs the region once
+  // at the end of that task, and a region that went "" -> the same words has
+  // not changed as far as the diff is concerned. The empty has to be *seen*,
+  // which means a frame of its own — one frame blank, the next frame the same
+  // message again.
+  //
+  // Only a repeat pays for that. A message that differs from the one on the
+  // line is already a change, so it is written straight out: deferring every
+  // verdict would put it a frame behind the keystroke that earned it for no
+  // gain. Either way the line holds the newest message the moment say()
+  // returns, and a say() that lands during the blank frame owns the line from
+  // there — the guards below stand down rather than write over it.
+  //
+  // The blank frame is the one piece of async in the file, and it is the only
+  // thing standing between a refusal and an empty message line: if the callback
+  // that puts the words back never runs, the line the player is reading stays
+  // blank. No real browser lifecycle drops a pending rAF callback — a
+  // backgrounded tab queues them and runs them on the way back — but the cost
+  // of being wrong about that is a blank verdict, and the cost of insuring
+  // against it is one timer. Both are armed, whichever fires first restores the
+  // line and cancels the other.
+  var sayFrame = 0, sayTimer = 0;
+  function say(m, warn) {
+    if (sayFrame) { cancelAnimationFrame(sayFrame); sayFrame = 0; }
+    if (sayTimer) { clearTimeout(sayTimer); sayTimer = 0; }
+    var repeat = m !== "" && el.msg.textContent === m;
+    el.msg.textContent = "";
+    el.msg.textContent = m;
+    el.msg.className = warn ? "msg warn" : "msg";
+    if (!repeat) return;
+    sayFrame = requestAnimationFrame(function () {
+      sayFrame = 0;
+      if (el.msg.textContent !== m) return;   // a later say() owns the line
+      el.msg.textContent = "";
+      function restore() {
+        if (sayFrame) { cancelAnimationFrame(sayFrame); sayFrame = 0; }
+        if (sayTimer) { clearTimeout(sayTimer); sayTimer = 0; }
+        if (el.msg.textContent === "") el.msg.textContent = m;
+      }
+      sayFrame = requestAnimationFrame(restore);
+      sayTimer = setTimeout(restore, 100);
+    });
+  }
+
+  /* ---------------------------- play ---------------------------------- */
+
+  // One rule disposes of case, digits, punctuation, emoji, whitespace, pasted
+  // blobs and typed markup — and it is the only one, because maxlength would
+  // cut a paste down to four characters before this ever saw it. Accents are
+  // folded rather than dropped, so an accent keyboard typing "sîdé" gets SIDE
+  // and not SD.
+  var COMBINING = /[\u0300-\u036f]/g;
+  function fold(raw) {
+    var s = String(raw);
+    if (s.normalize) { try { s = s.normalize("NFD").replace(COMBINING, ""); } catch (e) { /* ignore */ } }
+    return s.replace(/[^A-Za-z]/g, "").toUpperCase().slice(0, 4);
+  }
+
+  // True between compositionstart and compositionend: an IME is mid-word.
+  var composing = false;
+
+  function normalise() {
+    var raw = el.word.value, v = fold(raw);
+    if (v !== raw) {
+      // Assigning .value throws the caret to the end, so the selection is
+      // mapped through the same fold and put back: typing into the middle of
+      // a word must not jump the caret.
+      var a = el.word.selectionStart, b = el.word.selectionEnd;
+      el.word.value = v;
+      if (typeof a === "number" && typeof b === "number") {
+        try { el.word.setSelectionRange(fold(raw.slice(0, a)).length, fold(raw.slice(0, b)).length); }
+        catch (e) { /* ignore */ }
+      }
+    }
+    return v;
+  }
+
+  // A refused word had a visual state and no programmatic one: the strike
+  // through the word is the only thing that said it was refused, and a strike
+  // is not an error state to anything that is not looking at it. aria-invalid
+  // is set and cleared with the class, never one without the other, and the
+  // field's aria-describedby points at #msg so the reason travels with it.
+  function markBad(bad) {
+    el.word.className = bad ? "bad" : "";
+    if (bad) el.word.setAttribute("aria-invalid", "true");
+    else el.word.removeAttribute("aria-invalid");
+  }
+
+  function reject(m) {
+    say(m, true);
+    // Struck through, the refused word cannot be misread as an accepted rung.
+    markBad(true);
+    el.word.focus();
+    try { el.word.select(); } catch (e) { /* ignore */ }
+    // Moving the message above the buttons shortened the distance from the
+    // field to the reason, but on a phone held sideways it did not clear the
+    // fold: 40.6px below it at 844x390 and 55.6px at 667x375, at scrollY 0,
+    // with focus() scrolling the field into view and stopping there. A reason
+    // the player has to guess is there is not a reason. `nearest` is the whole
+    // point of the option — where the message is already on screen it scrolls
+    // nothing at all, and it moves the page, not the ladder column, so it has
+    // nothing to argue with fitColumn() about.
+    try { el.msg.scrollIntoView({ block: "nearest" }); } catch (e) { /* ignore */ }
+  }
+
+  function commit() {
+    // Submitting ends any composition as far as this field is concerned: the
+    // flag must never outlive the text it was guarding.
+    composing = false;
+    var w = normalise();
+    if (w.length === 0) {
+      // Act, do not talk: the first tap on a phone lands on Submit, and doing
+      // nothing at all taught the player the button was dead. Putting the caret
+      // in the field says where to type without a word of scolding. A refusal
+      // still standing goes with it, since it is not a verdict on this — but a
+      // verdict that was earned stays: a second Enter used to wipe "solved in 3
+      // moves" out of the live region before anyone had read it.
+      if (/warn/.test(el.msg.className)) say("");
+      markBad(false);
+      el.word.focus();
+      return;
+    }
+    var prev = chain[chain.length - 1];
+    // The ladder stops at the target. Playing on past it would store a chain
+    // whose target is not the last rung, which is exactly the shape the loader
+    // refuses to restore — the day's progress would come back empty on reload.
+    // Undo is how you step back and take another route; the win stands either
+    // way, so nothing is lost by refusing here. Unreachable by hand now that
+    // Submit is disabled at the target and the field is put away — kept as the
+    // guard on the state, not as a message anyone is expected to read.
+    if (prev === TARGET) return reject("already at the target — Undo to step back");
+    if (w.length < 4) return reject("needs four letters");
+    if (!WORDSET[w.toLowerCase()]) return reject(w + " isn't in the list");
+    if (w === prev) return reject("that's the same word");
+    if (diffCount(w, prev) !== 1) return reject("change exactly one letter");
+    if (chain.indexOf(w) !== -1) return reject("already used that word");
+
+    chain.push(w);
+    store.chain = chain.slice();
+    justAdded = true;
+
+    if (w === TARGET) {
+      solved = true;
+      store.solved = true;
+      // Banked once per date: re-reaching the target after an Undo must not
+      // count twice.
+      if (!readOnly && store.lastSolved !== puzzleDate) {
+        store.streak = (store.lastSolved === shiftDays(puzzleDate, -1)) ? store.streak + 1 : 1;
+        store.lastSolved = puzzleDate;
+        if (store.streak > store.best) store.best = store.streak;
+      }
+    }
+    save();
+    // The win is announced in the live region, not only printed in #status:
+    // #status is not a live region, so a message that says nothing about the
+    // win leaves a screen-reader player untold they solved it. But the count
+    // belongs to #status, which is 36.6px above this line and already reads
+    // "solved in N moves · best possible P" — printing "solved in N moves"
+    // here as well stated the same result twice on one screen. The count goes,
+    // the word stays: one bare "solved" is the shortest thing that still
+    // announces the win, and it is not a second telling of a number.
+    say(w === TARGET ? "added " + w + " · solved" : "added " + w);
+    el.word.value = "";
+    markBad(false);
+    render();
+    // On the winning move the field is put away under the player's caret, so
+    // focus goes to the one control that still has a move in it rather than
+    // falling to <body>, where the next Tab would restart from the top.
+    if (w === TARGET) { try { el.undo.focus(); } catch (e) { /* ignore */ } }
+    else el.word.focus();
+  }
+
+  /* ---------------------------- share --------------------------------- */
+
+  // The result line, and the one rule it has to keep: it says how the ladder
+  // went, never what was in it. No start word, no target, no rung, no letter —
+  // a player who has not played today can read it without the puzzle being
+  // spoiled, which is the whole reason a daily puzzle travels.
+  var DEMO_URL = "https://yinggarykairui.github.io/word-ladder/";
+  var shareOpen = false;
+  var shareSeq = 0;
+  var copiedTimer = 0;
+
+  function shareText() {
+    // The same number named the same way everywhere it appears, which is a
+    // promise the README makes: the status line two elements up reads
+    // "solved in 5 moves · best possible 5" and so does this. The first draft
+    // wrote "5 moves (best possible 5)" and broke that promise in the one place
+    // the number leaves the page. No singular branch: par is 3-5 by
+    // construction, so a solved ladder is never one move long, and a branch the
+    // build cannot reach is a branch nothing can test.
+    var moves = chain.length - 1;
+    var line = "word ladder " + puzzleDate +
+      " · solved in " + moves + " moves · best possible " + PUZ.par;
+    // A replay has no streak to claim. Omitted rather than printed as 0: the
+    // header already says nothing is being saved, and "streak 0" would read as
+    // a score rather than as an absence.
+    if (!readOnly) line += " · streak " + shownStreak();
+    return line + "\n" + DEMO_URL;
+  }
+
+  // Nothing on the page changes when a clipboard write succeeds, so the message
+  // line is the only evidence the player gets that anything happened.
+  // "Copied" is a claim about the board it was pressed on, so it leaves when
+  // that board does. Undo, re-solve inside the 1.6s window, and the button came
+  // back still reading Copied over a result that had never been on the
+  // clipboard — settle() guards the message line against exactly that and the
+  // label was set outside the guard, cleared only by its own timer.
+  function clearCopied() {
+    if (copiedTimer) { clearTimeout(copiedTimer); copiedTimer = 0; }
+    if (el.share.textContent !== "Share") el.share.textContent = "Share";
+  }
+
+  function shareCopied() {
+    var hadFocus = shareOpen && document.activeElement === el.sharetext;
+    shareOpen = false;
+    render();
+    say("result copied");
+    // Two writes can be in flight at once, and the box the first one puts away
+    // may be the box the second one just put the caret in. render() has already
+    // set it display:none, which drops activeElement to <body> — the same fall
+    // the load path and commit() are both written to avoid.
+    if (hadFocus) { try { el.share.focus(); } catch (e) { /* ignore */ } }
+    // The button acknowledges its own press. A copy changes nothing else on the
+    // page, and the message line 17px above it is the same slot every refusal
+    // has used all game, so on a phone — thumb over the button — the press read
+    // as dead and got made twice. Six letters, the width SUBMIT already proves
+    // fits at 320px, so the row does not reflow to say it.
+    if (copiedTimer) clearTimeout(copiedTimer);
+    el.share.textContent = "Copied";
+    copiedTimer = setTimeout(clearCopied, 1600);
+  }
+
+  // The two ways a clipboard write does not happen, and both are ordinary.
+  // Absent: no navigator.clipboard at all, which is what a non-secure context
+  // gives. Refused: the object is there and writeText() rejects — a permissions
+  // policy, a document that is not focused, a gesture that has timed out. That
+  // second one is the common case for the documented way to run this page:
+  // measured on file:// in Chromium, navigator.clipboard IS an object (a file
+  // URL is potentially trustworthy there) and the write comes back
+  // NotAllowedError. Either way the player still gets the line, selected, with
+  // somewhere to copy it from. This is the path that has to work, not the
+  // graceful extra.
+  // The height the line actually takes at the width it is actually being read
+  // at. scrollHeight is a border-box measurement here, so the borders are added
+  // back or the field lands 2px short of its own content — which is enough to
+  // clip the descenders off the last line and nothing more, the most annoying
+  // possible amount to be wrong by.
+  function fitShare() {
+    var ta = el.sharetext;
+    ta.style.height = "auto";
+    ta.style.height = (ta.scrollHeight + (ta.offsetHeight - ta.clientHeight)) + "px";
+  }
+
+  function shareFallback() {
+    shareOpen = true;
+    render();
+    // The board has not left the target, so render() has no reason to take the
+    // label down — and a button reading Copied beside a line saying the
+    // clipboard is unavailable is the page contradicting itself. Reachable on a
+    // second press: writeText rejects NotAllowedError when the document is not
+    // focused, under a permissions policy, or past a gesture timeout.
+    clearCopied();
+    // "the clipboard isn't available here" named the wrong mechanism, and it
+    // named the one this build had already corrected everywhere else: on
+    // file://, the documented way to run this page, navigator.clipboard IS an
+    // object and writeText comes back NotAllowedError. The line the player
+    // reads now says what happened — the copy was refused — which is also true
+    // of the absent case from where the player is standing. Six characters
+    // shorter than the string the layout was holding, which is enough to stop
+    // it wrapping to a second line at 320px: the document with the fallback
+    // open goes 568 -> 585 there instead of 568 -> 605.
+    say("copy this line — the browser refused the copy");
+    // rows="2" was sized against the string, not against the box the string
+    // wraps inside: at 390px the line takes three rendered rows and at 320px it
+    // takes four, so a fixed two-row field hid 19px and 38px of it — and
+    // select() scrolls a field to the end of its selection, which at 320px left
+    // the player looking at the URL with their own result scrolled out of sight
+    // above it, under a message telling them to copy the line. The field is
+    // sized to what it is actually holding, at the width it is actually being
+    // held at, every time it opens.
+    fitShare();
+    try { el.sharetext.focus(); el.sharetext.select(); } catch (e) { /* ignore */ }
+    // select() scrolls a field to the end of its selection. Sized to fit there
+    // is nothing to scroll, but the assignment costs nothing and the row that
+    // proves the whole line is on screen should not depend on that.
+    el.sharetext.scrollTop = 0;
+    // Same reasoning as reject(): on a short screen the thing the player is
+    // being told to act on can be below the fold, and `nearest` scrolls the
+    // page only when it actually is.
+    try { el.sharebox.scrollIntoView({ block: "nearest" }); } catch (e) { /* ignore */ }
+  }
+
+  function share() {
+    var text = shareText(), wrote = null, seq = ++shareSeq;
+    el.sharetext.value = text;
+    // Reading navigator.clipboard can itself throw in a sandboxed frame, and
+    // writeText can throw synchronously rather than reject.
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        wrote = navigator.clipboard.writeText(text);
+      }
+    } catch (e) { wrote = null; }
+    if (!wrote || typeof wrote.then !== "function") return shareFallback();
+    wrote.then(function () { settle(seq, text, true); },
+               function () { settle(seq, text, false); });
+  }
+
+  // A clipboard write outlives the board it was made about. The player can Undo
+  // between the press and the promise, and a permission prompt makes that gap
+  // seconds long — long enough to undo, take a longer route and re-solve. A
+  // settle that is not the latest press, that lands on a board no longer
+  // standing in the target, or whose line is no longer what the board would say,
+  // announces nothing: without this, "result copied" appeared over a seven-move
+  // ladder for a five-move copy, and "copy this line" appeared on a board with
+  // no line and no box anywhere on it.
+  function settle(seq, text, copied) {
+    if (seq !== shareSeq) return;
+    if (chain[chain.length - 1] !== TARGET) return;
+    if (text !== shareText()) return;
+    if (copied) shareCopied(); else shareFallback();
+  }
+
+  function undo() {
+    if (chain.length <= 1) return;
+    var undoHadFocus = document.activeElement === el.undo;
+    // Stepping back off the target puts the input row back on the board, and
+    // the caret goes with it: the point of this Undo is to type something else.
+    var leavingTarget = chain[chain.length - 1] === TARGET;
+    chain.pop();
+    store.chain = chain.slice();
+    // store.solved is NOT cleared: the win belongs to the date. Undo walks the
+    // chain back so a player can explore or replay; it does not un-win the day,
+    // and the streak it banked stays banked exactly once.
+    save();
+    say("");
+    // The strike-through is the visible half of a verdict the message line has
+    // just dropped; left behind it is a refusal with no reason, on a word the
+    // shortened chain may now accept.
+    markBad(false);
+    render();
+    // Disabling the button that holds focus drops activeElement to BODY.
+    if (leavingTarget || (undoHadFocus && el.undo.disabled)) el.word.focus();
+  }
+
+  // An IME's in-flight text is not typed text yet. Assigning .value while a
+  // composition is open commits the half-formed reading and collapses the
+  // composition range, so the IME's next update appends to what was committed
+  // instead of replacing it: composing "held" used to land HHEH in the field.
+  // The fold waits for compositionend, which is the point the text is real.
+  el.word.addEventListener("compositionstart", function () { composing = true; });
+  // The flag's other way back. A compositionstart with no compositionend and no
+  // blur — an IME dismissed by the platform rather than by the field — left the
+  // fold switched off for the rest of the session, and typing then sat in the
+  // field unfolded, digits and all. A field cannot be mid-composition at the
+  // moment it gains focus, so this costs nothing and cannot strand the flag.
+  el.word.addEventListener("focus", function () { composing = false; });
+  // A field that loses focus has no composition left to protect; without this a
+  // compositionend that never arrives would leave the fold switched off.
+  el.word.addEventListener("blur", function () {
+    if (!composing) return;
+    composing = false;
+    normalise();
+  });
+  el.word.addEventListener("compositionend", function () {
+    composing = false;
+    markBad(false);
+    normalise();
+  });
+  el.word.addEventListener("input", function (e) {
+    markBad(false);
+    if (composing || (e && e.isComposing)) return;
+    normalise();
+  });
+  el.form.addEventListener("submit", function (e) { e.preventDefault(); commit(); });
+  el.undo.addEventListener("click", undo);
+  el.share.addEventListener("click", share);
+  // A rotation changes how much of the ladder fits without changing the ladder.
+  window.addEventListener("resize", function () {
+    fitColumn();
+    // A rotation changes the width the share line wraps at without touching the
+    // line: sized for portrait and read in landscape, the field clipped again.
+    if (shareOpen) fitShare();
+  });
+  // Scrolled by hand, by the arrow keys or by the wheel: the same edge, the
+  // same question.
+  el.chainbox.addEventListener("scroll", fade);
+  // iOS Safari applies :active to a tapped control only when something in the
+  // document is listening for touch, so the press state above is drawn on a
+  // phone and not only on a mouse. Passive and empty: it reads nothing, changes
+  // nothing and cannot delay a scroll.
+  try {
+    document.addEventListener("touchstart", function () { /* :active on iOS */ },
+                              { passive: true });
+  } catch (e) { /* ignore */ }
+
+  render();
+  // A board that loads already at the target has no field to put the caret in;
+  // grabbing focus for a row that is not on screen would drop it on <body>.
+  if (chain[chain.length - 1] !== TARGET) { try { el.word.focus(); } catch (e) { /* ignore */ } }
+  // A ?d= that is not a date is not silently ignored.
+  if (dparam.bad) say("that ?d= isn't a date — showing today", true);
+
+  /* The seam tests.html drives. No behaviour depends on it. */
+  window.WL = {
+    WORDS: WORDS, NBR: NBR, COMP: COMP, KEY: KEY,
+    utcDateStr: utcDateStr, isDateStr: isDateStr, shiftDays: shiftDays,
+    fnv1a32: fnv1a32, mulberry32: mulberry32,
+    puzzleFor: puzzleFor, pathOf: pathOf, diffCount: diffCount,
+    puzzle: PUZ, puzzleDate: puzzleDate, readOnly: readOnly, today: today,
+    shareText: shareText,
+    state: function () { return { chain: chain.slice(), solved: solved, shareOpen: shareOpen }; }
+  };
+}());
+</script>
+</body>
+</html>
