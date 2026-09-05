@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Ping vs Pong — Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Mainkan Ping vs Pong, game Pong klasik modern dengan AI cerdas!">
+  <link href="style.css" rel="stylesheet">
+</head>
+<body>
+  <a href="index.html" onclick="if(window.history.length>1){history.back();return false;}" class="back-link">Kembali</a>
+  <main class="game-layout">
+    <div class="text-center">
+      <h1 class="display-title">Ping vs Pong</h1>
+    </div>
+    <div class="text-center mb-3">
+      <div id="scoreBoard" class="score-board">0 <span class="score-sep">|</span> 0</div>
+    </div>
+    <div class="text-center">
+      <div class="canvas-wrapper">
+        <canvas id="pongCanvas" width="800" height="500"></canvas>
+      </div>
+    </div>
+    <div class="game-controls">
+      <button id="restartBtn" class="game-btn">Ulangi</button>
+      <button id="pauseBtn" class="game-btn">Jeda</button>
+      <button id="muteBtn" class="game-btn game-btn-sound" aria-label="Toggle sound">🔊</button>
+    </div>
+  </main>
+  <div id="overlay" class="game-overlay hidden">
+    <h2 id="overlayTitle" class="overlay-title"></h2>
+    <div id="overlayMsg" class="overlay-msg"></div>
+    <button id="overlayBtn" class="game-btn"></button>
+  </div>
+  <script src="pong.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const pauseBtn = document.getElementById('pauseBtn');
+      if (pauseBtn && typeof pauseGame !== 'undefined' && typeof showOverlay !== 'undefined') {
+        pauseBtn.addEventListener('click', function() {
+          if (!isPaused) {
+            pauseGame();
+            showOverlay("Jeda", "Permainan dijeda. Klik Lanjutkan untuk bermain lagi.", "Lanjutkan");
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
