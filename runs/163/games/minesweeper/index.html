@@ -255,8 +255,8 @@ html[data-offer] body.screen{--oh:46px}
         <script type="application/ld+json">
           {"@context":"https://schema.org","@graph":[{"@type":["VideoGame","SoftwareApplication"],"@id":"https://ellaz.fun/games/minesweeper/#game","name":"Minesweeper","url":"https://ellaz.fun/games/minesweeper/","image":["https://ellaz.fun/art/minesweeper-55ee913a.svg","https://ellaz.fun/og/game-minesweeper-en-205dfd2a.png"],"description":"Free Minesweeper in your browser. Uncover squares, read the numbers, flag the mines without stepping on one. Three levels, and the first click is always safe.","inLanguage":"en","gamePlatform":["Web Browser","Mobile","Tablet","Desktop"],"playMode":"SinglePlayer","applicationCategory":"GameApplication","operatingSystem":"Any","isAccessibleForFree":true,"isFamilyFriendly":true,"typicalAgeRange":"5-99","genre":["Puzzle","Board Game"],"offers":{"@type":"Offer","price":"0","priceCurrency":"ILS","availability":"https://schema.org/InStock"},"publisher":{"@id":"https://ellaz.fun/#org"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://ellaz.fun/"},{"@type":"ListItem","position":2,"name":"Classics","item":"https://ellaz.fun/games/classics/"},{"@type":"ListItem","position":3,"name":"Minesweeper","item":"https://ellaz.fun/games/minesweeper/"}]},{"@type":"HowTo","name":"How do you play?","inLanguage":"en","step":[{"@type":"HowToStep","position":1,"name":"Pick a level","text":"Easy, medium or hard. Choosing rebuilds the board from scratch."},{"@type":"HowToStep","position":2,"name":"Click anywhere","text":"The first square is safe and so are its neighbours. Open near the middle for a bigger reveal."},{"@type":"HowToStep","position":3,"name":"Read the numbers","text":"A number counts mines in the eight squares around it, diagonals included."},{"@type":"HowToStep","position":4,"name":"Flag what you know","text":"Long press, or the toggle beside the board. Flags come back off freely."},{"@type":"HowToStep","position":5,"name":"Clear the board","text":"When every safe square is open the clock stops and you find out about the record."}]},{"@type":"FAQPage","inLanguage":"en","mainEntity":[{"@type":"Question","name":"Is Minesweeper free here?","acceptedAnswer":{"@type":"Answer","text":"Completely. Nothing to pay, nothing to buy inside the game, and no paid version with extra levels because there is no other version. Every game on the site is open from the first second."}},{"@type":"Question","name":"Do I need to download or sign up?","acceptedAnswer":{"@type":"Answer","text":"Neither. It runs in the browser with no download and no account. We do not ask for an email either."}},{"@type":"Question","name":"Can the first click hit a mine?","acceptedAnswer":{"@type":"Answer","text":"No. Mines are placed after you click, and the square you chose plus all its neighbours are excluded. That is why an opening click always reveals ground instead of ending the game."}},{"@type":"Question","name":"Why are some boards impossible without guessing?","acceptedAnswer":{"@type":"Answer","text":"Mine density creates positions where two possibilities stay exactly balanced, and no amount of logic separates them. We measured how often: 79.8% of easy boards are solvable by pure logic against 12.3% of hard ones. The simulation is in our open source."}},{"@type":"Question","name":"Are there ads?","acceptedAnswer":{"@type":"Answer","text":"None. No banners and no video between levels."}},{"@type":"Question","name":"Does it work offline?","acceptedAnswer":{"@type":"Answer","text":"Yes. After one visit the game is stored on the device and runs on a plane."}},{"@type":"Question","name":"How do I flag on a phone?","acceptedAnswer":{"@type":"Answer","text":"Long press a square, or use the toggle beside the board that switches between uncovering and flagging. Wrong flags cost nothing and come straight back off."}},{"@type":"Question","name":"How is the record measured?","acceptedAnswer":{"@type":"Answer","text":"As a time, where faster is better, kept separately per level. The clock starts on your first click rather than when the screen loads."}},{"@type":"Question","name":"What age is this for?","acceptedAnswer":{"@type":"Answer","text":"Around seven, on easy. The one idea that needs explaining is that a number describes its neighbours. There is no reading anywhere in the game."}},{"@type":"Question","name":"Does it collect data about my child?","acceptedAnswer":{"@type":"Answer","text":"No. There is no signup and no name. No session recording and no behavioural advertising. We count how many times a game was opened, with nothing attached that identifies who opened it."}}]},{"@type":"Organization","@id":"https://ellaz.fun/#org","name":"Ellaz","url":"https://ellaz.fun/","logo":"https://ellaz.fun/icon.svg","description":"Free browser games, no download and no account","sameAs":["https://github.com/Sigmafier/ellaz"]}]}
         </script>
-        <script type="module" crossorigin src="/assets/index-CuMMFjy2.js"></script><link rel="modulepreload" crossorigin href="/assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="/assets/shell-DuZzOw8k.js"><link rel="stylesheet" crossorigin href="/assets/shell-DkfkxXv9.css"><link rel="manifest" href="/manifest.webmanifest">
-        <link rel="modulepreload" crossorigin href="/assets/page-IBqCo0MK.js"><link rel="modulepreload" crossorigin href="/assets/game-minesweeper-EeUjMIRA.js">
+        <script type="module" crossorigin src="./assets/index-BPcPmBzM.js"></script><link rel="modulepreload" crossorigin href="./assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="./assets/shell-B9mKIw0V.js"><link rel="stylesheet" crossorigin href="./assets/shell-DkfkxXv9.css"><link rel="manifest" href="./manifest.webmanifest">
+        <link rel="modulepreload" crossorigin href="/assets/page-CD2I-OyG.js"><link rel="modulepreload" crossorigin href="/assets/game-minesweeper-T2byHMds.js">
       </head>
       <body class="screen" style="--g:#4F5BD5" data-page="game" data-game="minesweeper" data-locale="en">
         
@@ -481,15 +481,25 @@ html[data-offer] body.screen{--oh:46px}
     <section class="embed" id="embed">
     <h2>Put this game on your site</h2>
     <p>Copy the code and paste it into your page. The line under the frame is the part that counts: a link inside the frame stays on ellaz.fun, and only the one you paste is yours.</p>
-    <iframe
-      src="/embed/minesweeper/?lang=en"
-      width="100%"
-      height="940"
-      style="border:0;border-radius:12px;background:var(--doc-stage)"
-      allow="fullscreen"
-      loading="lazy"
-      title="Minesweeper - ellaz.fun"
-    ></iframe>
+    <div
+      class="embed-preview"
+      data-embed-preview
+      data-src="/embed/minesweeper/?lang=en"
+      data-height="940"
+      data-title="Minesweeper - ellaz.fun"
+      style="border-radius:12px;background:var(--doc-stage);overflow:hidden"
+    >
+      <img
+        src="/art/minesweeper-55ee913a.svg"
+        alt=""
+        width="1200"
+        height="900"
+        loading="lazy"
+        decoding="async"
+        style="display:block;width:100%;height:auto"
+      />
+    </div>
+    <button type="button" class="play" data-embed-play hidden>Show the game here</button>
     <p class="embed-credit"><p>Play <a href="https://ellaz.fun/games/minesweeper/">Minesweeper</a> and more free games at <a href="https://ellaz.fun/">ellaz.fun</a></p></p>
     <pre
       class="embed-code"

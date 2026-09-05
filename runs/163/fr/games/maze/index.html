@@ -255,8 +255,8 @@ html[data-offer] body.screen{--oh:46px}
         <script type="application/ld+json">
           {"@context":"https://schema.org","@graph":[{"@type":["VideoGame","SoftwareApplication"],"@id":"https://ellaz.fun/fr/games/maze/#game","name":"Le labyrinthe","url":"https://ellaz.fun/fr/games/maze/","image":["https://ellaz.fun/art/maze-3c217cf8.svg","https://ellaz.fun/og/game-maze-fr-f10e94d1.png"],"description":"Une souris, 2 à 6 miettes, et un labyrinthe neuf à chaque fois. Le jeu connaît le trajet le plus court avant vous.","inLanguage":"fr","gamePlatform":["Web Browser","Mobile","Tablet","Desktop"],"playMode":"SinglePlayer","applicationCategory":"GameApplication","operatingSystem":"Any","isAccessibleForFree":true,"isFamilyFriendly":true,"typicalAgeRange":"3-10","genre":["Casual","Educational"],"offers":{"@type":"Offer","price":"0","priceCurrency":"ILS","availability":"https://schema.org/InStock"},"publisher":{"@id":"https://ellaz.fun/#org"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://ellaz.fun/fr/"},{"@type":"ListItem","position":2,"name":"Pour les petits","item":"https://ellaz.fun/fr/games/kids/"},{"@type":"ListItem","position":3,"name":"Le labyrinthe","item":"https://ellaz.fun/fr/games/maze/"}]},{"@type":"HowTo","name":"Comment on joue ?","inLanguage":"fr","step":[{"@type":"HowToStep","position":1,"name":"Diriger la souris","text":"Faites glisser le doigt dans une direction, ou utilisez les flèches. La souris avance d'une case à la fois."},{"@type":"HowToStep","position":2,"name":"Ramasser les miettes","text":"2 à 6 miettes selon la taille. L'ordre dans lequel vous les prenez décide de la longueur du trajet."},{"@type":"HowToStep","position":3,"name":"Viser le parcours parfait","text":"Le labyrinthe connaît son trajet le plus court. Le faire dans ce nombre de pas exactement compte comme un labyrinthe parfait."}]},{"@type":"FAQPage","inLanguage":"fr","mainEntity":[{"@type":"Question","name":"Ce labyrinthe est-il gratuit ?","acceptedAnswer":{"@type":"Answer","text":"Oui, les quatre tailles, sans publicité, sans compte et sans version payante."}},{"@type":"Question","name":"Quelles sont les tailles ?","acceptedAnswer":{"@type":"Answer","text":"5 sur 5 avec 2 miettes, 6 sur 6 avec 3, 7 sur 7 avec 4, et 10 sur 10 avec 6 pour le niveau expert. Chaque labyrinthe est fabriqué au moment où il commence."}},{"@type":"Question","name":"Quelle est la meilleure façon de jouer ?","acceptedAnswer":{"@type":"Answer","text":"Aller toujours vers la miette la plus proche. C'est le trajet optimal sur 92,7% des petits labyrinthes, 68,6% des 7 sur 7 et 33,0% des 10 sur 10."}},{"@type":"Question","name":"Combien de pas pour un bon parcours ?","acceptedAnswer":{"@type":"Answer","text":"13,58 en moyenne sur le petit, 24,41 sur le moyen, 39,53 sur le 7 sur 7 et 52,78 sur le 10 sur 10."}},{"@type":"Question","name":"Que compte le record ?","acceptedAnswer":{"@type":"Answer","text":"Les labyrinthes parfaits d'affilée, c'est-à-dire bouclés dans le nombre de pas le plus court possible."}},{"@type":"Question","name":"Est-ce qu'il marche hors ligne ?","acceptedAnswer":{"@type":"Answer","text":"Oui, après la première visite. Les labyrinthes sont fabriqués sur l'appareil."}}]},{"@type":"Organization","@id":"https://ellaz.fun/#org","name":"Ellaz","url":"https://ellaz.fun/","logo":"https://ellaz.fun/icon.svg","description":"Free browser games, no download and no account","sameAs":["https://github.com/Sigmafier/ellaz"]}]}
         </script>
-        <script type="module" crossorigin src="/assets/index-CuMMFjy2.js"></script><link rel="modulepreload" crossorigin href="/assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="/assets/shell-DuZzOw8k.js"><link rel="stylesheet" crossorigin href="/assets/shell-DkfkxXv9.css"><link rel="manifest" href="/manifest.webmanifest">
-        <link rel="modulepreload" crossorigin href="/assets/page-IBqCo0MK.js"><link rel="modulepreload" crossorigin href="/assets/game-maze-Fffjpcep.js">
+        <script type="module" crossorigin src="./assets/index-BPcPmBzM.js"></script><link rel="modulepreload" crossorigin href="./assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="./assets/shell-B9mKIw0V.js"><link rel="stylesheet" crossorigin href="./assets/shell-DkfkxXv9.css"><link rel="manifest" href="./manifest.webmanifest">
+        <link rel="modulepreload" crossorigin href="/assets/page-CD2I-OyG.js"><link rel="modulepreload" crossorigin href="/assets/game-maze-DYwQiuoh.js">
       </head>
       <body class="screen" style="--g:#6FD44E" data-page="game" data-game="maze" data-locale="fr">
         
@@ -474,15 +474,25 @@ html[data-offer] body.screen{--oh:46px}
     <section class="embed" id="embed">
     <h2>Mettez ce jeu sur votre site</h2>
     <p>Copiez le code et collez-le dans votre page. La ligne sous le cadre est celle qui compte : un lien dans le cadre reste sur ellaz.fun, et seul celui que vous collez est le vôtre.</p>
-    <iframe
-      src="/embed/maze/?lang=fr"
-      width="100%"
-      height="940"
-      style="border:0;border-radius:12px;background:var(--doc-stage)"
-      allow="fullscreen"
-      loading="lazy"
-      title="Le labyrinthe - ellaz.fun"
-    ></iframe>
+    <div
+      class="embed-preview"
+      data-embed-preview
+      data-src="/embed/maze/?lang=fr"
+      data-height="940"
+      data-title="Le labyrinthe - ellaz.fun"
+      style="border-radius:12px;background:var(--doc-stage);overflow:hidden"
+    >
+      <img
+        src="/art/maze-3c217cf8.svg"
+        alt=""
+        width="1200"
+        height="900"
+        loading="lazy"
+        decoding="async"
+        style="display:block;width:100%;height:auto"
+      />
+    </div>
+    <button type="button" class="play" data-embed-play hidden>Afficher le jeu ici</button>
     <p class="embed-credit"><p>Jouez à <a href="https://ellaz.fun/fr/games/maze/">Le labyrinthe</a> et à d'autres jeux gratuits sur <a href="https://ellaz.fun/">ellaz.fun</a></p></p>
     <pre
       class="embed-code"

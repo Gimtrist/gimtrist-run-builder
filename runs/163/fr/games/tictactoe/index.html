@@ -255,8 +255,8 @@ html[data-offer] body.screen{--oh:46px}
         <script type="application/ld+json">
           {"@context":"https://schema.org","@graph":[{"@type":["VideoGame","SoftwareApplication"],"@id":"https://ellaz.fun/fr/games/tictactoe/#game","name":"Morpion","url":"https://ellaz.fun/fr/games/tictactoe/","image":["https://ellaz.fun/art/tictactoe-f5e3d419.svg","https://ellaz.fun/og/game-tictactoe-fr-bb9e3f22.png"],"description":"Trois adversaires. Le premier joue au hasard, le dernier ne peut pas perdre. Nous avons simulé 3 000 parties contre lui et gagné zéro fois.","inLanguage":"fr","gamePlatform":["Web Browser","Mobile","Tablet","Desktop"],"playMode":"SinglePlayer","applicationCategory":"GameApplication","operatingSystem":"Any","isAccessibleForFree":true,"isFamilyFriendly":true,"typicalAgeRange":"5-99","genre":["Puzzle","Board Game"],"offers":{"@type":"Offer","price":"0","priceCurrency":"ILS","availability":"https://schema.org/InStock"},"publisher":{"@id":"https://ellaz.fun/#org"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://ellaz.fun/fr/"},{"@type":"ListItem","position":2,"name":"Classiques","item":"https://ellaz.fun/fr/games/classics/"},{"@type":"ListItem","position":3,"name":"Morpion","item":"https://ellaz.fun/fr/games/tictactoe/"}]},{"@type":"HowTo","name":"Comment on joue ?","inLanguage":"fr","step":[{"@type":"HowToStep","position":1,"name":"Choisir un adversaire","text":"Facile joue au hasard, moyen se trompe environ une fois sur deux, difficile ne se trompe jamais. Changer d'adversaire remet la série de victoires à zéro."},{"@type":"HowToStep","position":2,"name":"Poser sa marque","text":"Appuyez sur une case vide. L'adversaire répond aussitôt, sans temps d'attente artificiel."},{"@type":"HowToStep","position":3,"name":"Aligner trois cases","text":"En ligne, en colonne ou en diagonale. Si la grille se remplit sans alignement, la partie est nulle."}]},{"@type":"FAQPage","inLanguage":"fr","mainEntity":[{"@type":"Question","name":"Le morpion est-il gratuit ?","acceptedAnswer":{"@type":"Answer","text":"Oui, les trois adversaires, sans publicité, sans compte et sans version payante."}},{"@type":"Question","name":"Peut-on battre le niveau difficile ?","acceptedAnswer":{"@type":"Answer","text":"Non. Il calcule toutes les suites possibles. Sur 3 000 parties simulées, nous avons obtenu 21,7% de parties nulles et aucune victoire."}},{"@type":"Question","name":"Quelle est la différence entre les trois niveaux ?","acceptedAnswer":{"@type":"Answer","text":"Le facile joue un coup au hasard, le moyen joue le meilleur coup environ une fois sur deux, le difficile ne se trompe jamais."}},{"@type":"Question","name":"Combien de parties de morpion existent ?","acceptedAnswer":{"@type":"Answer","text":"255 168 parties complètes. Avec deux joueurs parfaits, le résultat est toujours une partie nulle."}},{"@type":"Question","name":"Que garde le record ?","acceptedAnswer":{"@type":"Answer","text":"La plus longue série de victoires d'affilée contre un adversaire donné. Elle repart à zéro si vous changez d'adversaire."}},{"@type":"Question","name":"Est-ce qu'il marche hors ligne ?","acceptedAnswer":{"@type":"Answer","text":"Oui, après la première visite. L'adversaire est calculé sur l'appareil, sans connexion."}}]},{"@type":"Organization","@id":"https://ellaz.fun/#org","name":"Ellaz","url":"https://ellaz.fun/","logo":"https://ellaz.fun/icon.svg","description":"Free browser games, no download and no account","sameAs":["https://github.com/Sigmafier/ellaz"]}]}
         </script>
-        <script type="module" crossorigin src="/assets/index-CuMMFjy2.js"></script><link rel="modulepreload" crossorigin href="/assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="/assets/shell-DuZzOw8k.js"><link rel="stylesheet" crossorigin href="/assets/shell-DkfkxXv9.css"><link rel="manifest" href="/manifest.webmanifest">
-        <link rel="modulepreload" crossorigin href="/assets/page-IBqCo0MK.js"><link rel="modulepreload" crossorigin href="/assets/game-tictactoe-B2P9Wg7f.js">
+        <script type="module" crossorigin src="./assets/index-BPcPmBzM.js"></script><link rel="modulepreload" crossorigin href="./assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="./assets/shell-B9mKIw0V.js"><link rel="stylesheet" crossorigin href="./assets/shell-DkfkxXv9.css"><link rel="manifest" href="./manifest.webmanifest">
+        <link rel="modulepreload" crossorigin href="/assets/page-CD2I-OyG.js"><link rel="modulepreload" crossorigin href="/assets/game-tictactoe-DoooRNOz.js">
       </head>
       <body class="screen" style="--g:#26B0E6" data-page="game" data-game="tictactoe" data-locale="fr">
         
@@ -473,15 +473,25 @@ html[data-offer] body.screen{--oh:46px}
     <section class="embed" id="embed">
     <h2>Mettez ce jeu sur votre site</h2>
     <p>Copiez le code et collez-le dans votre page. La ligne sous le cadre est celle qui compte : un lien dans le cadre reste sur ellaz.fun, et seul celui que vous collez est le vôtre.</p>
-    <iframe
-      src="/embed/tictactoe/?lang=fr"
-      width="100%"
-      height="940"
-      style="border:0;border-radius:12px;background:var(--doc-stage)"
-      allow="fullscreen"
-      loading="lazy"
-      title="Morpion - ellaz.fun"
-    ></iframe>
+    <div
+      class="embed-preview"
+      data-embed-preview
+      data-src="/embed/tictactoe/?lang=fr"
+      data-height="940"
+      data-title="Morpion - ellaz.fun"
+      style="border-radius:12px;background:var(--doc-stage);overflow:hidden"
+    >
+      <img
+        src="/art/tictactoe-f5e3d419.svg"
+        alt=""
+        width="1200"
+        height="900"
+        loading="lazy"
+        decoding="async"
+        style="display:block;width:100%;height:auto"
+      />
+    </div>
+    <button type="button" class="play" data-embed-play hidden>Afficher le jeu ici</button>
     <p class="embed-credit"><p>Jouez à <a href="https://ellaz.fun/fr/games/tictactoe/">Morpion</a> et à d'autres jeux gratuits sur <a href="https://ellaz.fun/">ellaz.fun</a></p></p>
     <pre
       class="embed-code"

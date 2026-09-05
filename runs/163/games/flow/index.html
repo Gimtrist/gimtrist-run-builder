@@ -255,8 +255,8 @@ html[data-offer] body.screen{--oh:46px}
         <script type="application/ld+json">
           {"@context":"https://schema.org","@graph":[{"@type":["VideoGame","SoftwareApplication"],"@id":"https://ellaz.fun/games/flow/#game","name":"Pipe Flow","url":"https://ellaz.fun/games/flow/","image":["https://ellaz.fun/art/flow-b46aae3c.svg","https://ellaz.fun/og/game-flow-en-844ed9fb.png"],"description":"A free pipe puzzle that runs in your browser. Pairs of coloured dots sit on a square grid, and you draw a pipe from one dot to its twin through squares that touch. The board is finished when every pair is joined and every square is covered.","inLanguage":"en","gamePlatform":["Web Browser","Mobile","Tablet","Desktop"],"playMode":"SinglePlayer","applicationCategory":"GameApplication","operatingSystem":"Any","isAccessibleForFree":true,"isFamilyFriendly":true,"typicalAgeRange":"5-99","genre":["Puzzle","Strategy"],"offers":{"@type":"Offer","price":"0","priceCurrency":"ILS","availability":"https://schema.org/InStock"},"publisher":{"@id":"https://ellaz.fun/#org"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://ellaz.fun/"},{"@type":"ListItem","position":2,"name":"Thinking","item":"https://ellaz.fun/games/think/"},{"@type":"ListItem","position":3,"name":"Pipe Flow","item":"https://ellaz.fun/games/flow/"}]},{"@type":"HowTo","name":"How do you play?","inLanguage":"en","step":[{"@type":"HowToStep","position":1,"name":"Start on a dot","text":"Touch a coloured dot. A pipe can only begin there, never in the middle of the board."},{"@type":"HowToStep","position":2,"name":"Move one square","text":"Each further touch steps one square sideways, up or down. Diagonals do not count as touching."},{"@type":"HowToStep","position":3,"name":"Close on the twin","text":"Reach the dot of the same colour and the pipe closes. It counts as one move whether it ran three squares or eleven."},{"@type":"HowToStep","position":4,"name":"Change your mind free","text":"Touch a colour's dot again and its pipe disappears. Running through another colour cuts that one at the meeting point rather than blocking you."},{"@type":"HowToStep","position":5,"name":"Fill the last square","text":"Every pair joined and every square taken. One empty square is enough to leave the board unfinished."}]},{"@type":"FAQPage","inLanguage":"en","mainEntity":[{"@type":"Question","name":"Is every board really solvable?","acceptedAnswer":{"@type":"Answer","text":"Yes, and it is built rather than tested. The game cuts up a walk that had already visited every square, so the pieces cover the grid and cannot cross each other."}},{"@type":"Question","name":"Why won't the board finish when everything is joined?","acceptedAnswer":{"@type":"Answer","text":"Because a square is still empty. Joining every pair the short way covers only 61.2% of a hard board, and the game is waiting for the ones nothing reached."}},{"@type":"Question","name":"What happens if I run through another pipe?","acceptedAnswer":{"@type":"Answer","text":"It gets cut at the meeting point and you carry on. Nothing is blocked; the other colour simply has to be drawn again."}},{"@type":"Question","name":"Do I have to drag?","acceptedAnswer":{"@type":"Answer","text":"No. Tapping square by square does exactly the same thing, and so does the keyboard, and a pipe of eleven squares counts as one move either way."}},{"@type":"Question","name":"How many moves is a good score?","acceptedAnswer":{"@type":"Answer","text":"As many as there are pairs, so 4, 5 or 6 depending on the grid. Every pipe drawn beyond that count is a change of mind."}},{"@type":"Question","name":"Is it free?","acceptedAnswer":{"@type":"Answer","text":"Completely. No payment, no ads, and nothing to sign up for."}},{"@type":"Question","name":"Does it work offline?","acceptedAnswer":{"@type":"Answer","text":"Yes, after one visit. A board in progress is kept too, so closing the tab does not throw it away."}},{"@type":"Question","name":"How is the record measured?","acceptedAnswer":{"@type":"Answer","text":"In moves, where fewer is better, and separately per grid. Eleven on a 5x5 and eleven on a 7x7 are not the same achievement."}}]},{"@type":"Organization","@id":"https://ellaz.fun/#org","name":"Ellaz","url":"https://ellaz.fun/","logo":"https://ellaz.fun/icon.svg","description":"Free browser games, no download and no account","sameAs":["https://github.com/Sigmafier/ellaz"]}]}
         </script>
-        <script type="module" crossorigin src="/assets/index-CuMMFjy2.js"></script><link rel="modulepreload" crossorigin href="/assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="/assets/shell-DuZzOw8k.js"><link rel="stylesheet" crossorigin href="/assets/shell-DkfkxXv9.css"><link rel="manifest" href="/manifest.webmanifest">
-        <link rel="modulepreload" crossorigin href="/assets/page-IBqCo0MK.js"><link rel="modulepreload" crossorigin href="/assets/game-flow-C2eVYiV-.js">
+        <script type="module" crossorigin src="./assets/index-BPcPmBzM.js"></script><link rel="modulepreload" crossorigin href="./assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="./assets/shell-B9mKIw0V.js"><link rel="stylesheet" crossorigin href="./assets/shell-DkfkxXv9.css"><link rel="manifest" href="./manifest.webmanifest">
+        <link rel="modulepreload" crossorigin href="/assets/page-CD2I-OyG.js"><link rel="modulepreload" crossorigin href="/assets/game-flow-CyszAede.js">
       </head>
       <body class="screen" style="--g:#D9522B" data-page="game" data-game="flow" data-locale="en">
         
@@ -480,15 +480,25 @@ html[data-offer] body.screen{--oh:46px}
     <section class="embed" id="embed">
     <h2>Put this game on your site</h2>
     <p>Copy the code and paste it into your page. The line under the frame is the part that counts: a link inside the frame stays on ellaz.fun, and only the one you paste is yours.</p>
-    <iframe
-      src="/embed/flow/?lang=en"
-      width="100%"
-      height="940"
-      style="border:0;border-radius:12px;background:var(--doc-stage)"
-      allow="fullscreen"
-      loading="lazy"
-      title="Pipe Flow - ellaz.fun"
-    ></iframe>
+    <div
+      class="embed-preview"
+      data-embed-preview
+      data-src="/embed/flow/?lang=en"
+      data-height="940"
+      data-title="Pipe Flow - ellaz.fun"
+      style="border-radius:12px;background:var(--doc-stage);overflow:hidden"
+    >
+      <img
+        src="/art/flow-b46aae3c.svg"
+        alt=""
+        width="1200"
+        height="900"
+        loading="lazy"
+        decoding="async"
+        style="display:block;width:100%;height:auto"
+      />
+    </div>
+    <button type="button" class="play" data-embed-play hidden>Show the game here</button>
     <p class="embed-credit"><p>Play <a href="https://ellaz.fun/games/flow/">Pipe Flow</a> and more free games at <a href="https://ellaz.fun/">ellaz.fun</a></p></p>
     <pre
       class="embed-code"

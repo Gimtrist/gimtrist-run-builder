@@ -255,8 +255,8 @@ html[data-offer] body.screen{--oh:46px}
         <script type="application/ld+json">
           {"@context":"https://schema.org","@graph":[{"@type":["VideoGame","SoftwareApplication"],"@id":"https://ellaz.fun/games/snake/#game","name":"Snake","url":"https://ellaz.fun/games/snake/","image":["https://ellaz.fun/art/snake-7e0540be.svg","https://ellaz.fun/og/game-snake-en-d622fefd.png"],"description":"The classic snake game, free in your browser. Eat, get longer, and do not touch yourself. A 17x17 board, three starting speeds, and no end to it.","inLanguage":"en","gamePlatform":["Web Browser","Mobile","Tablet","Desktop"],"playMode":"SinglePlayer","applicationCategory":"GameApplication","operatingSystem":"Any","isAccessibleForFree":true,"isFamilyFriendly":true,"typicalAgeRange":"5-99","genre":["Puzzle","Board Game"],"offers":{"@type":"Offer","price":"0","priceCurrency":"ILS","availability":"https://schema.org/InStock"},"publisher":{"@id":"https://ellaz.fun/#org"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://ellaz.fun/"},{"@type":"ListItem","position":2,"name":"Classics","item":"https://ellaz.fun/games/classics/"},{"@type":"ListItem","position":3,"name":"Snake","item":"https://ellaz.fun/games/snake/"}]},{"@type":"HowTo","name":"How do you play?","inLanguage":"en","step":[{"@type":"HowToStep","position":1,"name":"Touch to start","text":"The snake is waiting for you. It will not move before that."},{"@type":"HowToStep","position":2,"name":"Swipe a direction","text":"Or use the arrow keys. You cannot turn back into yourself."},{"@type":"HowToStep","position":3,"name":"Eat the apple","text":"The snake grows by one, and a new apple appears somewhere free."},{"@type":"HowToStep","position":4,"name":"Miss the wall and yourself","text":"Either one ends the run immediately."},{"@type":"HowToStep","position":5,"name":"Touch again","text":"Straight into a new run, same speed you picked, clean board."}]},{"@type":"FAQPage","inLanguage":"en","mainEntity":[{"@type":"Question","name":"Is the snake game free?","acceptedAnswer":{"@type":"Answer","text":"Yes. No payment and no in-game purchases. Every game on the site is open from the first second."}},{"@type":"Question","name":"How do I play it on a phone?","acceptedAnswer":{"@type":"Answer","text":"Swipe a finger in the direction you want to turn. One touch starts the run and another starts a fresh one after you die."}},{"@type":"Question","name":"What is the maximum score?","acceptedAnswer":{"@type":"Answer","text":"286. The board is 17 by 17, which is 289 squares, and the snake starts three long, so after 286 apples there is nowhere left to grow. That is a theoretical ceiling rather than a target."}},{"@type":"Question","name":"Does the game speed up?","acceptedAnswer":{"@type":"Answer","text":"Yes, every five apples, by eight milliseconds a step, down to a floor of 60. Fast reaches the floor after 20 apples, normal after 45 and slow after 70. Speed stops changing from there."}},{"@type":"Question","name":"Which speed should I pick?","acceptedAnswer":{"@type":"Answer","text":"They all end at the same top speed, so the only question is how long you get before it. Slow gives you 70 apples to learn the board, fast gives you 20."}},{"@type":"Question","name":"Can I play offline?","acceptedAnswer":{"@type":"Answer","text":"Yes. After one visit the game is stored on the device and runs with no signal."}},{"@type":"Question","name":"How is the record measured?","acceptedAnswer":{"@type":"Answer","text":"In apples, where more is better. It is checked once at the end of a run, because a snake score only ever climbs."}},{"@type":"Question","name":"Are there ads?","acceptedAnswer":{"@type":"Answer","text":"None. No banners, and nothing that plays between runs."}},{"@type":"Question","name":"What age is it for?","acceptedAnswer":{"@type":"Answer","text":"About five and up, on the slow speed. There is no reading anywhere in the game, so a child who cannot read yet plays alone."}}]},{"@type":"Organization","@id":"https://ellaz.fun/#org","name":"Ellaz","url":"https://ellaz.fun/","logo":"https://ellaz.fun/icon.svg","description":"Free browser games, no download and no account","sameAs":["https://github.com/Sigmafier/ellaz"]}]}
         </script>
-        <script type="module" crossorigin src="/assets/index-CuMMFjy2.js"></script><link rel="modulepreload" crossorigin href="/assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="/assets/shell-DuZzOw8k.js"><link rel="stylesheet" crossorigin href="/assets/shell-DkfkxXv9.css"><link rel="manifest" href="/manifest.webmanifest">
-        <link rel="modulepreload" crossorigin href="/assets/page-IBqCo0MK.js"><link rel="modulepreload" crossorigin href="/assets/game-snake-C0R-IaER.js">
+        <script type="module" crossorigin src="./assets/index-BPcPmBzM.js"></script><link rel="modulepreload" crossorigin href="./assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="./assets/shell-B9mKIw0V.js"><link rel="stylesheet" crossorigin href="./assets/shell-DkfkxXv9.css"><link rel="manifest" href="./manifest.webmanifest">
+        <link rel="modulepreload" crossorigin href="/assets/page-CD2I-OyG.js"><link rel="modulepreload" crossorigin href="/assets/game-snake-_rTUbc6W.js">
       </head>
       <body class="screen" style="--g:#17B98A" data-page="game" data-game="snake" data-locale="en">
         
@@ -480,15 +480,25 @@ html[data-offer] body.screen{--oh:46px}
     <section class="embed" id="embed">
     <h2>Put this game on your site</h2>
     <p>Copy the code and paste it into your page. The line under the frame is the part that counts: a link inside the frame stays on ellaz.fun, and only the one you paste is yours.</p>
-    <iframe
-      src="/embed/snake/?lang=en"
-      width="100%"
-      height="940"
-      style="border:0;border-radius:12px;background:var(--doc-stage)"
-      allow="fullscreen"
-      loading="lazy"
-      title="Snake - ellaz.fun"
-    ></iframe>
+    <div
+      class="embed-preview"
+      data-embed-preview
+      data-src="/embed/snake/?lang=en"
+      data-height="940"
+      data-title="Snake - ellaz.fun"
+      style="border-radius:12px;background:var(--doc-stage);overflow:hidden"
+    >
+      <img
+        src="/art/snake-7e0540be.svg"
+        alt=""
+        width="1200"
+        height="900"
+        loading="lazy"
+        decoding="async"
+        style="display:block;width:100%;height:auto"
+      />
+    </div>
+    <button type="button" class="play" data-embed-play hidden>Show the game here</button>
     <p class="embed-credit"><p>Play <a href="https://ellaz.fun/games/snake/">Snake</a> and more free games at <a href="https://ellaz.fun/">ellaz.fun</a></p></p>
     <pre
       class="embed-code"

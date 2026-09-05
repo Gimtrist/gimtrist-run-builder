@@ -255,8 +255,8 @@ html[data-offer] body.screen{--oh:46px}
         <script type="application/ld+json">
           {"@context":"https://schema.org","@graph":[{"@type":["VideoGame","SoftwareApplication"],"@id":"https://ellaz.fun/games/untangle/#game","name":"Untangle","url":"https://ellaz.fun/games/untangle/","image":["https://ellaz.fun/art/untangle-5cfa55c6.svg","https://ellaz.fun/og/game-untangle-en-cbed98a5.png"],"description":"A free untangle puzzle that runs in the browser. Dots sit around a ring, straight lines join them, and those lines cut across each other. Move the dots until no two lines cross. That is the whole game.","inLanguage":"en","gamePlatform":["Web Browser","Mobile","Tablet","Desktop"],"playMode":"SinglePlayer","applicationCategory":"GameApplication","operatingSystem":"Any","isAccessibleForFree":true,"isFamilyFriendly":true,"typicalAgeRange":"5-99","genre":["Puzzle","Strategy"],"offers":{"@type":"Offer","price":"0","priceCurrency":"ILS","availability":"https://schema.org/InStock"},"publisher":{"@id":"https://ellaz.fun/#org"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://ellaz.fun/"},{"@type":"ListItem","position":2,"name":"Thinking","item":"https://ellaz.fun/games/think/"},{"@type":"ListItem","position":3,"name":"Untangle","item":"https://ellaz.fun/games/untangle/"}]},{"@type":"HowTo","name":"How do you play?","inLanguage":"en","step":[{"@type":"HowToStep","position":1,"name":"Pick up a dot","text":"Tap a dot and it lights up. Dragging it straight away works too, with no tap first."},{"@type":"HowToStep","position":2,"name":"Put it down","text":"A second tap on empty space moves the lit dot there. Tapping the dot again puts it down where it was."},{"@type":"HowToStep","position":3,"name":"Read the lines","text":"A line caught in a crossing changes colour and gets thicker. A thin quiet line is one that is already fine."},{"@type":"HowToStep","position":4,"name":"Watch the count","text":"The number in the top row is how many crossings are left. It is the only number that has to come down."},{"@type":"HowToStep","position":5,"name":"Finish","text":"Zero crossings ends the board. The restart button deals a different board of the same size."}]},{"@type":"FAQPage","inLanguage":"en","mainEntity":[{"@type":"Question","name":"Is every board really solvable?","acceptedAnswer":{"@type":"Answer","text":"Yes, and by construction rather than by checking. The lines are drawn without a single crossing first, and the dots are scrambled afterwards, so a clean picture existed before the board appeared."}},{"@type":"Question","name":"Do I have to drag?","acceptedAnswer":{"@type":"Answer","text":"No. Tap a dot, then tap where it goes. The arrow keys work too. Dragging is only faster."}},{"@type":"Question","name":"What if two dots end up on the same spot?","acceptedAnswer":{"@type":"Answer","text":"The lines leaving them meet at that point, and that counts as a crossing. The board will look tidy and refuse to finish, so spread them out."}},{"@type":"Question","name":"Is there a time limit?","acceptedAnswer":{"@type":"Answer","text":"No. The clock counts and nothing else, and an unfinished board is still there after you close the browser."}},{"@type":"Question","name":"Does it cost anything?","acceptedAnswer":{"@type":"Answer","text":"It is free, with no ads, no sign-up and no download. It loads in the browser and keeps working with no connection."}},{"@type":"Question","name":"Why does the small board feel so easy?","acceptedAnswer":{"@type":"Answer","text":"Because one dot is usually caught in 90.7% of its crossings, so moving that dot is most of the answer. Older players should start on the bigger board."}},{"@type":"Question","name":"Can I get stuck?","acceptedAnswer":{"@type":"Answer","text":"You can feel stuck, because sometimes a dot has to go somewhere that looks worse before the board comes right. No board ever locks, and any move is undone by making another one."}}]},{"@type":"Organization","@id":"https://ellaz.fun/#org","name":"Ellaz","url":"https://ellaz.fun/","logo":"https://ellaz.fun/icon.svg","description":"Free browser games, no download and no account","sameAs":["https://github.com/Sigmafier/ellaz"]}]}
         </script>
-        <script type="module" crossorigin src="/assets/index-CuMMFjy2.js"></script><link rel="modulepreload" crossorigin href="/assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="/assets/shell-DuZzOw8k.js"><link rel="stylesheet" crossorigin href="/assets/shell-DkfkxXv9.css"><link rel="manifest" href="/manifest.webmanifest">
-        <link rel="modulepreload" crossorigin href="/assets/page-IBqCo0MK.js"><link rel="modulepreload" crossorigin href="/assets/game-untangle-BFpO8YMG.js">
+        <script type="module" crossorigin src="./assets/index-BPcPmBzM.js"></script><link rel="modulepreload" crossorigin href="./assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="./assets/shell-B9mKIw0V.js"><link rel="stylesheet" crossorigin href="./assets/shell-DkfkxXv9.css"><link rel="manifest" href="./manifest.webmanifest">
+        <link rel="modulepreload" crossorigin href="/assets/page-CD2I-OyG.js"><link rel="modulepreload" crossorigin href="/assets/game-untangle-CbZI4s59.js">
       </head>
       <body class="screen" style="--g:#A855C9" data-page="game" data-game="untangle" data-locale="en">
         
@@ -479,15 +479,25 @@ html[data-offer] body.screen{--oh:46px}
     <section class="embed" id="embed">
     <h2>Put this game on your site</h2>
     <p>Copy the code and paste it into your page. The line under the frame is the part that counts: a link inside the frame stays on ellaz.fun, and only the one you paste is yours.</p>
-    <iframe
-      src="/embed/untangle/?lang=en"
-      width="100%"
-      height="940"
-      style="border:0;border-radius:12px;background:var(--doc-stage)"
-      allow="fullscreen"
-      loading="lazy"
-      title="Untangle - ellaz.fun"
-    ></iframe>
+    <div
+      class="embed-preview"
+      data-embed-preview
+      data-src="/embed/untangle/?lang=en"
+      data-height="940"
+      data-title="Untangle - ellaz.fun"
+      style="border-radius:12px;background:var(--doc-stage);overflow:hidden"
+    >
+      <img
+        src="/art/untangle-5cfa55c6.svg"
+        alt=""
+        width="1200"
+        height="900"
+        loading="lazy"
+        decoding="async"
+        style="display:block;width:100%;height:auto"
+      />
+    </div>
+    <button type="button" class="play" data-embed-play hidden>Show the game here</button>
     <p class="embed-credit"><p>Play <a href="https://ellaz.fun/games/untangle/">Untangle</a> and more free games at <a href="https://ellaz.fun/">ellaz.fun</a></p></p>
     <pre
       class="embed-code"

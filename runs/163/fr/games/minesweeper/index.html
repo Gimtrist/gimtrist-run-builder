@@ -255,8 +255,8 @@ html[data-offer] body.screen{--oh:46px}
         <script type="application/ld+json">
           {"@context":"https://schema.org","@graph":[{"@type":["VideoGame","SoftwareApplication"],"@id":"https://ellaz.fun/fr/games/minesweeper/#game","name":"Démineur","url":"https://ellaz.fun/fr/games/minesweeper/","image":["https://ellaz.fun/art/minesweeper-55ee913a.svg","https://ellaz.fun/og/game-minesweeper-fr-d22bcd7e.png"],"description":"Trois grilles, de 10 mines à 40. Le premier appui ne peut jamais exploser, et 79,8% des grilles faciles se finissent sans deviner.","inLanguage":"fr","gamePlatform":["Web Browser","Mobile","Tablet","Desktop"],"playMode":"SinglePlayer","applicationCategory":"GameApplication","operatingSystem":"Any","isAccessibleForFree":true,"isFamilyFriendly":true,"typicalAgeRange":"5-99","genre":["Puzzle","Board Game"],"offers":{"@type":"Offer","price":"0","priceCurrency":"ILS","availability":"https://schema.org/InStock"},"publisher":{"@id":"https://ellaz.fun/#org"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://ellaz.fun/fr/"},{"@type":"ListItem","position":2,"name":"Classiques","item":"https://ellaz.fun/fr/games/classics/"},{"@type":"ListItem","position":3,"name":"Démineur","item":"https://ellaz.fun/fr/games/minesweeper/"}]},{"@type":"HowTo","name":"Comment on joue ?","inLanguage":"fr","step":[{"@type":"HowToStep","position":1,"name":"Ouvrir une case","text":"Appuyez sur une case fermée. Le premier appui est toujours sûr, ainsi que ses voisines immédiates."},{"@type":"HowToStep","position":2,"name":"Lire les chiffres","text":"Le chiffre d'une case ouverte dit combien de mines la touchent parmi les 8 cases autour. Une case vide n'en touche aucune et ouvre ses voisines toute seule."},{"@type":"HowToStep","position":3,"name":"Marquer les mines","text":"Un appui long pose un drapeau sur une case suspecte. La partie se termine quand toutes les cases sans mine sont ouvertes."}]},{"@type":"FAQPage","inLanguage":"fr","mainEntity":[{"@type":"Question","name":"Le démineur est-il gratuit ?","acceptedAnswer":{"@type":"Answer","text":"Oui, les trois grilles, sans publicité, sans compte et sans version payante."}},{"@type":"Question","name":"Le premier appui peut-il exploser ?","acceptedAnswer":{"@type":"Answer","text":"Non, jamais. La case du premier appui et ses 8 voisines sont exclues du placement des mines."}},{"@type":"Question","name":"Faut-il parfois deviner ?","acceptedAnswer":{"@type":"Answer","text":"Oui, et c'est mesuré : 79,8% des grilles faciles se finissent par pure logique, 44,4% des moyennes et 12,3% des difficiles. Le reste finit sur un choix sans raison."}},{"@type":"Question","name":"Quelles sont les tailles de grille ?","acceptedAnswer":{"@type":"Answer","text":"9x9 avec 10 mines, 12x12 avec 24, et 14x14 avec 40, soit des densités de 12,3%, 16,7% et 20,4%."}},{"@type":"Question","name":"Comment poser un drapeau ?","acceptedAnswer":{"@type":"Answer","text":"Un appui long sur la case. Un appui court l'ouvre."}},{"@type":"Question","name":"Est-ce qu'il marche hors ligne ?","acceptedAnswer":{"@type":"Answer","text":"Oui, après la première visite. Les grilles sont fabriquées sur l'appareil."}}]},{"@type":"Organization","@id":"https://ellaz.fun/#org","name":"Ellaz","url":"https://ellaz.fun/","logo":"https://ellaz.fun/icon.svg","description":"Free browser games, no download and no account","sameAs":["https://github.com/Sigmafier/ellaz"]}]}
         </script>
-        <script type="module" crossorigin src="/assets/index-CuMMFjy2.js"></script><link rel="modulepreload" crossorigin href="/assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="/assets/shell-DuZzOw8k.js"><link rel="stylesheet" crossorigin href="/assets/shell-DkfkxXv9.css"><link rel="manifest" href="/manifest.webmanifest">
-        <link rel="modulepreload" crossorigin href="/assets/page-IBqCo0MK.js"><link rel="modulepreload" crossorigin href="/assets/game-minesweeper-EeUjMIRA.js">
+        <script type="module" crossorigin src="./assets/index-BPcPmBzM.js"></script><link rel="modulepreload" crossorigin href="./assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="./assets/shell-B9mKIw0V.js"><link rel="stylesheet" crossorigin href="./assets/shell-DkfkxXv9.css"><link rel="manifest" href="./manifest.webmanifest">
+        <link rel="modulepreload" crossorigin href="/assets/page-CD2I-OyG.js"><link rel="modulepreload" crossorigin href="/assets/game-minesweeper-T2byHMds.js">
       </head>
       <body class="screen" style="--g:#4F5BD5" data-page="game" data-game="minesweeper" data-locale="fr">
         
@@ -473,15 +473,25 @@ html[data-offer] body.screen{--oh:46px}
     <section class="embed" id="embed">
     <h2>Mettez ce jeu sur votre site</h2>
     <p>Copiez le code et collez-le dans votre page. La ligne sous le cadre est celle qui compte : un lien dans le cadre reste sur ellaz.fun, et seul celui que vous collez est le vôtre.</p>
-    <iframe
-      src="/embed/minesweeper/?lang=fr"
-      width="100%"
-      height="940"
-      style="border:0;border-radius:12px;background:var(--doc-stage)"
-      allow="fullscreen"
-      loading="lazy"
-      title="Démineur - ellaz.fun"
-    ></iframe>
+    <div
+      class="embed-preview"
+      data-embed-preview
+      data-src="/embed/minesweeper/?lang=fr"
+      data-height="940"
+      data-title="Démineur - ellaz.fun"
+      style="border-radius:12px;background:var(--doc-stage);overflow:hidden"
+    >
+      <img
+        src="/art/minesweeper-55ee913a.svg"
+        alt=""
+        width="1200"
+        height="900"
+        loading="lazy"
+        decoding="async"
+        style="display:block;width:100%;height:auto"
+      />
+    </div>
+    <button type="button" class="play" data-embed-play hidden>Afficher le jeu ici</button>
     <p class="embed-credit"><p>Jouez à <a href="https://ellaz.fun/fr/games/minesweeper/">Démineur</a> et à d'autres jeux gratuits sur <a href="https://ellaz.fun/">ellaz.fun</a></p></p>
     <pre
       class="embed-code"

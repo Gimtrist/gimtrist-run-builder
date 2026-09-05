@@ -255,8 +255,8 @@ html[data-offer] body.screen{--oh:46px}
         <script type="application/ld+json">
           {"@context":"https://schema.org","@graph":[{"@type":["VideoGame","SoftwareApplication"],"@id":"https://ellaz.fun/games/fruit/#game","name":"Fruit Drop","url":"https://ellaz.fun/games/fruit/","image":["https://ellaz.fun/art/fruit-6b6e17c1.svg","https://ellaz.fun/og/game-fruit-en-9208b7bf.png"],"description":"A free fruit merge game that runs in your browser. Fruit fall into an open box, two of the same kind that touch become the next one up the chain, and the whole pile resettles underneath them. Ten rungs, blueberry to watermelon. The run ends when something comes to rest above the line at the top.","inLanguage":"en","gamePlatform":["Web Browser","Mobile","Tablet","Desktop"],"playMode":"SinglePlayer","applicationCategory":"GameApplication","operatingSystem":"Any","isAccessibleForFree":true,"isFamilyFriendly":true,"typicalAgeRange":"3-10","genre":["Casual","Educational"],"offers":{"@type":"Offer","price":"0","priceCurrency":"ILS","availability":"https://schema.org/InStock"},"publisher":{"@id":"https://ellaz.fun/#org"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://ellaz.fun/"},{"@type":"ListItem","position":2,"name":"For kids","item":"https://ellaz.fun/games/kids/"},{"@type":"ListItem","position":3,"name":"Fruit Drop","item":"https://ellaz.fun/games/fruit/"}]},{"@type":"HowTo","name":"How do you play?","inLanguage":"en","step":[{"@type":"HowToStep","position":1,"name":"Aim","text":"The waiting fruit follows your finger along the top of the box. Arrow keys move it too."},{"@type":"HowToStep","position":2,"name":"Drop","text":"One tap and it goes. Enter or Space does the same from a keyboard."},{"@type":"HowToStep","position":3,"name":"Touch two alike","text":"Two of the same kind that touch become the next rung. They do not have to be stacked, a graze is enough."},{"@type":"HowToStep","position":4,"name":"Watch the top","text":"The run ends when a fruit sits still for half a second above the line. While it is still moving, nothing happens."}]},{"@type":"FAQPage","inLanguage":"en","mainEntity":[{"@type":"Question","name":"What happens when two watermelons meet?","acceptedAnswer":{"@type":"Answer","text":"Both vanish and leave the space empty. There is no rung above them, so the pair pays 155 points at once instead of making an eleventh fruit."}},{"@type":"Question","name":"How many kinds of fruit are there?","acceptedAnswer":{"@type":"Answer","text":"Ten rungs. The box only ever hands you five of them, the small ones, drawn with the smallest weighted heaviest. The top five have to be built."}},{"@type":"Question","name":"What changes between the levels?","acceptedAnswer":{"@type":"Answer","text":"The width of the box and nothing else: 74, 62 or 52 units. The fruit, the chain and the draw are identical across all three, so switching is not learning a different game."}},{"@type":"Question","name":"How long does a run last?","acceptedAnswer":{"@type":"Answer","text":"About 91 fruit in the narrow box and 157 in the wide one for our better bot, over 40 runs per box. A human first go looks more like the random one, so 82 and 123."}},{"@type":"Question","name":"Is there a pause button?","acceptedAnswer":{"@type":"Answer","text":"No, deliberately. Nothing moves once the pile has settled and no clock is running, so walking away costs you nothing at all."}},{"@type":"Question","name":"How is the record measured?","acceptedAnswer":{"@type":"Answer","text":"In points, where more is better, and separately for each box width. Two blueberries are worth 1 point, a pair one rung up is worth 3, and it climbs from there."}},{"@type":"Question","name":"Does it work offline?","acceptedAnswer":{"@type":"Answer","text":"Yes, after one visit. Nothing to install and no account to make."}}]},{"@type":"Organization","@id":"https://ellaz.fun/#org","name":"Ellaz","url":"https://ellaz.fun/","logo":"https://ellaz.fun/icon.svg","description":"Free browser games, no download and no account","sameAs":["https://github.com/Sigmafier/ellaz"]}]}
         </script>
-        <script type="module" crossorigin src="/assets/index-CuMMFjy2.js"></script><link rel="modulepreload" crossorigin href="/assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="/assets/shell-DuZzOw8k.js"><link rel="stylesheet" crossorigin href="/assets/shell-DkfkxXv9.css"><link rel="manifest" href="/manifest.webmanifest">
-        <link rel="modulepreload" crossorigin href="/assets/page-IBqCo0MK.js"><link rel="modulepreload" crossorigin href="/assets/game-fruit-ByiPsLXr.js">
+        <script type="module" crossorigin src="./assets/index-BPcPmBzM.js"></script><link rel="modulepreload" crossorigin href="./assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="./assets/shell-B9mKIw0V.js"><link rel="stylesheet" crossorigin href="./assets/shell-DkfkxXv9.css"><link rel="manifest" href="./manifest.webmanifest">
+        <link rel="modulepreload" crossorigin href="/assets/page-CD2I-OyG.js"><link rel="modulepreload" crossorigin href="/assets/game-fruit-CoYk3pIg.js">
       </head>
       <body class="screen" style="--g:#D63031" data-page="game" data-game="fruit" data-locale="en">
         
@@ -474,15 +474,25 @@ html[data-offer] body.screen{--oh:46px}
     <section class="embed" id="embed">
     <h2>Put this game on your site</h2>
     <p>Copy the code and paste it into your page. The line under the frame is the part that counts: a link inside the frame stays on ellaz.fun, and only the one you paste is yours.</p>
-    <iframe
-      src="/embed/fruit/?lang=en"
-      width="100%"
-      height="940"
-      style="border:0;border-radius:12px;background:var(--doc-stage)"
-      allow="fullscreen"
-      loading="lazy"
-      title="Fruit Drop - ellaz.fun"
-    ></iframe>
+    <div
+      class="embed-preview"
+      data-embed-preview
+      data-src="/embed/fruit/?lang=en"
+      data-height="940"
+      data-title="Fruit Drop - ellaz.fun"
+      style="border-radius:12px;background:var(--doc-stage);overflow:hidden"
+    >
+      <img
+        src="/art/fruit-6b6e17c1.svg"
+        alt=""
+        width="1200"
+        height="900"
+        loading="lazy"
+        decoding="async"
+        style="display:block;width:100%;height:auto"
+      />
+    </div>
+    <button type="button" class="play" data-embed-play hidden>Show the game here</button>
     <p class="embed-credit"><p>Play <a href="https://ellaz.fun/games/fruit/">Fruit Drop</a> and more free games at <a href="https://ellaz.fun/">ellaz.fun</a></p></p>
     <pre
       class="embed-code"

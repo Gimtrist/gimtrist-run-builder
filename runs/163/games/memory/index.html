@@ -255,8 +255,8 @@ html[data-offer] body.screen{--oh:46px}
         <script type="application/ld+json">
           {"@context":"https://schema.org","@graph":[{"@type":["VideoGame","SoftwareApplication"],"@id":"https://ellaz.fun/games/memory/#game","name":"Memory","url":"https://ellaz.fun/games/memory/","image":["https://ellaz.fun/art/memory-c3df01d5.svg","https://ellaz.fun/og/game-memory-en-84bcb8ba.png"],"description":"A free memory game that runs in your browser. Flip two cards, find a pair, finish in as few moves as you can. Three levels, no timer, and no way to lose.","inLanguage":"en","gamePlatform":["Web Browser","Mobile","Tablet","Desktop"],"playMode":"SinglePlayer","applicationCategory":"GameApplication","operatingSystem":"Any","isAccessibleForFree":true,"isFamilyFriendly":true,"typicalAgeRange":"3-10","genre":["Casual","Educational"],"offers":{"@type":"Offer","price":"0","priceCurrency":"ILS","availability":"https://schema.org/InStock"},"publisher":{"@id":"https://ellaz.fun/#org"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://ellaz.fun/"},{"@type":"ListItem","position":2,"name":"For kids","item":"https://ellaz.fun/games/kids/"},{"@type":"ListItem","position":3,"name":"Memory","item":"https://ellaz.fun/games/memory/"}]},{"@type":"HowTo","name":"How do you play?","inLanguage":"en","step":[{"@type":"HowToStep","position":1,"name":"Pick a level","text":"6, 8 or 10 pairs. Switch mid-game and the board restarts."},{"@type":"HowToStep","position":2,"name":"Touch a card","text":"It flips. That is it."},{"@type":"HowToStep","position":3,"name":"Remember what you saw","text":"A card that did not match is worth gold. It comes back."},{"@type":"HowToStep","position":4,"name":"Touch a second card","text":"Same? They stay open. Different? Both close and you carry on."},{"@type":"HowToStep","position":5,"name":"Clear the board","text":"Confetti, coins into the wallet, and a star if you beat your record."}]},{"@type":"FAQPage","inLanguage":"en","mainEntity":[{"@type":"Question","name":"Is the memory game free?","acceptedAnswer":{"@type":"Answer","text":"Completely. There is no payment and there are no in-game purchases. There is no paid version either, because there is no other version. Every game on the site is open from the first second."}},{"@type":"Question","name":"Do I need to download or sign up?","acceptedAnswer":{"@type":"Answer","text":"No. It runs in the browser, with no download and no account. We do not ask for an email either."}},{"@type":"Question","name":"What counts as a good number of moves?","acceptedAnswer":{"@type":"Answer","text":"We ran 20,000 games to answer that. Perfect recall clears the easy level in 9.2 moves on average and hard in 15.6. Blind guessing takes 36 and 104.3. Everything in between is a real game."}},{"@type":"Question","name":"What age is it for?","acceptedAnswer":{"@type":"Answer","text":"Easy suits about three and up. There is no reading anywhere in the game, so a child who cannot read yet plays alone. Hard still occupies adults."}},{"@type":"Question","name":"Are there ads?","acceptedAnswer":{"@type":"Answer","text":"None. No banners, and nothing that plays between levels."}},{"@type":"Question","name":"Can I play offline?","acceptedAnswer":{"@type":"Answer","text":"Yes. After one visit the game is stored on the device and runs on a plane."}},{"@type":"Question","name":"Where is my record kept?","acceptedAnswer":{"@type":"Answer","text":"On the device only, never on a server. So clearing your browser history erases it, and a phone and a tablet keep two separate records."}},{"@type":"Question","name":"How is the record measured?","acceptedAnswer":{"@type":"Answer","text":"In moves, where fewer is better, and separately for each level. Two cards flipped counts as one move."}},{"@type":"Question","name":"Does the game collect information about my child?","acceptedAnswer":{"@type":"Answer","text":"No. There is no signup and no name. Nothing records the screen, and nothing targets advertising by behaviour. We count how often a game is opened, with nothing attached that says who opened it."}}]},{"@type":"Organization","@id":"https://ellaz.fun/#org","name":"Ellaz","url":"https://ellaz.fun/","logo":"https://ellaz.fun/icon.svg","description":"Free browser games, no download and no account","sameAs":["https://github.com/Sigmafier/ellaz"]}]}
         </script>
-        <script type="module" crossorigin src="/assets/index-CuMMFjy2.js"></script><link rel="modulepreload" crossorigin href="/assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="/assets/shell-DuZzOw8k.js"><link rel="stylesheet" crossorigin href="/assets/shell-DkfkxXv9.css"><link rel="manifest" href="/manifest.webmanifest">
-        <link rel="modulepreload" crossorigin href="/assets/page-IBqCo0MK.js"><link rel="modulepreload" crossorigin href="/assets/game-memory-nbJgtkX5.js">
+        <script type="module" crossorigin src="./assets/index-BPcPmBzM.js"></script><link rel="modulepreload" crossorigin href="./assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="./assets/shell-B9mKIw0V.js"><link rel="stylesheet" crossorigin href="./assets/shell-DkfkxXv9.css"><link rel="manifest" href="./manifest.webmanifest">
+        <link rel="modulepreload" crossorigin href="/assets/page-CD2I-OyG.js"><link rel="modulepreload" crossorigin href="/assets/game-memory-DmDJ6IZ3.js">
       </head>
       <body class="screen" style="--g:#FF4D8D" data-page="game" data-game="memory" data-locale="en">
         
@@ -480,15 +480,25 @@ html[data-offer] body.screen{--oh:46px}
     <section class="embed" id="embed">
     <h2>Put this game on your site</h2>
     <p>Copy the code and paste it into your page. The line under the frame is the part that counts: a link inside the frame stays on ellaz.fun, and only the one you paste is yours.</p>
-    <iframe
-      src="/embed/memory/?lang=en"
-      width="100%"
-      height="940"
-      style="border:0;border-radius:12px;background:var(--doc-stage)"
-      allow="fullscreen"
-      loading="lazy"
-      title="Memory - ellaz.fun"
-    ></iframe>
+    <div
+      class="embed-preview"
+      data-embed-preview
+      data-src="/embed/memory/?lang=en"
+      data-height="940"
+      data-title="Memory - ellaz.fun"
+      style="border-radius:12px;background:var(--doc-stage);overflow:hidden"
+    >
+      <img
+        src="/art/memory-c3df01d5.svg"
+        alt=""
+        width="1200"
+        height="900"
+        loading="lazy"
+        decoding="async"
+        style="display:block;width:100%;height:auto"
+      />
+    </div>
+    <button type="button" class="play" data-embed-play hidden>Show the game here</button>
     <p class="embed-credit"><p>Play <a href="https://ellaz.fun/games/memory/">Memory</a> and more free games at <a href="https://ellaz.fun/">ellaz.fun</a></p></p>
     <pre
       class="embed-code"

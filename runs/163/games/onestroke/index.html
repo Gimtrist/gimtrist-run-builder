@@ -255,8 +255,8 @@ html[data-offer] body.screen{--oh:46px}
         <script type="application/ld+json">
           {"@context":"https://schema.org","@graph":[{"@type":["VideoGame","SoftwareApplication"],"@id":"https://ellaz.fun/games/onestroke/#game","name":"One Stroke","url":"https://ellaz.fun/games/onestroke/","image":["https://ellaz.fun/art/onestroke-cd5a660a.svg","https://ellaz.fun/og/game-onestroke-en-8493ae7d.png"],"description":"A free line puzzle that runs in your browser. One square carries a mark. From there you draw a single unbroken line through every open square on the grid, never crossing yourself and never using a square twice.","inLanguage":"en","gamePlatform":["Web Browser","Mobile","Tablet","Desktop"],"playMode":"SinglePlayer","applicationCategory":"GameApplication","operatingSystem":"Any","isAccessibleForFree":true,"isFamilyFriendly":true,"typicalAgeRange":"5-99","genre":["Puzzle","Strategy"],"offers":{"@type":"Offer","price":"0","priceCurrency":"ILS","availability":"https://schema.org/InStock"},"publisher":{"@id":"https://ellaz.fun/#org"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://ellaz.fun/"},{"@type":"ListItem","position":2,"name":"Thinking","item":"https://ellaz.fun/games/think/"},{"@type":"ListItem","position":3,"name":"One Stroke","item":"https://ellaz.fun/games/onestroke/"}]},{"@type":"HowTo","name":"How do you play?","inLanguage":"en","step":[{"@type":"HowToStep","position":1,"name":"Start on the mark","text":"One square wears a ring. The line is already there, and it cannot begin anywhere else."},{"@type":"HowToStep","position":2,"name":"Move one square","text":"Each further touch steps one square sideways, up or down. Diagonals do not count, and walls never do."},{"@type":"HowToStep","position":3,"name":"Never twice","text":"A square the line has already used is refused. The board gives a small shake and nothing moves, so a misjudged touch costs nothing."},{"@type":"HowToStep","position":4,"name":"Step back","text":"The button under the board removes the last square. Touching the square you came from does precisely the same thing, one at a time."},{"@type":"HowToStep","position":5,"name":"Cover it all","text":"The board is finished when the line holds every open square. One empty square is enough to leave it unfinished."}]},{"@type":"FAQPage","inLanguage":"en","mainEntity":[{"@type":"Question","name":"Is every board really solvable?","acceptedAnswer":{"@type":"Answer","text":"Yes, and it is built rather than tested. The walls are taken off the two ends of a walk that had already visited every square, so what remains is still a complete line."}},{"@type":"Question","name":"Do I have to finish on a particular square?","acceptedAnswer":{"@type":"Answer","text":"No. Only the start is marked, so any line that covers everything wins, even one that looks nothing like ours."}},{"@type":"Question","name":"What do I do when the line gets stuck?","acceptedAnswer":{"@type":"Answer","text":"Go back with the button, one square at a time, until you reach a place where another direction opens. The restart button gives you the same board, empty."}},{"@type":"Question","name":"Do I have to drag?","acceptedAnswer":{"@type":"Answer","text":"No. Touching square after square does exactly the same thing, and so does the keyboard."}},{"@type":"Question","name":"How many steps is a good score?","acceptedAnswer":{"@type":"Answer","text":"Always the same number: 22, 29 or 37 depending on the grid. What separates two players is the time, not the count."}},{"@type":"Question","name":"Is it free?","acceptedAnswer":{"@type":"Answer","text":"Completely. No payment, no advertising, and nothing to sign up for."}},{"@type":"Question","name":"Does it work offline?","acceptedAnswer":{"@type":"Answer","text":"Yes, after one visit. A board in progress comes back as you left it if you close the tab."}},{"@type":"Question","name":"How is the record measured?","acceptedAnswer":{"@type":"Answer","text":"In time, where faster wins, and separately per grid. A 5x5 and a 7x7 are not the same achievement."}}]},{"@type":"Organization","@id":"https://ellaz.fun/#org","name":"Ellaz","url":"https://ellaz.fun/","logo":"https://ellaz.fun/icon.svg","description":"Free browser games, no download and no account","sameAs":["https://github.com/Sigmafier/ellaz"]}]}
         </script>
-        <script type="module" crossorigin src="/assets/index-CuMMFjy2.js"></script><link rel="modulepreload" crossorigin href="/assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="/assets/shell-DuZzOw8k.js"><link rel="stylesheet" crossorigin href="/assets/shell-DkfkxXv9.css"><link rel="manifest" href="/manifest.webmanifest">
-        <link rel="modulepreload" crossorigin href="/assets/page-IBqCo0MK.js"><link rel="modulepreload" crossorigin href="/assets/game-onestroke-D3ndVQLT.js">
+        <script type="module" crossorigin src="./assets/index-BPcPmBzM.js"></script><link rel="modulepreload" crossorigin href="./assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="./assets/shell-B9mKIw0V.js"><link rel="stylesheet" crossorigin href="./assets/shell-DkfkxXv9.css"><link rel="manifest" href="./manifest.webmanifest">
+        <link rel="modulepreload" crossorigin href="/assets/page-CD2I-OyG.js"><link rel="modulepreload" crossorigin href="/assets/game-onestroke-CPXk89cr.js">
       </head>
       <body class="screen" style="--g:#17B98A" data-page="game" data-game="onestroke" data-locale="en">
         
@@ -480,15 +480,25 @@ html[data-offer] body.screen{--oh:46px}
     <section class="embed" id="embed">
     <h2>Put this game on your site</h2>
     <p>Copy the code and paste it into your page. The line under the frame is the part that counts: a link inside the frame stays on ellaz.fun, and only the one you paste is yours.</p>
-    <iframe
-      src="/embed/onestroke/?lang=en"
-      width="100%"
-      height="940"
-      style="border:0;border-radius:12px;background:var(--doc-stage)"
-      allow="fullscreen"
-      loading="lazy"
-      title="One Stroke - ellaz.fun"
-    ></iframe>
+    <div
+      class="embed-preview"
+      data-embed-preview
+      data-src="/embed/onestroke/?lang=en"
+      data-height="940"
+      data-title="One Stroke - ellaz.fun"
+      style="border-radius:12px;background:var(--doc-stage);overflow:hidden"
+    >
+      <img
+        src="/art/onestroke-cd5a660a.svg"
+        alt=""
+        width="1200"
+        height="900"
+        loading="lazy"
+        decoding="async"
+        style="display:block;width:100%;height:auto"
+      />
+    </div>
+    <button type="button" class="play" data-embed-play hidden>Show the game here</button>
     <p class="embed-credit"><p>Play <a href="https://ellaz.fun/games/onestroke/">One Stroke</a> and more free games at <a href="https://ellaz.fun/">ellaz.fun</a></p></p>
     <pre
       class="embed-code"

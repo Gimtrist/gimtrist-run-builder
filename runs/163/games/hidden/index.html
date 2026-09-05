@@ -255,8 +255,8 @@ html[data-offer] body.screen{--oh:46px}
         <script type="application/ld+json">
           {"@context":"https://schema.org","@graph":[{"@type":["VideoGame","SoftwareApplication"],"@id":"https://ellaz.fun/games/hidden/#game","name":"Find Me","url":"https://ellaz.fun/games/hidden/","image":["https://ellaz.fun/art/hidden-144030cb.svg","https://ellaz.fun/og/game-hidden-en-c2c2034d.png"],"description":"A free searching game for children. A screen full of objects, a few of them wanted. Find them at your own pace, with no clock and no mistakes that cost anything.","inLanguage":"en","gamePlatform":["Web Browser","Mobile","Tablet","Desktop"],"playMode":"SinglePlayer","applicationCategory":"GameApplication","operatingSystem":"Any","isAccessibleForFree":true,"isFamilyFriendly":true,"typicalAgeRange":"3-10","genre":["Casual","Educational"],"offers":{"@type":"Offer","price":"0","priceCurrency":"ILS","availability":"https://schema.org/InStock"},"publisher":{"@id":"https://ellaz.fun/#org"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://ellaz.fun/"},{"@type":"ListItem","position":2,"name":"For kids","item":"https://ellaz.fun/games/kids/"},{"@type":"ListItem","position":3,"name":"Find Me","item":"https://ellaz.fun/games/hidden/"}]},{"@type":"HowTo","name":"How do you play?","inLanguage":"en","step":[{"@type":"HowToStep","position":1,"name":"Pick a level","text":"16, 24 or 32 objects on screen. What changes is how crowded it gets."},{"@type":"HowToStep","position":2,"name":"Look at what is wanted","text":"3 to 5 objects are shown at the top, large and clear."},{"@type":"HowToStep","position":3,"name":"Find and touch","text":"Each of them is somewhere in the pile. A tap marks it found."},{"@type":"HowToStep","position":4,"name":"Finish the round","text":"Find them all and a new round starts with a fresh scatter."}]},{"@type":"FAQPage","inLanguage":"en","mainEntity":[{"@type":"Question","name":"Is the game free?","acceptedAnswer":{"@type":"Answer","text":"Completely. Nothing to pay and no purchases inside the game. Every game on the site is open from the first second."}},{"@type":"Question","name":"Do I need to download or sign up?","acceptedAnswer":{"@type":"Answer","text":"No to both. It runs in the browser with no download and no account, and we do not ask for an email."}},{"@type":"Question","name":"Does the game run out of scenes?","acceptedAnswer":{"@type":"Answer","text":"No. Every round is generated fresh with random positions, so there is no finite set of scenes and nothing to memorise."}},{"@type":"Question","name":"What is the difference between the levels?","acceptedAnswer":{"@type":"Answer","text":"How crowded it is. 16 objects and 3 targets on easy, 24 and 4 on medium, 32 and 5 on hard. The search space doubles while the number of targets rises by only 2."}},{"@type":"Question","name":"Are there ads?","acceptedAnswer":{"@type":"Answer","text":"None. No banners and no video between levels."}},{"@type":"Question","name":"Does it work offline?","acceptedAnswer":{"@type":"Answer","text":"Yes. After one visit the game is stored on the device and runs on a plane."}},{"@type":"Question","name":"Is there a timer or time pressure?","acceptedAnswer":{"@type":"Answer","text":"None. No hint appears by itself after a few seconds either, because a child staring at one area for a minute is doing exactly what the game asks."}},{"@type":"Question","name":"What happens when they touch the wrong object?","acceptedAnswer":{"@type":"Answer","text":"Nothing. No score drops and there are no lives, and the searching continues."}},{"@type":"Question","name":"How is the record measured?","acceptedAnswer":{"@type":"Answer","text":"By how many rounds you cleared in a row, where higher is better, kept separately per level. A round through 16 objects and a round through 32 are not the same achievement."}},{"@type":"Question","name":"Does it collect data about my child?","acceptedAnswer":{"@type":"Answer","text":"No. There is no signup and no name. No session recording and no behavioural advertising. We count how many times a game was opened, with nothing attached that identifies who opened it."}}]},{"@type":"Organization","@id":"https://ellaz.fun/#org","name":"Ellaz","url":"https://ellaz.fun/","logo":"https://ellaz.fun/icon.svg","description":"Free browser games, no download and no account","sameAs":["https://github.com/Sigmafier/ellaz"]}]}
         </script>
-        <script type="module" crossorigin src="/assets/index-CuMMFjy2.js"></script><link rel="modulepreload" crossorigin href="/assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="/assets/shell-DuZzOw8k.js"><link rel="stylesheet" crossorigin href="/assets/shell-DkfkxXv9.css"><link rel="manifest" href="/manifest.webmanifest">
-        <link rel="modulepreload" crossorigin href="/assets/page-IBqCo0MK.js"><link rel="modulepreload" crossorigin href="/assets/game-hidden-CoDTSSf3.js">
+        <script type="module" crossorigin src="./assets/index-BPcPmBzM.js"></script><link rel="modulepreload" crossorigin href="./assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="./assets/shell-B9mKIw0V.js"><link rel="stylesheet" crossorigin href="./assets/shell-DkfkxXv9.css"><link rel="manifest" href="./manifest.webmanifest">
+        <link rel="modulepreload" crossorigin href="/assets/page-CD2I-OyG.js"><link rel="modulepreload" crossorigin href="/assets/game-hidden-B8bJPEnU.js">
       </head>
       <body class="screen" style="--g:#4F5BD5" data-page="game" data-game="hidden" data-locale="en">
         
@@ -481,15 +481,25 @@ html[data-offer] body.screen{--oh:46px}
     <section class="embed" id="embed">
     <h2>Put this game on your site</h2>
     <p>Copy the code and paste it into your page. The line under the frame is the part that counts: a link inside the frame stays on ellaz.fun, and only the one you paste is yours.</p>
-    <iframe
-      src="/embed/hidden/?lang=en"
-      width="100%"
-      height="940"
-      style="border:0;border-radius:12px;background:var(--doc-stage)"
-      allow="fullscreen"
-      loading="lazy"
-      title="Find Me - ellaz.fun"
-    ></iframe>
+    <div
+      class="embed-preview"
+      data-embed-preview
+      data-src="/embed/hidden/?lang=en"
+      data-height="940"
+      data-title="Find Me - ellaz.fun"
+      style="border-radius:12px;background:var(--doc-stage);overflow:hidden"
+    >
+      <img
+        src="/art/hidden-144030cb.svg"
+        alt=""
+        width="1200"
+        height="900"
+        loading="lazy"
+        decoding="async"
+        style="display:block;width:100%;height:auto"
+      />
+    </div>
+    <button type="button" class="play" data-embed-play hidden>Show the game here</button>
     <p class="embed-credit"><p>Play <a href="https://ellaz.fun/games/hidden/">Find Me</a> and more free games at <a href="https://ellaz.fun/">ellaz.fun</a></p></p>
     <pre
       class="embed-code"

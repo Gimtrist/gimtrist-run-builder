@@ -255,8 +255,8 @@ html[data-offer] body.screen{--oh:46px}
         <script type="application/ld+json">
           {"@context":"https://schema.org","@graph":[{"@type":["VideoGame","SoftwareApplication"],"@id":"https://ellaz.fun/fr/games/finddiff/#game","name":"Les différences","url":"https://ellaz.fun/fr/games/finddiff/","image":["https://ellaz.fun/art/finddiff-0b8eb6a6.svg","https://ellaz.fun/og/game-finddiff-fr-42d0b189.png"],"description":"Deux images côte à côte, cinq choses qui ne vont pas ensemble. Six scènes, trente différences, et pas de fin.","inLanguage":"fr","gamePlatform":["Web Browser","Mobile","Tablet","Desktop"],"playMode":"SinglePlayer","applicationCategory":"GameApplication","operatingSystem":"Any","isAccessibleForFree":true,"isFamilyFriendly":true,"typicalAgeRange":"3-10","genre":["Casual","Educational"],"offers":{"@type":"Offer","price":"0","priceCurrency":"ILS","availability":"https://schema.org/InStock"},"publisher":{"@id":"https://ellaz.fun/#org"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://ellaz.fun/fr/"},{"@type":"ListItem","position":2,"name":"Pour les petits","item":"https://ellaz.fun/fr/games/kids/"},{"@type":"ListItem","position":3,"name":"Les différences","item":"https://ellaz.fun/fr/games/finddiff/"}]},{"@type":"HowTo","name":"Comment on joue ?","inLanguage":"fr","step":[{"@type":"HowToStep","position":1,"name":"Comparer les deux images","text":"Regardez les deux dessins côte à côte. Ils sont identiques, sauf à cinq endroits."},{"@type":"HowToStep","position":2,"name":"Appuyer sur la différence","text":"Appuyez à l'endroit qui change, sur l'une ou l'autre image. Les deux se marquent en même temps."},{"@type":"HowToStep","position":3,"name":"Passer à la scène suivante","text":"Quand les cinq différences sont trouvées, la scène suivante arrive toute seule. Après la sixième, le jeu repart au début avec un niveau de plus."}]},{"@type":"FAQPage","inLanguage":"fr","mainEntity":[{"@type":"Question","name":"Le jeu des différences est-il gratuit ?","acceptedAnswer":{"@type":"Answer","text":"Oui, les six scènes, sans publicité, sans compte et sans version payante."}},{"@type":"Question","name":"Combien y a-t-il de différences ?","acceptedAnswer":{"@type":"Answer","text":"Cinq par scène et six scènes, donc 30 en tout avant que le jeu recommence."}},{"@type":"Question","name":"Que compte le record ?","acceptedAnswer":{"@type":"Answer","text":"Le nombre de scènes réussies depuis le début, et pas le niveau affiché. Le niveau ne monte qu'après un tour complet, donc il avancerait beaucoup trop lentement."}},{"@type":"Question","name":"Y a-t-il un chronomètre ?","acceptedAnswer":{"@type":"Answer","text":"Non. Un enfant peut regarder aussi longtemps qu'il veut, et une erreur ne coûte rien."}},{"@type":"Question","name":"À partir de quel âge ?","acceptedAnswer":{"@type":"Answer","text":"Trois ans avec un adulte à côté, six ans tout seul. Il n'y a rien à lire."}},{"@type":"Question","name":"Est-ce qu'il marche hors ligne ?","acceptedAnswer":{"@type":"Answer","text":"Oui, après la première visite. Les six scènes sont sur l'appareil."}}]},{"@type":"Organization","@id":"https://ellaz.fun/#org","name":"Ellaz","url":"https://ellaz.fun/","logo":"https://ellaz.fun/icon.svg","description":"Free browser games, no download and no account","sameAs":["https://github.com/Sigmafier/ellaz"]}]}
         </script>
-        <script type="module" crossorigin src="/assets/index-CuMMFjy2.js"></script><link rel="modulepreload" crossorigin href="/assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="/assets/shell-DuZzOw8k.js"><link rel="stylesheet" crossorigin href="/assets/shell-DkfkxXv9.css"><link rel="manifest" href="/manifest.webmanifest">
-        <link rel="modulepreload" crossorigin href="/assets/page-IBqCo0MK.js"><link rel="modulepreload" crossorigin href="/assets/game-finddiff-Bnwr3Ay4.js">
+        <script type="module" crossorigin src="./assets/index-BPcPmBzM.js"></script><link rel="modulepreload" crossorigin href="./assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="./assets/shell-B9mKIw0V.js"><link rel="stylesheet" crossorigin href="./assets/shell-DkfkxXv9.css"><link rel="manifest" href="./manifest.webmanifest">
+        <link rel="modulepreload" crossorigin href="/assets/page-CD2I-OyG.js"><link rel="modulepreload" crossorigin href="/assets/game-finddiff-BBB14eXB.js">
       </head>
       <body class="screen" style="--g:#26B0E6" data-page="game" data-game="finddiff" data-locale="fr">
         
@@ -473,15 +473,25 @@ html[data-offer] body.screen{--oh:46px}
     <section class="embed" id="embed">
     <h2>Mettez ce jeu sur votre site</h2>
     <p>Copiez le code et collez-le dans votre page. La ligne sous le cadre est celle qui compte : un lien dans le cadre reste sur ellaz.fun, et seul celui que vous collez est le vôtre.</p>
-    <iframe
-      src="/embed/finddiff/?lang=fr"
-      width="100%"
-      height="940"
-      style="border:0;border-radius:12px;background:var(--doc-stage)"
-      allow="fullscreen"
-      loading="lazy"
-      title="Les différences - ellaz.fun"
-    ></iframe>
+    <div
+      class="embed-preview"
+      data-embed-preview
+      data-src="/embed/finddiff/?lang=fr"
+      data-height="940"
+      data-title="Les différences - ellaz.fun"
+      style="border-radius:12px;background:var(--doc-stage);overflow:hidden"
+    >
+      <img
+        src="/art/finddiff-0b8eb6a6.svg"
+        alt=""
+        width="1200"
+        height="900"
+        loading="lazy"
+        decoding="async"
+        style="display:block;width:100%;height:auto"
+      />
+    </div>
+    <button type="button" class="play" data-embed-play hidden>Afficher le jeu ici</button>
     <p class="embed-credit"><p>Jouez à <a href="https://ellaz.fun/fr/games/finddiff/">Les différences</a> et à d'autres jeux gratuits sur <a href="https://ellaz.fun/">ellaz.fun</a></p></p>
     <pre
       class="embed-code"

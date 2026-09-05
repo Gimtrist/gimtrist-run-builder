@@ -255,8 +255,8 @@ html[data-offer] body.screen{--oh:46px}
         <script type="application/ld+json">
           {"@context":"https://schema.org","@graph":[{"@type":["VideoGame","SoftwareApplication"],"@id":"https://ellaz.fun/games/wordguess/#game","name":"Word Guess","url":"https://ellaz.fun/games/wordguess/","image":["https://ellaz.fun/art/wordguess-86d8f5d1.svg","https://ellaz.fun/og/game-wordguess-en-0b65a858.png"],"description":"Guess the hidden word in six tries. Every guess colours its letters: green means right letter, right place, and purple means the letter is in the word but somewhere else.","inLanguage":"en","gamePlatform":["Web Browser","Mobile","Tablet","Desktop"],"playMode":"SinglePlayer","applicationCategory":"GameApplication","operatingSystem":"Any","isAccessibleForFree":true,"isFamilyFriendly":true,"typicalAgeRange":"5-99","genre":["Educational","Casual"],"offers":{"@type":"Offer","price":"0","priceCurrency":"ILS","availability":"https://schema.org/InStock"},"publisher":{"@id":"https://ellaz.fun/#org"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://ellaz.fun/"},{"@type":"ListItem","position":2,"name":"Learning","item":"https://ellaz.fun/games/learn/"},{"@type":"ListItem","position":3,"name":"Word Guess","item":"https://ellaz.fun/games/wordguess/"}]},{"@type":"HowTo","name":"How do you play?","inLanguage":"en","step":[{"@type":"HowToStep","position":1,"name":"Choose a length","text":"Four, five or six letters. Switch whenever you like; the streak restarts."},{"@type":"HowToStep","position":2,"name":"Type a guess","text":"Any word of the right length is accepted. There is no secret dictionary rejecting you."},{"@type":"HowToStep","position":3,"name":"Read the tiles","text":"Green is in place, purple is in the word elsewhere, grey is not in the word at all."},{"@type":"HowToStep","position":4,"name":"Narrow it down","text":"Spend the next guess on letters you have not tested yet, rather than confirming what you already know."},{"@type":"HowToStep","position":5,"name":"Solve it","text":"A solve adds one to your streak and deals a new word. Six misses reveals the answer and resets the streak to zero."}]},{"@type":"FAQPage","inLanguage":"en","mainEntity":[{"@type":"Question","name":"Is it free?","acceptedAnswer":{"@type":"Answer","text":"Yes. No payment, no ads, no sign-up. Open it and play."}},{"@type":"Question","name":"Do I need to install anything?","acceptedAnswer":{"@type":"Answer","text":"No. It runs in the browser on a phone, tablet or computer, and it keeps working offline after your first visit."}},{"@type":"Question","name":"Can I guess a word that is not in the list?","acceptedAnswer":{"@type":"Answer","text":"Yes, and that is deliberate. Any word of the right length is marked. The list decides what the answer can be, never what you are allowed to try."}},{"@type":"Question","name":"Does it work in Hebrew?","acceptedAnswer":{"@type":"Answer","text":"Yes, and the Hebrew is not a translation of the English. It has its own word lists, its own keyboard, and it handles final letters for you."}},{"@type":"Question","name":"What gets saved?","acceptedAnswer":{"@type":"Answer","text":"The word in progress, your current streak and your best streak per length, all on the device. There is no account, so a phone and a tablet keep separate records."}},{"@type":"Question","name":"What happens when I run out of guesses?","acceptedAnswer":{"@type":"Answer","text":"The word is revealed, the streak goes back to zero, and a new word is dealt. That is the whole penalty."}}]},{"@type":"Organization","@id":"https://ellaz.fun/#org","name":"Ellaz","url":"https://ellaz.fun/","logo":"https://ellaz.fun/icon.svg","description":"Free browser games, no download and no account","sameAs":["https://github.com/Sigmafier/ellaz"]}]}
         </script>
-        <script type="module" crossorigin src="/assets/index-CuMMFjy2.js"></script><link rel="modulepreload" crossorigin href="/assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="/assets/shell-DuZzOw8k.js"><link rel="stylesheet" crossorigin href="/assets/shell-DkfkxXv9.css"><link rel="manifest" href="/manifest.webmanifest">
-        <link rel="modulepreload" crossorigin href="/assets/page-IBqCo0MK.js"><link rel="modulepreload" crossorigin href="/assets/game-wordguess-C-imNkGV.js">
+        <script type="module" crossorigin src="./assets/index-BPcPmBzM.js"></script><link rel="modulepreload" crossorigin href="./assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="./assets/shell-B9mKIw0V.js"><link rel="stylesheet" crossorigin href="./assets/shell-DkfkxXv9.css"><link rel="manifest" href="./manifest.webmanifest">
+        <link rel="modulepreload" crossorigin href="/assets/page-CD2I-OyG.js"><link rel="modulepreload" crossorigin href="/assets/game-wordguess-B7SPON_Y.js">
       </head>
       <body class="screen" style="--g:#A855C9" data-page="game" data-game="wordguess" data-locale="en">
         
@@ -475,15 +475,25 @@ html[data-offer] body.screen{--oh:46px}
     <section class="embed" id="embed">
     <h2>Put this game on your site</h2>
     <p>Copy the code and paste it into your page. The line under the frame is the part that counts: a link inside the frame stays on ellaz.fun, and only the one you paste is yours.</p>
-    <iframe
-      src="/embed/wordguess/?lang=en"
-      width="100%"
-      height="940"
-      style="border:0;border-radius:12px;background:var(--doc-stage)"
-      allow="fullscreen"
-      loading="lazy"
-      title="Word Guess - ellaz.fun"
-    ></iframe>
+    <div
+      class="embed-preview"
+      data-embed-preview
+      data-src="/embed/wordguess/?lang=en"
+      data-height="940"
+      data-title="Word Guess - ellaz.fun"
+      style="border-radius:12px;background:var(--doc-stage);overflow:hidden"
+    >
+      <img
+        src="/art/wordguess-86d8f5d1.svg"
+        alt=""
+        width="1200"
+        height="900"
+        loading="lazy"
+        decoding="async"
+        style="display:block;width:100%;height:auto"
+      />
+    </div>
+    <button type="button" class="play" data-embed-play hidden>Show the game here</button>
     <p class="embed-credit"><p>Play <a href="https://ellaz.fun/games/wordguess/">Word Guess</a> and more free games at <a href="https://ellaz.fun/">ellaz.fun</a></p></p>
     <pre
       class="embed-code"

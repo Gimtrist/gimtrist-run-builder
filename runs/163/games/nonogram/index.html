@@ -255,8 +255,8 @@ html[data-offer] body.screen{--oh:46px}
         <script type="application/ld+json">
           {"@context":"https://schema.org","@graph":[{"@type":["VideoGame","SoftwareApplication"],"@id":"https://ellaz.fun/games/nonogram/#game","name":"Picture Logic","url":"https://ellaz.fun/games/nonogram/","image":["https://ellaz.fun/art/nonogram-a64b8456.svg","https://ellaz.fun/og/game-nonogram-en-9b5bc99e.png"],"description":"A free picture-logic puzzle that runs in your browser. Every row and every column carries the lengths of its runs of filled cells, and filling the right ones brings a small picture out of the grid. No board here ever needs a guess.","inLanguage":"en","gamePlatform":["Web Browser","Mobile","Tablet","Desktop"],"playMode":"SinglePlayer","applicationCategory":"GameApplication","operatingSystem":"Any","isAccessibleForFree":true,"isFamilyFriendly":true,"typicalAgeRange":"5-99","genre":["Puzzle","Strategy"],"offers":{"@type":"Offer","price":"0","priceCurrency":"ILS","availability":"https://schema.org/InStock"},"publisher":{"@id":"https://ellaz.fun/#org"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://ellaz.fun/"},{"@type":"ListItem","position":2,"name":"Thinking","item":"https://ellaz.fun/games/think/"},{"@type":"ListItem","position":3,"name":"Picture Logic","item":"https://ellaz.fun/games/nonogram/"}]},{"@type":"HowTo","name":"How do you play?","inLanguage":"en","step":[{"@type":"HowToStep","position":1,"name":"Read the numbers","text":"Each row and column carries its run lengths in order. A row marked 4 1 means four filled cells, at least one empty, then one more filled."},{"@type":"HowToStep","position":2,"name":"Fill a cell","text":"A tap fills it. The same tap in the same place empties it again, so changing your mind needs no separate control."},{"@type":"HowToStep","position":3,"name":"Rule a cell out","text":"The second mode marks a cell as empty. Those are your own notes: the game never asks for them and never checks them."},{"@type":"HowToStep","position":4,"name":"Watch what fades","text":"A line's numbers dim the moment that line reads exactly what they say. That is all the feedback there is."},{"@type":"HowToStep","position":5,"name":"See the picture","text":"When every row and every column comes out right, the picture is done and the clock stops."}]},{"@type":"FAQPage","inLanguage":"en","mainEntity":[{"@type":"Question","name":"What do the numbers mean?","acceptedAnswer":{"@type":"Answer","text":"The lengths of the runs of filled cells in that line, in order, with at least one empty cell between runs. A clue of 4 1 means four filled, a gap, then one filled."}},{"@type":"Question","name":"Can a board have two answers?","acceptedAnswer":{"@type":"Answer","text":"No. Every board is checked before it is shown, and one that admits two pictures is thrown away. On the largest grid 18% of drawn pictures go in the bin for exactly that."}},{"@type":"Question","name":"Do I ever have to guess?","acceptedAnswer":{"@type":"Answer","text":"Never. The check is stricter than uniqueness: it demands that line-by-line reasoning alone is enough to fill the entire grid."}},{"@type":"Question","name":"What are the crosses for?","acceptedAnswer":{"@type":"Answer","text":"For recording cells you know are empty. The game does not count them and does not ask for them, but they are what opens up the big grid."}},{"@type":"Question","name":"Does it tell me when I am wrong?","acceptedAnswer":{"@type":"Answer","text":"No. A line that reads correctly has its numbers dim, and that is the whole of it. A wrong cell sits there until some other line refuses to come out."}},{"@type":"Question","name":"How long does a board take?","acceptedAnswer":{"@type":"Answer","text":"The small one reads almost in a single pass. The large one takes 4.15 swaps between the axes for the mechanical part alone."}},{"@type":"Question","name":"Is it free?","acceptedAnswer":{"@type":"Answer","text":"Completely. There is no payment, no advertising and nothing to sign up for."}},{"@type":"Question","name":"Does it work offline?","acceptedAnswer":{"@type":"Answer","text":"Yes, after one visit. A board in progress is kept too, so closing the tab does not wipe it."}},{"@type":"Question","name":"How is the record measured?","acceptedAnswer":{"@type":"Answer","text":"On the clock, faster winning, and separately for each grid size. Four minutes on 225 cells and four minutes on 25 are not the same afternoon."}}]},{"@type":"Organization","@id":"https://ellaz.fun/#org","name":"Ellaz","url":"https://ellaz.fun/","logo":"https://ellaz.fun/icon.svg","description":"Free browser games, no download and no account","sameAs":["https://github.com/Sigmafier/ellaz"]}]}
         </script>
-        <script type="module" crossorigin src="/assets/index-CuMMFjy2.js"></script><link rel="modulepreload" crossorigin href="/assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="/assets/shell-DuZzOw8k.js"><link rel="stylesheet" crossorigin href="/assets/shell-DkfkxXv9.css"><link rel="manifest" href="/manifest.webmanifest">
-        <link rel="modulepreload" crossorigin href="/assets/page-IBqCo0MK.js"><link rel="modulepreload" crossorigin href="/assets/game-nonogram-1vQV0vTi.js">
+        <script type="module" crossorigin src="./assets/index-BPcPmBzM.js"></script><link rel="modulepreload" crossorigin href="./assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="./assets/shell-B9mKIw0V.js"><link rel="stylesheet" crossorigin href="./assets/shell-DkfkxXv9.css"><link rel="manifest" href="./manifest.webmanifest">
+        <link rel="modulepreload" crossorigin href="/assets/page-CD2I-OyG.js"><link rel="modulepreload" crossorigin href="/assets/game-nonogram-CWbYfvX0.js">
       </head>
       <body class="screen" style="--g:#4F5BD5" data-page="game" data-game="nonogram" data-locale="en">
         
@@ -481,15 +481,25 @@ html[data-offer] body.screen{--oh:46px}
     <section class="embed" id="embed">
     <h2>Put this game on your site</h2>
     <p>Copy the code and paste it into your page. The line under the frame is the part that counts: a link inside the frame stays on ellaz.fun, and only the one you paste is yours.</p>
-    <iframe
-      src="/embed/nonogram/?lang=en"
-      width="100%"
-      height="940"
-      style="border:0;border-radius:12px;background:var(--doc-stage)"
-      allow="fullscreen"
-      loading="lazy"
-      title="Picture Logic - ellaz.fun"
-    ></iframe>
+    <div
+      class="embed-preview"
+      data-embed-preview
+      data-src="/embed/nonogram/?lang=en"
+      data-height="940"
+      data-title="Picture Logic - ellaz.fun"
+      style="border-radius:12px;background:var(--doc-stage);overflow:hidden"
+    >
+      <img
+        src="/art/nonogram-a64b8456.svg"
+        alt=""
+        width="1200"
+        height="900"
+        loading="lazy"
+        decoding="async"
+        style="display:block;width:100%;height:auto"
+      />
+    </div>
+    <button type="button" class="play" data-embed-play hidden>Show the game here</button>
     <p class="embed-credit"><p>Play <a href="https://ellaz.fun/games/nonogram/">Picture Logic</a> and more free games at <a href="https://ellaz.fun/">ellaz.fun</a></p></p>
     <pre
       class="embed-code"

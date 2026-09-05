@@ -255,8 +255,8 @@ html[data-offer] body.screen{--oh:46px}
         <script type="application/ld+json">
           {"@context":"https://schema.org","@graph":[{"@type":["VideoGame","SoftwareApplication"],"@id":"https://ellaz.fun/fr/games/memory/#game","name":"Mémoire","url":"https://ellaz.fun/fr/games/memory/","image":["https://ellaz.fun/art/memory-c3df01d5.svg","https://ellaz.fun/og/game-memory-fr-68d0f4ca.png"],"description":"Retournez deux cartes. Si elles vont ensemble, elles restent ouvertes. Trois tailles de grille, un record par niveau, et rien à installer.","inLanguage":"fr","gamePlatform":["Web Browser","Mobile","Tablet","Desktop"],"playMode":"SinglePlayer","applicationCategory":"GameApplication","operatingSystem":"Any","isAccessibleForFree":true,"isFamilyFriendly":true,"typicalAgeRange":"3-10","genre":["Casual","Educational"],"offers":{"@type":"Offer","price":"0","priceCurrency":"ILS","availability":"https://schema.org/InStock"},"publisher":{"@id":"https://ellaz.fun/#org"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://ellaz.fun/fr/"},{"@type":"ListItem","position":2,"name":"Pour les petits","item":"https://ellaz.fun/fr/games/kids/"},{"@type":"ListItem","position":3,"name":"Mémoire","item":"https://ellaz.fun/fr/games/memory/"}]},{"@type":"HowTo","name":"Comment on joue ?","inLanguage":"fr","step":[{"@type":"HowToStep","position":1,"name":"Retourner une carte","text":"Appuyez sur une carte face cachée. Elle se retourne et reste ouverte pendant que vous en cherchez une deuxième."},{"@type":"HowToStep","position":2,"name":"Trouver sa jumelle","text":"Appuyez sur une deuxième carte. Si les deux vont ensemble, elles restent ouvertes pour de bon. Sinon elles se referment, et c'est à vous de retenir où elles étaient."},{"@type":"HowToStep","position":3,"name":"Vider la grille","text":"La partie se termine quand toutes les paires sont ouvertes. Le nombre de coups s'affiche, et s'il bat votre record il devient le nouveau."}]},{"@type":"FAQPage","inLanguage":"fr","mainEntity":[{"@type":"Question","name":"Le jeu de mémoire est-il vraiment gratuit ?","acceptedAnswer":{"@type":"Answer","text":"Oui, entièrement, et il le restera. Il n'y a pas de version payante, pas de publicité et rien à débloquer."}},{"@type":"Question","name":"Faut-il créer un compte ?","acceptedAnswer":{"@type":"Answer","text":"Non. Il n'y a ni inscription, ni adresse e-mail, ni mot de passe. Le record est écrit sur l'appareil et nulle part ailleurs."}},{"@type":"Question","name":"Est-ce qu'il marche sans connexion ?","acceptedAnswer":{"@type":"Answer","text":"Oui, après la première visite. Le jeu reste disponible dans le navigateur même en avion ou dans une voiture sans réseau."}},{"@type":"Question","name":"À partir de quel âge ?","acceptedAnswer":{"@type":"Answer","text":"Trois ans pour la grille facile. Il n'y a rien à lire, donc un enfant qui ne lit pas encore joue seul."}},{"@type":"Question","name":"Combien de coups pour une bonne partie ?","acceptedAnswer":{"@type":"Answer","text":"Sur 6 paires, 9,2 coups est le score d'une mémoire parfaite. Sur 10 paires, c'est 15,6. Si vous approchez de ces chiffres, vous ne devinez plus grand-chose."}},{"@type":"Question","name":"Sur quels appareils ?","acceptedAnswer":{"@type":"Answer","text":"Téléphone, tablette et ordinateur. La grille s'adapte à l'écran, à l'endroit comme à l'envers."}}]},{"@type":"Organization","@id":"https://ellaz.fun/#org","name":"Ellaz","url":"https://ellaz.fun/","logo":"https://ellaz.fun/icon.svg","description":"Free browser games, no download and no account","sameAs":["https://github.com/Sigmafier/ellaz"]}]}
         </script>
-        <script type="module" crossorigin src="/assets/index-CuMMFjy2.js"></script><link rel="modulepreload" crossorigin href="/assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="/assets/shell-DuZzOw8k.js"><link rel="stylesheet" crossorigin href="/assets/shell-DkfkxXv9.css"><link rel="manifest" href="/manifest.webmanifest">
-        <link rel="modulepreload" crossorigin href="/assets/page-IBqCo0MK.js"><link rel="modulepreload" crossorigin href="/assets/game-memory-nbJgtkX5.js">
+        <script type="module" crossorigin src="./assets/index-BPcPmBzM.js"></script><link rel="modulepreload" crossorigin href="./assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="./assets/shell-B9mKIw0V.js"><link rel="stylesheet" crossorigin href="./assets/shell-DkfkxXv9.css"><link rel="manifest" href="./manifest.webmanifest">
+        <link rel="modulepreload" crossorigin href="/assets/page-CD2I-OyG.js"><link rel="modulepreload" crossorigin href="/assets/game-memory-DmDJ6IZ3.js">
       </head>
       <body class="screen" style="--g:#FF4D8D" data-page="game" data-game="memory" data-locale="fr">
         
@@ -473,15 +473,25 @@ html[data-offer] body.screen{--oh:46px}
     <section class="embed" id="embed">
     <h2>Mettez ce jeu sur votre site</h2>
     <p>Copiez le code et collez-le dans votre page. La ligne sous le cadre est celle qui compte : un lien dans le cadre reste sur ellaz.fun, et seul celui que vous collez est le vôtre.</p>
-    <iframe
-      src="/embed/memory/?lang=fr"
-      width="100%"
-      height="940"
-      style="border:0;border-radius:12px;background:var(--doc-stage)"
-      allow="fullscreen"
-      loading="lazy"
-      title="Mémoire - ellaz.fun"
-    ></iframe>
+    <div
+      class="embed-preview"
+      data-embed-preview
+      data-src="/embed/memory/?lang=fr"
+      data-height="940"
+      data-title="Mémoire - ellaz.fun"
+      style="border-radius:12px;background:var(--doc-stage);overflow:hidden"
+    >
+      <img
+        src="/art/memory-c3df01d5.svg"
+        alt=""
+        width="1200"
+        height="900"
+        loading="lazy"
+        decoding="async"
+        style="display:block;width:100%;height:auto"
+      />
+    </div>
+    <button type="button" class="play" data-embed-play hidden>Afficher le jeu ici</button>
     <p class="embed-credit"><p>Jouez à <a href="https://ellaz.fun/fr/games/memory/">Mémoire</a> et à d'autres jeux gratuits sur <a href="https://ellaz.fun/">ellaz.fun</a></p></p>
     <pre
       class="embed-code"

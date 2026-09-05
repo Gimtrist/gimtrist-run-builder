@@ -255,8 +255,8 @@ html[data-offer] body.screen{--oh:46px}
         <script type="application/ld+json">
           {"@context":"https://schema.org","@graph":[{"@type":["VideoGame","SoftwareApplication"],"@id":"https://ellaz.fun/fr/games/sequence/#game","name":"La suite logique","url":"https://ellaz.fun/fr/games/sequence/","image":["https://ellaz.fun/art/sequence-f039d83e.svg","https://ellaz.fun/og/game-sequence-fr-4aed2fe0.png"],"description":"Une suite de formes, et une case vide à la fin. Huit familles de motifs, six couleurs, et rien à lire.","inLanguage":"fr","gamePlatform":["Web Browser","Mobile","Tablet","Desktop"],"playMode":"SinglePlayer","applicationCategory":"GameApplication","operatingSystem":"Any","isAccessibleForFree":true,"isFamilyFriendly":true,"typicalAgeRange":"3-10","genre":["Puzzle","Strategy"],"offers":{"@type":"Offer","price":"0","priceCurrency":"ILS","availability":"https://schema.org/InStock"},"publisher":{"@id":"https://ellaz.fun/#org"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://ellaz.fun/fr/"},{"@type":"ListItem","position":2,"name":"Réfléchir","item":"https://ellaz.fun/fr/games/think/"},{"@type":"ListItem","position":3,"name":"La suite logique","item":"https://ellaz.fun/fr/games/sequence/"}]},{"@type":"HowTo","name":"Comment on joue ?","inLanguage":"fr","step":[{"@type":"HowToStep","position":1,"name":"Regarder la suite","text":"Une rangée de formes colorées s'affiche, avec une case vide à la fin. Rien n'est écrit et rien n'est chronométré."},{"@type":"HowToStep","position":2,"name":"Choisir ce qui vient après","text":"Appuyez sur la forme qui complète la suite parmi celles proposées en dessous."},{"@type":"HowToStep","position":3,"name":"Enchaîner","text":"Une bonne réponse passe à la suite suivante. Une erreur ne coûte rien : la suite reste affichée et vous réessayez."}]},{"@type":"FAQPage","inLanguage":"fr","mainEntity":[{"@type":"Question","name":"Ce jeu de suites est-il gratuit ?","acceptedAnswer":{"@type":"Answer","text":"Oui, les trois niveaux, sans publicité, sans compte et sans version payante."}},{"@type":"Question","name":"Combien y a-t-il de motifs ?","acceptedAnswer":{"@type":"Answer","text":"8 familles de motifs, dont 3 sont proposées à chaque niveau. Le difficile en inclut 2 qui n'ont aucun cycle."}},{"@type":"Question","name":"Un enfant peut-il réussir au hasard ?","acceptedAnswer":{"@type":"Answer","text":"Une fois, oui : avec 6 couleurs, le hasard vaut 16,7%. Plusieurs réussites d'affilée ne s'expliquent pas par la chance."}},{"@type":"Question","name":"Faut-il savoir lire ?","acceptedAnswer":{"@type":"Answer","text":"Non. Tout est en formes et en couleurs, et rien n'est écrit sur l'écran de jeu."}},{"@type":"Question","name":"Le record est-il gardé par niveau ?","acceptedAnswer":{"@type":"Answer","text":"Oui. Changer de difficulté remet le compteur à zéro, parce que les suites ne sont pas comparables."}},{"@type":"Question","name":"Est-ce qu'il marche hors ligne ?","acceptedAnswer":{"@type":"Answer","text":"Oui, après la première visite. Les suites sont fabriquées sur l'appareil."}}]},{"@type":"Organization","@id":"https://ellaz.fun/#org","name":"Ellaz","url":"https://ellaz.fun/","logo":"https://ellaz.fun/icon.svg","description":"Free browser games, no download and no account","sameAs":["https://github.com/Sigmafier/ellaz"]}]}
         </script>
-        <script type="module" crossorigin src="/assets/index-CuMMFjy2.js"></script><link rel="modulepreload" crossorigin href="/assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="/assets/shell-DuZzOw8k.js"><link rel="stylesheet" crossorigin href="/assets/shell-DkfkxXv9.css"><link rel="manifest" href="/manifest.webmanifest">
-        <link rel="modulepreload" crossorigin href="/assets/page-IBqCo0MK.js"><link rel="modulepreload" crossorigin href="/assets/game-sequence-D2pTTnu9.js">
+        <script type="module" crossorigin src="./assets/index-BPcPmBzM.js"></script><link rel="modulepreload" crossorigin href="./assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="./assets/shell-B9mKIw0V.js"><link rel="stylesheet" crossorigin href="./assets/shell-DkfkxXv9.css"><link rel="manifest" href="./manifest.webmanifest">
+        <link rel="modulepreload" crossorigin href="/assets/page-CD2I-OyG.js"><link rel="modulepreload" crossorigin href="/assets/game-sequence-pcD13yHj.js">
       </head>
       <body class="screen" style="--g:#A855C9" data-page="game" data-game="sequence" data-locale="fr">
         
@@ -473,15 +473,25 @@ html[data-offer] body.screen{--oh:46px}
     <section class="embed" id="embed">
     <h2>Mettez ce jeu sur votre site</h2>
     <p>Copiez le code et collez-le dans votre page. La ligne sous le cadre est celle qui compte : un lien dans le cadre reste sur ellaz.fun, et seul celui que vous collez est le vôtre.</p>
-    <iframe
-      src="/embed/sequence/?lang=fr"
-      width="100%"
-      height="940"
-      style="border:0;border-radius:12px;background:var(--doc-stage)"
-      allow="fullscreen"
-      loading="lazy"
-      title="La suite logique - ellaz.fun"
-    ></iframe>
+    <div
+      class="embed-preview"
+      data-embed-preview
+      data-src="/embed/sequence/?lang=fr"
+      data-height="940"
+      data-title="La suite logique - ellaz.fun"
+      style="border-radius:12px;background:var(--doc-stage);overflow:hidden"
+    >
+      <img
+        src="/art/sequence-f039d83e.svg"
+        alt=""
+        width="1200"
+        height="900"
+        loading="lazy"
+        decoding="async"
+        style="display:block;width:100%;height:auto"
+      />
+    </div>
+    <button type="button" class="play" data-embed-play hidden>Afficher le jeu ici</button>
     <p class="embed-credit"><p>Jouez à <a href="https://ellaz.fun/fr/games/sequence/">La suite logique</a> et à d'autres jeux gratuits sur <a href="https://ellaz.fun/">ellaz.fun</a></p></p>
     <pre
       class="embed-code"

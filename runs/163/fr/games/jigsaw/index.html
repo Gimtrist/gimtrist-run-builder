@@ -255,8 +255,8 @@ html[data-offer] body.screen{--oh:46px}
         <script type="application/ld+json">
           {"@context":"https://schema.org","@graph":[{"@type":["VideoGame","SoftwareApplication"],"@id":"https://ellaz.fun/fr/games/jigsaw/#game","name":"Puzzle","url":"https://ellaz.fun/fr/games/jigsaw/","image":["https://ellaz.fun/art/jigsaw-4d150ac0.svg","https://ellaz.fun/og/game-jigsaw-fr-3e54bbeb.png"],"description":"Un puzzle gratuit, directement dans le navigateur. Vous appuyez sur une pièce du plateau du bas, vous appuyez sur une case de la grille, et la pièce s'y pose. Une mauvaise case l'accepte aussi, et vous pouvez toujours la ressortir. L'image est finie quand chaque pièce est à sa place.","inLanguage":"fr","gamePlatform":["Web Browser","Mobile","Tablet","Desktop"],"playMode":"SinglePlayer","applicationCategory":"GameApplication","operatingSystem":"Any","isAccessibleForFree":true,"isFamilyFriendly":true,"typicalAgeRange":"3-10","genre":["Casual","Educational"],"offers":{"@type":"Offer","price":"0","priceCurrency":"ILS","availability":"https://schema.org/InStock"},"publisher":{"@id":"https://ellaz.fun/#org"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://ellaz.fun/fr/"},{"@type":"ListItem","position":2,"name":"Pour les petits","item":"https://ellaz.fun/fr/games/kids/"},{"@type":"ListItem","position":3,"name":"Puzzle","item":"https://ellaz.fun/fr/games/jigsaw/"}]},{"@type":"HowTo","name":"Comment on joue ?","inLanguage":"fr","step":[{"@type":"HowToStep","position":1,"name":"Choisir un niveau","text":"Six pièces, douze ou vingt. Changer de niveau distribue aussi une nouvelle image."},{"@type":"HowToStep","position":2,"name":"Appuyer sur une pièce","text":"Une de celles du plateau, sous la grille. Un contour apparaît autour d'elle."},{"@type":"HowToStep","position":3,"name":"Appuyer sur une case","text":"La pièce s'y pose, même quand ce n'est pas sa place."},{"@type":"HowToStep","position":4,"name":"La ressortir","text":"Appuyer sur une pièce déjà posée la renvoie au plateau et vous la met en main."},{"@type":"HowToStep","position":5,"name":"Échanger","text":"Avec une pièce en main, appuyer sur une case occupée les échange. L'ancienne repart au plateau."}]},{"@type":"FAQPage","inLanguage":"fr","mainEntity":[{"@type":"Question","name":"Faut-il faire glisser les pièces ?","acceptedAnswer":{"@type":"Answer","text":"Non, et ce n'est pas possible. Vous appuyez sur une pièce, puis sur une case. Deux appuis font le même travail et conviennent à une petite main comme à une entrée alternative."}},{"@type":"Question","name":"Que se passe-t-il si je pose une pièce au mauvais endroit ?","acceptedAnswer":{"@type":"Answer","text":"Rien. Elle y reste jusqu'à ce que vous la ressortiez. Aucun son d'erreur, aucun point retiré, et l'image n'est simplement pas encore terminée."}},{"@type":"Question","name":"Combien y a-t-il d'images ?","acceptedAnswer":{"@type":"Answer","text":"Huit, et toutes sont le dessin principal d'autres jeux du site. Après dix puzzles, vous en reverrez une."}},{"@type":"Question","name":"Que mesure le record ?","acceptedAnswer":{"@type":"Answer","text":"Le nombre de poses qu'il a fallu pour terminer, et moins il y en a, mieux c'est. Le plancher est le nombre de pièces, soit six, douze ou vingt."}},{"@type":"Question","name":"Le jeu se souvient-il de ma partie ?","acceptedAnswer":{"@type":"Answer","text":"Oui. L'image, les pièces déjà placées et ce qui reste au plateau reviennent tels quels, sur cet appareil."}},{"@type":"Question","name":"Peut-on tourner les pièces ?","acceptedAnswer":{"@type":"Answer","text":"Ce n'est pas nécessaire. Chaque pièce est déjà dans le bon sens, donc la seule question est de savoir où elle va. Cela retire une étape entière au puzzle d'un enfant de trois ans et laisse la partie qui apprend vraiment quelque chose, lire l'image."}}]},{"@type":"Organization","@id":"https://ellaz.fun/#org","name":"Ellaz","url":"https://ellaz.fun/","logo":"https://ellaz.fun/icon.svg","description":"Free browser games, no download and no account","sameAs":["https://github.com/Sigmafier/ellaz"]}]}
         </script>
-        <script type="module" crossorigin src="/assets/index-CuMMFjy2.js"></script><link rel="modulepreload" crossorigin href="/assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="/assets/shell-DuZzOw8k.js"><link rel="stylesheet" crossorigin href="/assets/shell-DkfkxXv9.css"><link rel="manifest" href="/manifest.webmanifest">
-        <link rel="modulepreload" crossorigin href="/assets/page-IBqCo0MK.js"><link rel="modulepreload" crossorigin href="/assets/game-jigsaw-Cf1A1heF.js">
+        <script type="module" crossorigin src="./assets/index-BPcPmBzM.js"></script><link rel="modulepreload" crossorigin href="./assets/vendor-react-DKb1IkY9.js"><link rel="modulepreload" crossorigin href="./assets/shell-B9mKIw0V.js"><link rel="stylesheet" crossorigin href="./assets/shell-DkfkxXv9.css"><link rel="manifest" href="./manifest.webmanifest">
+        <link rel="modulepreload" crossorigin href="/assets/page-CD2I-OyG.js"><link rel="modulepreload" crossorigin href="/assets/game-jigsaw-BMY_YH6u.js">
       </head>
       <body class="screen" style="--g:#17798F" data-page="game" data-game="jigsaw" data-locale="fr">
         
@@ -477,15 +477,25 @@ html[data-offer] body.screen{--oh:46px}
     <section class="embed" id="embed">
     <h2>Mettez ce jeu sur votre site</h2>
     <p>Copiez le code et collez-le dans votre page. La ligne sous le cadre est celle qui compte : un lien dans le cadre reste sur ellaz.fun, et seul celui que vous collez est le vôtre.</p>
-    <iframe
-      src="/embed/jigsaw/?lang=fr"
-      width="100%"
-      height="940"
-      style="border:0;border-radius:12px;background:var(--doc-stage)"
-      allow="fullscreen"
-      loading="lazy"
-      title="Puzzle - ellaz.fun"
-    ></iframe>
+    <div
+      class="embed-preview"
+      data-embed-preview
+      data-src="/embed/jigsaw/?lang=fr"
+      data-height="940"
+      data-title="Puzzle - ellaz.fun"
+      style="border-radius:12px;background:var(--doc-stage);overflow:hidden"
+    >
+      <img
+        src="/art/jigsaw-4d150ac0.svg"
+        alt=""
+        width="1200"
+        height="900"
+        loading="lazy"
+        decoding="async"
+        style="display:block;width:100%;height:auto"
+      />
+    </div>
+    <button type="button" class="play" data-embed-play hidden>Afficher le jeu ici</button>
     <p class="embed-credit"><p>Jouez à <a href="https://ellaz.fun/fr/games/jigsaw/">Puzzle</a> et à d'autres jeux gratuits sur <a href="https://ellaz.fun/">ellaz.fun</a></p></p>
     <pre
       class="embed-code"
