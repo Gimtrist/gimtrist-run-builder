@@ -1,0 +1,1 @@
+var n=new TextEncoder,e=new TextDecoder;function t(n){return n instanceof Uint8Array?n:new Uint8Array(n)}function r(n){return new DataView(n.buffer,n.byteOffset,n.byteLength)}function a(e){return n.encode(e)}function o(n){return e.decode(n)}function u(n,e,t){return e>=0&&t>=0&&e+t<=n.length}export{r as a,u as i,o as n,a as r,t};

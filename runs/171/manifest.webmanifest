@@ -1,0 +1,24 @@
+{
+  "id": "/",
+  "name": "BiosSystem Neon Arcade",
+  "short_name": "Neon Arcade",
+  "description": "A self-contained BiosSystem arcade with generated games, graphics, and audio.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#020407",
+  "theme_color": "#05080d",
+  "categories": [
+    "games",
+    "entertainment"
+  ],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
