@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Galgame Studio</title>
+  <link rel="stylesheet" href="/app.css">
+  <link rel="stylesheet" href="/extras.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">G</span><div><strong>Galgame Studio</strong><small>开源 Ren'Py 可视化剧情编辑器</small></div></div>
+    <div class="project-title" id="projectTitle">正在载入作品…</div>
+    <div class="top-actions">
+      <button class="ghost" id="undoBtn" title="撤销 Ctrl+Z">↶ 撤销</button>
+      <button class="ghost" id="redoBtn" title="重做 Ctrl+Y">↷ 重做</button>
+      <button class="ghost" id="lintBtn">检查项目</button>
+      <button class="ghost" id="playBtn">▶ 启动试玩</button>
+      <button class="primary" id="saveBtn">保存剧情 <kbd>Ctrl S</kbd></button>
+      <button class="icon-button" id="closeBtn" title="关闭编辑器">×</button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <aside class="timeline-pane">
+      <div class="pane-title"><div><b>剧情时间线</b><span id="nodeCount">0 个节点</span></div><button class="icon-button" id="reloadBtn" title="重新载入">↻</button></div>
+      <div class="search-row"><input id="searchInput" placeholder="搜索对白、旁白或代码…"><button id="clearSearch" title="清空">×</button></div>
+      <div class="filter-row" id="filters">
+        <button class="active" data-filter="all">全部</button>
+        <button data-filter="text">文本</button>
+        <button data-filter="visual">画面</button>
+        <button data-filter="music">音频</button>
+        <button data-filter="code">代码</button>
+      </div>
+      <div class="timeline" id="timeline"></div>
+      <div class="quick-add">
+        <button class="dialogue" id="addDialogueBtn"><span>＋</span><b>添加对白</b><small>选择角色并输入中文</small></button>
+        <button class="narration" id="addNarrationBtn"><span>＋</span><b>添加旁白</b><small>无需选择角色</small></button>
+      </div>
+    </aside>
+
+    <section class="preview-pane">
+      <div class="preview-toolbar">
+        <div><b>实时画面预览</b><span>16:9 · 选择时间线节点即可定位场景</span></div>
+        <div class="scene-state">
+          <span id="bgState">背景：未设置</span>
+          <span id="characterState">人物：0</span>
+          <span id="musicState">音乐：未播放</span>
+          <button type="button" id="previewMusicToggle" class="preview-music-toggle" title="开启或关闭时间线实时背景音乐">▶ 启用实时音乐</button>
+        </div>
+      </div>
+
+      <div class="stage-wrap">
+        <div class="stage" id="stage">
+          <div class="empty-stage" id="emptyStage"><b>选择一个剧情节点</b><span>这里会显示当时的背景、人物、CG 与文本</span></div>
+          <img class="stage-background" id="stageBackground" alt="">
+          <div class="sprites" id="sprites"></div>
+          <div class="stage-badge" id="stageBadge"></div>
+          <div class="dialogue-preview" id="dialoguePreview">
+            <div class="preview-who" id="previewWho"></div>
+            <div class="preview-what" id="previewWhat"></div>
+            <div class="preview-next">◆</div>
+            <div class="preview-quick">セーブ　 ロード　 簡易セーブ　 簡易ロード　 戻る　 進む　 履歴　 設定　 非表示</div>
+          </div>
+        </div>
+      </div>
+
+      <section class="asset-pane">
+        <div class="asset-header">
+          <div class="asset-tabs" id="assetTabs">
+            <button class="active" data-category="background">背景</button>
+            <button data-category="cg">CG</button>
+            <button data-category="character">人物立绘</button>
+            <button data-category="music">音乐</button>
+          </div>
+          <div class="asset-actions">
+            <button id="importBackgroundBtn">＋ 背景</button>
+            <button id="importCgBtn">＋ CG</button>
+            <button id="importCharacterBtn">＋ 人物立绘</button>
+            <button id="importMusicBtn">＋ 音乐</button>
+            <input hidden type="file" id="backgroundFile" accept="image/png,image/jpeg,image/webp,image/svg+xml,image/gif">
+            <input hidden type="file" id="cgFile" accept="image/png,image/jpeg,image/webp,image/svg+xml,image/gif">
+            <input hidden type="file" id="characterFile" accept="image/png,image/jpeg,image/webp,image/svg+xml,image/gif">
+            <input hidden type="file" id="musicFile" accept="audio/mpeg,audio/ogg,audio/wav,audio/opus,audio/flac">
+          </div>
+        </div>
+        <div class="character-subtabs" id="characterSubtabs" hidden>
+          <span>人物分类</span>
+          <button class="active" data-character-group="all">全部</button>
+        </div>
+        <div class="asset-help" id="assetHelp">点击背景可替换当前场景；也可以拖到预览画面。</div>
+        <div class="asset-grid" id="assetGrid"></div>
+      </section>
+    </section>
+
+    <aside class="property-pane">
+      <div class="pane-title"><div><b>当前节点</b><span id="selectionHint">尚未选择</span></div></div>
+      <div class="empty-properties" id="emptyProperties"><div>←</div><b>从左侧选择一个节点</b><span>或者使用“添加对白 / 添加旁白”快速开始</span></div>
+      <form id="propertyForm" class="property-form" hidden>
+        <label>节点类型<select id="kindSelect"></select></label>
+        <label id="characterField">说话角色<select id="characterSelect"></select></label>
+        <section id="voiceField" class="voice-binding" hidden>
+          <div class="voice-binding-head"><span>🎙</span><div><b>角色配音</b><small id="voiceBindingStatus">尚未绑定配音</small></div></div>
+          <div class="voice-binding-path" id="voiceBindingPath">选择音频后会自动放在对应角色的 voice 文件夹中。</div>
+          <div class="voice-binding-actions">
+            <button type="button" id="voicePreviewBtn">▶ 试听</button>
+            <button type="button" id="voiceImportBtn">＋ 导入 / 替换</button>
+            <button type="button" id="voiceLibraryBtn">选择已有</button>
+            <button type="button" id="voiceUnbindBtn" class="danger">解除绑定</button>
+          </div>
+          <input hidden type="file" id="voiceFile" accept="audio/mpeg,audio/ogg,audio/wav,audio/opus,audio/flac">
+        </section>
+        <label class="grow"><span id="contentLabel">文本内容</span><textarea id="contentInput" placeholder="在这里输入内容…"></textarea></label>
+        <div class="context-help" id="contextHelp"></div>
+        <div class="node-actions">
+          <button type="button" id="moveUpBtn">↑ 上移</button>
+          <button type="button" id="moveDownBtn">↓ 下移</button>
+          <button type="button" class="danger" id="deleteBtn">删除</button>
+        </div>
+      </form>
+
+      <section class="friendly-actions">
+        <h3>常用操作</h3>
+        <button id="backgroundActionBtn"><span>景</span><div><b>添加 / 替换背景</b><small>选择背景图并建立场景节点</small></div></button>
+        <button id="replaceVisualBtn"><span>▣</span><div><b>添加 / 替换 CG</b><small>从下方缩略图库选择画面</small></div></button>
+        <button id="characterActionBtn"><span>人</span><div><b>添加 / 切换人物</b><small>选择立绘、位置或隐藏人物</small></div></button>
+        <button id="musicActionBtn"><span>♫</span><div><b>播放 / 切换音乐</b><small>选择音乐或插入停止音乐</small></div></button>
+      </section>
+
+      <section class="tips-card"><b>保存很安全</b><p>每次保存都会先把旧版剧情复制到 <code>editor_backups</code>。无法识别的 Ren’Py 高级代码会原样保留。</p></section>
+    </aside>
+  </main>
+
+  <div class="modal-backdrop" id="modalBackdrop" hidden>
+    <div class="modal">
+      <div class="modal-head"><b id="modalTitle">选择素材</b><button class="icon-button" id="modalClose">×</button></div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-foot" id="modalFoot"></div>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script src="/app.js"></script>
+</body>
+</html>
