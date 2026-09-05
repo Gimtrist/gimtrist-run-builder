@@ -1,0 +1,394 @@
+
+const objectEffects = [];
+
+class Effect {
+  constructor(target, dat) {
+    objectEffects.push(this);
+    this.name = "effect";
+    this.category = "default";
+    this.target = target;
+    this.duration = dat.duration || 1;
+    this.level = dat.level || 1;
+    this.timeRemaining = this.duration;
+    this.done = false;
+    this.active = false;
+    this.activated = false;
+    this.color = color(255);
+  }
+
+  getText() {
+    return this.name + (this.level > 1 ? " " + romanNumeral(this.level) : "");
+  }
+
+  getUsagePercentage() {
+    return this.timeRemaining / this.duration;
+  }
+
+  addUsage(amount) {
+    this.timeRemaining += amount;
+  }
+
+  update(dt) {}
+
+  start() {}
+
+  stop() {}
+
+  run(dt) {
+    this.update(dt);
+
+    // Time remaining
+    this.timeRemaining -= dt;
+    if (this.timeRemaining <= 0) {
+      this.done = true;
+      this.stop();
+    }
+  }
+
+  activate() {
+    this.activated = true;
+  }
+}
+
+class SuperSpeed extends Effect {
+  constructor(target, dat) {
+    super(target, dat);
+    this.name = "speed";
+    this.category = "boost";
+    this.color = color(30, 180, 200);
+  }
+
+  start() {
+    this.target.speedMult = 4 + this.level;
+    this.target.maneuverabilityMult = 4 + this.level;
+    this.target.exaustCol = {
+      min: { r: 30, g: 180, b: 200, a: 100 },
+      add: { r: 40, g: 30, b: 50, a: 0 }
+    };
+  }
+
+  stop() {
+    this.target.speedMult = 1;
+    this.target.maneuverabilityMult = 1;
+    this.target.exaustCol = this.target.oldExaustCol;
+  }
+
+  run(dt) {
+    this.update(dt);
+
+    // Time remaining
+    if (!this.target.control.boost) return;
+    this.timeRemaining -= dt;
+    if (this.timeRemaining <= 0) {
+      this.done = true;
+      this.stop();
+    }
+  }
+}
+
+class CustomRounds extends Effect {
+  constructor(target, dat) {
+    super(target, dat);
+    this.name = "custom";
+    this.category = "bullet";
+    this.bulletType = "custom";
+    this.oldBulletType = DEFAULT_BULLET.Type;
+    this.oldBulletLevel = DEFAULT_BULLET.level;
+    this.color = color(30, 180, 200);
+  }
+
+  start() {
+    this.target.bulletType = this.bulletType;
+    this.target.bulletLevel = this.level;
+  }
+  
+  stop() {
+    this.target.bulletType = this.oldBulletType;
+    this.target.bulletLevel = this.oldBulletLevel;
+  }
+
+  run(dt) {
+    this.update(dt);
+
+    // Time remaining
+    if (!this.target.control.fire) return;
+    this.timeRemaining -= this.target.lastBullet.consumes;
+    if (this.timeRemaining <= 0) {
+      this.done = true;
+      this.stop();
+    }
+  }
+}
+
+class HomingRounds extends CustomRounds {
+  constructor(target, dat) {
+    super(target, dat);
+    this.name = "homing rounds";
+    this.bulletType = HomingBullet;
+    this.color = color(190, 59, 217);
+  }
+}
+
+class SpeedRounds extends CustomRounds {
+  constructor(target, dat) {
+    super(target, dat);
+    this.name = "sonic rounds";
+    this.bulletType = SpeedBullet;
+    this.color = color(30, 180, 200);
+  }
+}
+
+class UltraspeedRounds extends SpeedRounds {
+  constructor(target, dat) {
+    super(target, dat);
+    this.name = "ultra sonic rounds";
+    this.bulletType = UltraspeedBullet;
+    this.color = color(20, 140, 220);
+  }
+}
+
+class MegaRounds extends CustomRounds {
+  constructor(target, dat) {
+    super(target, dat);
+    this.name = "mega rounds";
+    this.bulletType = MegaBullet;
+    this.color = color(114, 66, 245);
+  }
+}
+
+class ExplosiveRounds extends CustomRounds {
+  constructor(target, dat) {
+    super(target, dat);
+    this.name = "explosive rounds";
+    this.bulletType = ExplosiveBullet;
+    this.color = color(255, 115, 0);
+  }
+}
+
+class HurricaneRounds extends CustomRounds {
+  constructor(target, dat) {
+    super(target, dat);
+    this.name = "hurricane rounds";
+    this.bulletType = HurricaneBullet;
+    this.color = color(50);
+  }
+}
+
+class MultiShot extends Effect {
+  constructor(target, dat) {
+    super(target, dat);
+    this.name = "multishot";
+    this.category = "bullet modifier";
+    this.color = color(255, 114, 0);
+    this.multishotQuantity = 2 + this.level;
+  }
+
+  start() {
+    this.target.multishot = this.multishotQuantity;
+  }
+
+  stop() {
+    this.target.multishot = 1;
+  }
+
+  run(dt) {
+    this.update(dt);
+
+    // Time remaining
+    if (!this.target.control.fire) return;
+    const ammoConsumed = this.target.lastBullet ? this.target.lastBullet.consumes : 1;
+    this.timeRemaining -= ammoConsumed;
+    if (this.timeRemaining <= 0) {
+      this.done = true;
+      this.stop();
+    }
+  }
+}
+
+class Regeneration extends Effect {
+  constructor(target, dat) {
+    super(target, dat);
+    this.name = "regeneration";
+    this.category = "healing";
+    this.color = color(230, 80, 200);
+    this.tickTime = 3 / this.level;
+    this.regenTime = 0;
+    this.healthPerTick = 5;
+
+    if (target instanceof RegenAsteroid) this.tickTime = 3 / this.level / 5;
+    if (target instanceof Enemy) this.tickTime = 3 / this.level / 2;
+  }
+
+  update(dt) {
+    if ((this.regenTime -= dt) <= 0) {
+      let canResurrect = this.level > 1;
+      this.target.addHealth(this.healthPerTick, null, canResurrect);
+      this.regenTime = this.tickTime;
+    }
+  }
+}
+
+class ForceField extends Effect {
+  constructor(target, dat) {
+    super(target, dat);
+    this.name = "force field";
+    this.category = "shield";
+    this.color = color(30, 180, 200);
+    this.targetTakeDamageFn = null;
+    this.level = 1;
+
+    const THIS = this;
+    this.dummyObj = {
+      collisionMesh: target.collisionMesh,
+      get maxHealth() { return THIS.duration },
+      get health() { return THIS.timeRemaining },
+      get x() { return target.x; },
+      get y() { return target.y; }
+    };
+  }
+
+  getAlpha() {
+    return Math.min(255, this.timeRemaining * 255 / 30) + 50;
+  }
+
+  start() {
+    // Store the original takeDamage function
+    this.targetTakeDamageFn = this.target.takeDamage;
+    this.target.takeDamage = (damage, damageSource) => {
+      // Take health from shield first
+      if (this.timeRemaining > 0) {
+        let damageAbsorbed = Math.min(damage, this.timeRemaining);
+        this.timeRemaining -= damageAbsorbed;
+        damage -= damageAbsorbed;
+
+        // Only spawn a health bar for non-player objects
+        if (!(this.target instanceof Player)) {
+          spawnHealthBar(this.dummyObj, 3, this.color);
+        }
+      }
+
+      if (damage > 0) {
+        // Call from the target's scope to avoid issues with using "this"
+        this.targetTakeDamageFn.call(this.target, damage, damageSource);
+      }
+    }
+  }
+
+  stop() {
+    // Restore the original takeDamage function
+    if (!this.targetTakeDamageFn) return;
+    this.target.takeDamage = this.targetTakeDamageFn;
+  }
+
+  run(dt) {
+    this.update(dt);
+
+    // Time remaining
+    if (this.timeRemaining <= 0) {
+      this.done = true;
+      this.stop();
+    }
+  }
+}
+
+function updateAllEffects(dt) {
+  let affectedObjects = new Map(); // Map to track categories per target
+  let activeEffects = [];
+
+  for (let i = 0; i < objectEffects.length; ++i) {
+    const effect = objectEffects[i];
+    const target = effect.target;
+
+    // Remove done effects
+    if (effect.done) {
+      effect.active = false;
+      effect.target.effects.remove(effect);
+      objectEffects.splice(i--, 1);
+      continue;
+    }
+
+    // Skip this effect if it's not activated
+    if (!effect.activated) {
+      continue;
+    }
+
+    // Initialize map for the target if it doesn't exist
+    if (!affectedObjects.has(target)) {
+      affectedObjects.set(target, new Set());
+    }
+
+    const activeCategories = affectedObjects.get(target);
+
+    // Skip this effect if its category is already running on the target
+    if (activeCategories.has(effect.category)) {
+      continue;
+    }
+
+    activeEffects.push(effect);
+    activeCategories.add(effect.category); // Mark the category as active for this target
+  }
+
+  // Deactivate effects
+  for (let effect of objectEffects) {
+    if (effect.active && !activeEffects.includes(effect)) {
+      effect.active = false;
+      effect.stop();
+    }
+  }
+
+  // Activate effects
+  for (let effect of activeEffects) {
+    if (!effect.active) {
+      effect.active = true;
+      effect.start();
+    }
+  }
+
+  // Run effects
+  for (let effect of activeEffects) {
+    effect.run(dt);
+  }
+}
+
+function clearAllEffects() {
+  for (let i = objectEffects.length - 1; i >= 0; --i) {
+    const effect = objectEffects[i];
+    effect.stop();
+    effect.target.effects.remove(effect);
+    objectEffects.splice(i, 1);
+  }
+}
+
+function addEffect(Effect, target, dat, sender) {
+  // Look to see if this effect already exists
+  for (let i = 0; i < objectEffects.length; ++i) {
+    const effect = objectEffects[i];
+    const hasSameTarget = effect.target === target;
+    const hasSameLevel = effect.level === (dat.level || 1);
+    const hasSameEffect = effect.constructor === Effect;
+    if (hasSameTarget && hasSameLevel && hasSameEffect && !effect.done) {
+      effect.timeRemaining += dat.duration;
+      effect.duration = effect.timeRemaining;
+      return effect;
+    }
+  }
+
+  const effect = new Effect(target, dat);
+  objectEffects.push(effect);
+  target.effects.push(effect);
+
+  return effect;
+}
+
+function prioritizeEffect(effect) {
+  for (let i = 0; i < objectEffects.length; ++i) {
+    if (objectEffects[i] === effect) {
+      effect.target.effects.remove(effect);
+      effect.target.effects.unshift(effect);
+      objectEffects.splice(i, 1);
+      objectEffects.unshift(effect);
+      return;
+    }
+  }
+}
+

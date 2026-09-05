@@ -1,0 +1,278 @@
+@font-face {
+  font-family: space-font;
+  src: url(Assets/Fonts/space-font.ttf);
+}
+
+@font-face {
+  font-family: spaceline;
+  src: url(Assets/Fonts/spaceline.otf);
+}
+
+:root {
+  touch-action: pan-x pan-y;
+  height: 100% 
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+
+  /* Disable scrolling */
+  overflow: hidden;
+}
+
+canvas {
+  display: block;
+  position: fixed;
+  top: 0;
+  z-index: -1;
+}
+
+.slider {
+  flex: 1;
+  margin-left: 6px;
+}
+
+hbox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  
+/*   background: blue; */
+}
+
+vbox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  
+/*   background: red; */
+}
+
+#server-controls .section-contents {
+  display: flex;
+  flex-direction: column;
+  font-size: 24px;
+  align-items: center;
+  width: 40vw;
+}
+
+#server-controls inputline {
+  margin: 5px 0px;
+}
+
+inputline {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  max-width: 300px;
+  width: 100%;
+}
+
+inputline input[type="checkbox"] {
+  margin-left: 10px;
+}
+
+inputline input[type="text"] {
+  flex: 1;
+  margin-left: 10px;
+  width: 120px;
+  padding: 2px 4px;
+  border: none;
+  background: #fff3;
+  color: white;
+  font-size: inherit;
+}
+
+inputline input[type="text"]:focus {
+  outline: none;
+}
+
+version {
+  position: fixed;
+  right: 14px;
+  top: 4px;
+  color: #ffffff40;
+  font-size: calc(min(24px, 4vw));
+  font-family: "Trebuchet MS";
+}
+
+button {
+  margin: 20px;
+  padding: 0px 10px;
+
+  font-family: space-font;
+  font-size: calc(min(3vw, 16px));
+  letter-spacing: 2px;
+  
+  min-height: 40px;
+  max-width: 40vw;
+  
+  color: white;
+  border: solid 2px white;
+  background: transparent;
+  cursor: pointer;
+
+  user-select: none;
+}
+
+p {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+a {
+  color: white;
+}
+
+div {
+  color: white;
+  font-family: Trebuchet MS, sans-serif;
+  margin: 0 20px;
+  overflow-y: auto;
+}
+
+h1 {
+  text-align: center;
+  margin: 10px 0px;
+}
+
+span {
+  font-weight: bold;
+}
+
+control {
+  display: inline-block;
+  width: 100px;
+  font-weight: bold;
+}
+
+button:hover {
+  transform: scale(1.05);
+  background: #ffffff10;
+}
+
+button:active {
+  font-size: 16px;
+  background: #ffffff05;
+}
+
+.pause {
+  position: fixed;
+  top: 30px;
+  right: 16px;
+  font-size: 20px;
+  padding: 2px 8px;
+  min-height: auto;
+  border: solid 2px #ffffff20;
+  background: #ffffff20;
+  letter-spacing: 2px;
+  font-family: "Trebuchet MS";
+}
+
+.pause:hover {
+  font-size: 20px;
+}
+
+.scrollview { 
+  overflow-y: auto; 
+}
+
+.controls-menu { 
+  display: grid; 
+  grid-template-columns: 1fr 1fr; 
+  grid-auto-flow: row; 
+  justify-content: center; 
+  margin: 0; 
+  height: auto; /* Changed from fixed height */
+  /* min-height: 100%; Ensures minimum full viewport height */
+}
+
+.controls-section { 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  margin: 0; 
+  height: auto; /* Allow natural growth */
+}
+
+.section-contents { 
+  display: inline-block; 
+  text-align: left; 
+  margin: 10px; 
+  flex-grow: 1; 
+}
+
+.fullscreen-button {
+  /* Background Image */
+  background-image: url("Assets/enlarge.png");
+  background-size: 35px 35px;
+
+  display: flex;
+  position: fixed;
+  align-items: center;
+  justify-content: center;
+  margin: 4px 4px;
+  padding: 2px 2px;
+  bottom: 0px;
+  right: 0px;
+  width: 35px;
+  height: 35px;
+  min-height: auto;
+  border: none;
+  color: white;
+  font-size: 30px;
+  font-family: "Trebuchet MS";
+  line-height: 0px;
+  cursor: pointer;
+  user-select: none;
+  pointer-events: auto;
+  opacity: 1;
+}
+
+.fullscreen-button.hide {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.fullscreen-button:hover {
+  font-size: 30px;
+  background-image: url("Assets/enlarge.png");
+  background-size: 35px 35px;
+}
+
+.fullscreen-button:active {
+  font-size: 30px;
+  background-image: url("Assets/enlarge.png");
+  background-size: 35px 35px;
+}
+
+.effect-buttons {
+  display: flex;
+  flex-direction: column;
+
+  position: fixed;
+  right: 10px;
+  top: 90px;
+  margin: 0;
+  padding: 0;
+}
+
+.effect-buttons button {
+  margin: 10px;
+  padding: 0;
+  width: 50px;
+  height: 50px;
+
+  border: solid 2px #ffffff20;
+  background: #ffffff20;
+  border-radius: 4px;
+
+  cursor: pointer;
+}
+

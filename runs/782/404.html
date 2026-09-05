@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+    <title>Fiery Attraction</title>
+    
+    <!-- Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/addons/p5.sound.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/socket.io@4.8.3/client-dist/socket.io.min.js"></script>
+    
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+
+  </head>
+  <body>
+    <main>
+    </main>
+    
+    <!-- Sound Track -->
+    <audio id="sound-track" loop>
+      <source src="https://github.com/Emmennater/Files/raw/main/GameSong.mp3" type="audio/mp3">
+      Your browser does not support the audio element.
+    </audio>
+    
+    <!-- Title Sound Track -->
+    <audio id="title-screen-sound-track" loop>
+      <source src="https://github.com/Emmennater/Files/raw/main/GameSongTitle.mp3" type="audio/mp3">
+      Your browser does not support the audio element.
+    </audio>
+
+    <!-- Rocket Sound -->
+    <audio id="rocket-sound" loop>
+      <source src="https://github.com/Emmennater/Files/raw/main/rocket-sound-2.wav" type="audio/wav">
+      Your browser does not support the audio element.
+    </audio>
+
+    <!-- Collision Sound -->
+    <audio id="collision-sound">
+      <source src="https://github.com/Emmennater/Files/raw/main/collision.wav" type="audio/wav">
+      Your browser does not support the audio element.
+    </audio>
+
+    <!-- Burning Sound -->
+    <audio id="burning-sound" loop>
+      <source src="https://github.com/Emmennater/Files/raw/main/burning.mp3" type="audio/mp3">
+      Your browser does not support the audio element.
+    </audio>
+
+    <!-- Shoot Sound -->
+    <audio id="shoot-sound">
+      <source src="Assets/laser-shot.wav" type="audio/wav">
+      Your browser does not support the audio element.
+    </audio>
+
+    <!-- Hit Sound -->
+    <audio id="hit-sound">
+      <source src="https://github.com/Emmennater/Files/raw/main/laser-hit.wav" type="audio/wav">
+      Your browser does not support the audio element.
+    </audio>
+
+    <!-- Explode Sound -->
+    <audio id="explode-sound">
+      <source src="Assets/explode.mp3" type="audio/wav">
+      Your browser does not support the audio element.
+    </audio>
+
+    <!-- Siren Sound -->
+    <audio id="siren-sound">
+      <source src="Assets/siren.mp3" type="audio/mp3">
+      Your browser does not support the audio element.
+    </audio>
+
+    <!-- Resurrection Sound -->
+    <audio id="resurrection-sound">
+      <source src="Assets/resurrection-sound.mp3" type="audio/mp3">
+      Your browser does not support the audio element.
+    </audio>
+    
+    <!-- Math Sources -->
+    <script src="Src/Math/collision-mesh.js"></script>
+    <script src="Src/Math/projectile.js"></script>
+
+    <!-- Game Sources -->
+    <script src="Src/Game/state.js"></script>
+    <script src="Src/Game/controller.js"></script>
+    <script src="Src/Game/update.js"></script>
+    <script src="Src/Game/render.js"></script>
+    <script src="Src/Game/ui.js"></script>
+    <script src="Src/Game/audio.js"></script>
+
+    <!-- Object Sources -->
+    <script src="Src/Objects/collision-obj.js"></script>
+    <script src="Src/Objects/game-obj.js"></script>
+    <script src="Src/Objects/gravity-obj.js"></script>
+    <script src="Src/Objects/asteroid.js"></script>
+    <script src="Src/Objects/bullet.js"></script>
+    <script src="Src/Objects/sun.js"></script>
+    <script src="Src/Objects/explosion.js"></script>
+    <script src="Src/Objects/bonus-effect.js"></script>
+    <script src="Src/Objects/health-bar.js"></script>
+    <script src="Src/Objects/ship.js"></script>
+    <script src="Src/Objects/player.js"></script>
+    <script src="Src/Objects/main-player.js"></script>
+    <script src="Src/Objects/enemy.js"></script>
+    <script src="Src/Objects/solar-flair.js"></script>
+    <script src="Src/Objects/solar-ring.js"></script>
+    
+    <!-- Other Sources -->
+    <script src="Src/Other/mobile.js"></script>
+    <script src="Src/Other/helper.js"></script>
+    <script src="Src/Other/effects.js"></script>
+    <script src="Src/Other/stars.js"></script>
+    <script src="Src/Other/guides.js"></script>
+    <script src="Src/Other/radar.js"></script>
+    <script src="Src/Other/state-tracker.js"></script>
+
+    <!-- Scene Sources -->
+    <script src="Src/Scenes/scene.js"></script>
+    <script src="Src/Scenes/scene-manager.js"></script>
+    <script src="Src/Scenes/FA/fa-scene-manager.js"></script>
+    <script src="Src/Scenes/FA/title-scene.js"></script>
+    <script src="Src/Scenes/FA/intro-scene.js"></script>
+    <script src="Src/Scenes/FA/game-scene.js"></script>
+    <script src="Src/Scenes/FA/game-scene-2.js"></script>
+    <script src="Src/Scenes/FA/host-game-scene.js"></script>
+    <script src="Src/Scenes/FA/client-game-scene.js"></script>
+    <script src="Src/Scenes/FA/game-over-scene.js"></script>
+
+    <script src="Src/hud.js"></script>
+    <script src="Src/input.js"></script>
+    <script src="Src/events.js"></script>
+    <script src="Src/panzoom.js"></script>
+    <script src="Src/sounds.js"></script>
+    <script src="Src/sketch.js"></script>
+    <script src="Src/p2p.js"></script>
+    
+    <!-- Version -->
+    <version id="version">Beta 1.11.2</version>
+
+    <!-- Pause Button -->
+    <button id="pause" class="pause" style="visibility: hidden;" onclick="scenes.togglePause()">Pause</button>
+
+    <!-- Controls -->
+    <vbox>
+      <hbox>
+        <button id="controls" style="visibility: hidden;" onclick="scenes.toggleControls()">Help + Controls</button>
+        <button id="server" style="visibility: hidden;" onclick="scenes.toggleServerControls()">Multiplayer</button>
+      </hbox>
+      <div id="help-controls"  class="scrollview" style="display: none;">
+        <div class="controls-menu">
+          <div id="rules" class="controls-section">
+            <h1>Rules</h1>
+            <div class="section-contents">
+              <ul style="list-style-type:circle;">
+                <li>Don't crash into the sun or asteroids.</li>
+                <li>Shoot <span style="color:red;">RED</span> asteroids for more fuel.</li>
+                <li>Shoot <span style="color:orange">ORANGE</span> asteroids for more ammo.</li>
+                <li>Shoot <span style="color:lime">GREEN</span> asteroids for more health.</li>
+                <li>Survive for as long as possible.</li>
+                <li>Have Fun!</li>
+              </ul>
+            </div>
+          </div>
+  
+          <div id="about" class="controls-section">
+            <h1>About</h1>
+            <div class="section-contents">
+              <b>Solo Creation</b><br>
+              Game Designed by Emmett J.<br>
+              Music Designed by Emmett J.<br>
+              <br><b><a href="https://github.com/Emmennater">GitHub</a></b><br>
+            </div>
+          </div>
+          
+          <div id="controls" class="controls-section">
+            <h1>Controls</h1>
+            <div class="section-contents">
+              <ul style="list-style-type:none;">
+                <li><control>Fire</control>Space</li>
+                <li><control>Boost</control>W or Up Arrow</li>
+                <li><control>Turn Left</control>A or Left Arrow</li>
+                <li><control>Turn Right</control>D or Right Arrow</li>
+                <li><control>Zoom</control>Scroll Wheel / Pinch</li>
+                <li><control>Fullscreen</control>F</li>
+                <li><control>Pause</control>P or Escape</li>
+                <li><control>Aim</control>Shift</li>
+                <li><control>Effects</control>Number Keys</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div id="settings" class="controls-section">
+            <h1>Settings</h1>
+            <div class="section-contents">
+              <inputline>
+                Master
+                <input type="range" min="0" max="100" value="100" class="slider" id="master-volume" oninput="htmlSounds.updateMaster()">
+              </inputline>
+              <inputline>
+                Music
+                <input type="range" min="0" max="100" value="50" class="slider" id="music-volume" oninput="scenes.changeMusicVolume()">
+              </inputline>
+              <inputline>
+                Motion Blur
+                <input type="range" min="0" max="1" value="0.1" step = "0.1" class="slider" id="motion-blur" oninput="hud.setMotionBlur(parseFloat(this.value))">
+              </inputline>
+              <inputline>
+                Festive
+                <input id="festive-button" type="checkbox" oninput="toggleTheme()">
+              </inputline>
+              <inputline>
+                Alternate Camera
+                <input id="alternate-camera" type="checkbox" oninput="scenes.toggleCameraMode()">
+              </inputline>
+              <inputline>
+                Enable Toggle Aim
+                <input id="toggle-aim" type="checkbox" oninput="hud.guide.toggleGuideToggle()">
+              </inputline>
+              <inputline>
+                Space Background
+                <input id="toggle-bg" type="checkbox" oninput="stars.toggleBackground()">
+              </inputline>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="server-controls" class="scrollview" style="display: none;">
+        <vbox>
+          <div id="server-join" class="section-contents">
+            <inputline>
+              Address
+              <input id="server-address" type="text" value="127.0.0.1">
+            </inputline>
+            <inputline>
+              Port
+              <input id="server-port" type="text" value="6402">
+            </inputline>
+          </div>
+          <button onclick="multiplayer.join()">Join</button>
+          <h1>Not Sure How to Start a Server?</h1>
+          Download the Server Folder at <a target="_blank" href="https://github.com/Emmennater/FieryAttraction">https://github.com/Emmennater/FieryAttraction</a>
+          <br>Follow the instructions in the readme.
+        </vbox>
+      </div>
+    </vbox>
+
+    <!-- Fullscreen Button -->
+    <button id="fullscreen-button" class="fullscreen-button hide" onclick="toggleFullscreen()"></button>
+    
+    <!-- Effect Buttons for Mobile -->
+    <div id="effect-buttons" class="effect-buttons" style="visibility: hidden;">
+      
+    </div>
+
+  </body>
+</html>

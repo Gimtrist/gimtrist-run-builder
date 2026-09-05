@@ -1,0 +1,583 @@
+
+const ASTEROID_QUEUE = [];
+
+const ASTEROID_COUNTS = {
+  normal: 0,
+  fuel: 0,
+  health: 0,
+  ammo: 0
+};
+
+const ASTEROID_MINIMUMS = {
+  normal: 28,
+  fuel: 8,
+  health: 3,
+  ammo: 6
+};
+
+class Asteroid extends GravityObject {
+  constructor(x, y, r, vx, vy) {
+    super(x, y, 100);
+    this.r = r;
+    this.density = 20;
+    this.m = Math.round(PI * this.r ** 2) * this.density;
+    this.rot = Math.random() * TWO_PI;
+    this.rotVel = Math.random() * 5 - 2.5;
+    this.vx = vx;
+    this.vy = vy;
+    this.sprite = asteroidSprite;
+    this.split = 0;
+    this.isSplit = false;
+    this.type = "normal";
+    this.speedMultiplier = 1;
+    // this.depth = 1;
+    
+    // Collision mesh
+    this.makeCollisionMesh([114, 10], [64, 22], [40, 54], [43, 145], [97, 191], [131, 181], [164, 123], [167, 61]);
+    this.collisionMesh.setOrigin(100, 100);
+    this.collisionMesh.setScale(this.r / 200);
+  }
+
+  move(dt) {
+    dt *= this.speedMultiplier;
+    this.attract(dt);
+
+    this.x += this.vx * dt;
+    this.y += this.vy * dt;
+    this.rot += this.rotVel * dt;
+
+    this.collisionMesh.setPosition(this.x, this.y);
+    this.collisionMesh.setRotation(this.rot);
+    this.collisionMesh.updateTransform();
+  }
+  
+  getVelocity() {
+    let s = constrain(this.speedMultiplier, -1, 1);
+    return { x: this.vx * s, y: this.vy * s };
+  }
+
+  addVelocity(vx, vy) {
+    let s = constrain(this.speedMultiplier, -1, 1);
+    this.vx += vx * s;
+    this.vy += vy * s;
+  }
+
+  setVelocity(vx, vy) {
+    let s = constrain(this.speedMultiplier, -1, 1);
+    this.vx = vx * s;
+    this.vy = vy * s;
+  }
+
+  drawRock(ctx) {
+    ctx.push();
+    ctx.translate(width/2, height/2);
+    ctx.translate(-width/2, -height/2);
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.rot);
+    
+    ctx.fill(70);
+    ctx.noStroke();
+    ctx.imageMode(CENTER);
+    ctx.image(this.sprite, 0, 0, this.r, this.r);
+    
+    ctx.pop();
+  }
+  
+  getScore() {
+    // Based on radius
+    return this.scaleReward(4);
+  }
+
+  onDestroy(bullet) {
+    if (this.split)
+      this.splitAsteroid(bullet);
+    
+    spawnExplosion(this.x, this.y, null, this.r / 40 * 0.2, this.r);
+    
+    const ownerIsShip = bullet && bullet.owner instanceof Ship;
+    if (ownerIsShip) this.giveReward(bullet.owner);
+  }
+
+  giveReward(object) {
+    if (object instanceof Player) hud.addScore(this.getScore());
+  }
+
+  applyEffect(...args) {
+    const effect = super.applyEffect(...args);
+    effect.activate();
+  }
+
+  splitAsteroid(damageSource) {
+    const explodeVel = 20;
+    
+    let sourceVx = 0, sourceVy = 0;
+    if (damageSource instanceof Bullet) {
+      sourceVx = damageSource.vx;
+      sourceVy = damageSource.vy;
+    }
+
+    for (let i = 0; i < 3; i++) {
+      let type = randomAsteroidType(this.type);
+      let asteroid = null;
+
+      let x = this.x;
+      let y = this.y;
+      let vx = 0, vy = 0;
+      let r = Math.random() * 10 + 10 + 20 * (this.split - 1);
+      
+      // Initialize velocity
+      vx += this.vx * 0.5;
+      vy += this.vy * 0.5;
+
+      // Outwards velocity
+      let a = Math.random() * TWO_PI;
+      let v = (Math.random() + 1) * 0.5 * explodeVel;
+      vx += cos(a) * v;
+      vy += sin(a) * v;
+
+      // Damage source velocity
+      vx += sourceVx * 0.25;
+      vy += sourceVy * 0.25;
+
+      asteroid = createAsteroid(type, x, y, vx, vy, r)
+
+      asteroid.split = this.split - 1;
+      asteroid.isSplit = true;
+      asteroids.push(asteroid);
+    }
+  }
+
+  scaleReward(amount) {
+    // Min and Max radius
+    const SCALING_FACTOR = 0.95;
+    const MIN = 10;
+    const MAX = 20;
+    const LOW = 0.5;
+    const HIGH = 1.5;
+    const R = (this.r ** SCALING_FACTOR) * (MAX - MIN) / ((MAX - MIN) ** SCALING_FACTOR);
+
+    // Map r, min, max, low, high
+    let percent = ((R - MIN) / (MAX - MIN)) * (HIGH - LOW) + LOW;
+
+    return Math.round(amount * percent + 0.5);
+  }
+
+  getLevel() {
+    return constrain(Math.floor(this.scaleReward(1) ** 0.7), 1, 3);
+  }
+
+  draw(ctx) {
+    ctx.push();
+    ctx.translate(width/2, height/2);
+    ctx.scale(panzoom.zoom);
+    ctx.rotate(panzoom.rot);
+    ctx.translate(panzoom.xoff, panzoom.yoff);
+    
+    ctx.push();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.rot);
+    
+    ctx.fill(70);
+    ctx.noStroke();
+    ctx.imageMode(CENTER);
+    ctx.image(this.sprite, 0, 0, this.r, this.r);
+    
+    ctx.pop();
+    
+    // Hitbox
+    // this.drawMesh(ctx);
+    // ctx.stroke(255, 0, 0);
+    // ctx.strokeWeight(1);
+    // ctx.noFill();
+    // ctx.rectMode(CENTER);
+    // ctx.rect(0, 0, r, r);
+    
+    ctx.pop();
+  }
+}
+
+class FuelAsteroid extends Asteroid {
+  constructor(x, y, r, vx, vy) {
+    super(x, y, r, vx, vy);
+    this.type = "fuel";
+    this.sprite = fuelAsteroidSprite;
+  }
+  
+  getScore() {
+    // Based on radius
+    return this.scaleReward(6);
+  }
+
+  giveReward(object) {
+    super.giveReward(object);
+    if (object instanceof Player)
+      object.addFuel(this.scaleReward(4), this);
+  }
+}
+
+class HealthAsteroid extends Asteroid {
+  constructor(x, y, r, vx, vy) {
+    super(x, y, r, vx, vy);
+    this.type = "health";
+    this.sprite = healthAsteroidSprite;
+  }
+
+  getScore() {
+    // Based on radius
+    return this.scaleReward(8);
+  }
+  
+  giveReward(object) {
+    super.giveReward(object);
+    object.addHealth(this.scaleReward(20), this);
+  }
+}
+
+class AntiHealthAsteroid extends Asteroid {
+  constructor(x, y, r, vx, vy) {
+    super(x, y, r, vx, vy);
+    this.type = "anti health";
+    this.sprite = antiHealthAsteroidSprite;
+  }
+
+  getScore() {
+    // Based on radius
+    return this.scaleReward(30);
+  }
+  
+  giveReward(object) {
+    super.giveReward(object);
+    object.addHealth(-this.scaleReward(20), this);
+  }
+}
+
+class AmmoAsteroid extends Asteroid {
+  constructor(x, y, r, vx, vy) {
+    super(x, y, r, vx, vy);
+    this.type = "ammo";
+    this.sprite = ammoAsteroidSprite;
+  }
+
+  getScore() {
+    // Based on radius
+    return this.scaleReward(6);
+  }
+  
+  giveReward(object) {
+    super.giveReward(object);
+    if (object instanceof Player)
+      object.addAmmo(this.scaleReward(15), this);
+  }
+}
+
+class SpeedAsteroid extends Asteroid {
+  constructor(x, y, r, vx, vy) {
+    super(x, y, r, vx, vy);
+    this.type = "speed";
+    this.sprite = blueAsteroidSprite; // speedAsteroidSprite;
+  }
+  
+  getScore() {
+    // Based on radius
+    return this.scaleReward(10);
+  }
+
+  giveReward(object) {
+    super.giveReward(object);
+    const level = this.getLevel();
+    object.applyEffect(SuperSpeed, {
+      duration: this.scaleReward(10),
+      level
+    }, this);
+  }
+
+  draw(ctx) {
+    super.draw(ctx);
+  }
+}
+
+class ExplosiveAsteroid extends Asteroid {
+  constructor(x, y, r, vx, vy) {
+    super(x, y, r, vx, vy);
+    this.type = "explosive";
+    this.sprite = explosiveAsteroidSprite;
+  }
+
+  getScore() {
+    // Based on radius
+    return this.scaleReward(10);
+  }
+
+  giveReward(object) {
+    super.giveReward(object);
+    const level = this.getLevel();
+    object.applyEffect(MultiShot, {
+      duration: this.scaleReward(15),
+      level
+    }, this);
+  }
+
+  onDestroy(damageSource) {
+    super.onDestroy(damageSource);
+
+    const bulletLevel = this.getLevel();
+    const nBullets = 5; // this.scaleReward(8);
+    const x = this.x;
+    const y = this.y;
+    
+    // Shake screen
+    hud.addCameraShake(50 * bulletLevel, 1);
+
+    // Spawn explosive bullets
+    const BULLET_SPEED = 220;
+    const ANGLE_GAP = TWO_PI / nBullets;
+    for (let i = 0; i < nBullets; i++) {
+      let a = ANGLE_GAP * i + Math.random() * ANGLE_GAP;
+      let vel = (Math.random() + 0.75) * BULLET_SPEED * 0.5;
+      const x2 = x + Math.cos(a) * this.r * 0.35;
+      const y2 = y + Math.sin(a) * this.r * 0.35;
+      const vx = Math.cos(a) * vel;
+      const vy = Math.sin(a) * vel;
+      const bullet = spawnBullet({
+        x: x2, y: y2, vx, vy,
+        owner: null,
+        Type: ExplosiveBullet,
+        damageMult: 1.5,
+        level: bulletLevel
+      });
+    }
+  }
+}
+
+class RegenAsteroid extends Asteroid {
+  constructor(x, y, r, vx, vy) {
+    super(x, y, r, vx, vy);
+    this.type = "regen";
+    this.sprite = regenAsteroidSprite;
+    this.applyEffect(Regeneration, { duration: 10000000, level: this.getLevel() });
+  }
+  
+  getScore() {
+    return this.scaleReward(10);
+  }
+
+  giveReward(object) {
+    super.giveReward(object);
+    const level = this.getLevel();
+    object.applyEffect(Regeneration, {
+      duration: this.scaleReward(10),
+      level
+    }, this);
+  }
+
+  draw(ctx) {
+    super.draw(ctx);
+  }
+}
+
+function destroyAllAsteroids() {
+  for (let asteroid of asteroids)
+    asteroid.takeDamage(100);
+}
+
+function spawnAsteroid(type, spawnRadius = 600, delay = 0) {
+  if (type in ASTEROID_COUNTS) {
+    ASTEROID_COUNTS[type]++;
+  }
+  
+  const spawnAsteroid = () => {
+    // Player check
+    // const OPPOSITE_ANGLE = atan2(sun.y - ship.y, sun.x - ship.x);
+    // const ANGLE_OFFSET = PI * spawnArc * randSign();
+    // spawnAngle = OPPOSITE_ANGLE + Math.random() * ANGLE_OFFSET;
+    const { pos, angle } = system.getRandomSpawn(40, 400, spawnRadius, random(PI * 0.4, PI * 0.6));
+    const { x, y } = pos;
+  
+    let asteroidSpeed = randInt(20, 60);
+    let vx = Math.cos(angle) * asteroidSpeed;
+    let vy = Math.sin(angle) * asteroidSpeed;
+    let asteroid = createAsteroid(type, x, y, vx, vy);
+    asteroids.push(asteroid);
+  }
+
+  if (delay == 0) {
+    spawnAsteroid();
+  } else {
+    const timer = setTimeout(() => {
+      ASTEROID_QUEUE.splice(ASTEROID_QUEUE.indexOf(timer), 1);
+      spawnAsteroid();
+    }, delay * 1000);
+    ASTEROID_QUEUE.push(timer);
+  }
+}
+
+function initAsteroids() {
+  if (noSpawns) return;
+  
+  // Test
+  // const asteroid = createAsteroid("normal", ship.x + ship.vx * 10, ship.y + ship.vy * 10, -ship.vx * 2, -ship.vy * 2, 80);
+  // const asteroid = createAsteroid("normal", ship.x + 100, ship.y, ship.vx, ship.vy, 80);
+  // asteroids.push(asteroid);
+
+  const SPAWN_RADIUS = 200;
+  for (let i = 0; i < 1; ++i) {
+    for (let i = 0; i < 28; ++i)
+      spawnAsteroid("normal", SPAWN_RADIUS);
+    for (let i = 0; i < 8; ++i)
+      spawnAsteroid("fuel", SPAWN_RADIUS);
+    for (let i = 0; i < 3; ++i)
+      spawnAsteroid("health", SPAWN_RADIUS);
+    for (let i = 0; i < 6; ++i)
+      spawnAsteroid("ammo", SPAWN_RADIUS);
+  }
+}
+
+function moveAsteroids(dt) {
+  const CAP = 60;
+  for (let i = asteroids.length - 1; i >= 0; --i) {
+    const asteroid = asteroids[i];
+    if (asteroid.destroyed) {
+      asteroids.splice(i, 1);
+      asteroid.removeAllEffects();
+
+      if (asteroid.type in ASTEROID_COUNTS) {
+        ASTEROID_COUNTS[asteroid.type]--;
+      }
+
+      // For every asteroid destroyed, 2 more spawn
+      if (!asteroid.isSplit) {
+        const oldType = asteroid.type;
+        const notEnough = ASTEROID_MINIMUMS[oldType] && ASTEROID_COUNTS[oldType] < ASTEROID_MINIMUMS[oldType];
+        const newType = notEnough ? oldType : randomAsteroidType();
+
+        // Replacement asteroids
+        if (asteroids.length < CAP) {
+          spawnAsteroid(newType, 600, random(30, 60));
+        }
+        if (Math.random() < 0.5 && asteroids.length < CAP) {
+          spawnAsteroid(randomAsteroidType(), 600, random(30, 60));
+        }
+      }
+      
+      continue;
+    }
+    asteroid.move(dt);
+  }
+}
+
+function drawAsteroids(CTX) {
+  for (let asteroid of asteroids) {
+    asteroid.draw(CTX);
+  }
+}
+
+function createAsteroid(type, x, y, vx, vy, r = null) {
+  let asteroid = null;
+  
+  if (!r) {
+    r = randInt(10, 20);
+    if (Math.random() < 0.05) {
+      r += 20;
+      if (Math.random() < 0.1) {
+        r += 40;
+      }
+    }
+  }
+
+  switch (type) {
+    case "fuel":
+      asteroid = new FuelAsteroid(x, y, r, vx, vy);
+      break;
+    case "ammo":
+      asteroid = new AmmoAsteroid(x, y, r, vx, vy);
+      break;
+    case "health":
+      asteroid = new HealthAsteroid(x, y, r, vx, vy);
+      break;
+    case "speed":
+      asteroid = new SpeedAsteroid(x, y, r, vx, vy);
+      break;
+    case "explosive":
+      asteroid = new ExplosiveAsteroid(x, y, r, vx, vy);
+      break;
+    case "anti health":
+      asteroid = new AntiHealthAsteroid(x, y, r, vx, vy);
+      break;
+    case "regen":
+      asteroid = new RegenAsteroid(x, y, r, vx, vy);
+      break;
+    default:
+      asteroid = new Asteroid(x, y, r, vx, vy);
+  }
+
+  let split = 0;
+  if (r > 70) split = 2;
+  else if (r > 30) split = 1;
+  
+  const health = Math.max(r - 5, 5);
+  asteroid.setHealth(health, health);
+  asteroid.split = split;
+  
+  return asteroid;
+}
+
+function randomAsteroidType(baseType = "normal") {
+  const lateGameFactor = lateGameWeight(2000, 1, 0.25);
+
+  const typeChances = {
+    normal: floor(70 * lateGameFactor),
+    fuel: 10,
+    ammo: 10,
+    health: 6,
+    speed: 3,
+    regen: 2,
+    explosive: 2,
+    "anti health": 1
+  };
+
+  // Swap normal for base
+  const normalChance = typeChances[baseType];
+  typeChances[baseType] = typeChances.normal;
+  typeChances.normal = normalChance;
+
+  // Calculate the total sum of all chances
+  let totalChance = Object.values(typeChances).reduce((sum, chance) => sum + chance, 0);
+
+  // Scale rand between 0 and totalChance
+  let rand = Math.random() * totalChance;
+  let cumulativeChance = 0;
+  let type;
+
+  // Iterate through each type and add up the chances
+  for (let key in typeChances) {
+    cumulativeChance += typeChances[key];
+    if (rand <= cumulativeChance) {
+      type = key;
+      break;
+    }
+  }
+
+  return type; // Return the randomly selected type
+}
+
+function trueRandomAsteroid() {
+  let rand = Math.floor(Math.random() * 7);
+  return ["normal", "fuel", "ammo", "health", "speed", "explosive", "anti health"][rand];
+}
+
+function clearAsteroids() {
+  // Clear asteroid queue
+  for (let timer of ASTEROID_QUEUE) {
+    clearTimeout(timer);
+  }
+
+  ASTEROID_QUEUE.length = 0;
+
+  for (let asteroid of asteroids) {
+    asteroid.removeAllEffects();
+  }
+
+  asteroids.length = 0;
+  for (let k in ASTEROID_COUNTS)
+    ASTEROID_COUNTS[k] = 0;
+}
