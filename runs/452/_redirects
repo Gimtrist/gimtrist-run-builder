@@ -1,0 +1,9 @@
+/materials /materials.json 200
+/lightsources /lightsources.json 200
+/cameras /cameras.json 200
+/v2/materials /v2/materials.json 200
+/v2/lightsources /v2/lightsources.json 200
+/v2/cameras /v2/cameras.json 200
+/v2/lenses /v2/lenses.json 200
+/js/script.js https://plausible.io/js/pa-AV1Lz-fYG4JCv4IbGbc-s.js 200
+/api/event https://plausible.io/api/event 200

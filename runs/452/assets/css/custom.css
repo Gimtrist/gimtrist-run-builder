@@ -1,0 +1,100 @@
+:root {
+  --scalar-border-width: 0.5px;
+  --scalar-radius: 2px;
+  --scalar-radius-lg: 3px;
+  --scalar-radius-xl: 4px;
+}
+
+.light-mode {
+  color-scheme: light;
+  --scalar-color-1: #454545;
+  --scalar-color-2: #555555;
+  --scalar-color-3: #454545;
+  --scalar-color-accent: #454545;
+  --scalar-background-1: #dcdbd4;
+  --scalar-background-2: #d1d0c9;
+  --scalar-background-3: #d1d0c9;
+  --scalar-background-accent: #000000;
+
+  --scalar-border-color: #bbbab5;
+  /* --scalar-scrollbar-color: rgba(0, 0, 0, 0.18); */
+  /* --scalar-scrollbar-color-active: rgba(0, 0, 0, 0.36); */
+  --scalar-lifted-brightness: 1;
+  --scalar-backdrop-brightness: 1;
+
+  --scalar-shadow-1: 0 1px 3px 0 rgba(0, 0, 0, 0.11);
+  --scalar-shadow-2:
+    rgba(0, 0, 0, 0.08) 0px 13px 20px 0px, rgba(0, 0, 0, 0.08) 0px 3px 8px 0px, var(
+      --scalar-border-color
+    ) 0px 0 0 1px;
+
+  --scalar-button-1: rgb(49 53 56);
+  --scalar-button-1-color: #fff;
+  --scalar-button-1-hover: rgb(28 31 33);
+
+  --scalar-color-red: #b91c1c;
+  --scalar-color-orange: #a16207;
+  --scalar-color-green: #047857;
+  --scalar-color-blue: #1d4ed8;
+  --scalar-color-purple: #6d28d9;
+}
+
+.dark-mode {
+  color-scheme: dark;
+  --scalar-color-1: #bebeba;
+  --scalar-color-2: #a1a1a1;
+  --scalar-color-3: #bebeba;
+  --scalar-color-accent: #bebeba;
+  --scalar-background-1: #31302e;
+  --scalar-background-2: #3c3b39;
+  --scalar-background-3: #454442;
+  --scalar-background-accent: #fffef3;
+
+  --scalar-border-color: #63635e;
+  /* --scalar-scrollbar-color: rgba(255, 255, 255, 0.24); */
+  /* --scalar-scrollbar-color-active: rgba(255, 255, 255, 0.48); */
+  --scalar-lifted-brightness: 1.45;
+  --scalar-backdrop-brightness: 0.5;
+
+  --scalar-shadow-1: 0 1px 3px 0 rgba(0, 0, 0, 0.11);
+  --scalar-shadow-2:
+    rgba(15, 15, 15, 0.2) 0px 3px 6px, rgba(15, 15, 15, 0.4) 0px 9px 24px,
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+
+  --scalar-button-1: #bebeba;
+  --scalar-button-1-color: #31302e;
+  --scalar-button-1-hover: #e7e7e7;
+
+  --scalar-color-green: #00b648;
+  --scalar-color-red: #dc1b19;
+  --scalar-color-yellow: #ffc90d;
+  --scalar-color-blue: #4eb3ec;
+  --scalar-color-orange: #ff8d4d;
+  --scalar-color-purple: #b191f9;
+}
+
+/* Sidebar */
+.light-mode .t-doc__sidebar,
+.dark-mode .t-doc__sidebar {
+  --scalar-sidebar-background-1: var(--scalar-background-1);
+  --scalar-sidebar-color-1: var(--scalar-color-1);
+  --scalar-sidebar-color-2: var(--scalar-color-2);
+  --scalar-sidebar-border-color: var(--scalar-border-color);
+
+  --scalar-sidebar-item-hover-background: var(--scalar-background-2);
+  --scalar-sidebar-item-hover-color: currentColor;
+
+  --scalar-sidebar-item-active-background: var(--scalar-background-3);
+  --scalar-sidebar-color-active: var(--scalar-color-1);
+
+  --scalar-sidebar-search-background: transparent;
+  --scalar-sidebar-search-color: var(--scalar-color-3);
+  --scalar-sidebar-search-border-color: var(--scalar-border-color);
+}
+*::selection {
+  background-color: color-mix(
+    in srgb,
+    var(--scalar-color-accent),
+    transparent 80%
+  );
+}
