@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f6d7a7" />
+    <meta name="description" content="一款像素实验室外观、随机事件多结局内核的高校导师模拟网页游戏。" />
+    <title>桃李研究室：高校教师模拟器</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main id="app" aria-live="polite">
+      <section id="welcome-screen" class="screen welcome-screen">
+        <div class="pixel-sky" aria-hidden="true">
+          <i></i><i></i><i></i>
+        </div>
+        <div class="welcome-mascot" aria-hidden="true">
+          <span class="pixel-prof"></span>
+          <span class="pixel-seedling"></span>
+        </div>
+        <p class="eyebrow">V2 · 像素实验室 · 随机事件多结局</p>
+        <h1>桃李研究室</h1>
+        <p class="subtitle">招学生、开组会、抓摸鱼，然后看选择把研究室带向哪里。</p>
+        <p id="legacy-summary" class="legacy-summary">校史档案正在装订中……</p>
+        <div class="intro-card">
+          <label>教授称呼<input id="professor-name" maxlength="12" value="林老师" /></label>
+          <label>所在学校<input id="school-name" maxlength="18" value="云朵大学" /></label>
+          <label>课题组名称<input id="lab-name" maxlength="20" value="摸鱼也要发论文研究室" /></label>
+          <fieldset>
+            <legend>开局气质</legend>
+            <div class="trait-options">
+              <label><input type="radio" name="trait" value="warm" checked /><span>亲和派<small>学生信任更高</small></span></label>
+              <label><input type="radio" name="trait" value="ambitious" /><span>卷王派<small>声望更高，压力更高</small></span></label>
+              <label><input type="radio" name="trait" value="lucky" /><span>玄学派<small>随机事件更频繁</small></span></label>
+            </div>
+          </fieldset>
+          <button id="start-game" class="primary-btn">挂牌招生</button>
+          <button id="continue-game" class="text-btn hidden">继续上次存档</button>
+        </div>
+        <p class="disclaimer">本作虚构，调侃的是科研生态里的荒诞，不影射任何现实学校或个人。</p>
+      </section>
+
+      <section id="game-screen" class="screen game-screen hidden">
+        <header class="topbar">
+          <div class="brand">
+            <span class="brand-icon" aria-hidden="true"></span>
+            <div><strong id="lab-title"></strong><small id="school-title"></small></div>
+          </div>
+          <div class="term-stamp">
+            <b id="term-label">第 1 年 · 秋季学期</b>
+            <small id="action-label">本学期行动：4 / 4</small>
+          </div>
+          <div class="top-actions">
+            <button id="achievements-btn" class="icon-btn" aria-label="成就图鉴">🏆 <b id="achievement-count">0</b></button>
+            <button id="save-menu" class="icon-btn" aria-label="存档菜单">⚙</button>
+          </div>
+        </header>
+
+        <section class="game-hud" aria-label="课题组状态">
+          <article class="stat-card tone-gold"><span>声望</span><b id="stat-reputation">0</b></article>
+          <article class="stat-card tone-mint"><span>经费</span><b id="stat-funds">0</b></article>
+          <article class="stat-card tone-pink"><span>信任</span><b id="stat-trust">0</b></article>
+          <article class="stat-card tone-blue"><span>精力</span><b id="stat-energy">0</b></article>
+          <article class="stat-card tone-purple"><span>行政</span><b id="stat-admin">0</b></article>
+          <article class="stat-card tone-red"><span>风险</span><b id="stat-risk">0</b></article>
+        </section>
+
+        <div class="game-layout">
+          <section class="lab-stage card" aria-label="像素研究室">
+            <div class="stage-header">
+              <div>
+                <p class="eyebrow">像素研究室</p>
+                <h2 id="teacher-title">林老师的办公室</h2>
+              </div>
+              <div class="lab-level">
+                <span id="trait-title">亲和派</span>
+                <b id="lab-level">Lv.1</b>
+              </div>
+            </div>
+            <div class="pixel-lab">
+              <div class="pixel-wall">
+                <div class="pixel-board">
+                  <span>论文 <b id="paper-detail">0/100</b></span>
+                  <i><em id="paper-progress"></em></i>
+                  <span>项目 <b id="project-detail">0/100</b></span>
+                  <i><em id="project-progress"></em></i>
+                  <span>职称 <b id="title-detail">0/100</b></span>
+                  <i><em id="title-progress"></em></i>
+                </div>
+                <div class="pixel-door"><span>招生</span></div>
+              </div>
+              <div id="student-sprites" class="student-sprites"></div>
+              <div id="equipment-decor" class="equipment-decor" aria-hidden="true"></div>
+              <div class="pixel-floor">
+                <div class="desk desk-a"></div>
+                <div class="desk desk-b"></div>
+                <div class="desk desk-c"></div>
+                <div class="meeting-table"><span>组会桌</span></div>
+                <div class="coffee-machine"><span>咖啡</span></div>
+              </div>
+            </div>
+            <div id="lab-action-hotspots" class="lab-action-hotspots" aria-label="实验室行动入口"></div>
+            <div class="lab-records">
+              <span>论文 <b id="paper-count">0</b></span>
+              <span>稿件 <b id="manuscript-count">0</b></span>
+              <span>项目 <b id="project-count">0</b></span>
+              <span>头衔 <b id="title-count">0</b></span>
+              <span>学生 <b id="student-count">0</b>/<b id="student-cap">2</b></span>
+              <span>校友 <b id="alumni-count">0</b></span>
+              <span>设备 <b id="equipment-count">0</b></span>
+              <span>协作 <b id="collab-count">0</b></span>
+              <span>规则 <b id="rules-summary">均衡</b></span>
+              <span>考核 <b id="review-count">0</b></span>
+              <span>生涯 <b id="career-count">1 / 8 年</b></span>
+            </div>
+            <div class="lab-turnbar">
+              <p id="lab-action-hint">点击实验室里的物件安排本学期行动。</p>
+              <button id="next-term" class="next-btn" disabled>进入下一学期 <span>→</span></button>
+            </div>
+          </section>
+
+          <aside class="side-panel">
+            <section class="card objectives-panel">
+              <div class="section-heading compact">
+                <div><p class="eyebrow">学院任务</p><h2>本局目标</h2></div>
+              </div>
+              <div id="objective-list" class="objective-list"></div>
+            </section>
+
+            <section class="card topics-panel">
+              <div class="section-heading compact">
+                <div><p class="eyebrow">课题线</p><h2>研究方向</h2></div>
+              </div>
+              <div id="topic-list" class="topic-list"></div>
+            </section>
+
+            <section class="card students-panel">
+              <div class="section-heading compact">
+                <div><p class="eyebrow">学生系统</p><h2>课题组成员</h2></div>
+              </div>
+              <div id="student-list" class="student-list"></div>
+            </section>
+          </aside>
+
+          <section class="card log-card">
+            <div class="section-heading compact">
+              <div><p class="eyebrow">随机事件与回声</p><h2>课题组小道消息</h2></div>
+              <button id="clear-log" class="text-btn">清空</button>
+            </div>
+            <ul id="story-log"></ul>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <div id="modal-root" class="modal-root hidden" role="dialog" aria-modal="true"></div>
+    <template id="event-template">
+      <div class="modal event-modal">
+        <div class="modal-art"></div>
+        <p class="eyebrow event-kicker"></p>
+        <h2 class="event-title"></h2>
+        <p class="event-body"></p>
+        <div class="event-choices"></div>
+      </div>
+    </template>
+    <script src="game.js"></script>
+  </body>
+</html>
