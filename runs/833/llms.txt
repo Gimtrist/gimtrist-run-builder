@@ -1,0 +1,19 @@
+# Quizmon
+
+> Take the five-question Pokémon Daily Challenge each day, then practice types, moves, evolutions, stats, and more.
+
+Quizmon is a free, unofficial browser game. It has no accounts or application backend, and player settings and results remain on the device.
+
+## Game
+
+- [Quizmon overview](https://quizmon.raveh.dev/index.md): Game modes, question coverage, data use, offline behavior, and attribution.
+- [Play Quizmon](https://quizmon.raveh.dev/): The interactive game.
+
+## Project
+
+- [Source repository](https://github.com/itay-raveh/quizmon): Source code, setup instructions, and license.
+- [PokéAPI](https://pokeapi.co/): Source of Pokémon data and sprite artwork.
+
+## Optional
+
+- [MIT License](https://github.com/itay-raveh/quizmon/blob/main/LICENSE): License for Quizmon's source code.
