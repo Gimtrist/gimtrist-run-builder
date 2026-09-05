@@ -1,0 +1,27 @@
+{
+  "node": {
+    "40c2123cdf36f96c4e5d0fefb8a0b9095dd6978e88": {
+      "workers": {
+        "app/(game)/room/page": {
+          "moduleId": 65064,
+          "async": false,
+          "codeHash": null
+        }
+      },
+      "exportedName": "prepareRoomJoin",
+      "filename": "lib/room/auth.ts"
+    },
+    "607febd11ed054cf67e69f1ff4f51f7a6e131b2a48": {
+      "workers": {
+        "app/(game)/room/page": {
+          "moduleId": 65064,
+          "async": false,
+          "codeHash": null
+        }
+      },
+      "exportedName": "signInToRoom",
+      "filename": "lib/room/auth.ts"
+    }
+  },
+  "edge": {}
+}

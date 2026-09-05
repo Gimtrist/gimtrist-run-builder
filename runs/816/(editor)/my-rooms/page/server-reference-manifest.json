@@ -1,0 +1,27 @@
+{
+  "node": {
+    "007bcb8fa09429cde2e9f86da7f9bb700013a4b129": {
+      "workers": {
+        "app/(editor)/my-rooms/page": {
+          "moduleId": 17681,
+          "async": false,
+          "codeHash": null
+        }
+      },
+      "exportedName": "getMyRooms",
+      "filename": "lib/room/get.ts"
+    },
+    "00941ae6e176934db6e4df1a29f6feeea3f8a86ebe": {
+      "workers": {
+        "app/(editor)/my-rooms/page": {
+          "moduleId": 17681,
+          "async": false,
+          "codeHash": null
+        }
+      },
+      "exportedName": "createNewRoom",
+      "filename": "lib/room/create.ts"
+    }
+  },
+  "edge": {}
+}

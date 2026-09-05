@@ -1,0 +1,16 @@
+{
+  "node": {
+    "002560d095de5b01203c743d5f8e8213808f18fc72": {
+      "workers": {
+        "app/(game)/game-demo/page": {
+          "moduleId": 5369,
+          "async": false,
+          "codeHash": null
+        }
+      },
+      "exportedName": "getAuthToken",
+      "filename": "lib/room/auth.ts"
+    }
+  },
+  "edge": {}
+}

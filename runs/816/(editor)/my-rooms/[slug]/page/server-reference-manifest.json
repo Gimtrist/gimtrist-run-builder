@@ -1,0 +1,60 @@
+{
+  "node": {
+    "4082841d1427cc1633cf605ae19e458c2f07051f99": {
+      "workers": {
+        "app/(editor)/my-rooms/[slug]/page": {
+          "moduleId": 22779,
+          "async": false,
+          "codeHash": null
+        }
+      },
+      "exportedName": "getRoomFromId",
+      "filename": "lib/room/get.ts"
+    },
+    "401e8b173bcf95d328396ba532df0d48f3152e7834": {
+      "workers": {
+        "app/(editor)/my-rooms/[slug]/page": {
+          "moduleId": 22779,
+          "async": false,
+          "codeHash": null
+        }
+      },
+      "exportedName": "getRoomFromLink",
+      "filename": "lib/room/get.ts"
+    },
+    "405a9408e2758d29015cc053baa3b330bbe2c09392": {
+      "workers": {
+        "app/(editor)/my-rooms/[slug]/page": {
+          "moduleId": 22779,
+          "async": false,
+          "codeHash": null
+        }
+      },
+      "exportedName": "updateRoomFromId",
+      "filename": "lib/room/update.ts"
+    },
+    "405d7d7aa1e9b7100c5fdac6fdddf499cbe6157336": {
+      "workers": {
+        "app/(editor)/my-rooms/[slug]/page": {
+          "moduleId": 22779,
+          "async": false,
+          "codeHash": null
+        }
+      },
+      "exportedName": "deleteRoom",
+      "filename": "lib/room/delete.ts"
+    },
+    "4093c89fb5d832d7f8f48ad1bb133ee80140546f16": {
+      "workers": {
+        "app/(editor)/my-rooms/[slug]/page": {
+          "moduleId": 22779,
+          "async": false,
+          "codeHash": null
+        }
+      },
+      "exportedName": "generateWordsAction",
+      "filename": "lib/AI/actions.ts"
+    }
+  },
+  "edge": {}
+}

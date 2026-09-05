@@ -1,0 +1,27 @@
+{
+  "node": {
+    "708815918b49932eaaac9691cb0b1c39476e9151ed": {
+      "workers": {
+        "app/(develop)/sign-in/page": {
+          "moduleId": 21162,
+          "async": false,
+          "codeHash": null
+        }
+      },
+      "exportedName": "signIn",
+      "filename": "lib/auth/sign-in.ts"
+    },
+    "00fc950a03996d428a1ef7473eedbf1ff5dcc3eed7": {
+      "workers": {
+        "app/(develop)/sign-in/page": {
+          "moduleId": 21162,
+          "async": false,
+          "codeHash": null
+        }
+      },
+      "exportedName": "getSession",
+      "filename": "lib/auth/session.ts"
+    }
+  },
+  "edge": {}
+}

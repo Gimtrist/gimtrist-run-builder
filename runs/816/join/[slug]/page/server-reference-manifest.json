@@ -1,0 +1,38 @@
+{
+  "node": {
+    "401e8b173bcf95d328396ba532df0d48f3152e7834": {
+      "workers": {
+        "app/join/[slug]/page": {
+          "moduleId": 8350,
+          "async": false,
+          "codeHash": null
+        }
+      },
+      "exportedName": "getRoomFromLink",
+      "filename": "lib/room/get.ts"
+    },
+    "4064a0a808be9ebcb696a1afbbcda302a585275b5e": {
+      "workers": {
+        "app/join/[slug]/page": {
+          "moduleId": 8350,
+          "async": false,
+          "codeHash": null
+        }
+      },
+      "exportedName": "getRoomStatusFromId",
+      "filename": "lib/room/get.ts"
+    },
+    "607febd11ed054cf67e69f1ff4f51f7a6e131b2a48": {
+      "workers": {
+        "app/join/[slug]/page": {
+          "moduleId": 8350,
+          "async": false,
+          "codeHash": null
+        }
+      },
+      "exportedName": "signInToRoom",
+      "filename": "lib/room/auth.ts"
+    }
+  },
+  "edge": {}
+}

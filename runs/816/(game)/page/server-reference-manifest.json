@@ -1,0 +1,27 @@
+{
+  "node": {
+    "00a10df5c063ed756a363d44e3fe5072e374358ef1": {
+      "workers": {
+        "app/(game)/page": {
+          "moduleId": 2812,
+          "async": false,
+          "codeHash": null
+        }
+      },
+      "exportedName": "getUserDetails",
+      "filename": "lib/auth/session.ts"
+    },
+    "000db6b833369ccdb5316e05d616f0e6ea111c54d7": {
+      "workers": {
+        "app/(game)/page": {
+          "moduleId": 2812,
+          "async": false,
+          "codeHash": null
+        }
+      },
+      "exportedName": "signOut",
+      "filename": "lib/auth/sign-out.ts"
+    }
+  },
+  "edge": {}
+}
