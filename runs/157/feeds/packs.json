@@ -1,0 +1,282 @@
+[
+  {
+    "id": "universal-core",
+    "name": "龍蝦通用核心飼料 (L0)",
+    "name_en": "Universal Core Feed (L0)",
+    "category": "核心代理升級",
+    "description": "所有工作區的基底變異層。定義行為守則、專業語調與標準思維狀態機，確保任何情境下的穩定起點。",
+    "description_en": "Baseline mutation layer for all workspaces. Defines behavioral boundaries, professional tone, and standard thought state machines.",
+    "path": "universal-core/",
+    "level": "入門"
+  },
+  {
+    "id": "deterministic-framework",
+    "name": "龍蝦確定性代理框架",
+    "name_en": "OpenClaw Deterministic Framework",
+    "category": "核心代理升級",
+    "description": "決策邏輯約束協議。為複雜任務實施嚴苛的邏輯分支與可重複執行路徑，消除隨機性。",
+    "description_en": "Decision logic constraint protocol. Enforces strict logical branching for complex tasks to eliminate execution randomness.",
+    "path": "deterministic-framework/",
+    "level": "專家"
+  },
+  {
+    "id": "hallucination-guardrails",
+    "name": "反幻覺邏輯護欄",
+    "name_en": "Hallucination Guardrails",
+    "category": "核心代理升級",
+    "description": "事實查核安全護欄。強制代理在輸出前進行交叉驗證，需協同 Browse/Search 技能阻斷事實幻覺。",
+    "description_en": "Fact-checking security guardrails. Forces pre-output cross-validation, syncing with Browse/Search skills to block hallucinations.",
+    "path": "hallucination-guardrails/",
+    "level": "入門"
+  },
+  {
+    "id": "tool-driven-state",
+    "name": "工具驅動狀態機",
+    "name_en": "Tool-Driven State Machine",
+    "category": "核心代理升級",
+    "description": "工具依賴型狀態機。將代理行為鎖定為特定工具輸出驅動的流轉邏輯，避免跨越權限猜測。",
+    "description_en": "Tool-dependent state machine. Locks agent behavior into transition logic driven purely by tool outputs.",
+    "path": "tool-driven-state/",
+    "level": "入門"
+  },
+  {
+    "id": "autonomous-research",
+    "name": "自主研究代理",
+    "name_en": "Autonomous Research Agent",
+    "category": "自動化擴展包",
+    "description": "自主研究行為掛載。注入端到端的研究執行協議，指導代理如何自動化地收集、綜合並總結資訊。",
+    "description_en": "Autonomous research behavioral hook. Injects end-to-end research protocols detailing how to collect, synthesize, and summarize data.",
+    "path": "autonomous-research/",
+    "level": "進階"
+  },
+  {
+    "id": "ai-seo-factory",
+    "name": "AI SEO 內容工廠",
+    "name_en": "AI SEO Content Factory",
+    "category": "自動化擴展包",
+    "description": "SEO 內容流水線約束。賦予代理嚴格的關鍵字優化與內容生產標準 SOP，需搭配 Search 技能使用。",
+    "description_en": "SEO content pipeline constraints. Imparts strict SOPs for keyword optimization and content generation, best paired with Search skills.",
+    "path": "ai-seo-factory/",
+    "level": "進階"
+  },
+  {
+    "id": "affiliate-marketing-auto",
+    "name": "聯盟行銷自動化",
+    "name_en": "Affiliate Marketing Auto",
+    "category": "自動化擴展包",
+    "description": "聯盟行銷狀態機。引導代理執行產品分析到多通路分發的標準化轉換流程。",
+    "description_en": "Affiliate marketing state machine. Guides agents through a standardized funnel from product analysis to multi-channel distribution.",
+    "path": "affiliate-marketing-auto/",
+    "level": "入門"
+  },
+  {
+    "id": "software-builder",
+    "name": "軟體專案架構代理",
+    "name_en": "Software Project Architect",
+    "category": "開發者工具包",
+    "description": "軟體架構實施協議。為工作區注入從系統設計到代碼生成的標準化開發邏輯與規範框架。",
+    "description_en": "Software architecture implementation protocols. Injects standardized development logic from system design to code generation.",
+    "path": "software-builder/",
+    "level": "入門"
+  },
+  {
+    "id": "code-debugger",
+    "name": "代碼除錯代理",
+    "name_en": "Code Debugger Agent",
+    "category": "開發者工具包",
+    "description": "語義除錯護欄。強制工作區採用追蹤分析與錯誤定位的標準化 Debug 流程。",
+    "description_en": "Semantic debugging guardrails. Forces workspaces to adopt standard trace analysis and bug localization workflows.",
+    "path": "code-debugger/",
+    "level": "入門"
+  },
+  {
+    "id": "doc-generator",
+    "name": "文檔自動生成器",
+    "name_en": "Doc Generator",
+    "category": "開發者工具包",
+    "description": "文檔逆向工程邏輯。規範代理如何從源代碼中萃取模式並結構化生成 API 參考資料。",
+    "description_en": "Documentation reverse-engineering logic. Standardizes how agents extract patterns to generate structured API references.",
+    "path": "doc-generator/",
+    "level": "入門"
+  },
+  {
+    "id": "market-research",
+    "name": "市場研究自動化",
+    "name_en": "Market Research Auto",
+    "category": "商業智能包",
+    "description": "市場趨勢監控狀態機。指導代理如何持續且準確地從多方來源提取消費者情緒與經濟指標。",
+    "description_en": "Market trend monitoring state machine. Guides structured extraction of consumer sentiment and economic indicators.",
+    "path": "market-research/",
+    "level": "進階"
+  },
+  {
+    "id": "competitive-intel",
+    "name": "競爭情報代理",
+    "name_en": "Competitive Intel Agent",
+    "category": "商業智能包",
+    "description": "競品分析協議。為代理植入系統性的競品功能差距對比與策略追蹤思維。",
+    "description_en": "Competitive gap analysis protocol. Implants systematic thinking for comparing opponent features and strategic pivots.",
+    "path": "competitive-intel/",
+    "level": "進階"
+  },
+  {
+    "id": "data-collection",
+    "name": "數據採集代理",
+    "name_en": "Data Collection Agent",
+    "category": "商業智能包",
+    "description": "大規模數據採集約束。規範代理在執行分佈式爬蟲任務時的結構化資料提取邏輯。",
+    "description_en": "Large-scale data collection constraints. Standardizes structured data extraction logic for distributed scraping tasks.",
+    "path": "data-collection/",
+    "level": "入門"
+  },
+  {
+    "id": "multi-agent-coord",
+    "name": "多代理協作調度員",
+    "name_en": "Multi-Agent Orchestrator",
+    "category": "核心代理升級",
+    "description": "多代理協作調度員邏輯。賦予父代理任務拆解與階層化分發的調度與監管思維。",
+    "description_en": "Multi-agent coordinator logic. Empowers parent agents with task breakdown and hierarchical delegation workflows.",
+    "path": "multi-agent-coord/",
+    "level": "專家"
+  },
+  {
+    "id": "data-analysis-flow",
+    "name": "數據分析工作流",
+    "name_en": "Data Analysis Flow",
+    "category": "商業智能包",
+    "description": "數據科學工作流約束。強制代理在處理原始數據時，遵守清洗、建模與視覺化的標準管線。",
+    "description_en": "Data science workflow constraints. Enforces strict pipelines for cleaning, modeling, and visualizing raw datasets.",
+    "path": "data-analysis-flow/",
+    "level": "進階"
+  },
+  {
+    "id": "semantic-memory-boost",
+    "name": "語義記憶增強器",
+    "name_en": "Semantic Memory Boost",
+    "category": "核心代理升級",
+    "description": "長期記憶檢索協議。優化代理對於知識庫與過去對話的查詢依賴，提升 RAG 架構準確度。",
+    "description_en": "Long-term memory retrieval protocol. Optimizes agent reliance on knowledge bases to increase RAG accuracy.",
+    "path": "semantic-memory-boost/",
+    "level": "入門"
+  },
+  {
+    "id": "protocol-enforcer",
+    "name": "系統協議執行官",
+    "name_en": "Protocol Enforcer",
+    "category": "核心代理升級",
+    "description": "最高權限系統合規官。在工作區內部署最高層級的安全與架構標準監控器。",
+    "description_en": "Root-level compliance enforcer. Deploys the maximum tier of security and architectural monitoring within the workspace.",
+    "path": "protocol-enforcer/",
+    "level": "專家"
+  },
+  {
+    "id": "lead-gen-automation",
+    "name": "潛在客戶自動開發",
+    "name_en": "Lead Gen Automation",
+    "category": "自動化擴展包",
+    "description": "高價值潛客識別邏輯。注入社交網路分析準則，指導代理如何自動化辨識並接觸潛在客戶。",
+    "description_en": "High-value lead identification logic. Injects social network analysis criteria to automatically discover and engage leads.",
+    "path": "lead-gen-automation/",
+    "level": "入門"
+  },
+  {
+    "id": "social-content-engine",
+    "name": "社群內容流量引擎",
+    "name_en": "Social Content Engine",
+    "category": "自動化擴展包",
+    "description": "病毒式社群內容狀態機。規範代理如何分析平台趨勢並產出高擴散能力的內容模組。",
+    "description_en": "Viral social content state machine. Standardizes how agents analyze platform trends to spin up high-virality content.",
+    "path": "social-content-engine/",
+    "level": "入門"
+  },
+  {
+    "id": "test-suite-architect",
+    "name": "測試套件架構師",
+    "name_en": "Test Suite Architect",
+    "category": "開發者工具包",
+    "description": "測試治具構建協議。指導代理如何根據系統需求，利用測試框架建立具覆蓋率的測試例。",
+    "description_en": "Test fixture creation protocol. Directs agents to construct high-coverage test cases using target testing frameworks.",
+    "path": "test-suite-architect/",
+    "level": "入門"
+  },
+  {
+    "id": "threat-intel-monitor",
+    "name": "威脅情報監控員",
+    "name_en": "Threat Intel Monitor",
+    "category": "商業智能包",
+    "description": "網路安全掃描邏輯。指派嚴苛的威脅情報監控標準，讓代理能持續且準確地識別系統漏洞。",
+    "description_en": "Cybersecurity scanning logic. Assigns strict threat intelligence monitoring standards for continuous vulnerability identification.",
+    "path": "threat-intel-monitor/",
+    "level": "進階"
+  },
+  {
+    "id": "visual-auditor",
+    "name": "視覺內容審計代理",
+    "name_en": "Visual Auditor Agent",
+    "category": "多模態與安全性",
+    "description": "視覺合規審計協議。指導代理如何利用跨模態能力進行像素級的 UI/UX 設計驗證。",
+    "description_en": "Visual compliance auditing protocol. Directs agents to utilize cross-modal capabilities for pixel-level UI/UX validation.",
+    "path": "visual-auditor/",
+    "level": "進階"
+  },
+  {
+    "id": "voice-to-logic",
+    "name": "語音指令邏輯提取器",
+    "name_en": "Voice-to-Logic Extractor",
+    "category": "多模態與安全性",
+    "description": "語音降噪與邏輯萃取器。強制代理將模糊不清的語音任務，重構為具備執行條件的結構化命令。",
+    "description_en": "Voice de-noiser and logic extractor. Forces agents to reconstruct fuzzy voice tasks into definitive structured commands.",
+    "path": "voice-to-logic/",
+    "level": "入門"
+  },
+  {
+    "id": "pii-masking",
+    "name": "PII 自動脫敏護欄",
+    "name_en": "PII Masking Guardrails",
+    "category": "多模態與安全性",
+    "description": "PII 強制脫敏安全層。在回傳或處理資料前，強制攔截並隱藏所有的敏感個人資訊 (遵循 2026 法規)。",
+    "description_en": "Mandatory PII masking security layer. Intercepts and occludes sensitive personal info prior to data processing (2026 compliant).",
+    "path": "pii-masking/",
+    "level": "專家"
+  },
+  {
+    "id": "global-compliance",
+    "name": "跨國合規執行包裹器",
+    "name_en": "Global Compliance Wrapper",
+    "category": "多模態與安全性",
+    "description": "跨國合規執行包裹器。內建全球各地法規邊界，引導代理的功能呼叫絕不越過合法界線。",
+    "description_en": "Global compliance execution wrapper. Built-in regulatory boundaries preventing agent tool calls from exceeding legal limits.",
+    "path": "global-compliance/",
+    "level": "專家"
+  },
+  {
+    "id": "legal-precision",
+    "name": "法律條文精算師",
+    "name_en": "Legal Precision Analyst",
+    "category": "垂直專業領域",
+    "description": "極限法律邊界測試協議。要求代理套用嚴謹的法理邏輯分析合約風險，絕不妥協模糊地帶。",
+    "description_en": "Extreme legal boundary testing protocol. Demands strict jurisprudential logic for contract risk analysis without compromise.",
+    "path": "legal-precision/",
+    "level": "專家"
+  },
+  {
+    "id": "medical-research",
+    "name": "醫學文獻與藥理綜述助手",
+    "name_en": "Medical Research Pro",
+    "category": "垂直專業領域",
+    "description": "生醫文獻綜述約束。引入嚴格的醫學資料庫交叉比對標準，確保文獻證據等級達標。",
+    "description_en": "Biomedical literature review constraints. Introduces rigorous medical database cross-referencing to ensure high-evidence standards.",
+    "path": "medical-research/",
+    "level": "專家"
+  },
+  {
+    "id": "intent-clarifier",
+    "name": "意圖深度釐清器",
+    "name_en": "Deep Intent Clarifier",
+    "category": "核心代理升級",
+    "description": "深層意圖釐清狀態機。當收到模糊指令時，強制阻斷執行並轉向多重選項生成，消除偏誤。",
+    "description_en": "Deep intent clarifier state machine. Blocks execution upon ambiguous instructions, forcing the generation of multiple clarifying options.",
+    "path": "intent-clarifier/",
+    "level": "進階"
+  }
+]

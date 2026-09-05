@@ -1,0 +1,381 @@
+/* OpenClaw Agent Feeds - Vibrant Restoration & SEO Optimized Style */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --primary-blue: #1a73e8;
+    --primary-green: #34a853;
+    --hero-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 25%, #2193b0 50%, #6dd5ed 75%, #00c853 100%);
+    /* Refining gradient to match screenshot more closely */
+    --vibrant-gradient: linear-gradient(105deg, #1565C0 0%, #1976D2 30%, #009688 70%, #43A047 100%);
+    
+    --text-dark: #202124;
+    --text-muted: #3c4043;
+    --bg-light: #ffffff;
+    --bg-smoke: #f8f9fa;
+    --border-color: #dadce0;
+    
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --card-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+body {
+    font-family: 'Noto Sans TC', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--text-dark);
+    background-color: var(--bg-light);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Navbar Restoration */
+.navbar {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.75rem 0;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    color: var(--primary-blue) !important;
+}
+
+.nav-link {
+    color: var(--text-dark) !important;
+    font-weight: 500;
+    margin: 0 10px;
+    transition: color 0.2s;
+}
+
+.nav-link:hover {
+    color: var(--primary-blue) !important;
+}
+
+.nav-link.active {
+    color: var(--primary-blue) !important;
+    font-weight: 700;
+}
+
+.btn-fb-follow {
+    background-color: #1877f2;
+    color: white !important;
+    border-radius: 20px;
+    padding: 6px 20px;
+    font-weight: 600;
+}
+
+/* Vibrant Hero Section (Based on Reference) */
+.hero-section {
+    background: var(--vibrant-gradient);
+    padding: 140px 0 100px;
+    color: white;
+    text-align: center;
+}
+
+.hero-section h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 900;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+}
+
+.hero-section p {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    opacity: 0.95;
+    max-width: 800px;
+    margin: 0 auto;
+    font-weight: 400;
+    line-height: 1.8;
+}
+
+/* Buffet Section Header */
+.buffet-header {
+    margin-top: -50px;
+    background: white;
+    padding: 40px 30px;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -10px 25px rgba(0,0,0,0.05);
+    text-align: center;
+}
+
+.buffet-header h2 {
+    color: var(--primary-blue);
+    font-weight: 800;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.buffet-header p {
+    color: var(--text-muted);
+}
+
+/* Filter Navigation */
+.filter-nav {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 2rem 0 1rem;
+}
+
+.filter-nav.mt-0 {
+    margin-top: 0 !important;
+    margin-bottom: 3rem;
+}
+
+.filter-btn {
+    background: white;
+    color: var(--primary-blue);
+    border: 1px solid var(--primary-blue);
+    padding: 10px 24px;
+    border-radius: 50rem;
+    font-weight: 600;
+    transition: all 0.3s;
+    white-space: nowrap;
+}
+
+.filter-btn:hover {
+    background: #e8f0fe;
+    transform: translateY(-2px);
+}
+
+.filter-btn.active {
+    background: var(--primary-blue);
+    color: white;
+    box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3);
+}
+
+/* Feed Cards - High Contrast Light Theme */
+.service-card {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 2rem;
+    height: 100%;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+}
+
+.service-card:hover {
+    border-color: var(--primary-blue);
+    box-shadow: var(--card-shadow-hover);
+    transform: translateY(-8px);
+}
+
+.category-badge {
+    color: var(--primary-blue);
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.badge {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.service-card h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-dark);
+}
+
+.service-card p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    flex-grow: 1;
+}
+
+.btn-view-spec {
+    border: 1px solid var(--primary-blue);
+    color: var(--primary-blue);
+    border-radius: 50rem;
+    padding: 8px 20px;
+    font-weight: 600;
+    transition: all 0.2s;
+    background: white;
+}
+
+.btn-view-spec:hover {
+    background: var(--primary-blue);
+    color: white;
+}
+
+/* Footer Implementation */
+.site-footer {
+    background-color: var(--bg-smoke);
+    border-top: 1px solid var(--border-color);
+    padding: 60px 0 30px;
+    margin-top: 80px;
+}
+
+.footer-brand {
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 1.5rem;
+    display: block;
+    text-decoration: none;
+}
+
+.footer-copyright {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+/* Modal Styling */
+.modal-content {
+    border-radius: 20px;
+    border: none;
+    overflow: hidden;
+}
+
+.modal-header {
+    background: var(--bg-smoke);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1.5rem 2rem;
+}
+
+.modal-title {
+    color: var(--primary-blue);
+    font-weight: 800;
+}
+
+.modal-body {
+    padding: 2.5rem;
+}
+
+/* Marked Content Styles */
+.markdown-content {
+    color: var(--text-dark);
+}
+
+.markdown-content h1, .markdown-content h2, .markdown-content h3 {
+    color: var(--primary-blue);
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-weight: 800;
+}
+
+.markdown-content pre {
+    background: #f1f3f4;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin: 1.5rem 0;
+    border: 1px solid var(--border-color);
+    position: relative; /* Ensure relative positioning for button */
+    overflow-x: auto;
+}
+
+.code-wrapper {
+    position: relative;
+    margin: 1.5rem 0;
+}
+
+.code-wrapper pre {
+    margin: 0;
+}
+
+.copy-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(26, 115, 232, 0.1);
+    color: var(--primary-blue);
+    border: 1px solid rgba(26, 115, 232, 0.2);
+    border-radius: 8px;
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    z-index: 10;
+}
+
+.copy-btn:hover {
+    background: var(--primary-blue);
+    color: white;
+}
+
+.copy-btn.copied {
+    background: var(--primary-green);
+    color: white;
+    border-color: var(--primary-green);
+}
+
+.markdown-content code {
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    color: #d81b60;
+}
+
+/* Search Bar Styling */
+.search-container {
+    max-width: 600px;
+    margin-top: 1.5rem;
+}
+
+.search-container .input-group {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border-radius: 50rem;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+
+.search-container .input-group:focus-within {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.search-container .form-control {
+    padding: 12px 20px;
+}
+
+.search-container .form-control:focus {
+    box-shadow: none;
+    border-color: #dee2e6;
+}
+
+/* Language Switcher */
+.lang-switcher {
+    display: flex;
+    align-items: center;
+    background: #f1f3f4;
+    padding: 2px;
+    border-radius: 20px;
+}
+
+.lang-switcher .btn {
+    border: none;
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 18px;
+    background: transparent;
+    color: var(--text-muted);
+}
+
+.lang-switcher .btn.active {
+    background: var(--primary-blue);
+    color: white !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.lang-switcher .btn:hover:not(.active) {
+    background: rgba(0,0,0,0.05);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .navbar-nav {
+        background: white;
+        padding: 1rem;
+        border-radius: 12px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        margin-top: 1rem;
+    }
+}
