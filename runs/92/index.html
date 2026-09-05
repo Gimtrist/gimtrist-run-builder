@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="icon" type="image/png" href="./icon.png" />
+    <!-- Roboto is a fallback for platforms without Segoe, so it is declared but never preloaded. -->
+    <link rel="stylesheet" href="./fonts/roboto/roboto.css" />
+
+    <script
+              
+          >(()=>{const t=document.documentElement;try{t.setAttribute("data-color-scheme",function(){const t=window.localStorage.getItem("theme");return"light"===t||"dark"===t?t:"system"===t&&window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"}())}catch{t.setAttribute("data-color-scheme","dark")}})();</script>
+
+    <!--
+      The window paints before react mounts, and until it does the only styles that exist are these.
+      Without them the webview shows its own white default for as long as the bundle takes to boot,
+      which on an otherwise dark application reads as a flash.
+    -->
+    <style>
+      html {
+        --preload-surface: #161719;
+        --preload-paper: #1e2023;
+        --preload-divider: rgba(220, 228, 235, 0.08);
+
+        background-color: var(--preload-surface);
+        color-scheme: dark;
+      }
+
+      html[data-color-scheme="light"] {
+        --preload-surface: #eef0f2;
+        --preload-paper: #f7f8fa;
+        --preload-divider: rgba(20, 28, 35, 0.1);
+
+        color-scheme: light;
+      }
+
+      body {
+        margin: 0;
+      }
+    </style>
+
+    <style>
+      .preload {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+      }
+
+      .preload-title-bar,
+      .preload-status-bar,
+      .preload-rail {
+        box-sizing: border-box;
+        flex-shrink: 0;
+        border: 0 solid var(--preload-divider);
+        background-color: var(--preload-paper);
+      }
+
+      .preload-title-bar {
+        height: 36px;
+        border-bottom-width: 1px;
+      }
+
+      .preload-middle {
+        display: flex;
+        flex-grow: 1;
+        min-height: 0;
+      }
+
+      .preload-rail {
+        width: 44px;
+        border-right-width: 1px;
+      }
+
+      .preload-rail-right {
+        border-right-width: 0;
+        border-left-width: 1px;
+      }
+
+      .preload-canvas {
+        flex-grow: 1;
+      }
+
+      .preload-status-bar {
+        height: 24px;
+        border-top-width: 1px;
+      }
+    </style>
+
+    <title>XRF tools</title>
+    <script type="module" crossorigin src="./assets/index-BCFm_xId.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/rolldown-runtime-Bh1tDfsg.js">
+    <link rel="modulepreload" crossorigin href="./assets/vendor-CKq0fMhE.js">
+    <link rel="modulepreload" crossorigin href="./assets/vendor-core-BeZZZHeU.js">
+    <link rel="modulepreload" crossorigin href="./assets/vendor-mui-E_uQ666y.js">
+    <link rel="modulepreload" crossorigin href="./assets/merge-sx-BqC43MGb.js">
+    <link rel="modulepreload" crossorigin href="./assets/CenteredColumn-ChNDI078.js">
+    <link rel="modulepreload" crossorigin href="./assets/delayed-reveal-CGYXxJlX.js">
+  </head>
+
+  <body>
+    <div id="root">
+      <div class="preload">
+        <div class="preload-title-bar"></div>
+
+        <div class="preload-middle">
+          <div class="preload-rail"></div>
+          <div class="preload-canvas"></div>
+          <div class="preload-rail preload-rail-right"></div>
+        </div>
+
+        <div class="preload-status-bar"></div>
+      </div>
+    </div>
+
+  </body>
+</html>

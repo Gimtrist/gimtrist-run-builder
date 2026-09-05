@@ -1,0 +1,1 @@
+var e=`auto`;function t(e,t=null){return{asset:t,roots:e.filter(e=>!!e).map(e=>n(e))}}function n(t,n=e){return{mode:n,path:t}}function r(e){return e.roots.length?e.roots.map(e=>e.path).join(`, `):e.asset??`<no roots>`}export{t as n,r,n as t};

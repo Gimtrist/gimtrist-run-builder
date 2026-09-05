@@ -1,0 +1,1 @@
+import{E as e}from"./vendor-core-BeZZZHeU.js";import{_n as t}from"./vendor-mui-E_uQ666y.js";var n=t((0,e().jsx)(`path`,{d:`M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7zm-6 .67 2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2z`}),`SaveAlt`);export{n as t};

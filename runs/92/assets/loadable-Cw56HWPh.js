@@ -1,0 +1,1 @@
+var e=class{value;isLoading;error;constructor(e=null,t=!1,n=null){this.value=e,this.isLoading=t,this.error=n}asReady(e=this.value){return t(e,!1,null)}asUpdated(e,n=this.isLoading,r=this.error){return t(e,n,r)}asLoading(e=this.value){return t(e,!0,null)}asFailed(e,n=this.value){return t(n,!1,e)}};function t(t=null,n=!1,r=null){return new e(t,n,r)}export{t};

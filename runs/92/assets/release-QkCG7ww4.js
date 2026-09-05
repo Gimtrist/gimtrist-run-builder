@@ -1,0 +1,1 @@
+import{T as e,w as t}from"./vendor-CKq0fMhE.js";import{J as n}from"./index-BCFm_xId.js";function r(r){e()&&(typeof r==`string`?t(r):r()).catch(e=>{n.error(`Failed to release editor project on deactivation:`,r,e)})}export{r as t};

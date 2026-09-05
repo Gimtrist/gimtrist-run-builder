@@ -1,0 +1,1 @@
+import{at as e}from"./vendor-CKq0fMhE.js";import{E as t}from"./vendor-core-BeZZZHeU.js";import{t as n}from"./PlannedApplication-Bz3ZVZeQ.js";var r=t(),i=e(function(){return(0,r.jsx)(n,{description:`Builds a description sprite from a directory of individual icons.`})});export{i as Component};

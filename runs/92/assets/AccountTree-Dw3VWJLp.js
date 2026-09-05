@@ -1,0 +1,1 @@
+import{E as e}from"./vendor-core-BeZZZHeU.js";import{_n as t}from"./vendor-mui-E_uQ666y.js";var n=t((0,e().jsx)(`path`,{d:`M22 11V3h-7v3H9V3H2v8h7V8h2v10h4v3h7v-8h-7v3h-2V8h2v3z`}),`AccountTree`);export{n as t};

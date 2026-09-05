@@ -1,0 +1,1 @@
+import{E as e}from"./vendor-core-BeZZZHeU.js";import{_n as t}from"./vendor-mui-E_uQ666y.js";var n=t((0,e().jsx)(`path`,{d:`M1 21h22L12 2zm12-3h-2v-2h2zm0-4h-2v-4h2z`}),`ReportProblem`);export{n as t};
