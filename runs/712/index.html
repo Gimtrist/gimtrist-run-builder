@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>江湖 · AI 武侠交互小说</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+    <!-- ═══════════ 顶栏 ═══════════ -->
+    <header class="app-header">
+        <div class="brand">
+            <span class="brand-seal">俠</span>
+            <div class="brand-text">
+                <span class="brand-title">江 湖</span>
+                <span class="brand-sub">AI 武侠交互小说</span>
+            </div>
+        </div>
+        <div class="wb-status-group">
+            <div id="worldbook-status" class="wb-status">
+                <span id="worldbook-status-icon" class="wb-icon">⚫</span>
+                <span id="worldbook-status-text" class="wb-text">世界书检索未初始化</span>
+                <span id="worldbook-status-detail" class="wb-detail"></span>
+                <button onclick="worldbookRebuild()" class="btn btn-ghost btn-xs">重建</button>
+            </div>
+            <div id="memory-status" class="wb-status">
+                <span id="memory-status-icon" class="wb-icon">⚫</span>
+                <span id="memory-status-text" class="wb-text">长期记忆未初始化</span>
+                <span id="memory-status-detail" class="wb-detail"></span>
+                <button onclick="memoryRebuild()" class="btn btn-ghost btn-xs">重建</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 命令抽屉开关（纯 CSS，手机端显示） -->
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-check">
+
+    <!-- ═══════════ 主体：侧边导航 + 剧情 ═══════════ -->
+    <div class="app-shell">
+
+        <nav id="cmd-buttons" class="side-nav">
+            <div class="nav-group">
+                <div class="nav-group-title">江湖行动</div>
+                <button class="nav-btn" onclick="sendCommand('等级')">等级</button>
+                <button class="nav-btn" onclick="toggleEquipmentPanel()">装备</button>
+                <button class="nav-btn" onclick="sendCommand('物品')">物品</button>
+                <button class="nav-btn" onclick="sendCommand('传闻')">传闻</button>
+                <button class="nav-btn" onclick="sendCommand('练功')">练功</button>
+                <button class="nav-btn" onclick="sendCommand('配图')">配图</button>
+                <button class="nav-btn nav-btn-danger" onclick="sendCommand('对战')">对战</button>
+            </div>
+            <div class="nav-group">
+                <div class="nav-group-title">主线剧情</div>
+                <button class="nav-btn" onclick="sendCommand('回归主线')">回归主线</button>
+                <button class="nav-btn" onclick="sendCommand('当前主线')">当前主线</button>
+                <button class="nav-btn" onclick="sendCommand('主线完成')">主线完成</button>
+                <button class="nav-btn" onclick="sendCommand('选择主线')">选择主线</button>
+                <button class="nav-btn" onclick="sendCommand('看看江湖见闻')">江湖见闻</button>
+            </div>
+            <div class="nav-group">
+                <div class="nav-group-title">百科管理</div>
+                <button class="nav-btn" onclick="toggleNpcManager()">NPC 管理</button>
+                <button class="nav-btn" onclick="toggleMartialManager()">武功书</button>
+                <button class="nav-btn" onclick="toggleItemManager()">物品书</button>
+                <button class="nav-btn" onclick="toggleFactionManager()">势力门派</button>
+                <button class="nav-btn" onclick="toggleTaskManager()">任务管理</button>
+                <button class="nav-btn" onclick="sendCommand('任务')">任务速览</button>
+                <button class="nav-btn" onclick="toggleMapPanel()">地图</button>
+                <button class="nav-btn" onclick="toggleNotepad()">记事本</button>
+                <button class="nav-btn" onclick="sendCommand('存档列表')">存档 · 读档</button>
+            </div>
+            <div class="nav-group">
+                <div class="nav-group-title">系统</div>
+                <button class="nav-btn" onclick="openPlayerEditor()">编辑属性</button>
+                <button class="nav-btn" onclick="toggleApiPresets()">API 设置</button>
+                <button class="nav-btn" id="dice-toggle-btn" onclick="toggleDiceSystem()">🎲 DC检定：加载中</button>
+                <button class="nav-btn" onclick="sendCommand('管理指令')">调试指令</button>
+            </div>
+            <div class="nav-group">
+                <div class="nav-group-title">危险操作</div>
+                <button class="nav-btn nav-btn-danger" onclick="sendCommand('遗忘功法')">遗忘功法</button>
+                <button class="nav-btn nav-btn-danger" onclick="sendCommand('扔掉物品')">扔掉物品</button>
+                <button class="nav-btn nav-btn-danger" onclick="sendCommand('exit')">退出</button>
+            </div>
+        </nav>
+
+        <main class="main-col">
+            <div id="output" class="story-output"></div>
+            <div id="input-area" class="input-area">
+                <input type="text" id="user_input" class="input-main" placeholder="描述你的行动……" onkeypress="if(event.key==='Enter') send()"/>
+                <button onclick="send()" class="btn btn-primary btn-send">出 招</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- 抽屉 scrim（点击关闭）与开关按钮 -->
+    <label for="nav-toggle" class="nav-scrim"></label>
+    <label for="nav-toggle" class="nav-toggle-btn">☰ 命令</label>
+
+    <!-- ═══════════ 角色创建（初始隐藏） ═══════════ -->
+    <div id="init-panel" style="display:none" class="overlay">
+        <div class="overlay-card">
+            <div class="overlay-kicker">初入江湖</div>
+            <div class="overlay-title">创建你的角色</div>
+            <div class="field">
+                <label for="init_name">角色姓名</label>
+                <input type="text" id="init_name" value="李三奇">
+            </div>
+            <div class="field">
+                <label for="init_origin">身世背景</label>
+                <input type="text" id="init_origin" value="穿越至飞狐外传世界的现代大学生">
+            </div>
+            <div class="field">
+                <label for="init_ability">本命功法</label>
+                <input type="text" id="init_ability" value="北冥神功">
+            </div>
+            <button onclick="submitCreatePlayer()" class="btn btn-primary btn-block">创建角色，踏入江湖</button>
+        </div>
+    </div>
+
+    <!-- ═══════════ 地图面板 ═══════════ -->
+    <div id="map-panel" style="display:none" class="modal modal-map">
+        <div class="modal-head">
+            <h3 class="modal-title">江湖地图</h3>
+            <div class="modal-tools">
+                <span id="map-current-location" class="loc-current">当前位置：加载中...</span>
+                <span id="map-target-display" class="loc-target">目标：未设置</span>
+                <button onclick="toggleMapPanel()" class="btn btn-ghost btn-xs">关闭</button>
+            </div>
+        </div>
+        <div class="map-search">
+            <input type="text" id="map-search-input" placeholder="搜索地图地点……"
+                oninput="searchMapNodes(this.value)" onfocus="searchMapNodes(this.value)" onblur="setTimeout(()=>{document.getElementById('map-search-results').style.display='none';},200)">
+            <div id="map-search-results" style="display:none" class="map-search-results"></div>
+        </div>
+        <div class="map-cols">
+            <div class="map-col">
+                <div class="map-col-head">
+                    <span>区域</span>
+                    <button class="btn btn-ghost btn-xs" onclick="addMapNode(1,'')">＋</button>
+                </div>
+                <div id="map-level1" class="map-col-list"></div>
+            </div>
+            <div class="map-col">
+                <div class="map-col-head">
+                    <span>城市 / 地区</span>
+                    <button id="add-level2-btn" class="btn btn-ghost btn-xs" onclick="addMapNode(2,currentMapParent1)" disabled>＋</button>
+                </div>
+                <div id="map-level2" class="map-col-list map-col-empty">请先选择区域</div>
+            </div>
+            <div class="map-col">
+                <div class="map-col-head">
+                    <span>重点地点</span>
+                    <button id="add-level3-btn" class="btn btn-ghost btn-xs" onclick="addMapNode(3,currentMapParent2)" disabled>＋</button>
+                </div>
+                <div id="map-level3" class="map-col-list map-col-empty">请先选择城市</div>
+            </div>
+        </div>
+        <div class="modal-hint">点击地点名称设为目标，下一轮自动注入「往此地前进」提示</div>
+    </div>
+
+    <!-- ═══════════ 记事本 / MD 文档 ═══════════ -->
+    <div id="notepad-modal" style="display:none" class="modal modal-md">
+        <div class="modal-head">
+            <h3 class="modal-title">江湖记事本</h3>
+            <div class="modal-tools">
+                <button onclick="notepadLoadRaw()" class="btn">刷新（记事本）</button>
+                <button onclick="notepadSaveRaw()" class="btn btn-green">保存（记事本）</button>
+                <button onclick="toggleNotepad()" class="btn btn-ghost">关闭</button>
+            </div>
+        </div>
+        <div class="md-box">
+            <div class="md-box-label">项目 MD 文档编辑（选择 → 读取 → 修改 → 保存）</div>
+            <div class="md-box-row">
+                <select id="md_selector" class="md-select">
+                    <option value="">-- 选择项目目录下的 .md 文件 --</option>
+                </select>
+                <button onclick="mdList()" class="btn">列表</button>
+                <button onclick="mdLoad()" class="btn">读取</button>
+                <button onclick="mdSave()" class="btn btn-gold">保存</button>
+            </div>
+        </div>
+        <textarea id="notepad_editor" class="textarea-code ta-l" placeholder="【记事本】格式：&#10;===== 笔记1 =====&#10;标题：标题&#10;时间：2026-07-27 10:00&#10;--------------------&#10;笔记内容...&#10;&#10;或切换到【MD文档】：先选择 .md 文件再点读取"></textarea>
+        <div class="modal-hint">提示：记事本用前两个按钮直接编辑TXT；MD文档先选文件再读取/保存。二者共用本编辑区。</div>
+    </div>
+
+    <!-- ═══════════ NPC 管理器 ═══════════ -->
+    <div id="npc-manager-modal" style="display:none" class="modal modal-lg">
+        <div class="modal-head">
+            <h3 class="modal-title">NPC 管理器</h3>
+            <div class="modal-tools">
+                <input type="text" id="npc-search" class="input-sm" placeholder="搜索 NPC……" oninput="filterNpcList()">
+                <button onclick="npcAddNew()" class="btn btn-green">新增 NPC</button>
+                <button onclick="npcRefresh()" class="btn">刷新</button>
+                <button onclick="toggleNpcManager()" class="btn btn-ghost">关闭</button>
+            </div>
+        </div>
+        <div class="modal-cols">
+            <div class="col-list">
+                <div class="col-list-count"><span id="npc-count">0</span> 位 NPC</div>
+                <div id="npc-list" class="col-list-body"></div>
+            </div>
+            <div class="col-editor">
+                <div id="npc-editor-header" style="display:none" class="editor-pane">
+                    <div class="editor-pane-title" id="npc-editor-title">编辑 NPC</div>
+                    <div id="npc-vitality-panel" style="background:#111; border:1px solid #333; border-radius:6px; padding:8px 10px; margin-bottom:8px; font-size:12px;">
+                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                            <span style="color:#f66; min-width:32px;">HP</span>
+                            <div style="flex:1; height:10px; background:#300; border-radius:5px; overflow:hidden;">
+                                <div id="npc-hp-bar" style="height:100%; width:100%; background:linear-gradient(90deg,#f44,#f88);"></div>
+                            </div>
+                            <input type="number" id="npc-hp-input" min="-1" max="100" value="100" style="width:56px; background:#111; border:1px solid #444; color:#f88; padding:2px 4px; border-radius:3px;">
+                            <span style="color:#888;">%</span>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <span style="color:#4af; min-width:32px;">MP</span>
+                            <div style="flex:1; height:10px; background:#003; border-radius:5px; overflow:hidden;">
+                                <div id="npc-mp-bar" style="height:100%; width:100%; background:linear-gradient(90deg,#48f,#8af);"></div>
+                            </div>
+                            <input type="number" id="npc-mp-input" min="0" max="100" value="100" style="width:56px; background:#111; border:1px solid #444; color:#8af; padding:2px 4px; border-radius:3px;">
+                            <span style="color:#888;">%</span>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:8px; margin-top:6px; flex-wrap:wrap;">
+                            <span style="color:#888;">HP：-1已故 / 0濒死 / 1-30重伤 / 31-70轻伤 / 71-100健康</span>
+                            <button onclick="npcVitalityApply()" class="btn btn-green" style="padding:2px 10px; font-size:11px;">应用到JSON</button>
+                        </div>
+                    </div>
+                    <div id="npc-effect-panel" style="background:#111; border:1px solid #333; border-radius:6px; padding:8px 10px; margin-bottom:8px; font-size:12px;">
+                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                            <span style="color:#fd6;">特效反手</span>
+                            <span style="color:#888; font-size:11px;">勾选后作为玩家第8档惨败时的反手招（self=NPC自增益 / opponent=玩家debuff），无需概率</span>
+                            <button onclick="npcEffectApply()" class="btn btn-green" style="padding:2px 10px; font-size:11px; margin-left:auto;">应用到JSON</button>
+                        </div>
+                        <div id="npc-effect-list" style="display:flex; flex-wrap:wrap; gap:4px 10px;">
+                            <span style="color:#666;">加载中…</span>
+                        </div>
+                    </div>
+                    <textarea id="npc-editor" class="textarea-code ta-s" placeholder="选择左侧 NPC 开始编辑，或点击「新增 NPC」创建新角色……"></textarea>
+                    <div class="btn-row">
+                        <button onclick="npcSave()" class="btn btn-green">保存修改</button>
+                        <button onclick="npcDelete()" class="btn btn-red">删除此 NPC</button>
+                        <button onclick="npcGenerateAvatar()" class="btn">生成头像</button>
+                        <button onclick="npcClearEditor()" class="btn btn-ghost">清空</button>
+                    </div>
+                    <div class="ai-box">
+                        <label class="ai-box-label">AI 辅助生成（结果填入编辑器，需人工审核后保存）</label>
+                        <div class="ai-box-row">
+                            <input type="text" id="npc-ai-desc" placeholder="描述词，如：红花会四当家，文泰来，奔雷手，豪迈刚烈，雷门掌法，1738年出生">
+                            <button onclick="npcAiGenerate()" class="btn btn-gold">AI 生成</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="npc-editor-empty" style="display:flex" class="empty-state">请在左侧选择 NPC，或点击「新增 NPC」创建新角色</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════ 武功书管理 ═══════════ -->
+    <div id="martial-manager-modal" style="display:none" class="modal modal-lg">
+        <div class="modal-head">
+            <h3 class="modal-title">武功书管理</h3>
+            <div class="modal-tools">
+                <input type="text" id="martial-search" class="input-sm" placeholder="搜索武功名 / 来源……" oninput="martialSearch()">
+                <select id="martial-filter-grade" class="select-sm" onchange="martialSearch()">
+                    <option value="">全部等级</option>
+                </select>
+                <select id="martial-filter-cat" class="select-sm" onchange="martialSearch()">
+                    <option value="">全部类别</option>
+                </select>
+                <input type="text" id="martial-ai-desc" class="input-sm input-ai" placeholder="AI 生成武功描述词……">
+                <button onclick="martialAiGenerate()" class="btn btn-gold">AI 生成</button>
+                <button onclick="martialShowGuide()" class="btn">品阶标准</button>
+                <button onclick="martialAddNew()" class="btn btn-green">新增</button>
+                <button onclick="martialRefresh()" class="btn">刷新</button>
+                <button onclick="toggleMartialManager()" class="btn btn-ghost">关闭</button>
+            </div>
+        </div>
+        <div class="modal-cols">
+            <div class="col-list col-list-wide">
+                <div id="martial-list" class="col-list-body col-list-pad"></div>
+                <div id="martial-count" class="col-list-count col-count-bottom">共 0 项</div>
+            </div>
+            <div class="col-editor col-editor-pad">
+                <div id="martial-editor" style="display:none" class="editor-form">
+                    <div class="field">
+                        <label for="martial-edit-name">武功名称</label>
+                        <input type="text" id="martial-edit-name">
+                    </div>
+                    <div class="field-row">
+                        <div class="field">
+                            <label for="martial-edit-grade">等级 (1-9)</label>
+                            <select id="martial-edit-grade" onchange="martialUpdateBonusPreview()"></select>
+                        </div>
+                        <div class="field">
+                            <label for="martial-edit-bonus">加成 bonus</label>
+                            <input type="text" id="martial-edit-bonus" readonly class="input-readonly">
+                        </div>
+                    </div>
+                    <div class="field-row">
+                        <div class="field">
+                            <label for="martial-edit-category">类别 category</label>
+                            <select id="martial-edit-category"></select>
+                        </div>
+                        <div class="field">
+                            <label for="martial-edit-source">来源 source</label>
+                            <input type="text" id="martial-edit-source">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="martial-edit-note">备注（可选）</label>
+                        <input type="text" id="martial-edit-note" placeholder="如：残版降一级">
+                    </div>
+                    <div class="field">
+                        <label for="martial-edit-brief">简介 brief_desc（1-30字）</label>
+                        <input type="text" id="martial-edit-brief" placeholder="武功简要描述">
+                    </div>
+                    <div class="effect-box">
+                        <label class="effect-box-label">特效配置（可选）</label>
+                        <div class="field-row">
+                            <div class="field field-grow-2">
+                                <select id="martial-edit-effect-type" onchange="martialOnEffectChange()">
+                                    <option value="">无特效</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="martial-effect-desc" class="effect-desc"></div>
+                        <div class="effect-sub">
+                            <label for="martial-edit-special-name">特技名称（4-8字，DC第1档完美碾压时触发显示）</label>
+                            <input type="text" id="martial-edit-special-name" placeholder="如：横扫千军">
+                            <label for="martial-edit-special-desc">特技描述（10-20字内）</label>
+                            <input type="text" id="martial-edit-special-desc" placeholder="如：刀势如狂风扫叶，一刀横扫切敌中路">
+                        </div>
+                    </div>
+                    <div class="btn-row">
+                        <button onclick="martialSave()" class="btn btn-green">保存</button>
+                        <button onclick="martialDelete()" class="btn btn-red">删除</button>
+                        <button onclick="martialClearEditor()" class="btn btn-ghost">清空</button>
+                    </div>
+                </div>
+                <div id="martial-editor-empty" style="display:flex" class="empty-state">请在左侧选择武功，或点击「新增」创建新条目</div>
+                <div id="martial-guide-view" style="display:none" class="guide-view">
+                    <div class="guide-view-head">
+                        <h3 class="modal-title">武功品阶评判标准</h3>
+                        <button onclick="martialHideGuide()" class="btn">返回编辑</button>
+                    </div>
+                    <pre id="martial-guide-content" class="guide-pre"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════ 任务管理 ═══════════ -->
+    <div id="task-manager-modal" style="display:none" class="modal modal-md">
+        <div class="modal-head">
+            <h3 class="modal-title">任务管理</h3>
+            <div class="modal-tools">
+                <select id="task-filter-status" class="select-sm" onchange="taskFilter()">
+                    <option value="">全部状态</option>
+                    <option value="active">进行中</option>
+                    <option value="suspended">已暂停</option>
+                    <option value="completed">已完成</option>
+                </select>
+                <select id="task-filter-type" class="select-sm" onchange="taskFilter()">
+                    <option value="">全部类型</option>
+                    <option value="main">主线</option>
+                    <option value="side">支线</option>
+                </select>
+                <button onclick="taskToggleCreate()" class="btn btn-green">新建</button>
+                <button onclick="taskRefresh()" class="btn">刷新</button>
+                <button onclick="toggleTaskManager()" class="btn btn-ghost">关闭</button>
+            </div>
+        </div>
+        <div id="task-create-area" style="display:none" class="create-area">
+            <div class="create-area-row">
+                <input type="text" id="task-ai-intent" class="input-ai" placeholder="AI 生成：输入任务意图（如：帮霍青桐查清鹰骑来历）"
+                       onkeydown="if(event.key==='Enter'){taskAiGenerate();}">
+                <button id="task-ai-btn" onclick="taskAiGenerate()" class="btn btn-gold">AI 生成</button>
+            </div>
+            <div class="create-area-row">
+                <input type="text" id="task-new-name" placeholder="任务名称（如：押镖赴回疆）">
+                <select id="task-new-type">
+                    <option value="side">支线</option>
+                    <option value="main">主线</option>
+                </select>
+            </div>
+            <div class="create-area-row">
+                <input type="text" id="task-new-desc" class="input-grow" placeholder="任务描述（目标 / 背景 / 涉及人物）">
+                <button onclick="taskCreate()" class="btn btn-green">创建</button>
+            </div>
+        </div>
+        <div id="task-list" class="task-list"></div>
+        <div id="task-count" class="col-count-bottom">共 0 项</div>
+    </div>
+
+    <!-- ═══════════ 物品书管理 ═══════════ -->
+    <div id="item-manager-modal" style="display:none" class="modal modal-lg">
+        <div class="modal-head">
+            <h3 class="modal-title">物品书管理</h3>
+            <div class="modal-tools">
+                <input type="text" id="item-search" class="input-sm" placeholder="搜索名 / 说明 / 归属 / 出典……" oninput="itemSearch()">
+                <select id="item-filter-subcategory" class="select-sm" onchange="itemSearch()">
+                    <option value="">全部种类</option>
+                </select>
+                <select id="item-filter-rarity" class="select-sm" onchange="itemSearch()">
+                    <option value="">全部稀有度</option>
+                </select>
+                <button onclick="itemShowGuide()" class="btn">稀有度标准</button>
+                <button onclick="itemAddNew()" class="btn btn-green">新增</button>
+                <button onclick="itemRefresh()" class="btn">刷新</button>
+                <button onclick="toggleItemManager()" class="btn btn-ghost">关闭</button>
+            </div>
+            <div class="modal-tools modal-tools-sub">
+                <input type="text" id="item-ai-desc" class="input-ai" placeholder="描述物品（如：一把淬毒的短剑，桃花岛主所铸）" onkeydown="if(event.key==='Enter')itemAiGenerate()">
+                <button onclick="itemAiGenerate()" class="btn btn-gold">AI 生成</button>
+            </div>
+        </div>
+        <div class="modal-cols">
+            <div class="col-list col-list-wide">
+                <div id="item-list" class="col-list-body col-list-pad"></div>
+                <div id="item-count" class="col-list-count col-count-bottom">共 0 项</div>
+            </div>
+            <div class="col-editor col-editor-pad">
+                <div id="item-editor" style="display:none" class="editor-form">
+                    <div class="field">
+                        <label for="item-edit-name">物品名称</label>
+                        <input type="text" id="item-edit-name">
+                        <input type="hidden" id="item-edit-original-name">
+                    </div>
+                    <div class="field-row">
+                        <div class="field">
+                            <label for="item-edit-rarity">稀有度</label>
+                            <select id="item-edit-rarity" onchange="itemUpdateRarityPreview()"></select>
+                        </div>
+                        <div class="field">
+                            <label for="item-edit-weight-preview">检索权重倍率</label>
+                            <input type="text" id="item-edit-weight-preview" readonly class="input-readonly">
+                        </div>
+                        <div class="field">
+                            <label for="item-edit-subcategory">种类</label>
+                            <select id="item-edit-subcategory"></select>
+                        </div>
+                    </div>
+                    <div class="field-row">
+                        <div class="field">
+                            <label for="item-edit-source">出典小说</label>
+                            <input type="text" id="item-edit-source" placeholder="如：射雕英雄传">
+                        </div>
+                        <div class="field">
+                            <label for="item-edit-owner-hint">归属 Hint</label>
+                            <input type="text" id="item-edit-owner-hint" placeholder="如：黄蓉 / 丐帮">
+                        </div>
+                        <div class="field">
+                            <label for="item-edit-linked-martial">对应武学</label>
+                            <input type="text" id="item-edit-linked-martial" placeholder="如：降龙十八掌">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="item-edit-description">物品说明</label>
+                        <textarea id="item-edit-description" rows="5" placeholder="详细描述物品特性、外观、效果……"></textarea>
+                    </div>
+                    <div class="field">
+                        <label for="item-edit-keywords">关键词（逗号分隔，检索命中用）</label>
+                        <input type="text" id="item-edit-keywords" placeholder="如：桃花岛,黄蓉,宝甲,软猬">
+                    </div>
+                    <div class="field">
+                        <label for="item-edit-note">备注（可选）</label>
+                        <input type="text" id="item-edit-note" placeholder="如：可在剧情中掉落">
+                    </div>
+                    <div class="btn-row">
+                        <button onclick="itemSave()" class="btn btn-green">保存</button>
+                        <button onclick="itemDelete()" class="btn btn-red">删除</button>
+                        <button onclick="itemClearEditor()" class="btn btn-ghost">清空</button>
+                    </div>
+                </div>
+                <div id="item-editor-empty" style="display:flex" class="empty-state">请在左侧选择物品，或点击「新增物品」创建新条目</div>
+                <div id="item-guide-view" style="display:none" class="guide-view">
+                    <div class="guide-view-head">
+                        <h3 class="modal-title">物品稀有度 & 权重标准</h3>
+                        <button onclick="itemHideGuide()" class="btn">返回编辑</button>
+                    </div>
+                    <div class="guide-body">
+                        <b class="g-title">五档稀有度说明（同时影响世界书检索权重 ×倍率）</b><br><br>
+                        <b class="g-s">S · 传世至宝（权重 ×3.0）</b><br>
+                        &nbsp;&nbsp;关键词匹配：<code>至宝/绝学/传世/不传之秘/震古烁今/武林第一/天下无双</code><br>
+                        &nbsp;&nbsp;示例：软猬宝甲、降龙廿八掌精义、屠龙刀、倚天剑、易筋经真本<br><br>
+                        <b class="g-a">A · 绝顶之宝（权重 ×2.0）</b><br>
+                        &nbsp;&nbsp;关键词匹配：<code>镇山/绝技/秘要/绝世/神功/秘本/秘典/失传</code><br>
+                        &nbsp;&nbsp;示例：玄铁重剑、九阴真经下卷、天蚕宝甲、千年灵芝<br><br>
+                        <b class="g-b">B · 罕见好物（权重 ×1.2）</b><br>
+                        &nbsp;&nbsp;关键词匹配：<code>高级/珍稀/珍贵/罕见/正宗/精妙/上等</code><br>
+                        &nbsp;&nbsp;示例：各门派中级武功秘籍、精钢剑、银丝软甲、大还丹<br><br>
+                        <b class="g-c">C · 江湖常见（权重 ×0.8）</b><br>
+                        &nbsp;&nbsp;关键词匹配：<code>入门/基础/常见/普通/一般/下品</code><br>
+                        &nbsp;&nbsp;示例：江湖常见的飞蝗石、普通铁剑、小还丹、粗布披风<br><br>
+                        <b class="g-d">D · 普通物品（权重 ×0.4）</b><br>
+                        &nbsp;&nbsp;兜底分类：无特殊描述的坐骑/丹药等日常物品<br>
+                        &nbsp;&nbsp;示例：普通坐骑、普通丹药、江湖地摊货
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════ 势力门派管理 ═══════════ -->
+    <div id="faction-manager-modal" style="display:none" class="modal modal-lg">
+        <div class="modal-head">
+            <h3 class="modal-title">势力门派管理</h3>
+            <div class="modal-tools">
+                <input type="text" id="faction-search" class="input-sm" placeholder="搜索名 / 小说 / 类别 / 地点 / 立场……" oninput="factionSearch()">
+                <button onclick="factionAddNew()" class="btn btn-green">新增</button>
+                <button onclick="factionRefresh()" class="btn">刷新</button>
+                <button onclick="toggleFactionManager()" class="btn btn-ghost">关闭</button>
+            </div>
+        </div>
+        <div class="modal-cols">
+            <div class="col-list col-list-wide">
+                <div id="faction-list" class="col-list-body col-list-pad"></div>
+                <div id="faction-count" class="col-list-count col-count-bottom">共 0 项</div>
+            </div>
+            <div class="col-editor">
+                <div id="faction-editor-header" style="display:none" class="editor-pane editor-pane-flex">
+                    <div class="editor-pane-title">
+                        <span id="faction-editor-title">编辑门派</span>
+                        <span class="editor-pane-note">直接编辑 JSON 文本，保存时整体替换</span>
+                    </div>
+                    <textarea id="faction-editor" class="textarea-code ta-s" placeholder="选择左侧门派开始编辑，或点击「新增」创建……"></textarea>
+                    <div class="btn-row">
+                        <button onclick="factionSave()" class="btn btn-green">保存修改</button>
+                        <button onclick="factionDelete()" class="btn btn-red">删除此门派</button>
+                        <button onclick="factionFormatJson()" class="btn">格式化</button>
+                        <button onclick="factionClearEditor()" class="btn btn-ghost">清空</button>
+                    </div>
+                    <div class="ai-box">
+                        <label class="ai-box-label">AI 辅助生成（结果填入编辑器，需人工审核后保存）</label>
+                        <div class="ai-box-row">
+                            <input type="text" id="faction-ai-desc" placeholder="描述词，如：天山剑派，正道，位于新疆天山，擅剑法，清代反清">
+                            <button onclick="factionAiGenerate()" class="btn btn-gold">AI 生成</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="faction-editor-empty" style="display:flex" class="empty-state">请在左侧选择门派，或点击「新增」创建</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════ 角色属性编辑器 ═══════════ -->
+    <div id="editor-modal" style="display:none" class="modal modal-sm">
+        <div class="modal-head">
+            <h3 class="modal-title">角色属性编辑器</h3>
+        </div>
+        <div class="btn-row">
+            <button onclick="loadPlayerRaw()" class="btn btn-green">刷新数据</button>
+            <button onclick="savePlayerRaw()" class="btn">保存修改</button>
+            <button onclick="closeEditor()" class="btn btn-ghost">关闭</button>
+        </div>
+        <div id="player-vitality-panel" style="background:#111; border:1px solid #333; border-radius:6px; padding:8px 10px; margin-bottom:8px; font-size:12px;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                <span style="color:#f66; min-width:32px;">HP</span>
+                <div style="flex:1; height:10px; background:#300; border-radius:5px; overflow:hidden;">
+                    <div id="player-hp-bar" style="height:100%; width:100%; background:linear-gradient(90deg,#f44,#f88);"></div>
+                </div>
+                <input type="number" id="player-hp-input" min="0" max="100" value="100" style="width:56px; background:#111; border:1px solid #444; color:#f88; padding:2px 4px; border-radius:3px;">
+                <span style="color:#888;">%</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+                <span style="color:#4af; min-width:32px;">MP</span>
+                <div style="flex:1; height:10px; background:#003; border-radius:5px; overflow:hidden;">
+                    <div id="player-mp-bar" style="height:100%; width:100%; background:linear-gradient(90deg,#48f,#8af);"></div>
+                </div>
+                <input type="number" id="player-mp-input" min="0" max="100" value="100" style="width:56px; background:#111; border:1px solid #444; color:#8af; padding:2px 4px; border-radius:3px;">
+                <span style="color:#888;">%</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px; margin-top:6px; flex-wrap:wrap;">
+                <span style="color:#888;">HP：0濒死 / 1-30重伤 / 31-70轻伤 / 71-100健康</span>
+                <button onclick="playerVitalityApply()" class="btn btn-green" style="padding:2px 10px; font-size:11px;">应用到JSON</button>
+            </div>
+        </div>
+        <textarea id="player_json_editor" class="textarea-code ta-l"></textarea>
+        <div class="modal-hint">直接修改 JSON 内容后点保存，立即生效。谨慎修改，建议先备份。</div>
+    </div>
+
+    <!-- ═══════════ API 设置 ═══════════ -->
+    <div id="api-presets-modal" style="display:none" class="modal modal-sm">
+        <div class="modal-head">
+            <h3 class="modal-title">API 接口设置（全量可编辑）</h3>
+            <button onclick="toggleApiPresets()" class="btn btn-ghost btn-xs">关闭</button>
+        </div>
+        <div id="api-presets-body" class="modal-body-dyn">
+            <p class="loading-hint">加载中……</p>
+        </div>
+        <div class="warn-box">保存后需重启服务才能生效。API 密钥脱敏显示（仅末 4 位可见），点 👁 可明文查看；未修改的密码字段自动跳过。</div>
+    </div>
+
+    <!-- ═══════════ 装备管理 ═══════════ -->
+    <div id="equipment-modal" style="display:none" class="modal modal-md">
+        <div class="modal-head">
+            <h3 class="modal-title">装备管理</h3>
+            <button onclick="toggleEquipmentPanel()" class="btn btn-ghost btn-xs">关闭</button>
+        </div>
+        <div id="equipment-body" class="modal-body-dyn">
+            <p class="loading-hint">加载中……</p>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
