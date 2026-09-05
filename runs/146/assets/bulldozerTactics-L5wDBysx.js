@@ -1,0 +1,1 @@
+import"./index-DONDq6mY.js";var e=12;function t(t,n,r){if((t.inventory?.BULLDOZER??0)<=0)return!1;let i=t.tank.position.x,a=n.tank.position.x;if(Math.abs(a-i)<80)return!1;let o=a+(a>i?1:-1)*60;return o<0||o>r.width||r.getHeightAt(o)-r.getHeightAt(a)>=e}export{t};
