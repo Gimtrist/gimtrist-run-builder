@@ -1,0 +1,280 @@
+.benchmark-main {
+  padding: 4.25rem 0 4rem;
+}
+
+.benchmark-container {
+  max-width: 1480px;
+}
+
+.benchmark-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.benchmark-header h1 {
+  margin: 0 0 0.6rem;
+  font-size: clamp(3.2rem, 8vw, 5.5rem);
+  line-height: 0.92;
+}
+
+.benchmark-lead {
+  max-width: 46rem;
+  margin: 0;
+  margin-top: 2rem;
+  color: #4e5f6b;
+  font-size: 1.08rem;
+  font-weight: 650;
+  line-height: 1.7;
+}
+
+.benchmark-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.benchmark-control {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.benchmark-controls label,
+.chart-controls label {
+  color: #385365;
+  font-weight: 850;
+}
+
+.benchmark-select {
+  min-width: 15rem;
+  color: var(--rapid-ink);
+  border-color: #9bdcb0;
+  border-radius: 8px;
+  font-weight: 750;
+}
+
+.benchmark-number {
+  width: 7rem;
+  color: var(--rapid-ink);
+  border-color: #9bdcb0;
+  border-radius: 8px;
+  font-weight: 800;
+}
+
+.benchmark-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  align-items: stretch;
+}
+
+.benchmark-panel {
+  padding: 1.25rem;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid var(--rapid-line);
+  border-radius: 8px;
+  box-shadow: 0 8px 0 rgba(84, 184, 234, 0.12);
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.85rem;
+}
+
+.panel-head h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 900;
+}
+
+.panel-head span {
+  color: #5a6877;
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.benchmark-stage-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.benchmark-chart-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-heading {
+  min-width: 13rem;
+}
+
+.chart-heading #chart-note {
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.chart-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.chart-control {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.chart-control label {
+  font-size: 0.76rem;
+}
+
+.chart-control .form-select,
+.chart-control .form-control {
+  color: var(--rapid-ink);
+  border-color: #9bdcb0;
+  font-weight: 750;
+}
+
+.chart-control .form-select {
+  min-width: 10rem;
+}
+
+.export-size-inputs {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #5a6877;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.export-size-inputs input {
+  width: 6rem;
+}
+
+#stage {
+  display: block;
+  margin-inline: auto;
+  flex: 0 0 auto;
+  background: #f7fdff;
+  border: 1px solid var(--rapid-line);
+  border-radius: 8px;
+}
+
+#chart {
+  display: block;
+  width: 100%;
+  flex: 1;
+  background: #f7fdff;
+  border: 1px solid var(--rapid-line);
+  border-radius: 8px;
+}
+
+.benchmark-chart-panel,
+.result-panel {
+  margin-top: 1.25rem;
+}
+
+.benchmark-chart-panel #chart {
+  min-height: 36rem;
+}
+
+.benchmark-code-card {
+  padding: 1rem;
+  min-height: 24rem;
+}
+
+.benchmark-code-card pre {
+  height: 24rem;
+  overflow: auto;
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.benchmark-table {
+  margin: 0;
+  color: var(--rapid-ink);
+  vertical-align: middle;
+}
+
+.benchmark-table th {
+  color: #385365;
+  font-size: 0.84rem;
+  white-space: nowrap;
+}
+
+.benchmark-table td {
+  min-width: 4.25rem;
+  font-weight: 800;
+}
+
+.renderer-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.renderer-swatch {
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.65);
+}
+
+.is-running {
+  color: #267fa9;
+}
+
+@media (max-width: 991.98px) {
+  .benchmark-header {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .benchmark-header .btn {
+    justify-self: start;
+  }
+
+  .panel-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .chart-controls {
+    justify-content: flex-start;
+  }
+
+  .benchmark-code-card pre {
+    height: 18rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .benchmark-select,
+  .benchmark-control,
+  .chart-control,
+  .chart-control .form-select {
+    width: 100%;
+  }
+
+  .chart-controls {
+    width: 100%;
+  }
+
+  .export-size-control {
+    width: auto;
+  }
+
+  .benchmark-chart-panel #chart {
+    min-height: 28rem;
+  }
+}
