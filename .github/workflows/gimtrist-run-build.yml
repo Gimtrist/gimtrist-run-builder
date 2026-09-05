@@ -140,6 +140,12 @@ jobs:
           largest_file_bytes=0
 
           if [[ "$rc" -eq 0 ]]; then
+            bash builder/scripts/prepare-artifact.sh "$GITHUB_WORKSPACE/output" >>"$log" 2>&1
+            rc=$?
+            failure_stage=artifact-preparation
+          fi
+
+          if [[ "$rc" -eq 0 ]]; then
             bash builder/scripts/copy-license.sh "$GITHUB_WORKSPACE/source" "$GITHUB_WORKSPACE/output" >>"$log" 2>&1
             rc=$?
             failure_stage=license-preservation

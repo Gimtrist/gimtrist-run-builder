@@ -11,37 +11,56 @@ cd "$project_dir"
 if [[ -f pnpm-lock.yaml ]]; then
   corepack enable >/dev/null 2>&1 || true
   pnpm install --frozen-lockfile || pnpm install
-  runner=(pnpm)
+  manager="pnpm"
 elif [[ -f yarn.lock ]]; then
   corepack enable >/dev/null 2>&1 || true
   yarn install --immutable || yarn install --frozen-lockfile || yarn install
-  runner=(yarn)
+  manager="yarn"
 elif [[ -f bun.lockb || -f bun.lock ]]; then
   if ! command -v bun >/dev/null 2>&1; then
     curl -fsSL https://bun.sh/install | bash
     export PATH="$HOME/.bun/bin:$PATH"
   fi
   bun install --frozen-lockfile || bun install
-  runner=(bun)
+  manager="bun"
 else
   if [[ -f package-lock.json ]]; then npm ci --ignore-scripts=false; else npm install --ignore-scripts=false; fi
-  runner=(npm run)
+  manager="npm"
 fi
 
 if ! node -e 'const p=require("./package.json");process.exit(p.scripts&&p.scripts.build?0:1)'; then
   echo "package.json has no build script" >&2
   exit 21
 fi
-"${runner[@]}" build
+
+# Vite defaults to a site-root base (/). Gimtrist publishes below
+# /gimtrist-run-builder/runs/<target>/, so force Vite builds to emit relative
+# asset URLs. The helper patches only this ephemeral source checkout.
+node "$(dirname "$0")/patch-vite-base.js" "$project_dir/package.json"
+
+marker="$(mktemp)"
+touch "$marker"
+case "$manager" in
+  pnpm) pnpm run build ;;
+  yarn) yarn build ;;
+  bun) bun run build ;;
+  *) npm run build ;;
+esac
 
 # Some frameworks require a separate static export after build.
 if node -e 'const p=require("./package.json");process.exit(p.scripts&&p.scripts.export?0:1)' >/dev/null 2>&1; then
-  "${runner[@]}" export || true
+  case "$manager" in
+    pnpm) pnpm run export || true ;;
+    yarn) yarn export || true ;;
+    bun) bun run export || true ;;
+    *) npm run export || true ;;
+  esac
 fi
 
-web_dir="$(find_web_output "$project_dir" dist build out public docs web www .output/public build/web 2>/dev/null || true)"
+web_dir="$(find_generated_web_output "$project_dir" "$marker" dist build out public docs web www .output/public build/web 2>/dev/null || true)"
+rm -f "$marker"
 if [[ -z "$web_dir" ]]; then
-  echo "Node build completed but produced no static index.html. Server-rendered-only applications are not browser-artifact compatible." >&2
+  echo "Node build completed but produced no generated static index.html. Gimtrist Run will not publish the repository source index as a false-success artifact." >&2
   exit 22
 fi
 copy_web_tree "$web_dir" "$output_dir"

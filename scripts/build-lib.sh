@@ -58,6 +58,31 @@ find_web_output() {
   return 1
 }
 
+# Compiled Node/web projects must publish generated output, never the original
+# source root. Prefer conventional output directories, then a newly-created
+# nested index.html from the current build.
+find_generated_web_output() {
+  local project_dir="$1"
+  local build_started_marker="$2"
+  shift 2
+  local candidate
+  for candidate in "$@"; do
+    if [[ -f "$project_dir/$candidate/index.html" ]]; then
+      printf '%s\n' "$project_dir/$candidate"
+      return 0
+    fi
+  done
+  local found
+  found="$(find "$project_dir" -mindepth 2 -maxdepth 7 -type f -name index.html \
+    ! -path '*/node_modules/*' ! -path '*/.git/*' ! -path '*/vendor/*' ! -path '*/test/*' ! -path '*/tests/*' \
+    -newer "$build_started_marker" -printf '%d %p\n' 2>/dev/null | sort -n | head -n1 | cut -d' ' -f2-)"
+  if [[ -n "$found" ]]; then
+    dirname "$found"
+    return 0
+  fi
+  return 1
+}
+
 copy_common_assets() {
   local project_dir="$1"
   local output_dir="$2"

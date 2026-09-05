@@ -30,6 +30,53 @@ test -f "$node_output/index.html"
 grep -q 'node fixture' "$node_output/index.html"
 echo 'PASS: node_web fixture build'
 
+# Artifact preparation must make root-relative HTML assets safe beneath the
+# GitHub Pages /runs/<target>/ subpath and reject uncompiled TS/TSX/JSX entrypoints.
+prep_fixture="$(mktemp -d)"
+trap 'rm -rf "$fixture" "$output" "$node_fixture" "$node_output" "$prep_fixture"' EXIT
+mkdir -p "$prep_fixture/assets"
+printf '%s\n' '<!doctype html><link rel="stylesheet" href="/style.css"><script src="/assets/app.js"></script>' > "$prep_fixture/index.html"
+printf '%s\n' 'body{}' > "$prep_fixture/style.css"
+printf '%s\n' 'console.log("ok")' > "$prep_fixture/assets/app.js"
+"$root/scripts/prepare-artifact.sh" "$prep_fixture"
+grep -q 'href="./style.css"' "$prep_fixture/index.html"
+grep -q 'src="./assets/app.js"' "$prep_fixture/index.html"
+test -f "$prep_fixture/404.html"
+echo 'PASS: artifact subpath preparation'
+
+bad_fixture="$(mktemp -d)"
+trap 'rm -rf "$fixture" "$output" "$node_fixture" "$node_output" "$prep_fixture" "$bad_fixture"' EXIT
+printf '%s\n' '<!doctype html><script type="module" src="/src/main.ts"></script>' > "$bad_fixture/index.html"
+if "$root/scripts/prepare-artifact.sh" "$bad_fixture" >/dev/null 2>&1; then
+  echo 'FAIL: uncompiled TypeScript entrypoint was accepted' >&2
+  exit 1
+fi
+echo 'PASS: uncompiled TypeScript artifact rejection'
+
+source_only_fixture="$(mktemp -d)"
+source_only_output="$(mktemp -d)"
+trap 'rm -rf "$fixture" "$output" "$node_fixture" "$node_output" "$prep_fixture" "$bad_fixture" "$source_only_fixture" "$source_only_output"' EXIT
+cat > "$source_only_fixture/package.json" <<'JSON'
+{"name":"source-only-fixture","private":true,"scripts":{"build":"node -e \"console.log('no generated web output')\""}}
+JSON
+printf '%s\n' '<!doctype html><script type="module" src="/src/main.ts"></script>' > "$source_only_fixture/index.html"
+mkdir -p "$source_only_fixture/src"
+printf '%s\n' 'console.log("source")' > "$source_only_fixture/src/main.ts"
+if "$root/scripts/build.sh" node_web "$source_only_fixture" "$source_only_output" >/dev/null 2>&1; then
+  echo 'FAIL: node_web fell back to publishing the source root' >&2
+  exit 1
+fi
+echo 'PASS: Node builder refuses source-root false success'
+
+vite_fixture="$(mktemp -d)"
+trap 'rm -rf "$fixture" "$output" "$node_fixture" "$node_output" "$prep_fixture" "$bad_fixture" "$source_only_fixture" "$source_only_output" "$vite_fixture"' EXIT
+cat > "$vite_fixture/package.json" <<'JSON'
+{"name":"vite-base-fixture","scripts":{"build":"tsc && vite build"}}
+JSON
+node "$root/scripts/patch-vite-base.js" "$vite_fixture/package.json" >/dev/null
+node -e 'const p=require(process.argv[1]); if(p.scripts.build!=="tsc && vite build --base ./") process.exit(1)' "$vite_fixture/package.json"
+echo 'PASS: Vite build base patch'
+
 if command -v go >/dev/null 2>&1; then
   go_fixture="$(mktemp -d)"; go_output="$(mktemp -d)"
   trap 'rm -rf "$fixture" "$output" "$node_fixture" "$node_output" "$go_fixture" "$go_output"' EXIT
@@ -55,6 +102,9 @@ grep -q "runner_profile:" "$workflow"
 for profile in static_web node_web phaser_web rust_macroquad_web rust_bevy_web rust_trunk_web rust_wasm_web python_pygbag_web flutter_web godot_web defold_web haxe_openfl_web emscripten_cmake_web java_teavm_web libgdx_web dotnet_blazor_web go_wasm_web kotlin_js_web elm_web; do
   grep -q "$profile" "$root/scripts/build.sh" || { echo "FAIL: missing profile $profile" >&2; exit 1; }
 done
+grep -q 'prepare-artifact.sh' "$workflow" || { echo 'FAIL: artifact preparation stage missing' >&2; exit 1; }
+grep -q 'patch-vite-base.js' "$root/scripts/build-node.sh" || { echo 'FAIL: Vite subpath-base enforcement missing' >&2; exit 1; }
+grep -q 'find_generated_web_output' "$root/scripts/build-node.sh" || { echo 'FAIL: Node generated-output guard missing' >&2; exit 1; }
 grep -q 'GIMTRIST_RUN_CALLBACK_SECRET' "$workflow"
 if grep -q 'callback_token' "$workflow"; then
   echo 'FAIL: callback secret/token must not be a workflow_dispatch input' >&2
