@@ -24,15 +24,15 @@ name: Gimtrist Run Build
         required: true
         default: HEAD
         type: string
+      project_path:
+        description: Project path within the repository
+        required: false
+        default: .
+        type: string
       runner_profile:
         description: Gimtrist Run runner profile
         required: true
-        type: choice
-        options:
-          - static_web
-          - phaser_web
-          - rust_macroquad_web
-          - self_test
+        type: string
       callback_url:
         description: Gimtrist Run result callback URL
         required: true
@@ -55,11 +55,16 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 35
     permissions:
       contents: read
     outputs:
       source_commit: ${{ steps.source_commit.outputs.commit }}
+      build_ok: ${{ steps.build_attempt.outputs.build_ok }}
+      failure_stage: ${{ steps.build_attempt.outputs.failure_stage }}
+      error_summary: ${{ steps.build_attempt.outputs.error_summary }}
+      artifact_bytes: ${{ steps.build_attempt.outputs.artifact_bytes }}
+      largest_file_bytes: ${{ steps.build_attempt.outputs.largest_file_bytes }}
     steps:
       - name: Checkout builder scripts
         uses: actions/checkout@v4
@@ -84,6 +89,26 @@ jobs:
           mkdir -p "$GITHUB_WORKSPACE/source"
           cp -a "$GITHUB_WORKSPACE/builder/fixtures/static/." "$GITHUB_WORKSPACE/source/"
 
+      - name: Set up Java 25 for Defold
+        if: ${{ inputs.runner_profile == 'defold_web' }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: Set up Java 21 for JVM web builders
+        if: ${{ inputs.runner_profile == 'java_teavm_web' || inputs.runner_profile == 'libgdx_web' || inputs.runner_profile == 'kotlin_js_web' }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set up Go for WebAssembly builds
+        if: ${{ inputs.runner_profile == 'go_wasm_web' }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: 'stable'
+
       - name: Capture source commit
         id: source_commit
         shell: bash
@@ -94,34 +119,81 @@ jobs:
             echo "commit=$(git -C source rev-parse HEAD)" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Build browser artifact
+      - name: Build and validate browser artifact
+        id: build_attempt
         shell: bash
+        env:
+          REQUESTED_PROFILE: ${{ inputs.runner_profile }}
+          PROJECT_PATH: ${{ inputs.project_path }}
         run: |
-          profile="${{ inputs.runner_profile }}"
+          set +e
+          profile="$REQUESTED_PROFILE"
           if [[ "$profile" == "self_test" ]]; then profile="static_web"; fi
-          bash builder/scripts/build.sh "$profile" "$GITHUB_WORKSPACE/source" "$GITHUB_WORKSPACE/output"
+          project_path="${PROJECT_PATH:-.}"
+          log="$RUNNER_TEMP/gimtrist-build.log"
+          : > "$log"
+          bash builder/scripts/build.sh "$profile" "$GITHUB_WORKSPACE/source" "$GITHUB_WORKSPACE/output" "$project_path" >"$log" 2>&1
+          rc=$?
+          build_ok=false
+          failure_stage=build
+          artifact_bytes=0
+          largest_file_bytes=0
 
-      - name: Preserve source license notices
-        shell: bash
-        run: bash builder/scripts/copy-license.sh "$GITHUB_WORKSPACE/source" "$GITHUB_WORKSPACE/output"
-
-      - name: Enforce Phase One artifact size limit
-        shell: bash
-        run: |
-          bytes="$(du -sb "$GITHUB_WORKSPACE/output" | awk '{print $1}')"
-          max_bytes=$((100 * 1024 * 1024))
-          if [[ "$bytes" -gt "$max_bytes" ]]; then
-            echo "Artifact is ${bytes} bytes; Phase One limit is ${max_bytes} bytes." >&2
-            exit 40
+          if [[ "$rc" -eq 0 ]]; then
+            bash builder/scripts/copy-license.sh "$GITHUB_WORKSPACE/source" "$GITHUB_WORKSPACE/output" >>"$log" 2>&1
+            rc=$?
+            failure_stage=license-preservation
           fi
 
-      - name: Generate artifact checksum manifest
-        shell: bash
-        run: |
-          cd "$GITHUB_WORKSPACE/output"
-          find . -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS
+          if [[ "$rc" -eq 0 && ! -f "$GITHUB_WORKSPACE/output/index.html" ]]; then
+            echo "Builder completed but output/index.html is missing." >>"$log"
+            rc=70
+            failure_stage=artifact-validation
+          fi
+
+          if [[ "$rc" -eq 0 ]]; then
+            artifact_bytes="$(du -sb "$GITHUB_WORKSPACE/output" | awk '{print $1}')"
+            largest_file_bytes="$(find "$GITHUB_WORKSPACE/output" -type f -printf '%s\n' | sort -nr | head -n1)"
+            artifact_bytes="${artifact_bytes:-0}"
+            largest_file_bytes="${largest_file_bytes:-0}"
+            max_artifact_bytes=$((900 * 1024 * 1024))
+            max_file_bytes=$((95 * 1024 * 1024))
+            if [[ "$artifact_bytes" -gt "$max_artifact_bytes" ]]; then
+              echo "Artifact is ${artifact_bytes} bytes; Gimtrist Run limit is ${max_artifact_bytes} bytes (900 MiB, leaving headroom under GitHub Pages' 1 GiB site limit)." >>"$log"
+              rc=71
+              failure_stage=artifact-size
+            elif [[ "$largest_file_bytes" -gt "$max_file_bytes" ]]; then
+              largest_file="$(find "$GITHUB_WORKSPACE/output" -type f -printf '%s %p\n' | sort -nr | head -n1 | cut -d' ' -f2-)"
+              echo "Largest artifact file is ${largest_file_bytes} bytes (${largest_file}); Gimtrist Run limits individual files to 95 MiB to remain below GitHub's 100 MiB Git object limit." >>"$log"
+              rc=72
+              failure_stage=artifact-file-size
+            fi
+          fi
+
+          if [[ "$rc" -eq 0 ]]; then
+            cd "$GITHUB_WORKSPACE/output"
+            find . -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS
+            build_ok=true
+            failure_stage=""
+          fi
+
+          echo "build_ok=$build_ok" >> "$GITHUB_OUTPUT"
+          echo "failure_stage=$failure_stage" >> "$GITHUB_OUTPUT"
+          echo "artifact_bytes=$artifact_bytes" >> "$GITHUB_OUTPUT"
+          echo "largest_file_bytes=$largest_file_bytes" >> "$GITHUB_OUTPUT"
+          delimiter="GTR_$(date +%s%N)"
+          echo "error_summary<<$delimiter" >> "$GITHUB_OUTPUT"
+          if [[ "$build_ok" == "true" ]]; then
+            echo "" >> "$GITHUB_OUTPUT"
+          else
+            tail -n 60 "$log" | tail -c 12000 >> "$GITHUB_OUTPUT"
+          fi
+          echo "$delimiter" >> "$GITHUB_OUTPUT"
+          cat "$log"
+          exit 0
 
       - name: Upload browser artifact
+        if: ${{ steps.build_attempt.outputs.build_ok == 'true' }}
         uses: actions/upload-artifact@v4
         with:
           name: gimtrist-run-${{ inputs.build_id }}
@@ -130,11 +202,17 @@ jobs:
           retention-days: 1
 
   publish:
-    if: ${{ success() }}
+    if: ${{ needs.build.outputs.build_ok == 'true' }}
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 35
     permissions:
       contents: write
+    outputs:
+      publish_ok: ${{ steps.publish_attempt.outputs.publish_ok }}
+      artifact_url: ${{ steps.publish_attempt.outputs.artifact_url }}
+      artifact_hash: ${{ steps.publish_attempt.outputs.artifact_hash }}
+      error_summary: ${{ steps.publish_attempt.outputs.error_summary }}
     steps:
       - name: Checkout builder repository
         uses: actions/checkout@v4
@@ -149,38 +227,73 @@ jobs:
           path: artifact
 
       - name: Publish to gh-pages branch
-        id: publish
+        id: publish_attempt
         shell: bash
         env:
           TARGET_ID: ${{ inputs.target_id }}
           BUILD_ID: ${{ inputs.build_id }}
           PAGES_BASE_URL: ${{ inputs.pages_base_url }}
         run: |
-          set -euo pipefail
+          set +e
+          log="$RUNNER_TEMP/gimtrist-publish.log"
+          : > "$log"
+          publish_ok=false
+          artifact_url=""
+          artifact_hash=""
           cd publisher
           git config user.name "Gimtrist Run Builder"
           git config user.email "run-builder@gimtrist.invalid"
           if git ls-remote --exit-code --heads origin gh-pages >/dev/null 2>&1; then
-            git fetch origin gh-pages
-            git checkout -B gh-pages origin/gh-pages
+            git fetch origin gh-pages >>"$log" 2>&1
+            git checkout -B gh-pages origin/gh-pages >>"$log" 2>&1
           else
-            git checkout --orphan gh-pages
-            git rm -rf . >/dev/null 2>&1 || true
+            git checkout --orphan gh-pages >>"$log" 2>&1
+            git rm -rf . >>"$log" 2>&1 || true
           fi
+          rc=$?
           target_path="runs/${TARGET_ID}"
-          rm -rf "$target_path"
-          mkdir -p "$target_path"
-          cp -a "$GITHUB_WORKSPACE/artifact/." "$target_path/"
-          touch .nojekyll
-          git add -A
-          git commit -m "Publish Gimtrist Run target ${TARGET_ID} build ${BUILD_ID}" || true
-          git push origin gh-pages
-          artifact_url="${PAGES_BASE_URL%/}/${target_path}/"
-          echo "artifact_url=${artifact_url}" >> "$GITHUB_OUTPUT"
-          artifact_hash="$(sha256sum "$target_path/SHA256SUMS" | awk '{print $1}')"
-          echo "artifact_hash=${artifact_hash}" >> "$GITHUB_OUTPUT"
+          if [[ "$rc" -eq 0 ]]; then
+            rm -rf "$target_path"
+            existing_bytes="$(find . -path './.git' -prune -o -type f -printf '%s\n' | awk '{s+=$1} END{print s+0}')"
+            incoming_bytes="$(du -sb "$GITHUB_WORKSPACE/artifact" | awk '{print $1}')"
+            max_pages_bytes=$((950 * 1024 * 1024))
+            projected=$((existing_bytes + incoming_bytes))
+            if [[ "$projected" -gt "$max_pages_bytes" ]]; then
+              echo "Publishing this artifact would grow the active GitHub Pages site to ${projected} bytes; Gimtrist Run caps the live site at 950 MiB to stay below GitHub Pages' 1 GiB site limit." >>"$log"
+              rc=80
+            fi
+          fi
+          if [[ "$rc" -eq 0 ]]; then
+            mkdir -p "$target_path"
+            cp -a "$GITHUB_WORKSPACE/artifact/." "$target_path/"
+            touch .nojekyll
+            git add -A >>"$log" 2>&1
+            git commit -m "Publish Gimtrist Run target ${TARGET_ID} build ${BUILD_ID}" >>"$log" 2>&1 || true
+            git push origin gh-pages >>"$log" 2>&1
+            rc=$?
+          fi
+          if [[ "$rc" -eq 0 ]]; then
+            artifact_url="${PAGES_BASE_URL%/}/${target_path}/"
+            artifact_hash="$(sha256sum "$target_path/SHA256SUMS" | awk '{print $1}')"
+            publish_ok=true
+          fi
+          echo "publish_ok=$publish_ok" >> "$GITHUB_OUTPUT"
+          echo "artifact_url=$artifact_url" >> "$GITHUB_OUTPUT"
+          echo "artifact_hash=$artifact_hash" >> "$GITHUB_OUTPUT"
+          delimiter="GTR_$(date +%s%N)"
+          echo "error_summary<<$delimiter" >> "$GITHUB_OUTPUT"
+          if [[ "$publish_ok" == "true" ]]; then echo "" >> "$GITHUB_OUTPUT"; else tail -n 60 "$log" | tail -c 12000 >> "$GITHUB_OUTPUT"; fi
+          echo "$delimiter" >> "$GITHUB_OUTPUT"
+          cat "$log"
+          exit 0
 
-      - name: Report success to Gimtrist
+  report:
+    if: ${{ always() }}
+    needs: [build, publish]
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Report result to Gimtrist
         shell: bash
         env:
           CALLBACK_URL: ${{ inputs.callback_url }}
@@ -188,59 +301,52 @@ jobs:
           CALLBACK_SECRET: ${{ secrets.GIMTRIST_RUN_CALLBACK_SECRET }}
           BUILD_ID: ${{ inputs.build_id }}
           SOURCE_COMMIT: ${{ needs.build.outputs.source_commit }}
-          ARTIFACT_URL: ${{ steps.publish.outputs.artifact_url }}
-          ARTIFACT_HASH: ${{ steps.publish.outputs.artifact_hash }}
+          BUILD_OK: ${{ needs.build.outputs.build_ok }}
+          BUILD_STAGE: ${{ needs.build.outputs.failure_stage }}
+          BUILD_ERROR: ${{ needs.build.outputs.error_summary }}
+          ARTIFACT_BYTES: ${{ needs.build.outputs.artifact_bytes }}
+          LARGEST_FILE_BYTES: ${{ needs.build.outputs.largest_file_bytes }}
+          PUBLISH_OK: ${{ needs.publish.outputs.publish_ok }}
+          PUBLISH_ERROR: ${{ needs.publish.outputs.error_summary }}
+          ARTIFACT_URL: ${{ needs.publish.outputs.artifact_url }}
+          ARTIFACT_HASH: ${{ needs.publish.outputs.artifact_hash }}
           RUN_ID: ${{ github.run_id }}
           REPOSITORY: ${{ github.repository }}
         run: |
           set -euo pipefail
           log_url="https://github.com/${REPOSITORY}/actions/runs/${RUN_ID}"
+          status=failed
+          stage="$BUILD_STAGE"
+          error="$BUILD_ERROR"
+          if [[ "$BUILD_OK" == "true" && "$PUBLISH_OK" == "true" ]]; then
+            status=success
+            stage=""
+            error=""
+          elif [[ "$BUILD_OK" == "true" ]]; then
+            stage=publish
+            error="$PUBLISH_ERROR"
+          fi
           payload="$(jq -n \
             --arg build_id "$BUILD_ID" \
             --arg callback_nonce "$CALLBACK_NONCE" \
-            --arg status "success" \
+            --arg status "$status" \
+            --arg stage "$stage" \
+            --arg error "$error" \
             --arg source_commit "$SOURCE_COMMIT" \
             --arg artifact_url "$ARTIFACT_URL" \
             --arg artifact_hash "$ARTIFACT_HASH" \
+            --arg artifact_bytes "${ARTIFACT_BYTES:-0}" \
+            --arg largest_file_bytes "${LARGEST_FILE_BYTES:-0}" \
             --arg external_job_id "$RUN_ID" \
             --arg log_url "$log_url" \
-            '{build_id:$build_id,callback_nonce:$callback_nonce,status:$status,source_commit:$source_commit,artifact_url:$artifact_url,artifact_hash:$artifact_hash,external_job_id:$external_job_id,log_url:$log_url}')"
+            '{build_id:$build_id,callback_nonce:$callback_nonce,status:$status,stage:$stage,error:$error,source_commit:$source_commit,artifact_url:$artifact_url,artifact_hash:$artifact_hash,artifact_bytes:$artifact_bytes,largest_file_bytes:$largest_file_bytes,external_job_id:$external_job_id,log_url:$log_url}')"
           signature="$(printf '%s' "$payload" | openssl dgst -sha256 -hmac "$CALLBACK_SECRET" -hex | awk '{print $2}')"
           curl --fail-with-body --retry 3 --retry-delay 5 \
             -H 'Content-Type: application/json' \
             -H "X-Gimtrist-Run-Signature: sha256=${signature}" \
             --data "$payload" \
             "$CALLBACK_URL"
-
-  report-failure:
-    if: ${{ always() && (needs.build.result == 'failure' || needs.publish.result == 'failure') }}
-    needs: [build, publish]
-    runs-on: ubuntu-latest
-    permissions: {}
-    steps:
-      - name: Report failure to Gimtrist
-        shell: bash
-        env:
-          CALLBACK_URL: ${{ inputs.callback_url }}
-          CALLBACK_NONCE: ${{ inputs.callback_nonce }}
-          CALLBACK_SECRET: ${{ secrets.GIMTRIST_RUN_CALLBACK_SECRET }}
-          BUILD_ID: ${{ inputs.build_id }}
-          RUN_ID: ${{ github.run_id }}
-          REPOSITORY: ${{ github.repository }}
-        run: |
-          set -euo pipefail
-          log_url="https://github.com/${REPOSITORY}/actions/runs/${RUN_ID}"
-          payload="$(jq -n \
-            --arg build_id "$BUILD_ID" \
-            --arg callback_nonce "$CALLBACK_NONCE" \
-            --arg status "failed" \
-            --arg external_job_id "$RUN_ID" \
-            --arg log_url "$log_url" \
-            --arg error "Gimtrist Run build failed. See the GitHub Actions log." \
-            '{build_id:$build_id,callback_nonce:$callback_nonce,status:$status,external_job_id:$external_job_id,log_url:$log_url,error:$error}')"
-          signature="$(printf '%s' "$payload" | openssl dgst -sha256 -hmac "$CALLBACK_SECRET" -hex | awk '{print $2}')"
-          curl --fail-with-body --retry 3 --retry-delay 5 \
-            -H 'Content-Type: application/json' \
-            -H "X-Gimtrist-Run-Signature: sha256=${signature}" \
-            --data "$payload" \
-            "$CALLBACK_URL"
+          if [[ "$status" != "success" ]]; then
+            echo "Gimtrist Run failed during ${stage:-unknown}: ${error:-no detail}" >&2
+            exit 1
+          fi
