@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Lives in public/, so Vite copies it to the build root as-is. -->
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <title>PhaserGame — Phaser 4</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        background: #1a1a2e;
+      }
+
+      /* Center the Phaser canvas in the viewport. */
+      #game {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #game canvas {
+        display: block;
+      }
+    </style>
+    <script type="module" crossorigin src="./assets/index-Cp26-EZk.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/phaser-P1E8uaLi.js">
+  </head>
+  <body>
+    <div id="game"></div>
+  </body>
+</html>
