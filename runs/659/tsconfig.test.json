@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "noEmit": true,
+    "rootDir": "../.."
+  },
+  "include": [
+    "../../adapters/ait/src/host.ts",
+    "../../adapters/ait/src/host.test.ts",
+    "../../adapters/ait/src/lifecycle.ts"
+  ]
+}
