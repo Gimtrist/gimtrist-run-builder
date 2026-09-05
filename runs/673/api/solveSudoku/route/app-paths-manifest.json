@@ -1,0 +1,3 @@
+{
+  "/api/solveSudoku/route": "app/api/solveSudoku/route.js"
+}
