@@ -1,0 +1,2685 @@
+<!doctype html>
+<!-- EQBuddy Mobile (Beta). Self-contained: no CDN, no fonts, no requests to
+     anywhere but the PC that served it. The pairing token rides the URL FRAGMENT
+     (never sent over HTTP); this page presents it on the WebSocket connect. Without a
+     token the page is only the pairing explainer — no data exists here to see. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#16130e" id="themeColor">
+<!-- Add to Home Screen: the durable version of "make it full screen" — the launcher
+     opens it with no browser chrome at all, which is the only reliable answer on iOS
+     (Safari's fullscreen API is not one on iPhone). -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="EQBuddy">
+<title>EQBuddy Mobile (Beta)</title>
+<style>
+  /* The FALLBACK palette only — ParchmentBrass, the desktop default — shown for the
+     handful of frames before the first snapshot arrives. Every value here is replaced
+     by the theme section of that snapshot (CompanionTheme.cs), so a custom desktop
+     theme reaches the phone without this file knowing anything about it. */
+  :root {
+    --bg:#16130e; --panel:rgba(255,255,255,0.149); --panel-hover:rgba(255,217,140,0.2);
+    --border:rgba(201,162,39,0.4); --text:#ede4d3; --dim:#9c927f;
+    --accent:#e3b341; --good:#7fbf5f; --bad:#d9634f; --warn:#e0a030;
+    --popup:#262119; --good-wash:rgba(127,191,95,0.2); --warn-wash:rgba(224,160,48,0.2);
+    --incoming:#6fa8b8; --chart-you:#b4892c; --chart-pet:#5ca352;
+    --chart-incoming:#4796db; --chart-crit:#f0bc55;
+    --hairline:rgba(227,179,65,0.149); --track:rgba(227,179,65,0.118);
+    --raised:rgba(255,255,255,0.224); --accent-deep:#886b26; --accent-wash:rgba(227,179,65,0.2);
+  }
+  * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  html,body { height:100%; }
+  body {
+    background:var(--bg); color:var(--text);
+    font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+  header {
+    display:flex; align-items:center; gap:10px;
+    padding:14px 16px 10px; border-bottom:1px solid var(--hairline);
+    position:sticky; top:0; background:var(--bg); z-index:4;
+  }
+  #dot { width:10px; height:10px; border-radius:50%; background:var(--bad); flex:none; transition:background .3s; }
+  #dot.ok { background:var(--good); }
+  #who { font-weight:600; font-size:17px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  #zone { color:var(--dim); font-size:13px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  header button.tool {
+    flex:none; background:none; border:1px solid var(--hairline);
+    color:var(--dim); border-radius:8px; font-size:18px; width:40px; height:40px; cursor:pointer;
+  }
+  #full { margin-left:auto; }
+  /* "You asked for fullscreen last time" — browsers refuse to enter without a fresh
+     tap, so the button asks for one instead of failing silently. */
+  #full.want { border-color:var(--accent); color:var(--accent); }
+  #full.on { color:var(--accent); }
+  #banner {
+    display:none; background:var(--warn); color:var(--bg); font-weight:600;
+    padding:8px 16px; font-size:14px; position:sticky; top:0; z-index:5;
+  }
+  #banner.show { display:block; }
+  /* What an edit did, in the PC's own words. Its own element, not the staleness
+     banner: "point removed" and "reconnecting" are different kinds of news and must
+     never overwrite one another. Fixed to the bottom so it can't shove the map
+     around mid-tap, and it fades itself out. */
+  #notice {
+    position:fixed; left:50%; transform:translateX(-50%); bottom:16px; z-index:9;
+    background:var(--popup); color:var(--text); border:1px solid var(--accent);
+    border-radius:10px; padding:9px 14px; font-size:12.5px; max-width:min(92vw,460px);
+    opacity:0; pointer-events:none; transition:opacity .18s ease;
+  }
+  #notice.show { opacity:.97; }
+  main { padding:10px 12px 24px; max-width:640px; margin:0 auto; }
+
+  /* ---- screens (per-device surface picker) ---- */
+  #screens {
+    display:none; background:var(--panel); border:1px solid var(--hairline);
+    border-radius:12px; padding:12px 14px; margin:10px 0;
+  }
+  #screens.show { display:block; }
+  #screens h2 { font-size:13px; color:var(--dim); text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; }
+  #screens .row { display:flex; align-items:center; gap:10px; padding:10px 0; border-top:1px solid var(--hairline); }
+  #screens .row:first-of-type { border-top:none; }
+  #screens label { flex:1; font-size:16px; display:flex; align-items:center; gap:10px; }
+  #screens input[type=checkbox] { width:22px; height:22px; accent-color:var(--accent); }
+  #screens button.mv {
+    background:none; border:1px solid var(--hairline); color:var(--text);
+    border-radius:8px; width:38px; height:38px; font-size:16px; cursor:pointer;
+  }
+  #screens button.mv:disabled { opacity:.3; }
+  #screens .note { color:var(--dim); font-size:12px; margin-top:8px; }
+
+  section.surface { margin-top:14px; min-width:0; }
+  section.surface > h2 {
+    font-size:13px; color:var(--accent); text-transform:uppercase;
+    letter-spacing:.08em; margin:0 2px 6px; display:flex; gap:8px; align-items:baseline;
+  }
+  section.surface > h2 .count { color:var(--dim); font-size:12px; letter-spacing:0; text-transform:none; }
+  .card { background:var(--panel); border:1px solid var(--hairline); border-radius:12px; }
+
+  /* ---- TABLET: the picked screens become panels side by side ----
+     Same device state, two presentations: below the breakpoint the page is the phone
+     stack it always was; above it, everything picked is on screen at once and each
+     panel scrolls inside itself, so a timer list and a loot list don't fight over one
+     page scroll. The map is the primary panel and takes the extra room. */
+  @media (min-width:900px) {
+    main { max-width:1600px; padding:12px 14px 20px; }
+    #sections {
+      display:grid; grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px; align-items:start;
+    }
+    section.surface { margin-top:0; display:flex; flex-direction:column; min-height:0;
+                      max-height:calc(100dvh - 140px); }
+    section.surface > .body { overflow:auto; min-height:0; flex:1 1 auto; -webkit-overflow-scrolling:touch; }
+    section.surface.wide { grid-column:1 / -1; }
+    /* `wide` is a LAYOUT span; `fills` is "this body draws itself and must not
+       scroll" (the map, which pans internally and would otherwise fall back to an
+       SVG's default height). They were one class until the quest list inherited the
+       map's clipping and could not be scrolled at all. */
+    section.surface.fills > .body { display:flex; flex-direction:column; overflow:hidden; }
+  }
+  @media (min-width:1280px) {
+    #sections { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    section.surface.wide { grid-column:span 2; grid-row:span 2; max-height:calc(100dvh - 140px); }
+  }
+
+  /* ---- spawn timers ---- */
+  ul.timers { list-style:none; }
+  .timers li {
+    display:flex; align-items:baseline; gap:10px;
+    background:var(--panel); border:1px solid var(--hairline);
+    border-radius:12px; padding:14px; margin-bottom:8px;
+  }
+  .timers .name { flex:1; min-width:0; }
+  .timers .mob { font-size:17px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .timers .tz { font-size:12px; color:var(--dim); }
+  .timers .left { font-size:24px; font-variant-numeric:tabular-nums; font-weight:700; flex:none; }
+  .timers li.due { border-color:var(--accent); background:var(--accent-wash); }
+  .timers li.due .left { color:var(--accent); }
+  .timers li.imminent .left { color:var(--warn); animation:pulse 1.1s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity:.35; } }
+  .timers li.unknown .left { color:var(--dim); font-size:14px; font-weight:400; }
+  .empty { color:var(--dim); text-align:center; padding:28px 10px; font-size:15px; }
+  .gated { color:var(--dim); text-align:center; padding:16px 10px; font-size:14px; font-style:italic; }
+
+  /* ---- in-game command prompt (David, 2026-08-20) ----
+     The phone can't paste into the game on the PC, so this is SELECTABLE TEXT and not a
+     copy button: `user-select:all` makes one tap-and-hold grab the whole command instead
+     of a word of it, and the monospace box says "this is literal text you retype".
+     Colours are tokens, so it follows the desktop's palette like everything else. */
+  .cmd { margin:10px 0 2px; }
+  .cmd .lead { color:var(--dim); font-size:12.5px; }
+  .cmd code {
+    display:block; margin:5px 0; padding:9px 11px;
+    background:var(--panel); border:1px solid var(--hairline); border-radius:9px;
+    color:var(--accent); font-size:14px; line-height:1.35;
+    font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    -webkit-user-select:all; user-select:all;
+    /* A long command must scroll inside its own box rather than widening the card —
+       the page body never scrolls sideways (trap 5's neighbourhood). */
+    overflow-x:auto; white-space:pre;
+  }
+  .cmd .after { color:var(--dim); font-size:12px; }
+
+  /* ---- session strip ---- */
+  .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+  .stats .stat { background:var(--panel); border:1px solid var(--hairline); border-radius:12px; padding:10px 4px; text-align:center; }
+  .stats .v { font-size:20px; font-weight:700; font-variant-numeric:tabular-nums; }
+  .stats .k { font-size:11px; color:var(--dim); text-transform:uppercase; letter-spacing:.05em; }
+
+  /* ---- mez chips ---- */
+  ul.chips { list-style:none; display:flex; flex-wrap:wrap; gap:8px; }
+  .chips li {
+    background:var(--raised); border:1px solid var(--border); border-radius:10px;
+    padding:8px 12px; min-width:130px; position:relative; overflow:hidden;
+  }
+  .chips li.warn { border-color:var(--warn); }
+  .chips .n { font-size:15px; font-weight:600; }
+  .chips .t { font-size:20px; font-variant-numeric:tabular-nums; color:var(--accent); }
+  .chips li.warn .t { color:var(--warn); }
+  .chips .d { font-size:11px; color:var(--dim); }
+  .chips .gauge { position:absolute; left:0; bottom:0; height:3px; background:var(--accent); }
+  .chips li.warn .gauge { background:var(--warn); }
+
+  /* ---- rows (buffs, combat, loot, unlocks, checklists) ---- */
+  ul.rows { list-style:none; }
+  .rows li {
+    display:flex; align-items:center; gap:10px; padding:9px 12px;
+    border-bottom:1px solid var(--hairline); position:relative;
+  }
+  .rows li:last-child { border-bottom:none; }
+  .rows .rn { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:15px; }
+  .rows .rv { flex:none; font-size:12px; color:var(--dim); font-variant-numeric:tabular-nums; }
+  .rows .bar { position:absolute; left:0; bottom:0; height:2px; background:var(--chart-you); opacity:.75; }
+  .rows .sub { display:block; font-size:11px; color:var(--dim); overflow:hidden; text-overflow:ellipsis; }
+  .rows li.active .rn { color:var(--good); }
+  .rows li.expiring .rn { color:var(--accent); }
+  .rows li.missing .rn { color:var(--warn); }
+  .rows li.notSeen .rn { color:var(--dim); font-style:italic; }
+  h3.group {
+    font-size:12px; color:var(--dim); text-transform:uppercase; letter-spacing:.05em;
+    padding:10px 12px 4px; display:flex; gap:8px; align-items:baseline;
+  }
+  h3.group .note { color:var(--accent); text-transform:none; letter-spacing:0; font-size:11px; }
+  .scope { display:flex; gap:6px; padding:8px 10px 4px; }
+  .scope button {
+    background:none; border:1px solid var(--hairline); color:var(--dim);
+    border-radius:8px; padding:6px 12px; font-size:13px; cursor:pointer;
+  }
+  .scope button.on { border-color:var(--accent); color:var(--accent); background:var(--accent-wash); }
+  .sub-head { font-size:12px; color:var(--dim); padding:2px 12px 8px; }
+
+  /* ---- checklist ticks ---- */
+  .rows li.tickable { cursor:pointer; }
+  .rows input[type=checkbox] { width:22px; height:22px; flex:none; accent-color:var(--accent); }
+  .rows li.done .rn { color:var(--dim); text-decoration:line-through; }
+
+  /* ---- quests ----
+     The desktop quest window's shapes, in page clothes: tab TILES (selected = the
+     accent fills the tile and the label inverts onto it — what makes a tab read as a
+     tab at a glance), a class chip row under them, one search box as the way in, and
+     one card per quest. All colors ride the theme variables, so a custom desktop
+     palette reaches these too. */
+  .qtabs { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
+  .qtab { display:flex; align-items:baseline; gap:7px; border:1px solid var(--border);
+          background:var(--raised); color:var(--text); border-radius:9px; padding:9px 15px;
+          font-size:14px; font-weight:600; cursor:pointer; }
+  .qtab .badge { font-size:11px; color:var(--dim); }
+  .qtab.on { background:var(--accent); border-color:var(--accent); color:var(--bg); }
+  .qtab.on .badge { color:var(--bg); opacity:.85; }
+  .qsearch { display:flex; gap:6px; margin-bottom:8px; }
+  .qsearch input { flex:1; min-width:0; background:var(--panel); border:1px solid var(--border);
+                   border-radius:9px; color:var(--text); font-size:15px; padding:9px 12px; }
+  .qsearch input::placeholder { color:var(--dim); }
+  .qsearch button { background:var(--raised); border:1px solid var(--border); color:var(--text);
+                    border-radius:9px; padding:0 14px; font-size:13px; cursor:pointer; white-space:nowrap; }
+  .qchips { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:8px; }
+  .qchip { border:1px solid var(--border); background:var(--raised); color:var(--dim);
+           border-radius:12px; padding:6px 13px; font-size:12px; cursor:pointer; }
+  .qchip.on { background:var(--accent); border-color:var(--accent); color:var(--bg); }
+  .qpick { display:none; background:var(--popup); border:1px solid var(--border);
+           border-radius:10px; padding:10px 12px; margin-bottom:8px; }
+  .qpick.show { display:block; }
+  .qpick .cols { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:2px 10px; }
+  .qpick label { display:flex; align-items:center; gap:8px; font-size:14px; padding:4px 0; }
+  .qpick input { width:20px; height:20px; accent-color:var(--accent); }
+  .qpick .note { color:var(--dim); font-size:11.5px; margin-top:6px; }
+  .qscope { color:var(--dim); font-size:11.5px; margin:0 2px 8px; }
+  .qscope:empty { display:none; }
+  .qcard { background:var(--panel); border:1px solid var(--hairline); border-radius:11px;
+           padding:10px 12px; margin-bottom:7px; }
+  .qcard.ready { border-color:var(--good); }
+  .qcard.hidden { opacity:.55; }
+  .qhead { display:flex; align-items:baseline; gap:8px; }
+  .qname { flex:1; min-width:0; color:var(--accent); font-size:14.5px; font-weight:600;
+           overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-decoration:none; }
+  .qcount { flex:none; font-size:13px; font-weight:700; color:var(--dim); }
+  .qcount.some { color:var(--accent); }
+  .qcount.ready { color:var(--good); }
+  /* A pin is a 44px-ish tap target dressed as a small glyph. */
+  .qpin { flex:none; font-size:15px; cursor:pointer; opacity:.35; padding:4px 6px; margin:-4px -6px -4px 0; }
+  .qpin.on { opacity:1; }
+  .qmeta { color:var(--dim); font-size:11.5px; margin-top:2px;
+           overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .qrewards { color:var(--dim); font-size:11.5px; margin-top:2px; }
+  .qrewards b { color:var(--text); font-weight:500; }
+  .qitem { font-size:12.5px; margin:2px 0 0 6px; color:var(--dim); }
+  .qitem.met { color:var(--good); }
+  .qitem.some { color:var(--text); }
+  .qnote { color:var(--dim); font-size:11.5px; font-style:italic; margin:2px 0 0 6px; }
+  .qmore { color:var(--dim); font-size:12px; padding:8px 4px; }
+
+  /* ---- map ---- */
+  /* The map and its named list, side by side, as the desktop map window docks them.
+     On a phone the row wraps to a column and the list simply follows the map. */
+  .maprow { display:flex; gap:10px; min-height:0; flex:1 1 auto; }
+  .mapwrap { position:relative; background:var(--popup); border:1px solid var(--hairline);
+             border-radius:12px; overflow:hidden; height:min(60dvh,420px); flex:1 1 auto; min-width:0; }
+  /* On a tablet the map is the panel worth the room: the section claims a tall slot
+     and the map fills whatever the header leaves. */
+  @media (min-width:900px) {
+    section.surface.fills { min-height:min(72dvh,620px); }
+    section.surface.fills .mapwrap { height:auto; flex:1 1 auto; min-height:260px; }
+  }
+  /* Absolutely positioned AND sized: an <svg> with no viewBox falls back to its
+     300×150 intrinsic size whenever a percentage height can't resolve, and inset
+     alone doesn't stretch a replaced element. Against the positioned .mapwrap the
+     percentages always resolve. */
+  .mapwrap svg { position:absolute; inset:0; width:100%; height:100%; display:block; touch-action:none; }
+  /* Wraps and stays inside the panel: the row grew a fifth button (⋯) and a narrow
+     phone had it running off the edge, taking "fit the whole zone" with it. */
+  .mapctl { position:absolute; right:8px; bottom:8px; display:flex; gap:6px; z-index:2;
+            flex-wrap:wrap; justify-content:flex-end; max-width:calc(100% - 16px); }
+  .mapctl button {
+    background:var(--popup); border:1px solid var(--border); color:var(--text);
+    border-radius:8px; width:40px; height:40px; font-size:15px; cursor:pointer; opacity:.92;
+  }
+  .maptip { position:absolute; left:8px; top:8px; right:56px; font-size:11px; color:var(--dim);
+            background:var(--popup); border-radius:8px; padding:4px 8px; opacity:.9; z-index:2;
+            overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  text.poi { font-size:11px; }
+
+  /* ---- the named list beside the map ----
+     A portrait zone fitted into a landscape panel uses about a third of its width; the
+     rest was dead band. The desktop map window spends exactly that space on this list,
+     so the tablet does too — and because the map is height-constrained there, the list
+     costs the drawing nothing. Hidden below the tablet breakpoint, where there is no
+     spare width to spend and the phone can pick the Spawn timers screen instead. */
+  .mapside { display:none; }
+  @media (min-width:900px) {
+    .mapside { display:flex; flex-direction:column; width:clamp(190px,26%,300px);
+               background:var(--panel); border:1px solid var(--hairline);
+               border-radius:12px; overflow:hidden; }
+    .mapside h3 { font-size:11px; color:var(--accent); text-transform:uppercase;
+                  letter-spacing:.07em; padding:8px 10px 6px; }
+    .mapside .rows { overflow:auto; padding:0 8px 8px; flex:1 1 auto; min-height:0; }
+    .mapside .none { color:var(--dim); font-size:11.5px; padding:0 2px 8px; line-height:1.45; }
+    .mapside .row { border:1px solid var(--hairline); border-radius:9px;
+                    padding:7px 9px; margin-bottom:6px; background:var(--popup); }
+    .mapside .row.due { border-color:var(--bad); }
+    .mapside .mob { font-size:11.5px; font-weight:600; overflow:hidden;
+                    text-overflow:ellipsis; white-space:nowrap; }
+    .mapside .row.due .mob { color:var(--warn); }
+    .mapside .camp { font-size:9.5px; color:var(--dim); margin-top:1px;
+                     overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .mapside .gauge { display:flex; align-items:center; gap:7px; margin-top:5px; }
+    .mapside .pill { font-size:10.5px; font-weight:700; color:var(--accent);
+                     background:var(--track,var(--hairline)); border-radius:4px; padding:1px 7px 2px; }
+    .mapside .row.due .pill { color:#fff; background:var(--bad); }
+    .mapside .track { flex:1 1 auto; height:3px; border-radius:2px;
+                      background:var(--track,var(--hairline)); overflow:hidden; }
+    .mapside .fill { height:100%; background:var(--accent); border-radius:2px; }
+    .mapside .row.due .fill { background:var(--bad); }
+  }
+  /* Curation: a tapped spawn point raises an action bar along the bottom of the map.
+     Tap-to-select rather than long-press — a long press is invisible until you have
+     already discovered it, and it gives you nothing to back out of. This bar names
+     what you picked, offers what the desktop's right-click offers, and its ✕ is the
+     way out. It sits ABOVE the zoom row rather than over it — being unable to zoom
+     while a point is selected would make the bar something to dismiss rather than
+     something to use. */
+  .mapsel { position:absolute; left:8px; right:8px; bottom:56px; z-index:3;
+            background:var(--popup); border:1px solid var(--border); border-radius:10px;
+            padding:8px 10px; display:none; }
+  .mapsel.show { display:block; }
+  .mapsel .who { font-size:12px; color:var(--text); margin-bottom:7px;
+                 overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .mapsel .who b { color:var(--accent); }
+  .mapsel .acts { display:flex; gap:6px; flex-wrap:wrap; }
+  .mapsel button { background:var(--panel); border:1px solid var(--border); color:var(--text);
+                   border-radius:8px; padding:8px 12px; font-size:12px; cursor:pointer;
+                   min-height:38px; }
+  .mapsel button.danger { color:var(--bad); border-color:var(--bad); }
+  .mapsel button.confirmstep { color:var(--warn); border-color:var(--warn); }
+  /* The selected dot, so it is obvious WHICH point the bar is talking about. */
+  circle.picked { stroke:var(--text); }
+  #pair { display:none; padding:40px 24px; text-align:center; }
+  #pair.show { display:block; }
+  #pair h1 { color:var(--accent); font-size:22px; margin-bottom:14px; }
+  #pair p { color:var(--dim); margin-bottom:10px; font-size:15px; }
+  footer { color:var(--dim); font-size:11px; text-align:center; padding:8px 16px 20px; }
+
+  /* ---- chrome-free display: fullscreen, or a Home Screen launch ----
+     You go fullscreen on a propped-up tablet to LOOK at something, so the page stops
+     spending height on furniture: the footer tip has said its piece by then, and the
+     header shrinks to the three things still worth a glance — connected, who, where.
+     David, 2026-08-14: "fullscreen on the tablet, there is still a lot of wasted space
+     at the header and footer when looking just at the map". */
+  html.lean header { padding:6px 12px; }
+  html.lean #who { font-size:14px; }
+  html.lean #zone { font-size:11.5px; }
+  html.lean header button.tool { width:34px; height:34px; font-size:15px; }
+  html.lean footer { display:none; }
+  html.lean main { padding-top:8px; padding-bottom:8px; }
+  /* One screen picked: it gets the whole viewport rather than a fixed slab with dead
+     page under it. Phone as well as tablet — a phone showing only the map had a 420px
+     map and half a screen of nothing under it. Only in the SOLO case; with several
+     panels the grid stays content-sized and the page scrolls, which is what a stack of
+     lists wants. */
+  body.solo { display:flex; flex-direction:column; height:100dvh; overflow:hidden; }
+  /* width:100% is load-bearing: main carries `margin:0 auto`, and auto margins on a
+     flex item's cross axis switch off the stretch that would otherwise size it — it
+     collapses to its content and takes the map down with it. */
+  body.solo main { flex:1 1 auto; min-height:0; display:flex; flex-direction:column; width:100%; }
+  body.solo #sections { flex:1 1 auto; min-height:0; align-items:stretch; }
+  /* Below the tablet breakpoint #sections is a plain block, so nothing hands the lone
+     section a height and the map keeps its min-height with dead page beneath. A column
+     flex box here is what lets it actually fill. (Above the breakpoint it is a grid,
+     and align-items:stretch above does the same job.) */
+  @media (max-width:899px) {
+    body.solo #sections { display:flex; flex-direction:column; }
+    body.solo section.surface { flex:1 1 auto; }
+  }
+  body.solo section.surface { max-height:none; min-height:0; display:flex; flex-direction:column; }
+  /* Solo takes the page's own scrollbar away (body is a fixed-height flex column), so
+     the lone panel's body has to provide one — otherwise a list longer than the screen
+     is simply unreachable. Only a `fills` panel clips instead, because it draws and
+     pans itself. */
+  body.solo section.surface > .body { flex:1 1 auto; min-height:0; overflow:auto; -webkit-overflow-scrolling:touch; }
+  body.solo section.surface.fills > .body { display:flex; flex-direction:column; overflow:hidden; }
+  /* The map stops being a fixed-height box and simply takes what is left. */
+  body.solo .mapwrap { height:auto; flex:1 1 auto; min-height:200px; }
+  /* PULL TO REFRESH, for solo mode only.
+
+     `body.solo` is a fixed-height flex column with overflow:hidden, so the DOCUMENT never
+     scrolls - and the browser's own pull-to-refresh has nothing to attach to. With two or
+     more panels the page scrolls normally and the native gesture works, which is exactly
+     the asymmetry bjstrange reported (#222): "pull-down refresh should work when only one
+     card is selected, the same as with two or more."
+
+     This is trap 9 again, one class over. `solo` means BOTH "the lone panel fills the
+     viewport" AND "the page itself never scrolls" - and the second meaning quietly took a
+     gesture away. The layout is right; what was missing is that solo has to provide the
+     gesture it displaced.
+
+     Drawn, not silent: a hidden gesture that works is only marginally better than one that
+     does not, because nobody finds it. The tab shows what will happen and follows the
+     finger. */
+  #pull {
+    position:fixed; left:50%; top:0; transform:translate(-50%,-100%);
+    z-index:40; padding:6px 14px; border-radius:0 0 12px 12px;
+    background:var(--panel); color:var(--dim); font-size:13px;
+    border:1px solid var(--hairline); border-top:none; white-space:nowrap;
+    pointer-events:none; opacity:0;
+  }
+  #pull.on { opacity:1; }
+  #pull.ready { color:var(--text); }
+</style>
+</head>
+<body>
+<div id="banner"></div>
+<div id="pull"></div>
+<div id="notice" role="status" aria-live="polite"></div>
+<header>
+  <div id="dot"></div>
+  <div style="min-width:0">
+    <div id="who">EQBuddy</div>
+    <div id="zone">connecting…</div>
+  </div>
+  <button id="full" class="tool" title="Fullscreen" aria-label="Fullscreen">⛶</button>
+  <button id="gear" class="tool" title="Choose screens" aria-label="Choose screens">⚙</button>
+</header>
+
+<div id="pair">
+  <h1>EQBuddy Mobile (Beta)</h1>
+  <p>This page needs a pairing code to show anything.</p>
+  <p>On your PC, open EQBuddy → <b>Options → Behavior → EQBuddy Mobile</b> and scan the QR code there — it carries the code for you.</p>
+  <p>Nothing is shown, stored, or sent without it.</p>
+</div>
+
+<main id="app" style="display:none">
+  <div id="screens">
+    <h2>Screens on this device</h2>
+    <div id="screenRows"></div>
+    <div class="note">Saved on this phone or tablet only — every device picks its own. On a
+      narrow screen the picks stack down the page; on a tablet they lay out side by side in
+      this order, with the map taking the big panel. The PC decides which screens are
+      offered at all (EQBuddy → Options).</div>
+    <div class="note" id="soundNote"></div>
+    <div class="note">No browser chrome: tap ⛶ at the top for this visit, or use your
+      browser's <b>Add to Home Screen</b> — that launches EQBuddy Mobile in its own window
+      with no address bar at all, and it survives closing the tab.</div>
+  </div>
+  <div id="sections"></div>
+</main>
+<footer><span id="ver"></span><span id="tip"></span></footer>
+
+<script>
+"use strict";
+// ---------- pairing token (URL fragment — never sent in the HTTP request) ----------
+// A device that has paired REMEMBERS the code, because a Home Screen launch starts at
+// the bare address with no fragment (the manifest can't carry the code — it is served
+// without authentication). The code is only remembered once the PC has accepted it,
+// it never leaves this device, and "New code" on the PC makes the remembered one
+// useless — which is exactly what revoking a paired device should mean.
+const TOKEN_KEY = "eqbuddy-token";
+let remembered = null;
+try { remembered = localStorage.getItem(TOKEN_KEY); } catch {}
+const fragmentToken = location.hash.replace(/^#/, "");
+const token = fragmentToken || remembered || "";
+const tokenFromMemory = !fragmentToken && !!token;
+const PROTOCOL = 3;
+// `wide` = takes the big panel in the tablet grid. `fills` = its body draws itself
+// and must NOT scroll (the map pans internally); everything else scrolls its body.
+const SURFACE_META = {
+  map:      { label: "Zone map", wide: true, fills: true },
+  spawns:   { label: "Spawn timers" },
+  travel:   { label: "Travel route" },
+  mez:      { label: "Mez chips" },
+  buffs:    { label: "Buffs" },
+  combat:   { label: "Damage, healing & pet" },
+  session:  { label: "Session stats" },
+  loot:     { label: "Loot & watches" },
+  progress: { label: "Progress" },
+  quests:   { label: "Quests", wide: true },
+  gear:     { label: "Gear checklist" },
+};
+// Surfaces whose rows a tap can tick. The desktop refuses anything else anyway; this
+// is what stops the page from drawing a checkbox it has no right to draw.
+const TICKABLE = { quests: 1, gear: 1 };
+// Panels that must repaint every second because a clock is running in them; everything
+// else repaints only when its data actually changed, which is what keeps a scrolled
+// loot list scrolled and a half-ticked checklist from jumping under your thumb.
+const TICKING = { spawns: 1, mez: 1, session: 1, map: 1 };
+// Fields the repaint gate must NOT look at, because they move on a clock rather than on
+// an event — the mirror of what CompanionProjection.SectionFingerprints leaves out of
+// the PC's own change detection. A value in here still RENDERS; it just cannot be the
+// reason a panel is torn down and rebuilt (#202). `catalog` is here for a different
+// reason: 1,200 quests stringified once a second was the page's biggest single cost.
+// ?debug=1 — a repaint log, on screen, for a card that will not sit still.
+//
+// #202 (bjstrange) is a loot card rebuilding several times a second on a page that is
+// provably current, and two confident diagnoses from here have now been wrong: the gate
+// holds still against the payload the PC sends, and nothing withholds a loot section
+// mid-push. What is missing is not another theory, it is HIS data — and the page is the
+// only thing standing where the problem happens.
+//
+// So it counts repaints per section and shows what actually differed between the old key
+// and the new one. A screenshot of that names the field, and the field names the bug.
+// Query string, not the fragment: the pairing token lives in the fragment and must not
+// have to be retyped to turn this on.
+const DEBUG = /(?:^|[?&])debug=1(?:&|$)/.test(location.search);
+const debugCounts = {};
+let debugBox = null;
+function noteRepaint(name, before, after) {
+  debugCounts[name] = (debugCounts[name] || 0) + 1;
+  if (!debugBox) {
+    debugBox = el("div");
+    debugBox.style.cssText = "position:fixed;left:0;right:0;bottom:0;z-index:9999;"
+      + "max-height:38vh;overflow:auto;background:#000c;color:#0f0;font:11px/1.35 monospace;"
+      + "padding:6px;white-space:pre-wrap;word-break:break-all";
+    document.body.appendChild(debugBox);
+  }
+  // Where the two keys first differ, with a little either side — enough to read the
+  // field name without dumping a whole payload onto a phone screen.
+  let at = 0;
+  const a = before == null ? "" : before, b = after == null ? "" : after;
+  while (at < a.length && at < b.length && a[at] === b[at]) at++;
+  const from = Math.max(0, at - 40);
+  const tally = Object.keys(debugCounts).sort()
+    .map(k => k + " x" + debugCounts[k]).join("   ");
+  debugBox.textContent = tally
+    + "\n\nlast repaint: " + name
+    + (before == null ? "  (first paint)" : "")
+    + "\n  was: ..." + a.slice(from, at + 60)
+    + "\n  now: ..." + b.slice(from, at + 60);
+}
+
+const DRIFT_KEYS = new Set(["perHour", "perActiveHour"]);
+// `catalog` is not a drifting value, and it is handled separately: 1,200 quests
+// stringified once a second was the page's biggest single cost, so its CONTENT stays out
+// of the key — but dropping it entirely made the gate blind to the one transition that
+// decides whether the surface works at all. A quests panel painted WITHOUT a catalog can
+// only be filled by a repaint, because setCatalog is a side effect of the paint; with the
+// catalog invisible to the key, the payload that finally brought one changed nothing the
+// gate could see and the panel sat on "Waiting for the quest catalog from the PC…" for
+// the life of the page (David, 2026-08-21). Its PRESENCE costs one character to watch.
+// The stamp is already in the key, so a rebuilt catalog still repaints on its own.
+const DRIFTS = (k, v) =>
+  DRIFT_KEYS.has(k) ? undefined : k === "catalog" ? (v ? 1 : 0) : v;
+// The picks a device starts with, before anyone touches the ⚙. Measured against the
+// viewport (the layout breakpoint's own measure), not the window, so a fullscreen or
+// Home-Screen launch is judged by the room it actually has.
+const FIRST_RUN = innerWidth >= 900
+  ? ["map", "spawns", "mez", "session", "quests"]
+  : ["spawns", "session"];
+
+const $ = id => document.getElementById(id);
+const el = (tag, cls, text) => {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined) e.textContent = text;
+  return e;
+};
+if (!token) {
+  $("pair").classList.add("show");
+} else {
+  $("app").style.display = "";
+  boot();
+}
+
+function boot() {
+  // ---------- per-device screen choice (localStorage, keyed by token) ----------
+  const storeKey = "eqbuddy-screens-" + token.slice(0, 8);
+  let choice = null; // { order:[names], enabled:{name:bool} }
+  try { choice = JSON.parse(localStorage.getItem(storeKey)); } catch {}
+  const saveChoice = () => { try { localStorage.setItem(storeKey, JSON.stringify(choice)); } catch {} };
+  // The separate Epic/Sky screens folded into "quests": carry a device's saved picks
+  // over, so a tablet that was showing its checklists keeps showing them under the
+  // new name instead of silently losing the surface.
+  if (choice && choice.order) {
+    const had = ["epics", "sky"].filter(s => choice.order.includes(s));
+    if (had.length) {
+      const at = Math.min(...had.map(s => choice.order.indexOf(s)));
+      const wanted = had.some(s => choice.enabled && choice.enabled[s]);
+      choice.order = choice.order.filter(s => s !== "epics" && s !== "sky");
+      if (!choice.order.includes("quests")) choice.order.splice(at, 0, "quests");
+      if (!("quests" in choice.enabled)) choice.enabled.quests = wanted;
+      delete choice.enabled.epics; delete choice.enabled.sky;
+      saveChoice();
+    }
+  }
+
+  let offered = [];          // what the desktop is willing to send
+  let latest = null;         // last snapshot message
+  let receivedAt = 0;        // ms clock when latest arrived
+  let lastMsgAt = 0;         // any message (heartbeats count as freshness)
+  let ws = null, backoff = 1000, everConnected = false, refusals = 0;
+  const panels = {};         // surface -> { section, body }
+  const painted = {};        // surface -> JSON of what that panel currently shows
+  const scope = {};          // combat board -> "fight" | "session"
+
+  // ---------- alert audio (#208, sbaum23) ----------
+  // The ask, verbatim: "As long as I can turn off alerts/chip in EQBuddy but leave them
+  // on in mobile (with the sounds for alerts happening in the browser)". Cosmic/Wayland
+  // will not let his overlay chips land on the monitor he put them on, so this page IS
+  // his overlay — and an overlay that cannot make a noise is one he has to keep watching.
+  //
+  // The PC decides WHEN. It sends `alerts.seq`, a count that steps once per alert it
+  // judged worth a sound, and `alerts.soundEnabled`, the owner's master switch. This end
+  // owns only two things the PC cannot know: whether the browser will let us make a noise
+  // at all, and what the noise is.
+  //
+  // Nothing here is a second product deciding which alerts matter — no thresholds, no
+  // per-event rules, no reading of chips or watch rows. If the count did not move, we are
+  // silent, whatever is on screen.
+  const alertAudio = (function () {
+    let ctx = null;
+    let seen = null;      // last seq acted on; null until the first payload
+    let enabled = false;  // what the PC last said about the switch
+    let ready = false;    // the browser has actually let us have a running context
+
+    // Browsers refuse to play audio until the page has been touched, and no setting on
+    // the PC can change that — it is the wrinkle #208's own reply promised out loud
+    // ("it can never be silent-by-default-then-just-works"). So we take the FIRST touch
+    // of any kind, whatever it was for: no modal, no "enable sounds" button, no sample.
+    // A propped-up tablet nobody ever touches stays silent, and the ⚙ panel says so
+    // rather than leaving it looking broken.
+    function unlock() {
+      if (!enabled) return;               // nothing to unlock for
+      try {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return;                  // no Web Audio: stays honest, stays quiet
+        if (!ctx) ctx = new AC();
+        const settle = () => { const was = ready; ready = ctx.state === "running"; if (was !== ready) renderSoundNote(); };
+        const r = ctx.resume();
+        if (r && typeof r.then === "function") r.then(settle, settle); else settle();
+      } catch { /* a browser that refuses is a quiet phone, not a broken one */ }
+    }
+
+    // One tone, deliberately. Per-event sounds are out of this cut, and a synthesized
+    // two-note chirp ships no audio file — nothing to 404, nothing to cache, and no
+    // second thing that can be missing behind the switch (#153's lesson, one layer up).
+    function chirp() {
+      if (!ctx || ctx.state !== "running") return;
+      try {
+        const t = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(880, t);
+        osc.frequency.setValueAtTime(1174, t + 0.11);
+        gain.gain.setValueAtTime(0.0001, t);
+        gain.gain.exponentialRampToValueAtTime(0.3, t + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.start(t); osc.stop(t + 0.32);
+      } catch { }
+    }
+
+    // Called with every snapshot. `a` is undefined against an older PC, which reads as
+    // "stay quiet" rather than as a default — the page never invents permission.
+    function apply(a) {
+      const was = enabled;
+      enabled = !!(a && a.soundEnabled);
+      if (was !== enabled) { if (enabled) unlock(); renderSoundNote(); }
+      if (!a) { seen = null; return; }
+      const seq = a.seq || 0;
+      // First payload of this page's life: adopt the count without playing. A phone that
+      // reconnects after a walk to the fridge must not replay the camp it missed —
+      // an alert is a deadline, and a deadline you hear late is worse than silence.
+      // A LOWER count means the PC restarted; adopt that silently for the same reason.
+      if (seen === null || seq < seen) { seen = seq; return; }
+      if (seq === seen) return;
+      seen = seq;
+      // Several alerts inside one tick are one noise. The count still advances, so
+      // nothing is "missed" — there is just no version of two beeps 40 ms apart that
+      // helps anybody.
+      if (enabled) chirp();
+    }
+
+    function state() {
+      return { enabled: enabled, ready: ready, supported: !!(window.AudioContext || window.webkitAudioContext) };
+    }
+
+    for (const evt of ["pointerdown", "touchend", "keydown"])
+      document.addEventListener(evt, unlock, { passive: true });
+    // Mobile browsers suspend the context when the tab goes to the background, and a
+    // tablet propped on a desk goes to the background constantly.
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) unlock(); });
+
+    return { apply: apply, state: state };
+  })();
+
+  // The ⚙ panel's one line about sound. Not a modal, not a button, not a sample: it
+  // exists because a silent phone with the switch ON would otherwise be indistinguishable
+  // from a broken one, and "silent no-ops are broken" cuts both ways.
+  function renderSoundNote() {
+    const note = $("soundNote");
+    if (!note) return;
+    const s = alertAudio.state();
+    note.textContent =
+      !s.enabled
+        ? "Alert sounds are off. Turn on Mobile sounds on the PC (EQBuddy → Options → Behavior) to hear alerts here."
+        : !s.supported
+          ? "Alert sounds are on, but this browser has no audio support — this device will stay quiet."
+          : s.ready
+            ? "Alert sounds are on. This device plays a tone when the PC raises an alert."
+            : "Alert sounds are on. Tap anywhere on this page once — browsers won't play a sound until you do.";
+  }
+
+  function ensureChoice() {
+    if (!choice) choice = { order: [], enabled: {} };
+    for (const s of offered) {
+      if (!choice.order.includes(s)) choice.order.push(s);
+      // Sane first run, sized to the device: a phone opens on the two screens you
+      // glance at, a tablet also opens the map (the reason to prop one up) — and
+      // neither opens with eleven panels the owner didn't ask for.
+      if (!(s in choice.enabled)) choice.enabled[s] = FIRST_RUN.includes(s);
+    }
+  }
+  // What this device picked — the subscribe message deliberately does NOT intersect
+  // with `offered` (unknown until the first snapshot; the server answers gated names
+  // with notOffered, which is our cue to say so instead of going silent).
+  const picked = () => choice.order.filter(s => choice.enabled[s]);
+  // What actually renders: picked ∩ (offered ∪ refused) — refused rows show the
+  // "not shared by the PC" note rather than vanishing.
+  const visibleSurfaces = () => picked().filter(s =>
+    offered.includes(s) || (latest && latest.notOffered && latest.notOffered.includes(s)));
+
+  // ---------- websocket ----------
+  function connect() {
+    ws = new WebSocket("ws://" + location.host + "/ws?token=" + encodeURIComponent(token));
+    ws.onopen = () => {
+      backoff = 1000; everConnected = true;
+      $("dot").classList.add("ok");
+      // The PC accepted this code, so it is worth remembering for a chrome-free
+      // Home Screen launch, which arrives without the fragment.
+      try { localStorage.setItem(TOKEN_KEY, token); } catch {}
+      if (choice) sendSubscribe(); // returning device: ask for its picks up front
+    };
+    ws.onmessage = e => {
+      lastMsgAt = Date.now();
+      let msg; try { msg = JSON.parse(e.data); } catch { return; }
+      if (msg.kind === "heartbeat") { refreshStale(); return; }
+      if (msg.kind === "notice") { notice(msg.text); return; }
+      if (msg.kind !== "snapshot" || msg.protocol !== PROTOCOL) return;
+      if (msg.identity && staleAfterUpdate(msg.identity.appVersion)) return;
+      // Sticky sections: the server sends theme and map geometry once and then stops.
+      // Carry forward what it withheld so the page never blanks between pushes.
+      if (!msg.theme && latest && latest.theme) msg.theme = latest.theme;
+      if (msg.map && !msg.map.geometry && latest && latest.map
+          && latest.map.geometry && latest.map.geometryStamp === msg.map.geometryStamp)
+        msg.map.geometry = latest.map.geometry;
+      // The quest catalog is sticky the same way: sent once, then withheld while the
+      // stamp matches what this device already holds.
+      if (msg.quests && !msg.quests.catalog && latest && latest.quests
+          && latest.quests.catalog && latest.quests.catalogStamp === msg.quests.catalogStamp)
+        msg.quests.catalog = latest.quests.catalog;
+      latest = msg; receivedAt = Date.now();
+      applyTheme(msg.theme);
+      // Before the render, and outside it: a noise is not a repaint, and the repaint gate
+      // (#202) legitimately skips a push whose sections did not move — an alert cue is
+      // exactly such a push, because the count rides the envelope rather than a surface.
+      alertAudio.apply(msg.alerts);
+      const offerChanged = JSON.stringify(msg.offered) !== JSON.stringify(offered);
+      offered = msg.offered || [];
+      ensureChoice();
+      if (offerChanged) { renderScreens(); saveChoice(); }
+      render();
+    };
+    ws.onclose = () => {
+      $("dot").classList.remove("ok");
+      // A remembered code that the PC never accepts has been revoked ("New code").
+      // Forget it and ask to be paired again rather than retrying forever in silence.
+      if (!everConnected && tokenFromMemory && ++refusals >= 3) {
+        try { localStorage.removeItem(TOKEN_KEY); } catch {}
+        $("app").style.display = "none";
+        $("pair").classList.add("show");
+        $("pair").insertBefore(
+          el("p", null, "The code this device remembered isn't accepted any more — the PC has issued a new one."),
+          $("pair").children[1]);
+        return;
+      }
+      setTimeout(connect, backoff);
+      backoff = Math.min(backoff * 2, 15000); // 1s → 2s → 4s … 15s cap
+    };
+    ws.onerror = () => ws.close();
+  }
+  function sendSubscribe() {
+    if (ws && ws.readyState === 1)
+      ws.send(JSON.stringify({ kind: "subscribe", surfaces: picked() }));
+  }
+  function sendTick(surface, id, done) {
+    if (ws && ws.readyState === 1)
+      ws.send(JSON.stringify({ kind: "tick", surface: surface, id: id, done: done }));
+  }
+  // Spawn-point curation. locY/locX are echoed back exactly as the PC sent them — the
+  // page never converts map space back into game coordinates, because a subtly wrong
+  // inversion would aim the edit at a different dot and nothing would look wrong.
+  // A dropped link says so instead of swallowing the tap.
+  function sendCurate(edit, zone, locY, locX) {
+    if (!ws || ws.readyState !== 1) { notice("Not connected to the PC — that edit didn't go through."); return; }
+    ws.send(JSON.stringify({ kind: "curate", edit: edit, zone: zone, locY: locY, locX: locX }));
+  }
+  // World PR 4 — the Path tab's destination pick (empty clears it) and the "Drop camp
+  // marker" button, the same two actions the desktop's World window chrome offers.
+  function sendTravel(destination) {
+    if (!ws || ws.readyState !== 1) { notice("Not connected to the PC — that pick didn't go through."); return; }
+    ws.send(JSON.stringify({ kind: "travel", destination: destination || "" }));
+  }
+  function sendDropMarker() {
+    if (!ws || ws.readyState !== 1) { notice("Not connected to the PC — the marker wasn't dropped."); return; }
+    ws.send(JSON.stringify({ kind: "dropMarker" }));
+  }
+  connect();
+
+  // ---------- theme ----------
+  // camelCase wire token -> CSS custom property (--panel-hover, --chart-you, …).
+  let themeStamp = "";
+  function applyTheme(theme) {
+    if (!theme || theme.stamp === themeStamp) return;
+    themeStamp = theme.stamp;
+    const root = document.documentElement;
+    for (const key in theme.colors)
+      root.style.setProperty("--" + key.replace(/[A-Z]/g, c => "-" + c.toLowerCase()), theme.colors[key]);
+    if (theme.colors.bg) $("themeColor").setAttribute("content", theme.colors.bg);
+    map.retheme();
+  }
+
+  // ---------- what an edit did ----------
+  // Every write the tablet makes gets an answer, including "nothing changed" — the PC
+  // composes the sentence, so the phone and the desktop status bar say the same thing.
+  let noticeTimer = 0;
+  // ---------- a page kept open across a PC update ----------
+  //
+  // THIS PAGE NEVER RE-FETCHES ITSELF. The socket reconnects forever with backoff, so
+  // updating EQBuddy on the PC restarts the server, the phone reconnects — and goes on
+  // running the JAVASCRIPT it downloaded whenever the tab was first opened. `no-store`
+  // does not help: nothing ever asks for the HTML again.
+  //
+  // That is not an edge case, it is how this feature is meant to be used — propped on a
+  // desk, added to the Home Screen, left alone for days. And it makes a whole class of
+  // bug unkillable from the PC side: a page-side fix ships, the player updates, the
+  // symptom continues, and both sides are looking at different code while comparing
+  // version numbers that agree. Suspected in #202 (bjstrange), where the repaint-gate
+  // fix is provably present in the build he named and the card still churned for him.
+  //
+  // The envelope already carries the PC's version; it was only ever printed in the
+  // footer. Now a change from the version this page booted with reloads it once.
+  let bootVersion = null;
+  const RELOADED_FOR = "eqb-reloaded-for";
+  function staleAfterUpdate(version) {
+    if (!version) return false;
+    if (bootVersion === null) { bootVersion = version; return false; }
+    if (version === bootVersion) return false;
+    // Reload ONCE per server version. If we come back still mismatched — a cache we
+    // cannot see, a proxy, a Home Screen snapshot — say so instead of reloading in a
+    // loop, which would be a worse bug than the one being fixed.
+    let already = null;
+    try { already = sessionStorage.getItem(RELOADED_FOR); } catch {}
+    if (already === version) {
+      notice("EQBuddy updated to " + version + " — close and reopen this page to finish.");
+      bootVersion = version;   // stop asking on every push
+      return false;
+    }
+    try { sessionStorage.setItem(RELOADED_FOR, version); } catch {}
+    location.reload();
+    return true;   // this snapshot belongs to the next page, not this one
+  }
+
+  function notice(text) {
+    if (!text) return;
+    const el = $("notice");
+    el.textContent = text;
+    el.classList.add("show");
+    clearTimeout(noticeTimer);
+    noticeTimer = setTimeout(() => el.classList.remove("show"), 5000);
+  }
+
+  // ---------- pull to refresh (solo mode only) ----------
+  //
+  // #222, bjstrange. See the #pull rule in the stylesheet for why solo needs its own
+  // gesture: the page cannot scroll, so the browser's native pull has nothing to grab.
+  //
+  // A reload is precisely what the native gesture does, and it is also the ONLY way this
+  // page ever picks up a new version of itself - the socket reconnects forever and the
+  // browser goes on running whatever HTML it downloaded when the tab was first opened
+  // (trap 32). So this gesture is worth having even on a page whose data is already live.
+  (function pullToRefresh() {
+    const TRIGGER = 70;               // px of travel before a release acts
+    let startY = null, scroller = null, pulled = 0;
+
+    // ASK THE PC FOR A FRESH SNAPSHOT, rather than reloading the page.
+    //
+    // Bevel's review of the first cut (2026-08-21) and it is right: on a page whose data
+    // is already pushed live, "refresh" means "give me the current numbers", and a reload
+    // is a heavy way to get them — white flash, socket reconnect, and the map's pan and
+    // zoom thrown away. The server already answers this with no change at all: a
+    // "subscribe" message re-sends the latest snapshot immediately (CompanionServer's
+    // client dispatch), which is the same path the ⚙ Screens picker uses.
+    //
+    // A reload is still the RIGHT answer when the socket is not open, and it is the only
+    // thing that can fix a page running weeks-old JavaScript (trap 32) — so that is what
+    // a disconnected pull does. Two situations, two different right answers.
+    function refreshNow() {
+      try {
+        if (ws && ws.readyState === 1) {
+          ws.send(JSON.stringify({ kind: "subscribe", surfaces: picked() }));
+          notice("refreshed");
+          return;
+        }
+      } catch (e) { /* fall through to the reload */ }
+      location.reload();
+    }
+
+    // The lone panel that DRAWS ITSELF (the map) owns vertical drag for panning — but
+    // excluding it outright, as the first cut did, left a map-only player with no refresh
+    // at all (Bevel). Its CHROME is not the map: a pull that starts on the card's heading
+    // is unambiguous, so the gesture lives there and pan keeps the body.
+    const chromeStart = (target) =>
+        target instanceof Element && target.closest("section.surface > h2") !== null;
+
+    const tab = () => document.getElementById("pull");
+    const show = (dist) => {
+      const el = tab();
+      if (!el) return;
+      const shown = Math.min(dist, TRIGGER + 20);
+      el.classList.toggle("on", dist > 4);
+      el.classList.toggle("ready", dist >= TRIGGER);
+      el.textContent = dist >= TRIGGER ? "release to refresh" : "pull to refresh";
+      el.style.transform = "translate(-50%," + (shown - 100) + "%)";
+    };
+    const reset = () => {
+      startY = null; scroller = null; pulled = 0;
+      const el = tab();
+      if (el) { el.classList.remove("on", "ready"); el.style.transform = "translate(-50%,-100%)"; }
+    };
+
+    document.addEventListener("touchstart", (e) => {
+      reset();
+      if (!document.body.classList.contains("solo") || e.touches.length !== 1) return;
+      const fills = document.querySelector("section.surface.fills");
+      if (fills) {
+        // Map-only: the heading is the handle. Pan wins everywhere else.
+        if (!chromeStart(e.target)) return;
+        scroller = fills;                 // never scrolls; only the guard below reads it
+      } else {
+        scroller = document.querySelector("section.surface > .body");
+        if (!scroller || scroller.scrollTop > 0) { scroller = null; return; }
+      }
+      startY = e.touches[0].clientY;
+    }, { passive: true });
+
+    document.addEventListener("touchmove", (e) => {
+      if (startY === null || !scroller) return;
+      // Any upward move, or a scroller that has left the top, ends the attempt: the
+      // player is reading, not refreshing. (A `fills` panel never scrolls, so this is
+      // always false for the map and the pull is governed by the chrome check alone.)
+      if (scroller.scrollTop > 0) { reset(); return; }
+      pulled = e.touches[0].clientY - startY;
+      if (pulled <= 0) { reset(); return; }
+      show(pulled);
+    }, { passive: true });
+
+    document.addEventListener("touchend", () => {
+      const go = pulled >= TRIGGER;
+      reset();
+      if (go) refreshNow();
+    }, { passive: true });
+
+    document.addEventListener("touchcancel", reset, { passive: true });
+  })();
+
+  // ---------- staleness banner ----------
+  function refreshStale() {
+    const silent = (Date.now() - lastMsgAt) / 1000;
+    const banner = $("banner");
+    if (lastMsgAt && silent > 5) {
+      const age = Math.round((Date.now() - receivedAt) / 1000);
+      banner.textContent = "reconnecting — data is " + age + "s old";
+      banner.classList.add("show");
+    } else if (everConnected && !lastMsgAt) {
+      banner.classList.add("show");
+      banner.textContent = "waiting for data…";
+    } else {
+      banner.classList.remove("show");
+    }
+  }
+
+  // ---------- rendering ----------
+  const fmt = s => {
+    s = Math.max(0, Math.round(s));
+    const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), sec = s % 60;
+    if (h > 0) return h + ":" + String(m).padStart(2, "0") + ":" + String(sec).padStart(2, "0");
+    return m + ":" + String(sec).padStart(2, "0");
+  };
+  const num = n => (n || 0).toLocaleString();
+  const since = () => (Date.now() - receivedAt) / 1000;
+
+  function render() {
+    if (!latest) return;
+    $("who").textContent = latest.identity.character || "EQBuddy";
+    $("zone").textContent = latest.identity.zone || "waiting for the log…";
+    $("ver").textContent = "EQBuddy Mobile (Beta) · " + latest.identity.appVersion;
+
+    const host = $("sections");
+    const wanted = visibleSurfaces();
+    // One panel picked: it gets the whole viewport instead of a fixed slab with dead
+    // page underneath. Several, and the grid stays content-sized and the page scrolls.
+    document.body.classList.toggle("solo", wanted.length === 1);
+    // Panels persist across repaints: rebuilding the DOM every second would throw
+    // away scroll position, the map's pan/zoom, and a checkbox mid-tap.
+    for (const name in panels)
+      if (!wanted.includes(name)) { panels[name].section.remove(); delete panels[name]; delete painted[name]; }
+
+    let previous = null;
+    for (const name of wanted) {
+      let p = panels[name];
+      if (!p) {
+        const meta = SURFACE_META[name] || {};
+        const section = el("section", "surface" + (meta.wide ? " wide" : "") + (meta.fills ? " fills" : ""));
+        const h = el("h2");
+        h.append(el("span", null, meta.label || name), el("span", "count"));
+        const body = el("div", "body");
+        section.append(h, body);
+        p = panels[name] = { section, body, head: h.lastChild };
+      }
+      // Keep DOM order equal to the device's picked order (which IS the grid order).
+      if (previous ? previous.nextSibling !== p.section : host.firstChild !== p.section)
+        host.insertBefore(p.section, previous ? previous.nextSibling : host.firstChild);
+      previous = p.section;
+
+      const refused = latest.notOffered && latest.notOffered.includes(name);
+      const data = refused ? null : latest[name];
+      // The quest catalog is compared by its stamp, never by content: it rides every
+      // carried-forward snapshot, and stringifying 1,200 quests once a second would
+      // be the page's biggest cost by far.
+      // What counts as "changed" must be the SAME question the PC asked when it decided
+      // whether to wake us (CompanionProjection.SectionFingerprints). It was not, and
+      // that is #202 (bjstrange): the PC excludes values that drift every tick — a watch
+      // rule's /hr and /active hr have TIME in the denominator, so they move even when
+      // nothing happens — while this gate stringified the whole payload and saw a
+      // different key every render. The PC correctly said "nothing to report"; the page
+      // repainted anyway, on its own 1 s timer AND on each push, which is the "couple
+      // times a second, sometimes once a second" he measured. Loot was the only card
+      // affected because it is the only non-TICKING surface carrying a drifting number.
+      const key = refused ? "gated" : data ? JSON.stringify(data, DRIFTS) : JSON.stringify(data);
+      if (!TICKING[name] && painted[name] === key) continue;
+      if (DEBUG && !TICKING[name]) noteRepaint(name, painted[name], key);
+      painted[name] = key;
+      p.head.textContent = "";
+      if (refused) {
+        p.body.replaceChildren(el("div", "gated",
+          "Not shared by the PC — enable it in EQBuddy's Options."));
+      } else if (data) {
+        (RENDER[name] || renderUnknown)(p, data);
+      } else {
+        p.body.replaceChildren(el("div", "empty", "Waiting for the PC…"));
+      }
+    }
+  }
+
+  function renderUnknown(p) {
+    p.body.replaceChildren(el("div", "gated", "This screen needs a newer EQBuddy Mobile page."));
+  }
+
+  // ---------- spawn timers ----------
+  function renderSpawns(p, data) {
+    if (!data.timers.length) {
+      p.body.replaceChildren(el("div", "empty",
+        "No spawn timers running. Kill a named (or its placeholder) and its countdown appears here."));
+      return;
+    }
+    const elapsed = since(); // tick locally between pushes
+    const ul = el("ul", "timers card");
+    for (const t of data.timers) {
+      const li = el("li");
+      let leftText, cls = "";
+      if (t.remainingSeconds == null) { leftText = "killed — no timer"; cls = "unknown"; }
+      else {
+        const left = t.remainingSeconds - elapsed;
+        if (t.due || left <= 0) { leftText = "DUE"; cls = "due"; }
+        else { leftText = fmt(left); if (left <= 120) cls = "imminent"; }
+      }
+      li.className = cls;
+      const name = el("div", "name");
+      name.append(el("div", "mob", t.name), el("div", "tz", t.zone));
+      li.append(name, el("div", "left", leftText));
+      ul.appendChild(li);
+    }
+    p.head.textContent = data.timers.length + " running";
+    p.body.replaceChildren(ul);
+  }
+
+  // ---------- travel (World PR 4) ----------
+  // Deliberately its own surface, never folded into the map — a tablet showing the
+  // map AND a route at once is the product's uncontested ground (docs/Themes.md
+  // theme 6). Reads the same EQBuddy.Core.TravelPlan module the desktop's Path tab
+  // does; this only draws the words the PC already worked out.
+  function renderTravel(p, data) {
+    const wrap = el("div", "travel");
+
+    const pickRow = el("div", "row");
+    const pick = el("select");
+    const blank = el("option", null, "Pick a destination…");
+    blank.value = "";
+    pick.appendChild(blank);
+    for (const z of data.zones) {
+      const opt = el("option", null, z);
+      opt.value = z;
+      if (data.destination === z) opt.selected = true;
+      pick.appendChild(opt);
+    }
+    const go = el("button", null, "Go");
+    go.onclick = () => sendTravel(pick.value);
+    const clear = el("button", null, "Clear");
+    clear.onclick = () => sendTravel("");
+    pickRow.append(pick, go, clear);
+    wrap.appendChild(pickRow);
+
+    const note = el("div", data.outcome === "noroute" && data.destination ? "note warn" : "note", data.note);
+    wrap.appendChild(note);
+
+    if (data.path && data.path.length > 1) {
+      const ol = el("ol", "route");
+      data.path.forEach((z, i) => ol.appendChild(el("li", i === data.path.length - 1 ? "dest" : null, z)));
+      wrap.appendChild(ol);
+    }
+
+    // Same action the World window's chrome offers on every tab (Helm-signed
+    // pre-design amendment) — dropped at wherever the log currently says you are.
+    const marker = el("button", "dropmarker", "Drop camp marker");
+    marker.onclick = () => sendDropMarker();
+    wrap.appendChild(marker);
+
+    p.head.textContent = !data.destination ? ""
+      : data.outcome === "route" ? data.hops + (data.hops === 1 ? " hop" : " hops")
+      : data.outcome === "alreadythere" ? "here"
+      : "no route";
+    p.body.replaceChildren(wrap);
+  }
+
+  // ---------- session ----------
+  // The session strip — and, since E-3 PR 5, what you CLEARED underneath it.
+  //
+  // Raids moved here from the progress screen in the same change that moved the desktop's
+  // Raids tab out of the Progress room and into Live. This screen is the one
+  // CompanionSurfaces.PageFor routes to that room, so the phone follows the room rather
+  // than a list of its own — which is the whole of #210's lesson.
+  //
+  // `s.raids` may be absent on a page that booted before the move (trap 32: this page is
+  // never re-fetched, so an open phone can be running weeks-old JavaScript against a fresh
+  // PC — the version reload handles it, but the guard costs one `if`).
+  function renderSession(p, s) {
+    const wrap = el("div");
+    const grid = el("div", "stats");
+    const stats = [
+      [num(s.kills), "kills"],
+      [s.xpPerHour.toFixed(1) + "%", "xp/hr"],
+      [Math.round(s.sessionDps), "dps"],
+      [fmt(s.sessionSeconds + since()), "session"],
+    ];
+    for (const [v, k] of stats) {
+      const d = el("div", "stat");
+      d.append(el("div", "v", v), el("div", "k", k));
+      grid.appendChild(d);
+    }
+    wrap.appendChild(grid);
+    if (s.raids) {
+      wrap.appendChild(el("h3", "group", "Cleared"));
+      wrap.appendChild(raidsBody(s.raids));
+    }
+    p.body.replaceChildren(wrap);
+  }
+
+  // ---------- mez ----------
+  function renderMez(p, data) {
+    if (!data.chips.length) {
+      p.body.replaceChildren(el("div", "empty", "Nothing mezzed right now."));
+      return;
+    }
+    const elapsed = since();
+    const ul = el("ul", "chips");
+    for (const c of data.chips) {
+      const li = el("li");
+      let left = null, warn = c.warning;
+      if (c.remainingSeconds != null) {
+        left = Math.max(0, c.remainingSeconds - elapsed);
+        warn = left <= 6;
+      }
+      if (warn) li.className = "warn";
+      li.append(el("div", "n", c.name),
+                el("div", "t", left == null ? "?" : fmt(left)),
+                el("div", "d", c.detail));
+      if (c.fraction != null) {
+        const g = el("div", "gauge");
+        g.style.width = Math.round(100 * (1 - Math.min(1, c.fraction))) + "%";
+        li.appendChild(g);
+      }
+      ul.appendChild(li);
+    }
+    p.head.textContent = data.chips.length + " mezzed";
+    p.body.replaceChildren(ul);
+  }
+
+  // ---------- buffs ----------
+  function renderBuffs(p, data) {
+    const wrap = el("div", "card");
+    let missing = 0;
+    for (const g of data.groups) {
+      if (data.groups.length > 1 || g.class) wrap.appendChild(el("h3", "group", g.class));
+      const ul = el("ul", "rows");
+      for (const r of g.rows) {
+        const li = el("li", r.status);
+        const value = r.status === "missing" ? "missing"
+          : r.status === "notSeen" ? "not seen"
+          : r.remainingSeconds == null ? "up"
+          : fmt(r.remainingSeconds) + (r.estimated ? " est" : "");
+        if (r.status === "missing") missing++;
+        li.append(el("div", "rn", r.spell), el("div", "rv", value));
+        ul.appendChild(li);
+      }
+      if (!g.rows.length) {
+        const li = el("li");
+        li.appendChild(el("div", "rn", "— empty set —"));
+        ul.appendChild(li);
+      }
+      wrap.appendChild(ul);
+    }
+    if (data.lost.length) {
+      wrap.appendChild(el("h3", "group", "lost this session (" + data.lost.length + ")"));
+      const ul = el("ul", "rows");
+      for (const l of data.lost) {
+        const li = el("li");
+        li.append(el("div", "rn", l.spell), el("div", "rv", l.cause));
+        ul.appendChild(li);
+      }
+      wrap.appendChild(ul);
+    }
+    if (!data.groups.length && !data.lost.length)
+      wrap.replaceChildren(el("div", "empty", "No buff set yet — build one on the PC."));
+    p.head.textContent = missing ? missing + " missing" : "";
+    p.body.replaceChildren(wrap);
+  }
+
+  // ---------- combat ----------
+  function renderCombat(p, data) {
+    const wrap = el("div");
+    for (const b of data.boards) {
+      const card = el("div", "card");
+      card.style.marginBottom = "10px";
+      const bar = el("div", "scope");
+      const mode = scope[b.key] || "fight";
+      for (const which of ["fight", "session"]) {
+        const btn = el("button", mode === which ? "on" : null, which === "fight" ? "Last fight" : "Session");
+        btn.onclick = () => { scope[b.key] = which; painted.combat = null; render(); };
+        bar.appendChild(btn);
+      }
+      card.append(el("h3", "group", b.label), bar,
+        el("div", "sub-head", mode === "fight" ? b.fightHeader : b.sessionHeader));
+      const rows = mode === "fight" ? b.fight : b.session;
+      if (!rows.length) card.appendChild(el("div", "empty", "Nothing here yet."));
+      else card.appendChild(rowList(rows, r =>
+        ({ name: r.name, sub: r.value + " · " + Math.round(r.percent) + "%", fraction: r.fraction })));
+      wrap.appendChild(card);
+    }
+    p.body.replaceChildren(wrap);
+  }
+
+  // One row shape for every list: name (+ a dim sub-line), an optional right-hand
+  // value, and an optional share bar drawn along the bottom edge.
+  function rowList(items, of) {
+    const ul = el("ul", "rows");
+    for (const it of items) {
+      const r = of(it);
+      const li = el("li");
+      const rn = el("div", "rn", r.name);
+      if (r.sub) rn.appendChild(el("span", "sub", r.sub));
+      // Hover text for the whole row. It reaches a tablet with a pointer and a laptop on
+      // the LAN and does nothing under a thumb — which is the point: it is the row's
+      // SECONDARY fact (Level-ups' gap since the previous ding, #240), and Bevel's lock is
+      // that it never becomes a third token competing with the two facts that were asked
+      // for. Nothing is promised on screen, so nothing is a no-op when touch ignores it.
+      if (r.tip) li.title = r.tip;
+      li.appendChild(rn);
+      if (r.right != null) li.appendChild(el("div", "rv", r.right));
+      if (r.fraction != null) {
+        const bar = el("div", "bar");
+        bar.style.width = Math.round(100 * Math.max(0.01, Math.min(1, r.fraction))) + "%";
+        li.appendChild(bar);
+      }
+      ul.appendChild(li);
+    }
+    return ul;
+  }
+
+  // ---------- loot ----------
+  function renderLoot(p, data) {
+    const wrap = el("div", "card");
+    wrap.appendChild(el("div", "sub-head",
+      data.total + " looted" + (data.craftedTotal ? " · +" + data.craftedTotal + " made" : "")));
+    if (data.items.length) wrap.appendChild(countRows(data.items));
+    else wrap.appendChild(el("div", "empty", "Nothing looted yet this session."));
+    if (data.crafted.length) {
+      wrap.appendChild(el("h3", "group", "Created by merging"));
+      wrap.appendChild(countRows(data.crafted));
+    }
+    if (data.watch.length) {
+      wrap.appendChild(el("h3", "group", "Watches"));
+      const ul = el("ul", "rows");
+      for (const w of data.watch) {
+        const li = el("li");
+        const rn = el("div", "rn", w.name);
+        rn.appendChild(el("span", "sub",
+          w.total + " total · " + w.perHour.toFixed(1) + "/hr · " + w.perActiveHour.toFixed(1) + "/active hr"));
+        li.append(rn, el("div", "rv", w.lastItem || ""));
+        ul.appendChild(li);
+      }
+      wrap.appendChild(ul);
+    }
+    p.head.textContent = data.total ? data.total + " items" : "";
+    p.body.replaceChildren(wrap);
+  }
+  const countRows = items => rowList(items, i => ({ name: i.name, right: "×" + i.count }));
+
+  // ---------- progress (the PROGRESS THEME) ----------
+  //
+  // Three tabs — Experience, Wealth, Faction — mirroring the desktop's Progress ROOM. The
+  // strip ARRIVES on the wire, labels and badges already decided by Core's ProgressSurface
+  // and UI.Shared's ProgressTheme: this page does not get to name a tab or compute a badge,
+  // which is precisely the freedom that let the quest checklists drift here for two days
+  // before #210.
+  //
+  // **It was four until E-3 PR 5, and Raids is on the SESSION screen now** — the phone
+  // screen that maps to the shell's Live room, moved in the same commit as the desktop tab.
+  // The loop below draws whatever the strip carries, so this page needed no filter of its
+  // own: the server stopped sending the chip and the body left with it, which is the only
+  // way a tab and its content cannot get out of step.
+  //
+  // The picked tab is per device and remembered, like the quest surface's.
+  const progressTab = new Map();
+  function renderProgress(p, s) {
+    const tabs = s.tabs || [];
+    let tab = progressTab.get("progress") || (tabs[0] && tabs[0].key) || "progress";
+    if (!tabs.some(t => t.key === tab)) tab = (tabs[0] && tabs[0].key) || "progress";
+
+    const wrap = el("div");
+    if (tabs.length) {
+      const row = el("div", "qtabs");
+      for (const t of tabs) {
+        const tile = el("div", "qtab" + (t.key === tab ? " on" : ""));
+        tile.append(el("span", null, t.label));
+        if (t.badge) tile.append(el("span", "badge", t.badge));
+        tile.onclick = () => { progressTab.set("progress", t.key); renderProgress(p, s); };
+        row.appendChild(tile);
+      }
+      wrap.appendChild(row);
+    }
+
+    if (tab === "wealth") wrap.appendChild(wealthBody(s.wealth));
+    else if (tab === "faction") wrap.appendChild(factionBody(s.faction));
+    else wrap.appendChild(experienceBody(s, () => renderProgress(p, s)));
+
+    p.head.textContent = s.level != null ? "level " + s.level : "";
+    p.body.replaceChildren(wrap);
+  }
+
+  // Which class groups of the NEXT-level preview are open, keyed by class name.
+  //
+  // Session-only and per device, exactly as on the two desktops (Bevel, Helm-signed
+  // 2026-08-23: "first inferred class open, the rest collapsed (session-only, not a
+  // setting)"). It is deliberately NOT sent to the PC and not stored: a fold you opened to
+  // read one class is a decision about the next thirty seconds. Keyed by class rather than
+  // by position so the choice survives the level moving on.
+  const nextGroupOpen = new Map();
+
+  // Whether the Level-ups list is open (#240). Default SHUT, like the two windows: the
+  // list is a career rather than an evening, and the label carries the count and the last
+  // ding's date so the glance is answered folded.
+  //
+  // Page-local and session-only, exactly like nextGroupOpen above — NOT the desktop's
+  // ShowLevelUps. That setting is the WINDOW's fold, and a tap on a phone must not reach
+  // across the LAN to fold something on the PC while somebody is playing at it.
+  let levelUpsOpen = false;
+
+  function experienceBody(s, redraw) {
+    const wrap = el("div");
+    const grid = el("div", "stats");
+    const stats = [
+      [s.xpPercent.toFixed(1) + "%", "xp"],
+      [s.xpPerHour.toFixed(1) + "%", "xp/hr"],
+      [num(s.aaGained) + (s.aaTotal ? " / " + num(s.aaTotal) : ""), "aa"],
+      [s.hoursToLevel == null ? "—" : s.hoursToLevel.toFixed(1) + "h", "to level"],
+    ];
+    for (const [v, k] of stats) {
+      const d = el("div", "stat");
+      d.append(el("div", "v", v), el("div", "k", k));
+      grid.appendChild(d);
+    }
+    wrap.appendChild(grid);
+    // Motes per hour, as ONE summary line (David, 2026-08-23). The Wealth tab still owns
+    // the ladder and the Motes card still owns the surface; this is the same string the
+    // desktop's Experience room shows, built by MotesPresentation.RateLine so there is one
+    // formatter rather than a phone-shaped fourth.
+    if (s.moteLine) wrap.appendChild(el("div", "note", s.moteLine));
+    if (s.unlocks && s.unlocks.length) {
+      const card = el("div", "card");
+      card.style.marginTop = "10px";
+      card.appendChild(el("h3", "group", s.unlocksLabel || "New at this level"));
+      card.appendChild(rowList(s.unlocks, u => ({ name: u.name, right: u.value })));
+      wrap.appendChild(card);
+    }
+    // Every level-up EQBuddy has seen for this character (#240, joeymavity: "leveling
+    // timestamps in an xp dropdown, I can't find it now"), between the ding block and the
+    // next-level preview — the order the two windows put it in, because it is the record
+    // of every level BEFORE the one that just happened.
+    //
+    // The label is the PC's (LevelHistory.FoldLabel): count and last date, so the fold
+    // answers "when did I last ding" without being opened. No card at all when the
+    // character has never dinged while EQBuddy watched — no heading over nothing.
+    if (s.levelUpsLabel && s.levelUps && s.levelUps.length) {
+      const card = el("div", "card");
+      card.style.marginTop = "10px";
+      const open = levelUpsOpen;
+      const head = el("h3", "group", (open ? "▾ " : "▸ ") + s.levelUpsLabel);
+      head.style.cursor = "pointer";
+      head.onclick = () => { levelUpsOpen = !open; redraw(); };
+      card.appendChild(head);
+      if (open) card.appendChild(rowList(s.levelUps,
+        r => ({ name: r.name, right: r.value, tip: r.tip })));
+      wrap.appendChild(card);
+    }
+    // ...and what the NEXT level opens, under its OWN heading. Bevel, on finding this page
+    // painting only the ding: "do not steal that heading."
+    if (s.nextLabel && s.nextGroups && s.nextGroups.length) {
+      const card = el("div", "card");
+      card.style.marginTop = "10px";
+      card.appendChild(el("h3", "group", s.nextLabel));
+      if (!s.nextGrouped) {
+        // One group is a heading with nothing to choose between: names go straight under
+        // the line, no lone expander. `nextGrouped` is the PC's answer, not a length check
+        // done here — the rule lives in LevelUnlockGroups and this page is the third
+        // surface that must not re-decide it.
+        const only = s.nextGroups[0];
+        card.appendChild(rowList(only.rows, u => ({ name: u.name, right: u.value })));
+      } else {
+        s.nextGroups.forEach((g, i) => {
+          if (g.empty) {
+            // The class stays and says so. No chevron: there is nothing behind it, and an
+            // affordance that opens nothing is worse than the missing group it replaces.
+            const head = el("h3", "group", g.class);
+            head.appendChild(el("span", "note", g.empty));
+            card.appendChild(head);
+            return;
+          }
+          // The default open group is the PC's answer (LevelUnlockGroups.DefaultOpenIndex),
+          // not "the first one": with an empty first class it would open a group saying
+          // nothing above a collapsed one holding the only row.
+          const open = nextGroupOpen.has(g.class)
+            ? nextGroupOpen.get(g.class) : i === (s.nextOpenIndex || 0);
+          const head = el("h3", "group", (open ? "▾ " : "▸ ") + g.class);
+          head.style.cursor = "pointer";
+          head.onclick = () => { nextGroupOpen.set(g.class, !open); redraw(); };
+          card.appendChild(head);
+          if (open) card.appendChild(rowList(g.rows, u => ({ name: u.name, right: u.value })));
+        });
+      }
+      wrap.appendChild(card);
+    }
+    return wrap;
+  }
+
+  // Coin AND motes, because that merge is why "Wealth" exists rather than two tabs:
+  // motes are currency in Legends, and "what was this trip worth" should not require
+  // knowing which of two cards held which half.
+  function wealthBody(w) {
+    const wrap = el("div");
+    if (!w) return wrap;
+    const grid = el("div", "stats");
+    for (const [v, k] of [[w.total, "total"], [w.corpses, "corpses"],
+                          [w.sales, "sales"], [w.perHour, "per hour"]]) {
+      const d = el("div", "stat");
+      d.append(el("div", "v", v), el("div", "k", k));
+      grid.appendChild(d);
+    }
+    wrap.appendChild(grid);
+    const card = el("div", "card");
+    card.style.marginTop = "10px";
+    card.appendChild(el("div", "note",
+      w.coinDrops + " coin drop" + (w.coinDrops === 1 ? "" : "s") + " · "
+      + w.salesCount + " sale" + (w.salesCount === 1 ? "" : "s")));
+    if (w.sold && w.sold.length) {
+      card.appendChild(el("h3", "group", "Sold"));
+      card.appendChild(countRows(w.sold));
+    }
+    card.appendChild(el("h3", "group", "Motes"));
+    card.appendChild(el("div", "note", w.motesSummary || ""));
+    if (w.motes && w.motes.length) card.appendChild(countRows(w.motes));
+    wrap.appendChild(card);
+    return wrap;
+  }
+
+  function factionBody(rows) {
+    const card = el("div", "card");
+    if (!rows || !rows.length) {
+      card.replaceChildren(el("div", "empty",
+        "No faction moved this session — kills that change standing land here."));
+      return card;
+    }
+    // The net comes pre-signed from the desktop's own FactionFormat, so "up" and "down"
+    // are decided in one place rather than by a phone re-reading a number.
+    card.appendChild(rowList(rows, r => ({ name: r.name, right: String(r.count) })));
+    return card;
+  }
+
+  // A surface that needs an in-game command shows the command, because the alternative
+  // is naming a task with no route (David, 2026-08-20 — the desktop Gear tab, which told
+  // him to import something and handed him no way to do it). NOT a copy button: this
+  // device's clipboard cannot reach the game on the PC, and a control that does nothing
+  // useful is the "silent no-ops are broken" rule with the switch on the other side.
+  // Every string here arrives on the wire from GameCommands — the page never spells a
+  // command, because trap 32 means a page-side literal can outlive the PC's by weeks.
+  function cmdPrompt(p) {
+    if (!p || !p.command) return null;
+    const box = el("div", "cmd");
+    if (p.lead) box.appendChild(el("div", "lead", p.lead));
+    box.appendChild(el("code", null, p.command));
+    if (p.note) box.appendChild(el("div", "after", p.note));
+    return box;
+  }
+  function appendCmdPrompt(card, p) {
+    const box = cmdPrompt(p);
+    if (box) card.appendChild(box);
+  }
+
+  function raidsBody(r) {
+    const card = el("div", "card");
+    if (!r || !r.defeated) {
+      card.replaceChildren(el("div", "empty",
+        "Nothing defeated yet — kills your log witnesses land here, and the game's "
+        + "achievements dump marks clears from before EQBuddy."));
+      appendCmdPrompt(card, r && r.prompt);
+      return card;
+    }
+    for (const z of r.zones || []) {
+      card.appendChild(el("h3", "group", z.zone + " — " + z.done + "/" + z.total));
+      card.appendChild(rowList(z.bosses,
+        b => ({ name: (b.cleared ? "✓ " : "· ") + b.name, right: b.detail || "" })));
+    }
+    // Populated too, never only empty: the player likeliest to need the dump is the one
+    // whose import has gone stale, which is the desktop Raids card's own rule.
+    card.appendChild(el("div", "note",
+      "Kills count when your log sees the boss die; the achievements dump marks "
+      + "older clears."));
+    appendCmdPrompt(card, r.prompt);
+    return card;
+  }
+
+  // ---------- checklists (gear, and the quest surface's Epic/Sky tabs) ----------
+  // One card builder for every checklist shape. opts.tickable draws the checkboxes,
+  // with ticks sent under `surface` — the quest tabs pass "epics"/"sky", the old
+  // names the desktop still applies. opts.filter narrows rows by text and
+  // opts.classes drops groups naming a class outside the pick, both exactly as the
+  // desktop quest window filters its own checklist tabs.
+  // The item-grouped search result: one heading per ITEM, and under it every class that
+  // wants it, each still a live tick. See the note in checklistBody — Core owns the rule.
+  function checklistSearchBody(surface, data, opts, filter) {
+    const wrap = el("div", "card");
+    const hit = t => (t || "").toLowerCase().includes(filter);
+    const tickable = !!opts.tickable;
+    const byItem = new Map();
+    for (const g of data.groups || []) {
+      // A SUMMARY group's rows are not items — the Sky ready band names REWARDS and its
+      // ids are reward keys no tick accepts (#212). Searching them would list a reward
+      // as though it were a drop.
+      if (g.tickable === false) continue;
+      const groupHit = hit(g.title) || hit(g.heading);
+      for (const r of g.rows || []) {
+        if (!(groupHit || hit(r.text) || hit(r.detail))) continue;
+        const key = (r.text || "").toLowerCase();
+        let m = byItem.get(key);
+        if (!m) byItem.set(key, m = { title: r.text, wanters: [] });
+        m.wanters.push({ row: r, cls: g.class || "", reward: g.title || g.heading || "" });
+      }
+    }
+    const matches = [...byItem.values()].map(m => {
+      m.wanters.sort((a, b) => (a.cls + a.reward).localeCompare(b.cls + b.reward));
+      m.classes = new Set(m.wanters.map(w => (w.cls || "").toLowerCase())).size;
+      m.held = m.wanters.filter(w => w.row.done).length;
+      return m;
+    }).sort((a, b) => b.classes - a.classes || a.title.localeCompare(b.title));
+
+    if (!matches.length) {
+      wrap.replaceChildren(el("div", "empty",
+        "Nothing on this checklist matches that search. It looks at item names, reward "
+        + "names and drop locations, across every class — so this is the whole checklist "
+        + "saying no, not a filter narrowing it."));
+      return wrap;
+    }
+
+    // Mirrors QuestChecklistLayout.SearchScopeNote, which is the authority — the class
+    // chips and the state filter stay on screen above these results and no longer narrow
+    // them, so without this they are controls that look live and do nothing.
+    // QuestChecklistSearchTests pins the two strings equal.
+    wrap.appendChild(el("div", "note",
+      "Searching every class — the class picker and the state filter don't narrow this."));
+    for (const m of matches) {
+      const h = el("h3", "group");
+      h.append(el("span", null, m.title));
+      // The one line #108 asked for in as many words: who wants this drop.
+      h.append(el("span", "note",
+        (m.classes === 1 ? "1 class wants this" : m.classes + " classes want this")
+        + " · " + m.held + " of " + m.wanters.length + " in hand"));
+      wrap.appendChild(h);
+      const ul = el("ul", "rows");
+      for (const w of m.wanters) {
+        const r = w.row;
+        const li = el("li", (r.done ? "done " : "") + (tickable ? "tickable" : ""));
+        const rn = el("div", "rn", (w.cls ? w.cls + " · " : "") + w.reward);
+        if (r.detail) rn.appendChild(el("span", "sub", r.detail));
+        if (tickable) {
+          const cb = el("input");
+          cb.type = "checkbox"; cb.checked = !!r.done;
+          cb.onchange = () => {
+            r.done = cb.checked;
+            li.classList.toggle("done", cb.checked);
+            sendTick(surface, r.id, cb.checked);
+          };
+          li.appendChild(cb);
+        }
+        li.appendChild(rn);
+        ul.appendChild(li);
+      }
+      wrap.appendChild(ul);
+    }
+    return wrap;
+  }
+
+  function checklistBody(surface, data, opts) {
+    opts = opts || {};
+    const filter = (opts.filter || "").toLowerCase();
+    const wrap = el("div", "card");
+    // SEARCHING IS NOT FILTERING (#108, liminalwarmth). A query rearranges the list by
+    // ITEM and crosses every class — "who wants this drop" cannot be answered inside one
+    // class's pick — so it runs before the class scope below and returns its own layout.
+    // Core's QuestChecklistLayout.SearchByItem is the AUTHORITY for this rule; this is a
+    // mirror of it, because search runs on the phone (no round trip per keystroke) and
+    // the page cannot call into Core. Keep the two in step: same match fields, same
+    // most-wanted-first order.
+    if (filter) return checklistSearchBody(surface, data, opts, filter);
+    let any = false;
+    for (const g of data.groups) {
+      if (opts.classes && opts.classes.length && g.class
+          && !opts.classes.some(c => c.toLowerCase() === g.class.toLowerCase())) continue;
+      const rows = !filter ? g.rows : g.rows.filter(r =>
+        (r.text || "").toLowerCase().includes(filter)
+        || (r.detail || "").toLowerCase().includes(filter)
+        || (g.heading || "").toLowerCase().includes(filter));
+      if (!rows.length) continue;
+      any = true;
+      const h = el("h3", "group");
+      h.append(el("span", null, g.heading));
+      if (g.note) h.append(el("span", "note", g.note));
+      wrap.appendChild(h);
+      const ul = el("ul", "rows");
+      // A SUMMARY group's rows are not items — the Sky ready band names rewards, and its
+      // ids are reward keys no tick accepts. It drew checkboxes anyway, so every tap was
+      // a silent no-op (#212, bjstrange).
+      const tickable = opts.tickable && g.tickable !== false;
+      for (const r of rows) {
+        const li = el("li", (r.done ? "done " : "") + (tickable ? "tickable" : ""));
+        const rn = el("div", "rn", r.text);
+        if (r.detail) rn.appendChild(el("span", "sub", r.detail));
+        if (tickable) {
+          const cb = el("input");
+          cb.type = "checkbox"; cb.checked = !!r.done;
+          cb.onchange = () => {
+            // Optimistic: the row moves under the thumb now, the PC confirms on
+            // its next tick (and overrules us if the id was stale).
+            r.done = cb.checked;
+            li.classList.toggle("done", cb.checked);
+            sendTick(surface, r.id, cb.checked);
+          };
+          li.appendChild(cb);
+        }
+        li.appendChild(rn);
+        ul.appendChild(li);
+      }
+      wrap.appendChild(ul);
+    }
+    if (!any)
+      wrap.replaceChildren(el("div", "empty", filter
+        ? "Nothing on this checklist matches that search."
+        // data.empty is the SURFACE's own sentence when the generic one would name a
+        // task with no route — Gear's list is a website export behind a named Options
+        // page, and "set it up on the PC" is not directions.
+        : (data.empty || "Nothing on this checklist yet — set it up on the PC.")));
+    // Both states, deliberately. Gear auto-ticks from the inventory dump, and the player
+    // likeliest to need that command is the one whose import has gone stale — whose list
+    // is therefore full. Null prompt (Epics, Sky) draws nothing at all.
+    appendCmdPrompt(wrap, data.prompt);
+    return wrap;
+  }
+  function checklist(surface) {
+    return function (p, data) {
+      p.head.textContent = data.total ? data.done + " / " + data.total : "";
+      p.body.replaceChildren(checklistBody(surface, data, { tickable: !!TICKABLE[surface] }));
+    };
+  }
+
+  // ---------- quests (General · Epic 1.0 · Plane of Sky) ----------
+  // The desktop quest window, in page clothes: the same three tabs (the strip comes
+  // off the wire from Core's QuestSurface, so the two UIs cannot disagree), a class
+  // chip row on EVERY tab, the full class picker on every tab ("we may be helping a
+  // friend"), and one search box as the way in. Search runs HERE, over the catalog
+  // the PC shipped once — no round trip per keystroke — and covers the whole catalog
+  // whatever tab or class filter is active, because a search that silently honors
+  // browse filters breaks the search's promise (the desktop learned that live).
+  //
+  // Persistent chrome, like the map: the search box, tabs and chips are built once
+  // and updated in place, so a repaint never steals focus mid-word or a tap mid-aim.
+  const questsPanel = (function () {
+    const SEARCH_SETTLE = 120;  // ms — the desktop's own debounce; 250 was feelable
+    const CARD_CAP = 60;        // the desktop's RenderCap, with the same "+N more" honesty
+    let root, tabsRow, searchBox, pickBtn, pickPanel, pickCols, chipsRow, scopeLine, list;
+    let tab = "general", lens = null, filter = "", debounce = 0;
+    let d = null, catalog = null, byName = new Map();
+    // Lookups are lowercased once per push: ledger keys arrive as the log spelled
+    // them, catalog names as the wiki spells them, and the join must not care.
+    let ownedLower = {}, trackedLower = new Set(), hiddenLower = new Set(), completedLower = {};
+
+    function setCatalog(c) {
+      catalog = c;
+      byName = new Map(c.quests.map(q => [q.n.toLowerCase(), q]));
+    }
+
+    function make() {
+      root = el("div");
+      tabsRow = el("div", "qtabs");
+      const search = el("div", "qsearch");
+      searchBox = el("input");
+      searchBox.type = "search";
+      searchBox.placeholder = "Search quests, items, rewards, NPCs, zones";
+      searchBox.addEventListener("input", () => {
+        // Rebuild after typing STOPS, not per keystroke — the desktop froze before
+        // it learned this, and a tablet has less to spend.
+        clearTimeout(debounce);
+        debounce = setTimeout(() => { filter = searchBox.value.trim(); drawList(); }, SEARCH_SETTLE);
+      });
+      pickBtn = el("button", null, "Any class");
+      pickBtn.onclick = () => pickPanel.classList.toggle("show");
+      search.append(searchBox, pickBtn);
+      pickPanel = el("div", "qpick");
+      pickCols = el("div", "cols");
+      pickPanel.append(pickCols, el("div", "note",
+        "Which classes are in view — yours, or a friend's. Saved with this character "
+        + "on the PC; empty means every class, never an empty window."));
+      chipsRow = el("div", "qchips");
+      scopeLine = el("div", "qscope");
+      list = el("div");
+      root.append(tabsRow, search, pickPanel, chipsRow, scopeLine, list);
+      return root;
+    }
+
+    // The classes "in view": the picker's saved choice, else the log's inferred one
+    // (always labeled inferred where it shows), else nothing = every class.
+    function viewClasses() {
+      if (d.classes && d.classes.length) return d.classes;
+      if (d.inferredClass && catalog) {
+        const found = catalog.allClasses.find(c => c.name.toLowerCase() === d.inferredClass.toLowerCase());
+        if (found) return [found];
+      }
+      return [];
+    }
+
+    // Membership check against the index's precomputed allowed-abbrev list — the
+    // wiki's class text is never parsed here; Core's QuestClassFilter did that once
+    // at build. No list on the entry = any class.
+    function inClass(q, names) {
+      if (!q.a || !names.length || !catalog) return true;
+      const abbrevs = names
+        .map(n => catalog.allClasses.find(c => c.name.toLowerCase() === n.toLowerCase()))
+        .filter(Boolean).map(c => c.abbrev);
+      return !abbrevs.length || abbrevs.some(a => q.a.includes(a));
+    }
+
+    // Have/need over the owned counts the PC ships — the same numbers the desktop's
+    // matcher reads, so both screens call the same quest "✔ ready".
+    function progressOf(q) {
+      const items = q.i.map(it => ({ n: it.n, need: it.q || 1, have: ownedLower[it.n.toLowerCase()] || 0 }));
+      const total = items.length;
+      const have = items.filter(i => i.have > 0).length;
+      const complete = total > 0 && !q.o && items.every(i => i.have >= i.need);
+      const readyCount = total === 0 || q.o ? 0
+        : Math.min(...items.map(i => Math.floor(i.have / Math.max(1, i.need))));
+      return { items, have, total, complete, readyCount, fraction: total === 0 || q.o ? 0 : have / total };
+    }
+
+    // The desktop QuestSearch's own fields: name, start zone, giver, items, rewards.
+    function matches(q, f) {
+      return q.n.toLowerCase().includes(f) || (q.z || "").toLowerCase().includes(f)
+        || (q.g || "").toLowerCase().includes(f)
+        || q.i.some(it => it.n.toLowerCase().includes(f))
+        || q.r.some(r => r.toLowerCase().includes(f));
+    }
+
+    function card(q) {
+      const prog = progressOf(q);
+      const key = q.n.toLowerCase();
+      const tracked = trackedLower.has(key);
+      const done = completedLower[key] || 0;
+      const c = el("div", "qcard" + (prog.complete ? " ready" : "") + (hiddenLower.has(key) ? " hidden" : ""));
+      const head = el("div", "qhead");
+      const name = el("a", "qname", q.n);
+      name.href = q.u || "#"; name.target = "_blank"; name.rel = "noopener";
+      head.appendChild(name);
+      head.appendChild(el("div", "qcount" + (prog.complete ? " ready" : prog.have > 0 ? " some" : ""),
+        q.o ? "📚 set of quests"
+        : prog.total === 0 ? "steps"
+        : prog.complete ? (q.p && prog.readyCount > 1 ? "✔ ready ×" + prog.readyCount : "✔ ready")
+        : prog.have + "/" + prog.total));
+      const pin = el("div", "qpin" + (tracked ? " on" : ""), "📌");
+      pin.title = tracked ? "Stop tracking this quest" : "Track this quest";
+      pin.onclick = () => {
+        // Optimistic: the pin flips under the thumb now; the PC applies it to the
+        // same ledger the desktop window writes, and its next push is the truth.
+        const now = !trackedLower.has(key);
+        if (now) trackedLower.add(key); else trackedLower.delete(key);
+        sendTick("quests", "track|" + q.n, now);
+        drawList();
+      };
+      head.appendChild(pin);
+      c.appendChild(head);
+      if (q.r.length) {
+        const line = el("div", "qrewards");
+        line.append("Rewards: ");
+        line.appendChild(el("b", null, q.r.slice(0, 6).join(", ")));
+        if (q.r.length > 6) line.append(" +" + (q.r.length - 6) + " more");
+        c.appendChild(line);
+      }
+      const meta = [
+        q.z, q.g ? "from " + q.g : "", q.l > 0 ? "lvl " + q.l + "+" : "",
+        q.p ? "repeatable" : "",
+        done > 0 ? (q.p ? "done ×" + done : "✓ done") : "",
+      ].filter(Boolean).join(" · ") + (q.c ? " · " + q.c : "");
+      if (meta) {
+        const m = el("div", "qmeta", meta);
+        m.title = meta;   // the classes fragment is the one allowed to vanish into the ellipsis
+        c.appendChild(m);
+      }
+      for (const it of prog.items)
+        c.appendChild(el("div", "qitem" + (it.have >= it.need ? " met" : it.have > 0 ? " some" : ""),
+          (it.have >= it.need ? "✔ " : "• ") + it.n + " — " + it.have + "/" + it.need));
+      if (!q.i.length && !q.o)
+        c.appendChild(el("div", "qnote", "Dialogue or task chain — steps on the wiki page."));
+      return c;
+    }
+
+    function drawTabs() {
+      tabsRow.replaceChildren();
+      for (const t of d.tabs) {
+        const tile = el("div", "qtab" + (t.key === tab ? " on" : ""));
+        tile.append(el("span", null, t.label));
+        if (t.badge) tile.append(el("span", "badge", t.badge));
+        tile.onclick = () => { tab = t.key; redraw(); };
+        tabsRow.appendChild(tile);
+      }
+    }
+
+    function drawChips() {
+      chipsRow.replaceChildren();
+      const mine = viewClasses();
+      // One class offers no narrowing — a strip reading "Any · BRD" chooses nothing.
+      chipsRow.style.display = mine.length < 2 ? "none" : "";
+      if (mine.length < 2) return;
+      const add = (label, cls, title) => {
+        const on = cls ? lens && lens.name === cls.name : !lens;
+        const chip = el("div", "qchip" + (on ? " on" : ""), label);
+        chip.title = title;
+        chip.onclick = () => { lens = cls; redraw(); };
+        chipsRow.appendChild(chip);
+      };
+      add("Any", null, "Every class you play");
+      for (const c of mine) add(c.abbrev, c, "Show only " + c.name + " — quests, Epic and Plane of Sky alike");
+    }
+
+    function drawPicker() {
+      pickCols.replaceChildren();
+      if (!catalog) return;
+      const picked = new Set((d.classes || []).map(c => c.name.toLowerCase()));
+      for (const cls of catalog.allClasses) {
+        const label = document.createElement("label");
+        const cb = el("input");
+        cb.type = "checkbox";
+        cb.checked = picked.has(cls.name.toLowerCase());
+        cb.onchange = () => {
+          const boxes = [...pickCols.querySelectorAll("input")];
+          const names = catalog.allClasses.filter((c2, i) => boxes[i].checked).map(c2 => c2.name);
+          // Optimistic: the view narrows now; the PC saves the pick with this
+          // character (the desktop ⚙ popup's own SetClasses) and confirms next push.
+          d.classes = catalog.allClasses.filter(c2 => names.includes(c2.name));
+          // Identity survives a pick — it is not the filter (Bevel, Helm-signed). Only
+          // the old single-class field is cleared, and only because the pre-identity page
+          // used it AS the filter line.
+          if (names.length) d.inferredClass = null;
+          sendTick("quests", "classes|" + names.join(","), true);
+          redraw();
+        };
+        label.append(cb, document.createTextNode(cls.name));
+        pickCols.appendChild(label);
+      }
+      pickBtn.textContent = !d.classes || !d.classes.length ? "Any class"
+        : d.classes.length === 1 ? d.classes[0].name
+        : d.classes.map(c => c.abbrev).join(" · ");
+    }
+
+    function drawGeneral() {
+      const out = [];
+      let rendered = 0, suppressed = 0;
+      const addCard = q => { if (rendered >= CARD_CAP) { suppressed++; return; } rendered++; out.push(card(q)); };
+      if (!catalog) {
+        list.replaceChildren(el("div", "empty", "Waiting for the quest catalog from the PC…"));
+        return;
+      }
+      if (filter) {
+        const f = filter.toLowerCase();
+        // The whole catalog, no class/era/state gating — each card states its own
+        // class and the reader decides (the Blue Orc Head lesson).
+        const found = catalog.quests
+          .map(q => ({ q, p: progressOf(q), t: trackedLower.has(q.n.toLowerCase()) }))
+          .filter(x => matches(x.q, f));
+        found.sort((a, b) => (b.t - a.t) || (b.p.fraction - a.p.fraction) || a.q.n.localeCompare(b.q.n));
+        scopeLine.textContent = "🔎 " + found.length + " match" + (found.length === 1 ? "" : "es")
+          + " in the whole catalog — names, turn-in items, rewards, NPCs, zones. "
+          + "Search ignores the class filter; each card says whose it is.";
+        for (const x of found) addCard(x.q);
+        if (!found.length)
+          out.push(el("div", "empty", "Nothing matches. Searches cover quest names, turn-in "
+            + "items, rewards, quest givers, and zones — try fewer words."));
+      } else {
+        // WHO THIS CHARACTER IS, and how we know — not what the list is filtered to.
+        // Bevel, Helm-signed 2026-08-23: "identity stays on screen after picks. It is not
+        // the filter. Do not say 'override'." Two things follow, and both were wrong here:
+        //   - it is shown whether or not classes are picked. Hiding it the moment they tick
+        //     the picker hid "the game said Warrior/Druid/Monk" exactly when they need it.
+        //   - it carries NO verb. "pick classes to override" told the player to override
+        //     their own character, which is the #104 error in one parenthetical; the picker
+        //     is a lens over identity, not a replacement for it.
+        // The words come from Core's one SourceLabel table — the page must not compose a
+        // second sentence around them. `inferredClass` is the trap-32 fallback for a phone
+        // still running the page it downloaded before this field existed.
+        const idClasses = (d.characterClasses && d.characterClasses.length)
+          ? d.characterClasses.join(" · ")
+          : (d.inferredClass || "");
+        const idSource = (d.characterClasses && d.characterClasses.length)
+          ? (d.classSourceLabel || "")
+          : (d.inferredClass ? "inferred from your log" : "");
+        scopeLine.textContent = idClasses
+          ? "🎭 " + idClasses + (idSource ? " (" + idSource + ")" : "")
+          : "";
+        const names = lens ? [lens.name] : viewClasses().map(c => c.name);
+        const mine = d.mine.map(n => byName.get(n.toLowerCase())).filter(Boolean);
+        // Items you LOOTED outrank the class lens: out-of-class overlaps get their
+        // own section instead of vanishing — your bags don't care whose quest it is.
+        const yours = mine.filter(q => inClass(q, names));
+        const others = mine.filter(q => !inClass(q, names));
+        for (const q of yours) addCard(q);
+        if (others.length) {
+          out.push(el("h3", "group", "For other classes — from your items (" + others.length + ")"));
+          for (const q of others) addCard(q);
+        }
+        suppressed += d.mineMore || 0;
+        if (!mine.length)
+          out.push(el("div", "empty", "Nothing yet — loot a quest item (they show green in "
+            + "the Loot list) and its quest appears here, or search a reward you want by name. "
+            + "Pin 📌 anything to keep it in front of you."));
+      }
+      // Never a silent cap: say how many are hidden and how to reach them.
+      if (suppressed > 0)
+        out.push(el("div", "qmore", "+" + suppressed + " more — showing the first "
+          + rendered + ". Keep typing to narrow it down."));
+      list.replaceChildren(...out);
+    }
+
+    function drawList() {
+      if (tab === "epic" || tab === "sky") {
+        scopeLine.textContent = "";
+        const names = lens ? [lens.name] : viewClasses().map(c => c.name);
+        list.replaceChildren(checklistBody(tab === "epic" ? "epics" : "sky",
+          tab === "epic" ? d.epics : d.sky,
+          { tickable: true, filter, classes: names }));
+        return;
+      }
+      drawGeneral();
+    }
+
+    function redraw() { drawTabs(); drawChips(); drawPicker(); drawList(); }
+
+    return {
+      render(p, section) {
+        d = section;
+        if (section.catalog) setCatalog(section.catalog);
+        ownedLower = {};
+        for (const k in (section.owned || {})) ownedLower[k.toLowerCase()] = section.owned[k];
+        trackedLower = new Set((section.tracked || []).map(s => s.toLowerCase()));
+        hiddenLower = new Set((section.hidden || []).map(s => s.toLowerCase()));
+        completedLower = {};
+        for (const k in (section.completed || {})) completedLower[k.toLowerCase()] = section.completed[k];
+        if (!root) p.body.replaceChildren(make());
+        else if (p.body.firstChild !== root) p.body.replaceChildren(root);
+        // A lens on a class that left the pick is ignored rather than emptying the view.
+        if (lens && !viewClasses().some(c => c.name === lens.name)) lens = null;
+        redraw();
+      },
+    };
+  })();
+
+  // ---------- map ----------
+  // Inline SVG, no library: one path per pack color (non-scaling strokes, so lines stay
+  // hairlines at any zoom), the POIs, the archived spawn circles, and your /loc marker.
+  // Pinch to zoom, drag to pan — pointer events only, which covers touch and mouse.
+  const map = (function () {
+    const SVG = "http://www.w3.org/2000/svg";
+    // The comet tail's curve, mirroring EQBuddy.UI.Shared.TrailFade so the tablet burns
+    // down exactly as the PC map does: full strength the moment a crumb lands, straight
+    // line to nothing at the horizon, no plateau. CompanionMapSourceTests pins both
+    // numbers to the C# constants, so changing them there fails the build here.
+    const TRAIL_FULL_ALPHA = 200, TRAIL_HORIZON = 60;
+    // A tap that travels further than this, or lasts longer, was a pan — not a pick.
+    const TAP_SLOP_PX = 12, TAP_MS = 600;
+    // How close a thumb has to land to claim a spawn point. Generous: a fingertip is
+    // about this wide, and the circles are drawn at 5-7px.
+    const TAP_REACH_PX = 26;
+    let svg = null, layer = null, trailG = null, dyn = null, wrap = null, tip = null, selBar = null;
+    let row = null, side = null, sideHead = null, sideRows = null;
+    let stamp = "", bounds = null, dynKey = "";
+    let k = 1, tx = 0, ty = 0, fitted = false;
+    const pointers = new Map();
+    let pinch = null, panFrom = null, tapFrom = null;
+    // The picked point, remembered by LOCATION so it survives a repaint: the circle
+    // objects are rebuilt from every push, and holding a reference would pin a stale one.
+    let pickedLoc = null, resetArmed = false;
+
+    function make() {
+      row = el("div", "maprow");
+      wrap = el("div", "mapwrap");
+      svg = document.createElementNS(SVG, "svg");
+      layer = document.createElementNS(SVG, "g");
+      // The tail sits between the pack's lines and the live layer: it must not hide a
+      // corridor, and the circles and your marker must not hide it.
+      trailG = document.createElementNS(SVG, "g");
+      dyn = document.createElementNS(SVG, "g");
+      svg.append(layer, trailG, dyn);
+      tip = el("div", "maptip");
+      const ctl = el("div", "mapctl");
+      const b = (label, title, fn) => {
+        const btn = el("button", null, label);
+        btn.title = title; btn.onclick = fn; ctl.appendChild(btn);
+      };
+      b("＋", "Zoom in", () => zoomBy(1.3));
+      b("－", "Zoom out", () => zoomBy(1 / 1.3));
+      b("⌖", "Centre on your last /loc", centreOnMe);
+      b("⤢", "Fit the whole zone", () => { fitted = false; fit(); });
+      b("⋯", "Zone actions", () => pick(null, true));
+      selBar = el("div", "mapsel");
+      wrap.append(svg, tip, ctl, selBar);
+      side = el("div", "mapside");
+      sideHead = el("h3");
+      sideRows = el("div", "rows");
+      side.append(sideHead, sideRows);
+      row.append(wrap, side);
+      bindGestures();
+      // Refit when the box changes shape — rotating a tablet, entering fullscreen, or
+      // the named list appearing beside the map. The desktop map window does the same
+      // on SizeChanged; without it the picture keeps the scale of a box that is gone.
+      // Not while a finger is down: refitting mid-pan would fight the hand.
+      if (window.ResizeObserver) {
+        new ResizeObserver(() => {
+          if (pointers.size) return;
+          fitted = false;
+          fit();
+        }).observe(wrap);
+      }
+      return row;
+    }
+
+    // The named list, rebuilt only when the set actually changes — countdowns tick in
+    // place, exactly as the desktop's named panel keeps its rows and updates the pill.
+    let sideKey = "";
+    const sideRowRefs = [];
+    function drawSide(data) {
+      const named = data.named || [];
+      const key = JSON.stringify(named.map(n => [n.name, n.due, n.x, n.y, n.fromWiki]));
+      sideHead.textContent = "Named — " + (data.timerZone || data.zone || "");
+      if (key !== sideKey) {
+        sideKey = key;
+        sideRows.replaceChildren();
+        sideRowRefs.length = 0;
+        if (!named.length) {
+          sideRows.appendChild(el("div", "none",
+            "No spawn timers running here — kill a named (or its placeholder) and its "
+            + "countdown appears, pinned to wherever your last /loc put you."));
+        }
+        for (const n of named) {
+          const r = el("div", "row" + (n.due ? " due" : ""));
+          const hasCamp = n.x != null && n.y != null;
+          r.appendChild(el("div", "mob", (hasCamp ? "📍 " : "") + n.name));
+          r.appendChild(el("div", "camp", !hasCamp
+            ? "no camp yet — /loc during the fight"
+            : n.fromWiki ? "camp from the wiki (~)" : "camp from your /loc at kill"));
+          const gauge = el("div", "gauge");
+          const pill = el("div", "pill", "…");
+          gauge.appendChild(pill);
+          let fill = null;
+          if (n.durationSeconds > 0) {
+            const track = el("div", "track");
+            fill = el("div", "fill");
+            fill.style.width = "0%";
+            track.appendChild(fill);
+            gauge.appendChild(track);
+          }
+          r.appendChild(gauge);
+          // Tapping a row centres its camp: the list is how you find a named on a map
+          // you are not already looking at the right part of.
+          if (hasCamp) r.onclick = () => centreOn(n.x, n.y);
+          sideRows.appendChild(r);
+          sideRowRefs.push({ n, pill, fill });
+        }
+      }
+      // The clocks, every second, whether or not the set changed.
+      const elapsed = since();
+      for (const ref of sideRowRefs) {
+        const left = ref.n.dueSeconds == null ? null : ref.n.dueSeconds - elapsed;
+        ref.pill.textContent = left == null ? "?" : left <= 0 ? "DUE" : fmt(left);
+        if (ref.fill && ref.n.durationSeconds > 0) {
+          const frac = left == null || left <= 0
+            ? 1 : Math.min(1, Math.max(0, 1 - left / ref.n.durationSeconds));
+          ref.fill.style.width = (frac * 100).toFixed(1) + "%";
+        }
+      }
+    }
+
+    // ---- curation ----
+    // The desktop offers these on a right-click; here a tap picks the point and this
+    // bar offers the same three things. Rebuilt on every selection AND on every push,
+    // so "Confirm" flips to "Un-confirm" the moment the PC applies it.
+    function circleAt(loc) {
+      const cs = (latest && latest.map && latest.map.circles) || [];
+      return cs.find(c => c.locY === loc[0] && c.locX === loc[1]) || null;
+    }
+    function pick(loc, zoneActions) {
+      pickedLoc = loc;
+      resetArmed = false;
+      if (!loc && !zoneActions) { selBar.classList.remove("show"); drawPickRing(); return; }
+      drawSelBar();
+      drawPickRing();
+    }
+    // No "which mode" argument: pickedLoc IS the mode. A point is selected, or the bar
+    // is showing the zone's own actions.
+    function drawSelBar() {
+      const data = latest && latest.map;
+      if (!data) return;
+      const c = pickedLoc && circleAt(pickedLoc);
+      // The point went away under us — a kill re-clustered it, or the PC removed it.
+      // Say so rather than leaving a bar aimed at nothing.
+      if (pickedLoc && !c) { pick(null); return; }
+
+      selBar.replaceChildren();
+      const who = el("div", "who");
+      if (c) {
+        who.append(el("b", null, c.label || c.mobs || "Spawn point"));
+        who.append(document.createTextNode(
+          c.label ? "" : ` · ${c.kills} kill${c.kills === 1 ? "" : "s"}`));
+      } else {
+        who.textContent = data.timerZone || data.zone;
+      }
+      const acts = el("div", "acts");
+      const act = (label, cls, fn) => {
+        const btn = el("button", cls, label);
+        btn.onclick = fn;
+        acts.appendChild(btn);
+      };
+      if (c) {
+        act(c.confirmed ? "Un-confirm location" : "Confirm location", null, () => {
+          sendCurate(c.confirmed ? "unconfirm" : "confirm", data.timerZone, c.locY, c.locX);
+        });
+        act("Remove point", "danger", () => {
+          sendCurate("remove", data.timerZone, c.locY, c.locX);
+          pick(null);
+        });
+      } else {
+        // Reset wipes a whole zone's archive, so it asks twice — the desktop puts a
+        // MessageBox in the way and a tap deserves the same friction.
+        act(resetArmed
+          ? "Tap again to wipe this zone's points"
+          : "Reset spawn points for this zone…",
+          resetArmed ? "confirmstep" : "danger", () => {
+            if (!resetArmed) { resetArmed = true; drawSelBar(); return; }
+            sendCurate("resetZone", data.timerZone, 0, 0);
+            pick(null);
+          });
+      }
+      act("✕", null, () => pick(null));
+      selBar.append(who, acts);
+      selBar.classList.add("show");
+    }
+    // A ring on the picked dot: the bar must never be ambiguous about which point it
+    // is aimed at, especially where two circles sit close together.
+    function drawPickRing() {
+      for (const e of dyn.querySelectorAll("circle.picked")) e.classList.remove("picked");
+      if (!pickedLoc) return;
+      // Matched on the ring's own stamped location, not by comparing rendered
+      // coordinates — the drawn X/Y are derived and float-compare badly.
+      const ring = dyn.querySelector(`circle[data-loc="${pickedLoc[0]},${pickedLoc[1]}"]`);
+      if (ring) ring.classList.add("picked");
+    }
+    // Which archived point did that thumb mean? Nearest within reach, measured on
+    // SCREEN so the answer doesn't change with zoom.
+    function hitTest(clientX, clientY) {
+      const data = latest && latest.map;
+      if (!data || !data.circles.length) return null;
+      const r = svg.getBoundingClientRect();
+      const px = clientX - r.left, py = clientY - r.top;
+      let best = null, bestD = TAP_REACH_PX;
+      for (const c of data.circles) {
+        const d = Math.hypot(c.x * k + tx - px, c.y * k + ty - py);
+        if (d <= bestD) { bestD = d; best = c; }
+      }
+      return best;
+    }
+
+    // One place that knows which groups ride the view, so a new layer can't be left
+    // behind by a pan.
+    function transform() {
+      const t = `translate(${tx} ${ty}) scale(${k})`;
+      for (const g of [layer, trailG, dyn]) g.setAttribute("transform", t);
+    }
+    function apply() {
+      transform();
+      rescale();
+    }
+    // Everything that must stay the same SIZE on screen while the picture zooms:
+    // label text, circle radii, the marker. Stroke widths handle themselves via
+    // vector-effect, which is what SVG has it for.
+    function rescale() {
+      for (const e of svg.querySelectorAll("[data-px]")) {
+        const px = +e.dataset.px;
+        // Inline style, not the font-size ATTRIBUTE: text.poi sets a font-size in CSS,
+        // and a class rule beats a presentation attribute — which quietly killed this
+        // counter-scaling and let every label balloon as you zoomed in.
+        if (e.tagName === "text") e.style.fontSize = (px / k) + "px";
+        else e.setAttribute("r", px / k);
+      }
+      // Camp pins are drawn once at the origin and parked on their camp here, counter-
+      // scaled so the pin and its label keep their size and their offset from the spot.
+      for (const e of svg.querySelectorAll("[data-pin]"))
+        e.setAttribute("transform", `translate(${e.dataset.pin}) scale(${1 / k})`);
+    }
+    function zoomBy(f, cx, cy) {
+      const r = svg.getBoundingClientRect();
+      cx = cx == null ? r.width / 2 : cx;
+      cy = cy == null ? r.height / 2 : cy;
+      const nk = Math.min(60, Math.max(0.02, k * f));
+      tx = cx - (cx - tx) * (nk / k);
+      ty = cy - (cy - ty) * (nk / k);
+      k = nk;
+      apply();
+    }
+    function fit() {
+      if (!bounds || fitted) return;
+      const r = svg.getBoundingClientRect();
+      if (r.width < 20) return;   // not laid out yet; the next tick tries again
+      const w = Math.max(1, bounds.maxX - bounds.minX), h = Math.max(1, bounds.maxY - bounds.minY);
+      k = Math.min(r.width / w, r.height / h) * 0.94;
+      tx = (r.width - w * k) / 2 - bounds.minX * k;
+      ty = (r.height - h * k) / 2 - bounds.minY * k;
+      fitted = true;
+      apply();
+    }
+    function centreOn(x, y) {
+      const r = svg.getBoundingClientRect();
+      k = Math.max(k, 1.4);
+      tx = r.width / 2 - x * k;
+      ty = r.height / 2 - y * k;
+      apply();
+    }
+    function centreOnMe() {
+      const you = latest && latest.map && latest.map.you;
+      if (you) centreOn(you.x, you.y);
+    }
+    function bindGestures() {
+      svg.addEventListener("pointerdown", e => {
+        svg.setPointerCapture(e.pointerId);
+        pointers.set(e.pointerId, [e.clientX, e.clientY]);
+        if (pointers.size === 1) {
+          panFrom = [e.clientX - tx, e.clientY - ty];
+          // Candidate tap. A second finger, real travel, or a long hold all cancel it
+          // below — panning and pinching a map must never fire an edit by accident.
+          tapFrom = [e.clientX, e.clientY, Date.now()];
+        } else { pinch = spread(); panFrom = null; tapFrom = null; }
+      });
+      svg.addEventListener("pointermove", e => {
+        if (!pointers.has(e.pointerId)) return;
+        pointers.set(e.pointerId, [e.clientX, e.clientY]);
+        if (pointers.size === 2 && pinch) {
+          const now = spread();
+          if (now.d > 4 && pinch.d > 4) {
+            const r = svg.getBoundingClientRect();
+            zoomBy(now.d / pinch.d, now.x - r.left, now.y - r.top);
+          }
+          pinch = now;
+        } else if (panFrom) {
+          // Pan skips rescale(): nothing changes SIZE while dragging, and re-walking
+          // every label per pointermove is the one thing that makes a pan stutter.
+          tx = e.clientX - panFrom[0];
+          ty = e.clientY - panFrom[1];
+          transform();
+          if (tapFrom && Math.hypot(e.clientX - tapFrom[0], e.clientY - tapFrom[1]) > TAP_SLOP_PX)
+            tapFrom = null;   // that was a drag
+        }
+      });
+      const up = e => {
+        const wasTap = tapFrom && pointers.size === 1
+          && Math.hypot(e.clientX - tapFrom[0], e.clientY - tapFrom[1]) <= TAP_SLOP_PX
+          && Date.now() - tapFrom[2] <= TAP_MS;
+        pointers.delete(e.pointerId);
+        if (pointers.size < 2) pinch = null;
+        if (pointers.size === 1) {
+          const [x, y] = [...pointers.values()][0];
+          panFrom = [x - tx, y - ty];
+        } else if (pointers.size === 0) panFrom = null;
+        if (wasTap) {
+          const hit = hitTest(e.clientX, e.clientY);
+          // Tapping bare map dismisses, which is the cheapest possible way out of a
+          // selection you didn't mean to make.
+          pick(hit ? [hit.locY, hit.locX] : null);
+        }
+        tapFrom = null;
+      };
+      svg.addEventListener("pointerup", up);
+      svg.addEventListener("pointercancel", e => { tapFrom = null; up(e); });
+      svg.addEventListener("wheel", e => {
+        e.preventDefault();
+        const r = svg.getBoundingClientRect();
+        zoomBy(e.deltaY < 0 ? 1.15 : 1 / 1.15, e.clientX - r.left, e.clientY - r.top);
+      }, { passive: false });
+    }
+    function spread() {
+      const [a, b] = [...pointers.values()];
+      return { d: Math.hypot(a[0] - b[0], a[1] - b[1]), x: (a[0] + b[0]) / 2, y: (a[1] + b[1]) / 2 };
+    }
+
+    function drawGeometry(g) {
+      layer.replaceChildren();
+      bounds = { minX: g.minX, minY: g.minY, maxX: g.maxX, maxY: g.maxY };
+      for (const stroke of g.strokes) {
+        let d = "";
+        const s = stroke.segments;
+        for (let i = 0; i + 3 < s.length; i += 4)
+          d += `M${s[i]} ${s[i + 1]}L${s[i + 2]} ${s[i + 3]}`;
+        const path = document.createElementNS(SVG, "path");
+        path.setAttribute("d", d);
+        path.setAttribute("stroke", stroke.color);
+        path.setAttribute("fill", "none");
+        path.setAttribute("stroke-width", "1.2");
+        path.setAttribute("vector-effect", "non-scaling-stroke");
+        layer.appendChild(path);
+      }
+      for (const poi of g.pois) {
+        const dot = document.createElementNS(SVG, "circle");
+        dot.setAttribute("cx", poi.x); dot.setAttribute("cy", poi.y);
+        dot.setAttribute("fill", poi.color); dot.dataset.px = 2.5;
+        const t = document.createElementNS(SVG, "text");
+        t.setAttribute("x", poi.x + 5); t.setAttribute("y", poi.y + 4);
+        t.setAttribute("fill", poi.color); t.setAttribute("class", "poi");
+        t.dataset.px = 11; t.textContent = poi.label;
+        layer.append(dot, t);
+      }
+      fitted = false;
+    }
+
+    // The breadcrumb tail. Redrawn on every render — unlike the circles, a tail that
+    // looks the same is a tail that has stopped fading, so this deliberately does NOT
+    // sit behind the dynKey gate. A segment takes the alpha of its NEWER end, exactly
+    // as the desktop's UpdateTrail does, and ages tick locally between pushes.
+    function drawTrail(data) {
+      trailG.replaceChildren();
+      const trail = data.trail;
+      if (!trail || trail.length < 2) return;
+      const elapsed = since();
+      for (let i = 1; i < trail.length; i++) {
+        const alpha = TRAIL_FULL_ALPHA * (1 - (trail[i].ageSeconds + elapsed) / TRAIL_HORIZON);
+        if (alpha <= 0) continue;   // oldest first, so the faded head is skipped and the live tail follows
+        const seg = document.createElementNS(SVG, "line");
+        seg.setAttribute("x1", trail[i - 1].x); seg.setAttribute("y1", trail[i - 1].y);
+        seg.setAttribute("x2", trail[i].x); seg.setAttribute("y2", trail[i].y);
+        seg.setAttribute("stroke", "rgb(255,200,60)");
+        seg.setAttribute("stroke-opacity", (alpha / 255).toFixed(3));
+        // Heavier than the pack's hairlines and non-scaling, so the tail stays
+        // followable at the zoom a tablet actually gets propped up at.
+        seg.setAttribute("stroke-width", "2.5");
+        seg.setAttribute("stroke-linecap", "round");
+        seg.setAttribute("vector-effect", "non-scaling-stroke");
+        trailG.appendChild(seg);
+      }
+    }
+
+    function drawDynamic(data) {
+      const css = getComputedStyle(document.documentElement);
+      const accent = css.getPropertyValue("--accent").trim() || "#e3b341";
+      const dim = css.getPropertyValue("--dim").trim() || "#9c927f";
+      const warn = css.getPropertyValue("--warn").trim() || "#e0a030";
+      dyn.replaceChildren();
+      for (const c of data.circles) {
+        const color = c.named ? accent : dim;
+        const ring = document.createElementNS(SVG, "circle");
+        ring.setAttribute("cx", c.x); ring.setAttribute("cy", c.y);
+        ring.setAttribute("fill", "none"); ring.setAttribute("stroke", c.imminent ? warn : color);
+        ring.setAttribute("stroke-width", c.named ? "2" : "1.4");
+        ring.setAttribute("vector-effect", "non-scaling-stroke");
+        ring.dataset.px = c.named ? 7 : 5;
+        // Its identity for curation: the game coordinates the PC sent, echoed back
+        // untouched when this point is picked.
+        ring.dataset.loc = `${c.locY},${c.locX}`;
+        if (c.imminent) {
+          const a = document.createElementNS(SVG, "animate");
+          a.setAttribute("attributeName", "opacity");
+          a.setAttribute("values", "1;0.25;1");
+          a.setAttribute("dur", "1.1s");
+          a.setAttribute("repeatCount", "indefinite");
+          ring.appendChild(a);
+        }
+        dyn.appendChild(ring);
+        if (c.confirmed) {
+          const d = document.createElementNS(SVG, "circle");
+          d.setAttribute("cx", c.x); d.setAttribute("cy", c.y);
+          d.setAttribute("fill", color); d.dataset.px = 2;
+          dyn.appendChild(d);
+        }
+        if (c.label) {
+          const t = document.createElementNS(SVG, "text");
+          t.setAttribute("x", c.x + 9); t.setAttribute("y", c.y - 5);
+          t.setAttribute("fill", accent); t.setAttribute("class", "poi");
+          t.dataset.px = 11; t.textContent = c.label;
+          dyn.appendChild(t);
+        }
+      }
+      // Camp pins: a triangle at the camp with the named and its countdown beside it,
+      // the same marker the desktop's named panel puts on the map. Drawn after the
+      // circles so a pin sitting on its spawn point stays readable.
+      const bad = css.getPropertyValue("--bad").trim() || "#c8503c";
+      // Pins are the named that have a camp; the ones that don't still get a side row.
+      for (const pin of (data.named || []).filter(n => n.x != null && n.y != null)) {
+        const color = pin.due ? warn : bad;
+        // Pin and label share ONE counter-scaled group parked on the camp, so both keep
+        // their screen size and their screen-space offset from the spot at any zoom —
+        // a pin points AT a place, it doesn't stretch with the picture the way a wall
+        // does. rescale() maintains the group's transform.
+        const g = document.createElementNS(SVG, "g");
+        g.dataset.pin = `${pin.x} ${pin.y}`;
+        const tri = document.createElementNS(SVG, "polygon");
+        tri.setAttribute("points", "0,0 5,-10 -5,-10");
+        tri.setAttribute("fill", color);
+        tri.setAttribute("stroke", css.getPropertyValue("--bg").trim() || "#16130e");
+        tri.setAttribute("stroke-width", "1");
+        const t = document.createElementNS(SVG, "text");
+        // Below the spot, deliberately: a named's spawn circle labels ABOVE, and a camp
+        // pin very often sits on that circle. Splitting the two directions is what
+        // keeps "Lord Bergurgle" from being printed over "Lord Bergurgle".
+        t.setAttribute("x", 8); t.setAttribute("y", 12);
+        t.setAttribute("font-size", 10);
+        t.setAttribute("fill", color); t.setAttribute("class", "poi");
+        t.dataset.pinLabel = pin.name;
+        t.textContent = pin.name + (pin.fromWiki ? " ~" : "");
+        g.append(tri, t);
+        dyn.appendChild(g);
+      }
+      // Session camp markers (World PR 4) — "Drop camp marker"'s output, plotted where
+      // a /loc was known at drop time. A diamond rather than the spawn pin's triangle
+      // or the you-marker's dot: three different marks for three different facts.
+      for (const m of (data.markers || [])) {
+        const g = document.createElementNS(SVG, "g");
+        g.dataset.pin = `${m.x} ${m.y}`;
+        const dia = document.createElementNS(SVG, "polygon");
+        dia.setAttribute("points", "0,-6 6,0 0,6 -6,0");
+        dia.setAttribute("fill", accent);
+        dia.setAttribute("stroke", css.getPropertyValue("--bg").trim() || "#16130e");
+        dia.setAttribute("stroke-width", "1");
+        const t = document.createElementNS(SVG, "text");
+        t.setAttribute("x", 8); t.setAttribute("y", -6);
+        t.setAttribute("font-size", 10);
+        t.setAttribute("fill", accent); t.setAttribute("class", "poi");
+        t.textContent = m.text;
+        g.append(dia, t);
+        dyn.appendChild(g);
+      }
+      if (data.you) {
+        const me = document.createElementNS(SVG, "circle");
+        me.setAttribute("cx", data.you.x); me.setAttribute("cy", data.you.y);
+        me.setAttribute("fill", warn); me.setAttribute("stroke", "none");
+        me.dataset.px = 5;
+        dyn.appendChild(me);
+      }
+      rescale();
+    }
+
+    // The pins' countdowns, ticked locally between pushes exactly as the spawn list
+    // ticks its rows — a pin that only counts down is not worth a push.
+    function tickPins(data) {
+      const elapsed = since();
+      for (const t of dyn.querySelectorAll("[data-pin-label]")) {
+        const pin = (data.named || []).find(n => n.name === t.dataset.pinLabel);
+        if (!pin) continue;
+        const left = pin.dueSeconds == null ? null : pin.dueSeconds - elapsed;
+        const countdown = left == null ? "?" : left <= 0 ? "DUE" : fmt(left);
+        t.textContent = pin.name + (pin.fromWiki ? " ~ " : " ") + countdown;
+      }
+    }
+
+    return {
+      retheme() { if (latest && latest.map && dyn) { dynKey = ""; drawDynamic(latest.map); } },
+      render(p, data) {
+        if (!row) p.body.replaceChildren(make());
+        else if (p.body.firstChild !== row) p.body.replaceChildren(row);
+        // The named list stands on its own: it is still the answer to "what is up in
+        // this zone" when the map file is missing entirely.
+        drawSide(data);
+        if (data.missing && !data.geometry) {
+          tip.textContent = data.missing;
+          layer.replaceChildren(); trailG.replaceChildren(); dyn.replaceChildren();
+          stamp = ""; bounds = null; dynKey = "";
+          return;
+        }
+        if (data.geometry && data.geometryStamp !== stamp) {
+          stamp = data.geometryStamp;
+          drawGeometry(data.geometry);
+          dynKey = "";
+        }
+        // The map panel repaints every second for its /loc age line, but the circles
+        // only when they actually moved — rebuilding them would restart every pulse
+        // animation mid-beat.
+        const key = JSON.stringify([data.circles, data.you, data.named, data.markers]);
+        if (key !== dynKey) { dynKey = key; drawDynamic(data); }
+        drawTrail(data);
+        tickPins(data);
+        // The selection follows the data: a confirm applied on the PC flips this
+        // bar's own button, and a point that vanished takes its bar with it.
+        if (selBar.classList.contains("show")) drawSelBar();
+        drawPickRing();
+        fit();
+        const age = data.you ? Math.round(data.you.ageSeconds + since()) : null;
+        tip.textContent = data.zone + (data.you
+          ? " — your /loc " + (age < 60 ? "just now" : Math.round(age / 60) + "m ago")
+          : " — type /loc in game to place your marker")
+          + (data.geometry && data.geometry.truncated ? " (large map, partly drawn)" : "");
+        p.head.textContent = data.circles.length ? data.circles.length + " spawn points" : "";
+      },
+    };
+  })();
+
+  const RENDER = {
+    map: (p, d) => map.render(p, d),
+    spawns: renderSpawns,
+    travel: renderTravel,
+    session: renderSession,
+    mez: renderMez,
+    buffs: renderBuffs,
+    combat: renderCombat,
+    loot: renderLoot,
+    progress: renderProgress,
+    quests: (p, d) => questsPanel.render(p, d),
+    gear: checklist("gear"),
+  };
+
+  // ---------- fullscreen ----------
+  // Browser chrome eats a propped-up tablet's screen. Two answers: this button for a
+  // session, and Add to Home Screen for good. The API only enters on a real gesture
+  // and can refuse outright, so nothing here is ever attempted on load — a remembered
+  // preference lights the button up and waits for a tap instead of no-oping silently.
+  const standalone = () =>
+    matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+  function syncFull() {
+    const on = !!document.fullscreenElement;
+    const btn = $("full");
+    btn.classList.toggle("on", on);
+    btn.classList.toggle("want", !on && !standalone() && !!(choice && choice.fullscreen));
+    btn.textContent = on ? "⛶" : "⛶";
+    btn.title = on ? "Leave fullscreen"
+      : (choice && choice.fullscreen) ? "Tap for fullscreen (browsers need a tap each visit)"
+      : "Fullscreen";
+    // Standalone launches have no chrome to hide; offering the button there is noise.
+    btn.style.display = standalone() ? "none" : "";
+    // Both routes to a chrome-free screen get the lean page — a Home Screen launch is
+    // just as propped-up as a fullscreen one.
+    document.documentElement.classList.toggle("lean", on || standalone());
+  }
+  $("full").onclick = async () => {
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else await document.documentElement.requestFullscreen({ navigationUI: "hide" });
+      if (choice) { choice.fullscreen = !!document.fullscreenElement; saveChoice(); }
+    } catch {
+      // iPhone Safari has no element fullscreen; say the useful thing instead.
+      $("full").title = "This browser won't go fullscreen — use Share → Add to Home Screen.";
+    }
+    syncFull();
+  };
+  document.addEventListener("fullscreenchange", () => {
+    if (choice) { choice.fullscreen = !!document.fullscreenElement; saveChoice(); }
+    syncFull();
+  });
+  syncFull();
+
+  // ---------- ⚙ screens panel ----------
+  $("gear").onclick = () => { $("screens").classList.toggle("show"); syncFull(); };
+  function renderScreens() {
+    const rows = $("screenRows");
+    rows.replaceChildren();
+    choice.order.forEach((name, i) => {
+      if (!offered.includes(name)) return;
+      const row = el("div", "row");
+      const label = document.createElement("label");
+      const cb = el("input");
+      cb.type = "checkbox"; cb.checked = !!choice.enabled[name];
+      cb.onchange = () => { choice.enabled[name] = cb.checked; commitChoice(); };
+      label.append(cb, document.createTextNode((SURFACE_META[name] || { label: name }).label));
+      const up = mkMove("▲", i === 0, () => move(i, -1));
+      const dn = mkMove("▼", i === choice.order.length - 1, () => move(i, +1));
+      row.append(label, up, dn);
+      rows.appendChild(row);
+    });
+    renderSoundNote();
+  }
+  function mkMove(txt, disabled, fn) {
+    const b = el("button", "mv", txt);
+    b.disabled = disabled; b.onclick = fn;
+    return b;
+  }
+  function move(i, delta) {
+    const j = i + delta;
+    [choice.order[i], choice.order[j]] = [choice.order[j], choice.order[i]];
+    commitChoice();
+  }
+  function commitChoice() { saveChoice(); renderScreens(); sendSubscribe(); render(); }
+
+  // ---------- keep the screen awake, honestly ----------
+  // Wake Lock needs a secure context; plain http://<lan-ip> is not one, so on most
+  // devices this fails quietly — say so instead of pretending. (Phase 3: HTTPS or a
+  // NoSleep-style fallback.)
+  async function wakeLock() {
+    try {
+      if (!navigator.wakeLock) throw new Error("unsupported");
+      const lock = await navigator.wakeLock.request("screen");
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") wakeLock();
+      }, { once: true });
+      return lock;
+    } catch {
+      $("tip").textContent =
+        " — Tip: this page can't keep your screen awake over plain HTTP; bump your device's screen timeout while camping.";
+    }
+  }
+  wakeLock();
+
+  // 1 Hz repaint: local countdown ticking + staleness check.
+  setInterval(() => { refreshStale(); render(); }, 1000);
+}
+</script>
+</body>
+</html>
