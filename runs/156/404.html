@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <!--
+      `viewport-fit=cover` é obrigatório: sem ele todo `env(safe-area-inset-*)`
+      resolve para 0px e o jogo passa por baixo do notch.
+
+      Sem `user-scalable=no` e sem `maximum-scale`, de propósito: a camada de
+      leitura é DOM justamente para satisfazer a WCAG 1.4.4 (texto escalável a
+      200%), e bloquear o zoom anularia a razão de ela existir (GDD §4.1).
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#05070a" />
+    <meta name="description" content="RPG de estudo para concurso público: a questão é o combate." />
+    <title>Edital Quest</title>
+    <script type="module" crossorigin src="./assets/index-Dn8CZFGP.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-C2fK5Ya9.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
